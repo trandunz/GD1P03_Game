@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <box2d\box2D.h>
 #include <iostream>
+#include <list>
 
 // Local Includes
 #include "Player.h"
@@ -11,7 +12,7 @@ namespace Utils
 {
 	const int WINDOWWIDTH = 640;
 	const int WINDOWHEIGHT = 640;
-	const float m_Scale = 30.0f;
+	const float m_Scale = 40.0f;
 };
 
 // Forward Declaration
@@ -69,7 +70,8 @@ int main()
 void Start()
 {
 	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale);
-	m_Block = new CBlock(m_RenderWindow, m_World, Utils::m_Scale);
+	m_Block = new CBlock(m_RenderWindow, m_World, Utils::m_Scale, 100, 400);
+	m_Block->SetSize(2000, 400);
 
 	InitView();
 	CenterViewTo(m_Player->GetShape());
@@ -85,6 +87,13 @@ void Update()
 			if (event.type == sf::Event::Closed)
 			{
 				m_RenderWindow->close();
+				// Cleanup
+				delete m_Block;
+				delete m_Player;
+				delete m_RenderWindow;
+				m_Block = nullptr;
+				m_Player = nullptr;
+				m_RenderWindow = nullptr;
 				break;
 			}
 		}
@@ -107,8 +116,22 @@ void Render()
 {
 	m_RenderWindow->clear();
 
-	m_Block->Render();
-	m_Player->Render();
+	// Bodies
+	for (b2Body* BodyIterator = m_World.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext())
+	{
+		// Dynamic
+		if (BodyIterator->GetType() == b2_dynamicBody)
+		{
+			m_Player->Render();
+		}
+
+		// Static
+		if (BodyIterator->GetType() == b2_staticBody)
+		{
+			m_Block->Render();
+
+		}
+	}
 
 	m_RenderWindow->display();
 }
@@ -116,6 +139,7 @@ void Render()
 void InitView()
 {
 	m_View = sf::View(sf::Vector2f(0.0f,0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
+	m_View.zoom(4);
 	m_RenderWindow->setView(m_View);
 }
 
@@ -140,6 +164,7 @@ void BodyUpdates()
 		else if (BodyIterator->GetType() == b2_staticBody)
 		{
 			m_Block->Update(BodyIterator);
+
 		}
 	}
 }
