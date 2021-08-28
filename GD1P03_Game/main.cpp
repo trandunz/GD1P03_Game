@@ -5,6 +5,7 @@
 
 // Local Includes
 #include "Player.h"
+#include "Block.h"
 
 namespace Utils
 {
@@ -22,7 +23,6 @@ void InitView();
 void CenterViewTo(sf::RectangleShape _object);
 
 void BodyUpdates();
-void InitStatic();
 
 // Main Render Window
 sf::RenderWindow* m_RenderWindow;
@@ -37,13 +37,8 @@ b2World m_World(m_Gravity);
 // Player
 CPlayer* m_Player;
 
-// Static Block
-sf::RectangleShape m_GShape;
-b2BodyDef m_GBodyDef;
-b2PolygonShape m_b2pGShape;
-b2FixtureDef m_GFixtureDef;
-
-
+// Ground
+CBlock* m_Block;
 
 int main()
 {
@@ -61,8 +56,10 @@ int main()
 
 
 	// Cleanup
+	delete m_Block;
 	delete m_Player;
 	delete m_RenderWindow;
+	m_Block = nullptr;
 	m_Player = nullptr;
 	m_RenderWindow = nullptr;
 
@@ -72,8 +69,8 @@ int main()
 void Start()
 {
 	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale);
+	m_Block = new CBlock(m_RenderWindow, m_World, Utils::m_Scale);
 
-	InitStatic();
 	InitView();
 	CenterViewTo(m_Player->GetShape());
 }
@@ -110,7 +107,7 @@ void Render()
 {
 	m_RenderWindow->clear();
 
-	m_RenderWindow->draw(m_GShape);
+	m_Block->Render();
 	m_Player->Render();
 
 	m_RenderWindow->display();
@@ -142,27 +139,7 @@ void BodyUpdates()
 		// Static
 		else if (BodyIterator->GetType() == b2_staticBody)
 		{
-			m_GShape.setOrigin(400, 50);
-			m_GShape.setPosition(BodyIterator->GetPosition().x * Utils::m_Scale, BodyIterator->GetPosition().y * Utils::m_Scale);
-			m_GShape.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
+			m_Block->Update(BodyIterator);
 		}
 	}
-}
-
-void InitStatic()
-{
-	//ground
-	m_GShape.setSize(sf::Vector2f(800, 100));
-	m_GShape.setFillColor(sf::Color::Green);
-
-	//ground physics
-	m_GBodyDef.position = b2Vec2(0 / Utils::m_Scale, 600 / Utils::m_Scale);
-	m_GBodyDef.type = b2_staticBody;
-	b2Body* gBody = m_World.CreateBody(&m_GBodyDef);
-
-	m_b2pGShape.SetAsBox((800 / 2) / Utils::m_Scale, (100 / 2) / Utils::m_Scale);
-
-	m_GFixtureDef.density = 0.f;
-	m_GFixtureDef.shape = &m_b2pGShape;
-	gBody->CreateFixture(&m_GFixtureDef);
 }
