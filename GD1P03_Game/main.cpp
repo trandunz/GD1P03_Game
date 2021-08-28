@@ -32,7 +32,7 @@ sf::RenderWindow* m_RenderWindow;
 sf::View m_View;
 
 // b2World
-b2Vec2 m_Gravity(0.0f, 10.0f);
+b2Vec2 m_Gravity(0.0f, 40.0f);
 b2World m_World(m_Gravity);
 
 // Player

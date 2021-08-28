@@ -16,12 +16,14 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_BodyDef.angularDamping = 0.1f;
 	m_BodyDef.allowSleep = true;
 	m_BodyDef.awake = true;
+	m_BodyDef.gravityScale = 10.0f;
 	m_Body = _world.CreateBody(&m_BodyDef);
 
 	m_b2pShape.SetAsBox((100.f / 2) / _scale, (100.f / 2) / _scale);
 
-	m_FixtureDef.density = 1.f;
+	m_FixtureDef.density = 1.0f;
 	m_FixtureDef.shape = &m_b2pShape;
+	m_FixtureDef.friction = 0.5f;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	// Velocity
@@ -50,8 +52,6 @@ void CPlayer::Update(b2Body* _bodyIterator)
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width/2, m_Shape.getGlobalBounds().height / 2);
 	m_Shape.setPosition(_bodyIterator->GetPosition().x * m_Scale, _bodyIterator->GetPosition().y * m_Scale);
 	m_Shape.setRotation(_bodyIterator->GetAngle() * 180 / b2_pi);
-
-
 }
 
 void CPlayer::Render()
@@ -64,15 +64,20 @@ sf::RectangleShape CPlayer::GetShape()
 	return m_Shape;
 }
 
-void CPlayer::Movement(b2Body* _bodyIterator)
+void CPlayer::Movement(b2Body* _bodyIterator, b2Body& m_Ground)
 {
 	int x = 0;
 	int y = 0;
-
+	
 	// Up
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+	for (b2ContactEdge ce = *_bodyIterator->GetContactList(); ce != null; ce = ce.next)
 	{
-		y--;
+		if (ce.other == &m_Ground && ce.contact.isTouching() && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+		{
+			_bodyIterator->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000.0f), true);
+
+			break;
+		}
 	}
 	// Down
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
@@ -101,6 +106,9 @@ void CPlayer::Movement(b2Body* _bodyIterator)
 	}
 
 	// Move Sprite And Body
+	/*m_Body->SetLinearVelocity(m_MoveSpeed * m_Velocity);*/
+	
 	m_Shape.setPosition(_bodyIterator->GetPosition().x * m_Scale, _bodyIterator->GetPosition().y * m_Scale);
-	m_Body->ApplyLinearImpulseToCenter(m_MoveSpeed * m_Velocity, true);
+	_bodyIterator->ApplyLinearImpulseToCenter(m_MoveSpeed * m_Velocity, true);
+	
 }

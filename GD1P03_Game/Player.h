@@ -15,7 +15,7 @@ public:
 
 	sf::RectangleShape GetShape();
 
-	void Movement(b2Body* _bodyIterator);
+	void Movement(b2Body* _bodyIterator, b2Body& m_Ground);
 
 private:
 	sf::RenderWindow* m_RenderWindow;
@@ -30,6 +30,6 @@ private:
 	b2FixtureDef m_FixtureDef;
 
 	float m_Scale;
-	const int m_MoveSpeed = 10;
+	const int m_MoveSpeed = 30;
 };
 
