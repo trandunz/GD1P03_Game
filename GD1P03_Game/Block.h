@@ -2,14 +2,18 @@
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 
+/// <summary>
+/// // 100 x 100 = STANDARD BLOCK SIZING
+/// </summary>
+
 class CBlock
 {
 public:
-	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY);
+	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, sf::Texture* _texture, const float& _scale, float _posX, float _posY);
 	~CBlock();
 
 	void Start();
-	void Update(b2Body* _bodyIterator);
+	void Update();
 	void Render();
 
 	void SetPosition(int _x, int _y);
@@ -17,14 +21,16 @@ public:
 	void SetSize(float _x, float _y);
 	sf::Vector2f GetSize();
 
-	sf::RectangleShape GetShape();
+	sf::Sprite GetShape();
 
 private:
 	sf::RenderWindow* m_RenderWindow;
 
 	b2World* m_World;
 
-	sf::RectangleShape m_Shape;
+	sf::Sprite m_Shape;
+	sf::Texture m_Texture;
+
 	b2Body* m_Body;
 	b2BodyDef m_BodyDef;
 	b2PolygonShape m_b2pShape;

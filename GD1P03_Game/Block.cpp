@@ -1,14 +1,17 @@
 #include "Block.h"
 
-CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY)
+CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, sf::Texture* _texture, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
 
-	//ground
-	m_Shape.setSize(m_Size);
-	m_Shape.setFillColor(sf::Color::Green);
+	m_Shape.setTexture(*_texture, true);
+	////ground
+	//m_Shape.setSize(m_Size);
+	//m_Shape.setFillColor(sf::Color::Green);
+	//m_Shape.setOutlineColor(sf::Color::Red);
+	//m_Shape.setOutlineThickness(3.0f);
 
 	//ground physics
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, _posY / m_Scale);
@@ -20,6 +23,11 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const float& _s
 	m_FixtureDef.density = 0.0f;
 	m_FixtureDef.shape = &m_b2pShape;
 	m_Body->CreateFixture(&m_FixtureDef);
+
+	// Set SFML Shape Transform To Box 2D Body Transform
+	m_Shape.setOrigin(m_Shape.getGlobalBounds().width/2, m_Shape.getGlobalBounds().height/2);
+	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
+	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 
 	m_Body = nullptr;
 }
@@ -36,12 +44,12 @@ void CBlock::Start()
 {
 }
 
-void CBlock::Update(b2Body* _bodyIterator)
+void CBlock::Update()
 {
 	// Set SFML Shape Transform To Box 2D Body Transform
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width/2, m_Shape.getGlobalBounds().height / 2);
-	m_Shape.setPosition(_bodyIterator->GetPosition().x * m_Scale, _bodyIterator->GetPosition().y * m_Scale);
-	m_Shape.setRotation(_bodyIterator->GetAngle() * 180 / b2_pi);
+	m_Shape.setOrigin(m_Shape.getGlobalBounds().width/2, m_Shape.getGlobalBounds().height/2 );
+	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
+	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 
 }
 
@@ -61,7 +69,7 @@ void CBlock::SetSize(float _x, float _y)
 	m_Size.x = _x;
 	m_Size.y = _y;
 
-	m_Shape.setSize(m_Size);
+	/*m_Shape.setSize(m_Size);*/
 
 	//ground physics
 	m_BodyDef.type = b2_staticBody;
@@ -69,7 +77,7 @@ void CBlock::SetSize(float _x, float _y)
 
 	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
 
-	m_FixtureDef.density = 0.0f;
+	m_FixtureDef.density = 1.0f;
 	m_FixtureDef.shape = &m_b2pShape;
 	m_Body->CreateFixture(&m_FixtureDef);
 
@@ -83,7 +91,7 @@ sf::Vector2f CBlock::GetSize()
 	return m_Size;
 }
 
-sf::RectangleShape CBlock::GetShape()
+sf::Sprite CBlock::GetShape()
 {
 	return m_Shape;
 }
