@@ -35,7 +35,7 @@ CBlock::~CBlock()
 	if (m_Fixture != nullptr && m_World != nullptr && m_Body != nullptr)
 	{
 		m_Body->DestroyFixture(m_Fixture);
-		m_World->DestroyBody(m_Fixture->GetBody());
+		m_World->DestroyBody(m_Body);
 	}
 	
 	m_Fixture = nullptr;

@@ -93,7 +93,6 @@ int main()
 
 
 	std::list<CBlock>::iterator block = m_Chunk.begin();
-
 	while (m_Chunk.size() > 0)
 	{
 		m_Chunk.pop_front();
