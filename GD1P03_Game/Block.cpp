@@ -15,26 +15,30 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, sf::Texture* _t
 
 	//ground physics
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, _posY / m_Scale);
-	m_BodyDef.type = b2_staticBody;
+	m_BodyDef.type = b2_kinematicBody;
 	m_Body = _world.CreateBody(&m_BodyDef);
 
 	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
 
 	m_FixtureDef.density = 0.0f;
 	m_FixtureDef.shape = &m_b2pShape;
-	m_Body->CreateFixture(&m_FixtureDef);
+	m_Fixture = m_Body->CreateFixture(&m_FixtureDef);
 
 	// Set SFML Shape Transform To Box 2D Body Transform
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width/2, m_Shape.getGlobalBounds().height/2);
 	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
-
-	m_Body = nullptr;
 }
 
 CBlock::~CBlock()
 {
-	m_World->DestroyBody(m_Body);
+	if (m_Fixture != nullptr && m_World != nullptr && m_Body != nullptr)
+	{
+		m_Body->DestroyFixture(m_Fixture);
+		m_World->DestroyBody(m_Fixture->GetBody());
+	}
+	
+	m_Fixture = nullptr;
 	m_Body = nullptr;
 	m_RenderWindow = nullptr;
 	m_World = nullptr;
@@ -62,6 +66,8 @@ void CBlock::Render()
 
 void CBlock::SetPosition(int _x, int _y)
 {
+	m_Shape.setPosition(_x, _y);
+	
 }
 
 void CBlock::SetSize(float _x, float _y)

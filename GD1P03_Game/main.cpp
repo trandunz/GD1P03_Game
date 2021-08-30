@@ -21,13 +21,18 @@ void Update();
 void Render();
 void InitView();
 
+void CreateSkyChunk();
 void CreateSurfaceLayer(int _posX, int _posY);
 void CreateChunck(int _posX, int _posY);
 void CreateMegaChunk(int _posX, int _posY);
 
-void CenterViewTo(sf::RectangleShape _object);
+void CenterViewTo(sf::Sprite _object);
+
+void moveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element);
 
 void BodyUpdates(sf::Event& _event);
+
+bool CleanUpBlocks();
 
 // Mouse
 sf::Vector2f MousePos;
@@ -36,6 +41,7 @@ sf::Vector2f MousePos;
 sf::Texture* m_MousePosTex;
 sf::Texture* m_Dirt;
 sf::Texture* m_Grass;
+sf::Texture* m_Sky;
 
 //Sprites
 sf::Sprite m_MousePos;
@@ -59,6 +65,9 @@ CPlayer* m_Player;
 // Ground
 CBlock* m_Block;
 
+bool m_bClose = false;
+int m_NumberOfBlocksToClean = 0;
+
 int main()
 {
 	// Render Window Settings
@@ -73,9 +82,11 @@ int main()
 	m_Dirt = new sf::Texture();
 	m_Grass = new sf::Texture();
 	m_MousePosTex = new sf::Texture();
+	m_Sky = new sf::Texture();
 	m_Dirt->loadFromFile("Images/Dirt.png");
 	m_Grass->loadFromFile("Images/Grass.png");
 	m_MousePosTex->loadFromFile("Images/MousePos.png");
+	m_Sky->loadFromFile("Images/Sky.png");
 
 	Start();
 	Update();
@@ -85,21 +96,20 @@ int main()
 
 	while (m_Chunk.size() > 0)
 	{
-		if (block != m_Chunk.end())
-		{
-			m_Chunk.erase(block);
-			std::advance(block, 1);
-
-		}
 		m_Chunk.pop_front();
-
 	}
+	std::list<sf::Sprite>::iterator sky = m_SkyChunk.begin();
+	while (m_SkyChunk.size() > 0)
+	{
+		m_SkyChunk.pop_front();
+	}
+	delete m_Sky;
 	delete m_MousePosTex;
-	delete m_Block;
 	delete m_Dirt;
 	delete m_Grass;
 	delete m_Player;
 	delete m_RenderWindow;
+	m_Sky = nullptr;
 	m_MousePosTex = nullptr;
 	m_Dirt = nullptr;
 	m_Grass = nullptr;
@@ -107,7 +117,7 @@ int main()
 	m_Player = nullptr;
 	m_RenderWindow = nullptr;
 
-	return 0;
+	return NULL;
 }
 
 void Start()
@@ -117,6 +127,8 @@ void Start()
 
 	m_MousePos.setTexture(*m_MousePosTex, true);
 	m_MousePos.setOrigin(m_MousePos.getGlobalBounds().width / 2, m_MousePos.getGlobalBounds().height / 2);
+
+	CreateSkyChunk();
 
 	// Map
 	CreateSurfaceLayer(0, 0);
@@ -140,33 +152,15 @@ void Update()
 {
 	while (m_RenderWindow->isOpen())
 	{
+		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
+
 		sf::Event Event;
 		while (m_RenderWindow->pollEvent(Event))
 		{
 			if (Event.type == sf::Event::Closed)
 			{
 				m_RenderWindow->close();
-				
-				std::list<CBlock>::iterator block = m_Chunk.begin();
-
-				while (m_Chunk.size() > 0)
-				{
-					if (block != m_Chunk.end())
-					{
-						m_Chunk.erase(block);
-						std::advance(block, 1);
-						
-					}
-					m_Chunk.pop_front();
-
-				}
-
-				delete m_Block;
-				delete m_Player;
-				delete m_RenderWindow;
-				m_Block = nullptr;
-				m_Player = nullptr;
-				m_RenderWindow = nullptr;
+				m_bClose = true;
 				break;
 			}
 
@@ -176,32 +170,91 @@ void Update()
 				BodyUpdates(Event);
 
 			}
+		}
+
+		if (m_Player != nullptr)
+		{
+			
+
+			// Centre View To Player
+			CenterViewTo(m_Player->GetShape());
+
+			// Body Updates
+			BodyUpdates(Event);
+
+			
+			// World Step
+			m_World.Step(1 / 60.0f, 60, 60);
+			
+			// Render
+			Render();
 
 			
 		}
-
-		// Centre View To Player
-		CenterViewTo(m_Player->GetShape());
-
-		// World Step
-		m_World.Step(1 / 60.0f, 60, 60);
-
-		// Body Updates
-		BodyUpdates(Event);
 		
-		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
 		
 
-		// Render
-		Render();
+		
+		// Block Placing
+		if (Event.type == sf::Event::MouseButtonPressed)
+		{
+			float Mag = sqrt(((m_MousePos.getPosition().x - m_Player->GetShape().getPosition().x) * (m_MousePos.getPosition().x - m_Player->GetShape().getPosition().x)) + ((m_MousePos.getPosition().y - m_Player->GetShape().getPosition().y) * (m_MousePos.getPosition().y - m_Player->GetShape().getPosition().y)));
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag > 200)
+			{
+				m_Block = nullptr;
+				m_Block = new CBlock(m_RenderWindow, m_World, m_Dirt, Utils::m_Scale, m_MousePos.getPosition().x, m_MousePos.getPosition().y);
+				m_Block->SetSize(100, 100);
+				m_Chunk.push_back(*m_Block);
+			}
+			else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && Mag > 200)
+			{
+				std::cout << "Mouse Right" << std::endl;
+				std::list<CBlock>::iterator element = m_Chunk.begin();
+				while (element != m_Chunk.end())
+				{
+					if (element->GetShape().getPosition() == m_MousePos.getPosition())
+					{
+						moveToFront(m_Chunk, element);
+						m_Chunk.pop_front();
+
+						break;
+					}
+
+					element++;
+				}
+			}
+
+		}
+		
 	}
+}
+
+bool CleanUpBlocks()
+{
+	std::list<CBlock>::iterator element = m_Chunk.begin();
+	while (element != m_Chunk.end())
+	{
+		if (element->MARKASDESTROY)
+		{
+			m_Chunk.erase(element);
+
+			m_Chunk.pop_front();
+			return true;
+		}
+		
+		element++;
+	}
+	return false;
 }
 
 void Render()
 {
 	m_RenderWindow->clear();
 
-	
+	for (sf::Sprite& sky : m_SkyChunk)
+	{
+		m_RenderWindow->draw(sky);
+	}
 	// Shapes
 	for (CBlock& block : m_Chunk)
 	{
@@ -273,6 +326,44 @@ void CreateSurfaceLayer(int _posX, int _posY)
 	//m_Block = new CBlock(m_RenderWindow, m_World, m_Grass, Utils::m_Scale, -290 + _posX, 400 + _posY);
 	//m_Block->SetSize(100, 100);
 	//m_Chunk.push_front(*m_Block);
+}
+
+void CreateSkyChunk()
+{
+	for (int i = 0; i < 10000; i += 100)
+	{
+		for (int j = 0; j < 10000; j += 100)
+		{
+			sf::Sprite sky = sf::Sprite(*m_Sky);
+			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+			sky.setPosition(sf::Vector2f(i+10, j));
+			m_SkyChunk.push_front(sky);
+		}
+		for (int j = 0; j > -10000; j -= 100)
+		{
+			sf::Sprite sky = sf::Sprite(*m_Sky);
+			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+			sky.setPosition(sf::Vector2f(i + 10, j));
+			m_SkyChunk.push_front(sky);
+		}
+	}
+	for (int i = 0; i > -10000; i -= 100)
+	{
+		for (int j = 0; j > -10000; j -= 100)
+		{
+			sf::Sprite sky = sf::Sprite(*m_Sky);
+			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+			sky.setPosition(sf::Vector2f(i + 10, j));
+			m_SkyChunk.push_front(sky);
+		}
+		for (int j = 0; j < 10000; j += 100)
+		{
+			sf::Sprite sky = sf::Sprite(*m_Sky);
+			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+			sky.setPosition(sf::Vector2f(i + 10, j));
+			m_SkyChunk.push_front(sky);
+		}
+	}
 }
 
 void CreateChunck(int _posX, int _posY)
@@ -535,6 +626,7 @@ void CreateChunck(int _posX, int _posY)
 	m_Block = new CBlock(m_RenderWindow, m_World, m_Dirt, Utils::m_Scale, -290 + _posX, 1100 + _posY);
 	m_Block->SetSize(100, 100);
 	m_Chunk.push_front(*m_Block);
+	m_Block = nullptr;
 
 }
 
@@ -577,7 +669,7 @@ void CreateMegaChunk(int _posX, int _posY)
 	CreateChunck(-1800 + _posX, 500 + 2000 + _posY);
 }
 
-void CenterViewTo(sf::RectangleShape _object)
+void CenterViewTo(sf::Sprite _object)
 {
 	m_View.setCenter(_object.getPosition());
 	m_RenderWindow->setView(m_View);
@@ -590,6 +682,18 @@ void BodyUpdates(sf::Event& _event)
 	// Shapes
 	m_Player->Update();
 	m_Player->Movement(_event);
+	
+	for (sf::Sprite& sky : m_SkyChunk)
+	{
+		if (sky.getGlobalBounds().contains(MousePos))
+		{
+			m_MousePos.setPosition(sky.getPosition());
+		}
+		if (sky.getGlobalBounds().intersects(m_MousePos.getGlobalBounds()))
+		{
+			m_MousePos.setPosition(sky.getPosition());
+		}
+	}
 	for (CBlock& block : m_Chunk)
 	{
 		block.Update();
@@ -597,15 +701,6 @@ void BodyUpdates(sf::Event& _event)
 		{
 			m_MousePos.setPosition(block.GetShape().getPosition());
 		}
-		else if (block.GetShape().getGlobalBounds().intersects(m_MousePos.getGlobalBounds()))
-		{
-			m_MousePos.setPosition(block.GetShape().getPosition());
-		}
-		/*else
-		{
-
-			m_MousePos.setPosition(MousePos);
-		}*/
 	}
 }
 
@@ -621,5 +716,13 @@ void CreateSky(sf::Color _colour)
 	for (int i = -90; i > -11100; i -= 100)
 	{
 		m_SkyChunk.push_front(SkyBlock);
+	}
+}
+
+void moveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element)
+{
+	if (element != list.begin()) 
+	{
+		list.splice(list.begin(), list, element, std::next(element));
 	}
 }
