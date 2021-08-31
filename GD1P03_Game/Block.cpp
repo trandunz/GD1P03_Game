@@ -15,7 +15,7 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, sf::Texture* _t
 
 	//ground physics
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, _posY / m_Scale);
-	m_BodyDef.type = b2_kinematicBody;
+	m_BodyDef.type = b2_staticBody;
 	m_Body = _world.CreateBody(&m_BodyDef);
 
 	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);

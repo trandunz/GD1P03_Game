@@ -6,6 +6,11 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_Scale = _scale;
 	m_World = m_World;
 	m_Block = nullptr;
+
+	m_PlayerFilter.categoryBits = 1;
+	m_PlayerFilter.maskBits = 65535;
+	m_PlayerFilter.groupIndex = 0;
+
 	// Textures
 	m_PlayerRightTex = new sf::Texture();
 	m_PlayerLeftTex = new sf::Texture();
@@ -42,7 +47,9 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_FixtureDef.density = 1.0f;
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 0.1f;
+
 	m_Body->CreateFixture(&m_FixtureDef);
+
 
 	// Velocity
 	m_Velocity = b2Vec2(0.0f, 0.0f);

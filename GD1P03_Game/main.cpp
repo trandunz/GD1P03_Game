@@ -10,8 +10,8 @@
 
 namespace Utils
 {
-	const int WINDOWWIDTH = 640;
-	const int WINDOWHEIGHT = 640;
+	const int WINDOWWIDTH = 1280;
+	const int WINDOWHEIGHT = 720;
 	const float m_Scale = 50.0f;
 };
 
@@ -65,6 +65,9 @@ CPlayer* m_Player;
 // Ground
 CBlock* m_Block;
 
+// Garbage Filter
+b2Filter* m_GarbageFilter;
+
 bool m_bClose = false;
 int m_NumberOfBlocksToClean = 0;
 
@@ -77,6 +80,11 @@ int main()
 	// Render Window Creation
 	m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "SFML and box2D works!", sf::Style::Default, m_Settings);
 	m_RenderWindow->setFramerateLimit(60);
+
+	m_GarbageFilter = new b2Filter();
+	m_GarbageFilter->categoryBits = 1;
+	m_GarbageFilter->maskBits = 0;
+	m_GarbageFilter->groupIndex = 0;
 
 	//Textures
 	m_Dirt = new sf::Texture();
@@ -102,12 +110,14 @@ int main()
 	{
 		m_SkyChunk.pop_front();
 	}
+	delete m_GarbageFilter;
 	delete m_Sky;
 	delete m_MousePosTex;
 	delete m_Dirt;
 	delete m_Grass;
 	delete m_Player;
 	delete m_RenderWindow;
+	m_GarbageFilter = nullptr;
 	m_Sky = nullptr;
 	m_MousePosTex = nullptr;
 	m_Dirt = nullptr;
@@ -214,6 +224,11 @@ void Update()
 					if (element->GetShape().getPosition() == m_MousePos.getPosition())
 					{
 						moveToFront(m_Chunk, element);
+						
+						/*b2Filter filter = element->GetFixture()->GetFilterData();
+						filter.categoryBits = 0;
+						filter.maskBits = -1;
+						element->GetFixture()->SetFilterData(filter);*/
 						m_Chunk.pop_front();
 
 						break;

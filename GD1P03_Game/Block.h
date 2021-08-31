@@ -28,6 +28,10 @@ public:
 	{
 		return m_Body;
 	}
+	b2Fixture* GetFixture()
+	{
+		return m_Fixture;
+	}
 
 private:
 	sf::RenderWindow* m_RenderWindow;

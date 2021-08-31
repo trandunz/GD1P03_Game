@@ -24,6 +24,7 @@ public:
 	{
 		return m_Body;
 	}
+
 	 
 private:
 	sf::RenderWindow* m_RenderWindow;
