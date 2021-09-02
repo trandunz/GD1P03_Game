@@ -12,7 +12,7 @@ void GUI::HealthUI(sf::RenderWindow* _renderWindow)
 	testText.setOutlineColor(sf::Color::Black);
 	testText.setOrigin(testText.getGlobalBounds().width / 2, testText.getGlobalBounds().height / 2);
 	testText.setCharacterSize(18);
-	testText.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 120, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 15);
+	testText.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 110, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 15);
 	_renderWindow->draw(testText);
 
 	// Heart Containers
@@ -87,15 +87,15 @@ void GUI::HealthUI(sf::RenderWindow* _renderWindow)
 	heart4.setOrigin(heart1.getGlobalBounds().width / 2, heart1.getGlobalBounds().height / 2);
 	heart5.setOrigin(heart1.getGlobalBounds().width / 2, heart1.getGlobalBounds().height / 2);
 
-	heart1.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 210, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
+	heart1.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 200, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
 	_renderWindow->draw(heart1);
-	heart2.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 185, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
+	heart2.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 175, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
 	_renderWindow->draw(heart2);
-	heart3.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 160, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
+	heart3.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 150, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
 	_renderWindow->draw(heart3);
-	heart4.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 135, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
+	heart4.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 125, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
 	_renderWindow->draw(heart4);
-	heart5.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 110, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
+	heart5.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 100, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 35);
 	_renderWindow->draw(heart5);
 }
 
@@ -103,7 +103,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 {
 	// Assigning Render Texture Stuff
 	sf::View MiniMapView = sf::View(m_Player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
-	MiniMapView.zoom(60);
+	MiniMapView.zoom(57);
 	m_miniMap = new sf::RenderTexture();
 	m_miniMap->create(200, 200);
 	m_miniMap->setView(MiniMapView);
@@ -176,13 +176,15 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow)
 		m_InventorySlotMap.emplace(i, test);
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
 		
+		//
+		// Actual Items
 		sf::Sprite ITEM = sf::Sprite();
 		ITEM.setTexture(*m_Dirt, true);
-		ITEM.setScale(sf::Vector2f(0.6, 0.6));
+		ITEM.setScale(sf::Vector2f(0.4, 0.4));
 		ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
 		_renderWindow->mapCoordsToPixel(ITEM.getPosition());
-		ITEM.setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
 		m_InventoryMap.emplace(i, ITEM);
+		m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
 	}
 
 	// Row 2
@@ -196,13 +198,15 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow)
 		m_InventorySlotMap.emplace(i, test);
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
 		
+		//
+		// Actual Items
 		sf::Sprite ITEM = sf::Sprite();
 		ITEM.setTexture(*m_Dirt, true);
-		ITEM.setScale(sf::Vector2f(0.6, 0.6));
+		ITEM.setScale(sf::Vector2f(0.4, 0.4));
 		ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
 		_renderWindow->mapCoordsToPixel(ITEM.getPosition());
-		ITEM.setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
 		m_InventoryMap.emplace(i, ITEM);
+		m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
 	}
 	if (m_bInventoryOpen)
 	{
@@ -219,13 +223,15 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow)
 			m_InventorySlotMap.emplace(i, test);
 			m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 20) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 200);
 			
+			//
+			// Actual Items
 			sf::Sprite ITEM = sf::Sprite();
 			ITEM.setTexture(*m_Dirt, true);
-			ITEM.setScale(sf::Vector2f(0.6, 0.6));
+			ITEM.setScale(sf::Vector2f(0.4, 0.4));
 			ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
 			_renderWindow->mapCoordsToPixel(ITEM.getPosition());
-			ITEM.setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 20) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 200);
 			m_InventoryMap.emplace(i, ITEM);
+			m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 20) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 200);
 		}
 		// Row 4
 		for (int i = 30; i < 40; i++)
@@ -238,13 +244,15 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow)
 			m_InventorySlotMap.emplace(i, test);
 			m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 30) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265);
 			
+			//
+			// Actual Items
 			sf::Sprite ITEM = sf::Sprite();
 			ITEM.setTexture(*m_Dirt, true);
-			ITEM.setScale(sf::Vector2f(0.6, 0.6));
+			ITEM.setScale(sf::Vector2f(0.4, 0.4));
 			ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
 			_renderWindow->mapCoordsToPixel(ITEM.getPosition());
-			ITEM.setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 30) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265);
 			m_InventoryMap.emplace(i, ITEM);
+			m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 30) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265);
 		}
 		// Row 5
 		for (int i = 40; i < 50; i++)
@@ -257,20 +265,16 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow)
 			m_InventorySlotMap.emplace(i, test);
 			m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 40) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65);
 			
+			//
+			// Actual Items
 			sf::Sprite ITEM = sf::Sprite();
 			ITEM.setTexture(*m_Dirt, true);
-			ITEM.setScale(sf::Vector2f(0.6, 0.6));
+			ITEM.setScale(sf::Vector2f(0.4, 0.4));
 			ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
 			_renderWindow->mapCoordsToPixel(ITEM.getPosition());
-			ITEM.setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 40) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65);
 			m_InventoryMap.emplace(i, ITEM);
+			m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 40) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65);
 		}
-
-		//
-		// Actual Items
-		
-		// 
-		
 	}
 }
 

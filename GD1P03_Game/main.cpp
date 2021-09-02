@@ -211,7 +211,7 @@ void Update()
 			}
 
 			// World Step
-			m_World.Step(1 / 60.0f, 30, 30);
+			m_World.Step(1 / 60.0f, 60, 60);
 
 			// Block Placing
 			if (Event.type == sf::Event::MouseButtonPressed)
@@ -266,14 +266,29 @@ void Render()
 	m_RenderWindow->setView(m_WorldView);
 	for (sf::Sprite& sky : m_SkyChunk)
 	{
+		/*if (sky.getPosition().x > m_WorldView.getCenter().x && sky.getPosition().x < m_WorldView.getSize().x/2
+			&& sky.getPosition().y > m_WorldView.getCenter().y && sky.getPosition().y < m_WorldView.getSize().y / 2)
+		{
+			m_RenderWindow->draw(sky);
+		}*/
 		m_RenderWindow->draw(sky);
 	}
 
 	// Blocks
 	for (CBlock& block : m_Chunk)
 	{
+		if (block.GetShape().getPosition().x > m_WorldView.getCenter().x && block.GetShape().getPosition().x < (m_WorldView.getSize().x / 2 + m_WorldView.getCenter().x)
+			&& block.GetShape().getPosition().y > m_WorldView.getCenter().y && block.GetShape().getPosition().y < (m_WorldView.getSize().y / 2 + m_WorldView.getCenter().y))
+		{
+			
+		}
 		block.Render();
-		
+		/*if (block.GetShape().getPosition().x < m_WorldView.getCenter().x && block.GetShape().getPosition().x > (m_WorldView.getSize().x / 2 - m_WorldView.getCenter().x)
+			&& block.GetShape().getPosition().y < m_WorldView.getCenter().y && block.GetShape().getPosition().y > (m_WorldView.getSize().y / 2 - m_WorldView.getCenter().y))
+		{
+			
+		}
+		block.Render();*/
 	}
 
 	// Player
@@ -327,7 +342,7 @@ void InitUI()
 /// <param name="_posY"></param>
 void CreateSurfaceLayer(int _posX, int _posY)
 {
-	for (int i = 10; i < 11400 / 1.7f; i += 100)
+	for (int i = 10; i < 11400 / 1.9f; i += 100)
 	{
 		m_Block = nullptr;
 		m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Grass, Utils::m_Scale, i + _posX, 400 + _posY);
@@ -335,7 +350,7 @@ void CreateSurfaceLayer(int _posX, int _posY)
 		m_Chunk.push_front(*m_Block);
 		m_Block = nullptr;
 
-		for (int j = 500; j < 11400 / 1.7f; j += 100)
+		for (int j = 500; j < 11400 / 1.9f; j += 100)
 		{
 			m_Block = nullptr;
 			m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Dirt, Utils::m_Scale, i + _posX, j + _posY);
@@ -344,7 +359,7 @@ void CreateSurfaceLayer(int _posX, int _posY)
 			m_Block = nullptr;
 		}
 	}
-	for (int i = -90; i > -11100 / 1.7f; i -= 100)
+	for (int i = -90; i > -11100 / 1.9f; i -= 100)
 	{
 		m_Block = nullptr;
 		m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Grass, Utils::m_Scale, i + _posX, 400 + _posY);
@@ -352,7 +367,7 @@ void CreateSurfaceLayer(int _posX, int _posY)
 		m_Chunk.push_front(*m_Block);
 		m_Block = nullptr;
 
-		for (int j = 500; j < 11400 / 1.7f; j += 100)
+		for (int j = 500; j < 11400 / 1.9f; j += 100)
 		{
 			m_Block = nullptr;
 			m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Dirt, Utils::m_Scale, i + _posX, j + _posY);

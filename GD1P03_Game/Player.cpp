@@ -104,7 +104,7 @@ void CPlayer::Movement(sf::Event& _event)
 	int y = 0;
 		
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && _event.type == sf::Event::KeyPressed)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && _event.type == sf::Event::KeyPressed)
 	{
 		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -800.0f), true);
 		//m_Body->SetLinearVelocity(b2Vec2(0.0f, -100.0f));
