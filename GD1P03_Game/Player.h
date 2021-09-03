@@ -4,8 +4,8 @@
 #include <vector>
 #include <list>
 
-#include "Block.h"
 #include "Chest.h"
+#include "Door.h"
 
 class CPlayer
 {
@@ -27,8 +27,11 @@ public:
 	
 	int GetCurrentHP();
 	int GetMaxHP();
+
 	 
 	std::list<CBlock> m_Inventory;
+
+	sf::Sprite m_MapIcon;
 
 private:
 	// Essentials
@@ -51,12 +54,11 @@ private:
 	
 	b2Vec2 m_Velocity;
 
-	
-
 	// Textures
 	sf::Sprite m_Shape;
 	sf::Texture* m_PlayerRightTex;
 	sf::Texture* m_PlayerLeftTex;
+	sf::Texture* m_MapIconText;
 
 	// Box2d
 	b2BodyDef m_BodyDef;

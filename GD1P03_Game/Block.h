@@ -31,7 +31,7 @@ public:
 
 	void SetPosition(int _x, int _y);
 
-	void SetSize(float _x, float _y);
+	virtual void SetSize(float _x, float _y);
 	sf::Vector2f GetSize();
 
 	sf::Sprite GetShape();

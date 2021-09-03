@@ -54,7 +54,7 @@ void CBlock::Start()
 void CBlock::Update()
 {
 	// Set SFML Shape Transform To Box 2D Body Transform
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width/2, m_Shape.getGlobalBounds().height/2 );
+	//m_Shape.setOrigin(m_Shape.getGlobalBounds().width/2, m_Shape.getGlobalBounds().height/2 );
 	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 

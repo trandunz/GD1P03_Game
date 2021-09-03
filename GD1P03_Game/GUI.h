@@ -4,6 +4,7 @@
 #include <list>
 #include <set>
 #include <map>
+#include <fstream>
 #include "Player.h"
 
 class GUI
@@ -18,8 +19,11 @@ public:
 	void SetFont(sf::Font& _font);
 
 	void HealthUI(sf::RenderWindow* _renderWindow);
-	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::Sprite>& _skyChunk);
+	sf::Text InitHealthUI();
+	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk);
+	void InitMiniMap(sf::RenderWindow* _renderWindow);
 	void InventoryUI(sf::RenderWindow* _renderWindow);
+	void InitInventoryUI();
 	void ToggleInventoryUI();
 	void CraftingUI(sf::RenderWindow* _renderWindow);
 
@@ -49,10 +53,28 @@ private:
 	CPlayer* m_Player;
 	sf::Font m_Font;
 
+	std::string m_HealthString;
+	sf::Text m_HealthText;
+
+	sf::RectangleShape m_MiniMapBG1;
+	sf::RectangleShape m_MiniMapBG2;
+	sf::RectangleShape m_MiniMapBG3;
+	sf::RectangleShape m_MiniMapShape;
+
+	sf::Sprite m_MiniMapWorldBackGround;
+
 	std::map<int, sf::Sprite> m_InventorySlotMap;
 	std::map<int, sf::Sprite> m_InventoryMap;
+	
 
 	bool m_bInventoryOpen = false;
+
+	// Heart Containers
+	sf::Sprite heart1;
+	sf::Sprite heart2;
+	sf::Sprite heart3;
+	sf::Sprite heart4;
+	sf::Sprite heart5;
 
 };
 

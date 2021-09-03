@@ -1,5 +1,95 @@
-﻿  main.cpp
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(311,117): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+﻿  Block.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Block.cpp(81,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Block.cpp(81,22): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Chest.cpp
+  GUI.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(78,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(79,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(80,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(81,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(82,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(181,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(191,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(203,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(213,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(228,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(238,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(249,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(259,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(270,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(280,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(327,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(333,20): warning C4244: '=': conversion from 'float' to 'sf::Uint8', possible loss of data
+  Player.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(130,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(130,22): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(132,37): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
+  main.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(313,117): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -8,7 +98,7 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(311,88): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(313,88): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -17,7 +107,7 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(327,115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(329,115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -26,7 +116,7 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(327,86): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(329,86): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -35,52 +125,96 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(341,96): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(341,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(349,94): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(349,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(358,96): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(358,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(366,94): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(366,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(422,39): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(343,96): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(343,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(351,94): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(351,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(360,96): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(360,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(368,94): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(368,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(424,39): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(422,34): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(424,34): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(429,41): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(431,41): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(429,35): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(431,35): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(439,41): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(441,41): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(439,35): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(441,35): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(446,41): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(448,41): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(446,35): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(448,35): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
+  Generating Code...
+box2d-d.lib(b2_broad_phase.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_broad_phase.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_chain_shape.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_chain_shape.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_collide_circle.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_collide_circle.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_collide_edge.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_collide_edge.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_collide_polygon.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_collide_polygon.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_collision.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_collision.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_distance.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_distance.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_dynamic_tree.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_dynamic_tree.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_edge_shape.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_edge_shape.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_polygon_shape.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_polygon_shape.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_time_of_impact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_time_of_impact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_block_allocator.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_block_allocator.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_draw.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_draw.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_math.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_math.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_settings.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_settings.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_stack_allocator.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_stack_allocator.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_timer.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_timer.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_body.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_body.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_chain_circle_contact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_chain_circle_contact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_chain_polygon_contact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_chain_polygon_contact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_circle_contact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_circle_contact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_contact.obj) : warning LNK4099: PDB '' was not found with 'box2d-d.lib(b2_contact.obj)' or at ''; linking object as if no debug info
+box2d-d.lib(b2_contact_manager.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_contact_manager.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_contact_solver.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_contact_solver.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_distance_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_distance_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_edge_circle_contact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_edge_circle_contact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_edge_polygon_contact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_edge_polygon_contact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_fixture.obj) : warning LNK4099: PDB '' was not found with 'box2d-d.lib(b2_fixture.obj)' or at ''; linking object as if no debug info
+box2d-d.lib(b2_friction_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_friction_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_gear_joint.obj) : warning LNK4099: PDB '' was not found with 'box2d-d.lib(b2_gear_joint.obj)' or at ''; linking object as if no debug info
+box2d-d.lib(b2_island.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_island.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_motor_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_motor_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_mouse_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_mouse_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_polygon_circle_contact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_polygon_circle_contact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_polygon_contact.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_polygon_contact.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_prismatic_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_prismatic_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_pulley_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_pulley_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_revolute_joint.obj) : warning LNK4099: PDB '' was not found with 'box2d-d.lib(b2_revolute_joint.obj)' or at ''; linking object as if no debug info
+box2d-d.lib(b2_weld_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_weld_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_wheel_joint.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_wheel_joint.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_world.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_world.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
+box2d-d.lib(b2_world_callbacks.obj) : warning LNK4099: PDB 'box2d.pdb' was not found with 'box2d-d.lib(b2_world_callbacks.obj)' or at 'C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\box2d.pdb'; linking object as if no debug info
   GD1P03_Game.vcxproj -> C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Debug\GD1P03_Game.exe

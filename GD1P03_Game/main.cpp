@@ -4,6 +4,7 @@
 // Local Includes
 #include "GUI.h"
 #include "Block.h"
+#include "AudioManager.h"
 
 
 namespace Utils
@@ -33,6 +34,8 @@ void b2BodyUpdates(sf::Event& _event);
 bool CleanUpBlocks();
 bool CleanUpSky();
 
+void UpdateWorldTexture();
+
 // Mouse
 sf::Vector2f MousePos;
 // 
@@ -47,8 +50,11 @@ sf::Font m_Font;
 sf::RenderWindow* m_RenderWindow;
 
 // Blocks / Tiles
+sf::RenderTexture m_WorldTexture;
+sf::RectangleShape m_WorldSprite;
+
 std::list<CBlock> m_Chunk = {};
-std::list<sf::Sprite> m_SkyChunk = {};
+std::list<sf::RectangleShape> m_SkyChunk = {};
 
 // Main View / Camera
 sf::View m_WorldView;
@@ -58,8 +64,9 @@ sf::View m_UIView;
 GUI* m_GUI;
 
 // b2World
-b2Vec2 m_Gravity(0.0f, 40.0f);
+b2Vec2 m_Gravity(0.0f, 20.0f);
 b2World m_World(m_Gravity);
+sf::Sprite m_WorldBackGround;
 
 // Player
 CPlayer* m_Player;
@@ -74,6 +81,9 @@ int m_NumberOfBlocksToClean = 0;
 // Close App?
 bool m_bClose = false;
 
+// Audio Manager
+CAudioManager* m_AudioManager;
+
 /// <summary>
 /// 
 /// </summary>
@@ -86,7 +96,8 @@ int main()
 
 	// Render Window Creation
 	m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "SFML and box2D works!", sf::Style::Default, m_Settings);
-	m_RenderWindow->setFramerateLimit(120);
+	m_RenderWindow->setFramerateLimit(60);
+	/*m_RenderWindow->setVerticalSyncEnabled(true);*/
 	m_RenderWindow->setKeyRepeatEnabled(false);
 
 	m_GarbageFilter = new b2Filter();
@@ -94,12 +105,24 @@ int main()
 	m_GarbageFilter->maskBits = 0;
 	m_GarbageFilter->groupIndex = 0;
 
-	
-
 	//
 	Start();
 	Update();
 	//
+
+	//// Save
+	//std::list<CBlock>::iterator itr;
+	//std::ofstream output("ChunkPositions.txt");
+	//output.open("ChunkPositions.txt");
+
+	//for (itr = m_Chunk.begin(); itr != m_Chunk.end(); itr++)
+	//{
+	//	output << itr->GetShape().getPosition().x;
+	//	output << ",";
+	//	output << itr->GetShape().getPosition().y;
+	//	output << std::endl;
+	//}
+	//output.close();
 
 	// Cleanup
 	if (CleanUpBlocks() && CleanUpSky())
@@ -109,10 +132,12 @@ int main()
 		m_Chunk.clear();
 		m_SkyChunk.clear();
 	}
+	delete m_AudioManager;
 	delete m_GUI;
 	delete m_GarbageFilter;
 	delete m_Player;
 	delete m_RenderWindow;
+	m_AudioManager = nullptr;
 	m_GUI = nullptr;
 	m_GarbageFilter = nullptr;
 	m_Block = nullptr;
@@ -141,7 +166,17 @@ void Start()
 	CreateSkyChunk();
 	CreateSurfaceLayer(0, 0);
 
+	// World BackGround
+	m_WorldBackGround = sf::Sprite();
+	m_WorldBackGround.setTexture(*m_GUI->m_Sky, true);
+	m_WorldBackGround.setOrigin(m_WorldBackGround.getGlobalBounds().width / 2, m_WorldBackGround.getGlobalBounds().height / 2);
+	m_WorldBackGround.setScale(4.7, 4.7);
+
 	Render();
+
+	// Music
+	m_AudioManager = new CAudioManager();
+	m_AudioManager->PlayMusic();
 
 	m_bClose = false;
 }
@@ -174,7 +209,7 @@ void Update()
 				InitUI();
 				InitWorldView();
 
-				m_GUI->ToggleInventoryUI();
+				/*m_GUI->ToggleInventoryUI();*/
 			}
 
 			if (Event.type == sf::Event::KeyPressed)
@@ -254,6 +289,36 @@ bool CleanUpSky()
 	return true;
 }
 
+void UpdateWorldTexture()
+{
+	// Assigning Render Texture View and Zooming
+	m_WorldTexture.setView(m_WorldView);
+
+	// Draw All Blocks In Radius 1.8f
+	for (CBlock& block : m_Chunk)
+	{
+		float Mag1 = sqrt(((block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+		if (Mag1 < m_RenderWindow->getSize().x * 1.80f)
+		{
+			m_WorldTexture.draw(block.GetShape());
+		}
+	}
+
+	// Update RendTexture
+	m_WorldTexture.display();
+
+	// Assigning Sprite Texture And Drawing (MiniMap)
+	m_WorldSprite = sf::RectangleShape();
+	m_WorldSprite.setTexture(&m_WorldTexture.getTexture());
+	m_WorldSprite.setSize(sf::Vector2f(200, 200));
+	//test.setFillColor(sf::Color::White);
+	m_WorldSprite.setOrigin(m_WorldSprite.getGlobalBounds().width / 2, m_WorldSprite.getGlobalBounds().height / 2);
+	m_RenderWindow->mapCoordsToPixel(m_WorldSprite.getPosition());
+
+	// Draw Shape With Applied RenderText To Main Window
+	m_RenderWindow->draw(m_WorldSprite);
+}
+
 /// <summary>
 /// 
 /// </summary>
@@ -264,32 +329,24 @@ void Render()
 
 	// Sky
 	m_RenderWindow->setView(m_WorldView);
-	for (sf::Sprite& sky : m_SkyChunk)
-	{
-		/*if (sky.getPosition().x > m_WorldView.getCenter().x && sky.getPosition().x < m_WorldView.getSize().x/2
-			&& sky.getPosition().y > m_WorldView.getCenter().y && sky.getPosition().y < m_WorldView.getSize().y / 2)
-		{
-			m_RenderWindow->draw(sky);
-		}*/
-		m_RenderWindow->draw(sky);
-	}
+
+	CreateSkyChunk();
+
+	// World BackGround
+	m_WorldBackGround.setPosition(m_RenderWindow->getView().getCenter());
+	m_RenderWindow->draw(m_WorldBackGround);
 
 	// Blocks
 	for (CBlock& block : m_Chunk)
 	{
-		if (block.GetShape().getPosition().x > m_WorldView.getCenter().x && block.GetShape().getPosition().x < (m_WorldView.getSize().x / 2 + m_WorldView.getCenter().x)
-			&& block.GetShape().getPosition().y > m_WorldView.getCenter().y && block.GetShape().getPosition().y < (m_WorldView.getSize().y / 2 + m_WorldView.getCenter().y))
+		float Mag1 = sqrt(((block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+		if (Mag1 < m_RenderWindow->getSize().x * 1.80f)
 		{
-			
+			block.Render();
 		}
-		block.Render();
-		/*if (block.GetShape().getPosition().x < m_WorldView.getCenter().x && block.GetShape().getPosition().x > (m_WorldView.getSize().x / 2 - m_WorldView.getCenter().x)
-			&& block.GetShape().getPosition().y < m_WorldView.getCenter().y && block.GetShape().getPosition().y > (m_WorldView.getSize().y / 2 - m_WorldView.getCenter().y))
-		{
-			
-		}
-		block.Render();*/
+		
 	}
+
 
 	// Player
 	m_Player->Render();
@@ -327,8 +384,11 @@ void InitUI()
 {
 	// GUI
 	m_GUI = new GUI();
-	m_GUI->InitTextureMaster();
 	m_GUI->SetPlayer(m_Player);
+	m_GUI->InitTextureMaster();
+	m_GUI->InitMiniMap(m_RenderWindow);
+	m_GUI->InitHealthUI();
+	m_GUI->InitInventoryUI();
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
@@ -342,34 +402,63 @@ void InitUI()
 /// <param name="_posY"></param>
 void CreateSurfaceLayer(int _posX, int _posY)
 {
+	/*m_Block = nullptr;
+	m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Grass, Utils::m_Scale, 0.0f, 0.0f);
+	m_Block->SetSize(100, 100);
+	m_Chunk.push_front(*m_Block);
+	
 	for (int i = 10; i < 11400 / 1.9f; i += 100)
 	{
-		m_Block = nullptr;
+		m_PositionArray.push_front(sf::Vector2f(i + _posX, 400 + _posY));
+		m_Block->SetPosition(m_PositionArray.front().x, m_PositionArray.front().y);
+		m_RenderWindow->draw(m_Block->GetShape());
+
+		for (int j = 500; j < 11400 / 1.9f; j += 100)
+		{
+			m_PositionArray.push_front(sf::Vector2f(i + _posX, j + _posY));
+			m_Block->SetPosition(m_PositionArray.front().x, m_PositionArray.front().y);
+			m_RenderWindow->draw(m_Block->GetShape());
+		}
+	}
+	for (int i = -90; i > -11100 / 1.9f; i -= 100)
+	{
+		m_PositionArray.push_front(sf::Vector2f(i + _posX, 400 + _posY));
+		m_Block->SetPosition(m_PositionArray.front().x, m_PositionArray.front().y);
+		m_RenderWindow->draw(m_Block->GetShape());
+
+		for (int j = 500; j < 11400 / 1.9f; j += 100)
+		{
+			m_PositionArray.push_front(sf::Vector2f(i + _posX, j + _posY));
+			m_Block->SetPosition(m_PositionArray.front().x, m_PositionArray.front().y);
+			m_RenderWindow->draw(m_Block->GetShape());
+		}
+	}
+	m_Block = nullptr;*/
+
+	for (int i = 10; i < 21400 / 1.9f; i += 100)
+	{
 		m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Grass, Utils::m_Scale, i + _posX, 400 + _posY);
 		m_Block->SetSize(100, 100);
 		m_Chunk.push_front(*m_Block);
 		m_Block = nullptr;
 
-		for (int j = 500; j < 11400 / 1.9f; j += 100)
+		for (int j = 500; j < 21400 / 1.9f; j += 100)
 		{
-			m_Block = nullptr;
 			m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Dirt, Utils::m_Scale, i + _posX, j + _posY);
 			m_Block->SetSize(100, 100);
 			m_Chunk.push_front(*m_Block);
 			m_Block = nullptr;
 		}
 	}
-	for (int i = -90; i > -11100 / 1.9f; i -= 100)
+	for (int i = -90; i > -21100 / 1.9f; i -= 100)
 	{
-		m_Block = nullptr;
 		m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Grass, Utils::m_Scale, i + _posX, 400 + _posY);
 		m_Block->SetSize(100, 100);
 		m_Chunk.push_front(*m_Block);
 		m_Block = nullptr;
 
-		for (int j = 500; j < 11400 / 1.9f; j += 100)
+		for (int j = 500; j < 21400 / 1.9f; j += 100)
 		{
-			m_Block = nullptr;
 			m_Block = new CBlock(m_RenderWindow, m_World, m_GUI->m_Dirt, Utils::m_Scale, i + _posX, j + _posY);
 			m_Block->SetSize(100, 100);
 			m_Chunk.push_front(*m_Block);
@@ -420,38 +509,69 @@ void CreateSurfaceLayer(int _posX, int _posY)
 /// </summary>
 void CreateSkyChunk()
 {
-	for (int i = 0; i < 10000; i += 100)
+	sf::Vector2f playerPos = sf::Vector2f(m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
+	m_SkyChunk.clear();
+	for (int i = 0; i < 20000; i += 100)
 	{
-		for (int j = 0; j < 10000; j += 100)
+		for (int j = 0; j < 20000; j += 100)
 		{
-			sf::Sprite sky = sf::Sprite(*m_GUI->m_Sky);
-			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-			sky.setPosition(sf::Vector2f(i+10, j));
-			m_SkyChunk.push_front(sky);
+			float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+			if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
+			{
+				sf::RectangleShape sky = sf::RectangleShape();
+				sky.setFillColor(sf::Color::Transparent);
+				sky.setSize(sf::Vector2f(100, 100));
+				sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+				sky.setPosition(sf::Vector2f(i + 10, j));
+				m_SkyChunk.push_front(sky);
+				m_RenderWindow->draw(m_SkyChunk.front());
+			}
 		}
-		for (int j = 0; j > -10000; j -= 100)
+		for (int j = 0; j > -20000; j -= 100)
 		{
-			sf::Sprite sky = sf::Sprite(*m_GUI->m_Sky);
-			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-			sky.setPosition(sf::Vector2f(i + 10, j));
-			m_SkyChunk.push_front(sky);
+			float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+			if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
+			{
+				sf::RectangleShape sky = sf::RectangleShape();
+				sky.setFillColor(sf::Color::Transparent);
+				sky.setSize(sf::Vector2f(100, 100));
+				sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+				sky.setPosition(sf::Vector2f(i + 10, j));
+				m_SkyChunk.push_front(sky);
+				m_RenderWindow->draw(m_SkyChunk.front());
+			}
+			
 		}
 	}
-	for (int i = 0; i > -10000; i -= 100)
+	for (int i = 0; i > -20000; i -= 100)
 	{
-		for (int j = 0; j > -10000; j -= 100)
+		for (int j = 0; j > -20000; j -= 100)
 		{
-			sf::Sprite sky = sf::Sprite(*m_GUI->m_Sky);
-			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-			sky.setPosition(sf::Vector2f(i + 10, j));
-			m_SkyChunk.push_front(sky);
+			float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+			if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
+			{
+				sf::RectangleShape sky = sf::RectangleShape();
+				sky.setFillColor(sf::Color::Transparent);
+				sky.setSize(sf::Vector2f(100, 100));
+				sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+				sky.setPosition(sf::Vector2f(i + 10, j));
+				m_SkyChunk.push_front(sky);
+				m_RenderWindow->draw(m_SkyChunk.front());
+			}
 		}
-		for (int j = 0; j < 10000; j += 100)
+		for (int j = 0; j < 20000; j += 100)
 		{
-			sf::Sprite sky = sf::Sprite(*m_GUI->m_Sky);
-			sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-			sky.setPosition(sf::Vector2f(i + 10, j));
-			m_SkyChunk.push_front(sky);
+			float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+			if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
+			{
+				sf::RectangleShape sky = sf::RectangleShape();
+				sky.setFillColor(sf::Color::Transparent);
+				sky.setSize(sf::Vector2f(100, 100));
+				sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+				sky.setPosition(sf::Vector2f(i + 10, j));
+				m_SkyChunk.push_front(sky);
+				m_RenderWindow->draw(m_SkyChunk.front());
+			}
 		}
 	}
 }
@@ -479,7 +599,7 @@ void b2BodyUpdates(sf::Event& _event)
 	m_Player->Update(MousePos);
 	m_Player->Movement(_event);
 	
-	for (sf::Sprite& sky : m_SkyChunk)
+	for (sf::RectangleShape& sky : m_SkyChunk)
 	{
 		if (sky.getGlobalBounds().contains(MousePos))
 		{

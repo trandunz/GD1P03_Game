@@ -1,10 +1,11 @@
-﻿  Player.cpp
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(130,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(130,22): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(132,37): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
+﻿  Door.cpp
+  Player.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(142,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(142,22): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(144,37): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
   Generating code
-  1 of 466 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+  21 of 488 functions ( 4.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    32 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   GD1P03_Game.vcxproj -> C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Release\GD1P03_Game.exe
