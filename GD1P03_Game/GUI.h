@@ -1,4 +1,7 @@
 #pragma once
+#ifndef _GUI_H__
+#define _GUI_H__
+
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <list>
@@ -7,6 +10,8 @@
 #include <fstream>
 #include "Player.h"
 
+
+
 class GUI
 {
 public:
@@ -14,6 +19,7 @@ public:
 	~GUI();
 
 	void SetPlayer(CPlayer* _player);
+	
 	CPlayer* GetPlayer();
 
 	void SetFont(sf::Font& _font);
@@ -22,12 +28,11 @@ public:
 	sf::Text InitHealthUI();
 	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk);
 	void InitMiniMap(sf::RenderWindow* _renderWindow);
-	void InventoryUI(sf::RenderWindow* _renderWindow);
+	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView);
 	void InitInventoryUI();
-	void ToggleInventoryUI();
-	void CraftingUI(sf::RenderWindow* _renderWindow);
+	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player);
 
-	void Render(sf::RenderWindow* _renderWindow);
+	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player);
 
 	std::string ToString(int32 integer);
 
@@ -42,12 +47,16 @@ public:
 	sf::Texture* m_ItemSpacer;
 	sf::Texture* m_HeartFull;
 	sf::Texture* m_HeartEmpty;
+	sf::Texture* m_CIITexture;
 
 	//Sprites
 	sf::Sprite m_MousePos;
 
 	// MiniMap
 	sf::RenderTexture* m_miniMap;
+
+	std::map<int, sf::Sprite> m_InventorySlotMap;
+	
 
 private:
 	CPlayer* m_Player;
@@ -63,11 +72,9 @@ private:
 
 	sf::Sprite m_MiniMapWorldBackGround;
 
-	std::map<int, sf::Sprite> m_InventorySlotMap;
-	std::map<int, sf::Sprite> m_InventoryMap;
-	
+	sf::Sprite m_CurrentItemIndicator;
 
-	bool m_bInventoryOpen = false;
+	
 
 	// Heart Containers
 	sf::Sprite heart1;
@@ -77,4 +84,5 @@ private:
 	sf::Sprite heart5;
 
 };
+#endif
 

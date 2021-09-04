@@ -1,8 +1,14 @@
 #pragma once
+#ifndef _Block_H__
+#define _Block_H__
+
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
 #include <cmath>
+#include <list>
+
+
 
 /// <summary>
 /// // 100 x 100 = STANDARD BLOCK SIZING
@@ -14,22 +20,26 @@ public:
 	enum BLOCKTYPE
 	{
 		PICKAXE,
-
+		DOOR,
+		CHEST,
+		BLOCK,
 	};
 
 	bool MARKASDESTROY = false;
 
 	CBlock();
+	CBlock(sf::Texture* _texture);
 	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, sf::Texture* _texture, const float& _scale, float _posX, float _posY);
 	virtual ~CBlock();
 
 	void Start();
-	void Update();
+	virtual void Update();
 	void Render();
 
 	void Destroy();
 
 	void SetPosition(int _x, int _y);
+	sf::Vector2f GetPosition();
 
 	virtual void SetSize(float _x, float _y);
 	sf::Vector2f GetSize();
@@ -41,6 +51,10 @@ public:
 	}
 
 	b2Body* m_Body;
+
+	BLOCKTYPE m_Type;
+
+	long int m_ArrayIndex = -1;
 
 protected:
 	sf::RenderWindow* m_RenderWindow;
@@ -61,4 +75,5 @@ protected:
 
 	
 };
+#endif
 

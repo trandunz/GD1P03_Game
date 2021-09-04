@@ -9,8 +9,9 @@ CChest::CChest(sf::RenderWindow* _renderWindow, b2World& _world, const float& _s
 	m_Texture.loadFromFile("Images/Chest.png");
 	m_Shape.setTexture(m_Texture, true);
 
+
 	//ground physics
-	m_BodyDef.position = b2Vec2(_posX / m_Scale, _posY / m_Scale);
+	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
 	m_BodyDef.type = b2_staticBody;
 	m_Body = _world.CreateBody(&m_BodyDef);
 

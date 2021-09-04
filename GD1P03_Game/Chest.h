@@ -1,5 +1,12 @@
 #pragma once
+#ifndef _CHEST_H__
+#define _CHEST_H__
+
+#include "Player.h"
 #include "Block.h"
+
+
+
 class CChest : public CBlock
 {
 public:
@@ -7,5 +14,8 @@ public:
 	virtual ~CChest();
 
 	void Update();
+	
 };
+
+#endif
 

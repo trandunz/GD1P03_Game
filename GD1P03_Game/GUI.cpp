@@ -121,12 +121,15 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	m_miniMap->draw(m_MiniMapWorldBackGround);
 
 	// Draw All Blocks In Radius 1.8f
-	for (CBlock& block : _chunk)
+	std::list<CBlock>::iterator it;
+
+	// Blocks
+	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
-		float Mag1 = sqrt(((block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
-		if (Mag1 < 7900)
+		float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+		if (Mag1 < _renderWindow->getSize().x * 4.0f)
 		{
-			m_miniMap->draw(block.GetShape());
+			m_miniMap->draw(it->GetShape());
 		}
 	}
 
@@ -188,65 +191,77 @@ void GUI::InitMiniMap(sf::RenderWindow* _renderWindow)
 	m_MiniMapWorldBackGround.setScale(12, 12);
 }
 
-void GUI::InventoryUI(sf::RenderWindow* _renderWindow)
+void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView)
 {
+
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
-		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
-		_renderWindow->mapCoordsToPixel(m_InventoryMap[i].getPosition());
-		m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
+		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
 	}
 
 	// Row 2
 	for (int i = 10; i < 20; i++)
 	{
-		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		
 
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
-		
-		_renderWindow->mapCoordsToPixel(m_InventoryMap[i].getPosition());
+		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
 
-		m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
+		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
+
+		
 	}
 	// Row 3
 	for (int i = 20; i < 30; i++)
 	{
-		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		
 
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 20) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 200);
-		_renderWindow->mapCoordsToPixel(m_InventoryMap[i].getPosition());
-
-		m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 20) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 200);
-		
+		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
 		
 
+		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
 	}
 	// Row 4
 	for (int i = 30; i < 40; i++)
 	{
-		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		
 
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 30) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265);
-		_renderWindow->mapCoordsToPixel(m_InventoryMap[i].getPosition());
+		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		
 
-		m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 30) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265);
+		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
 	}
 	// Row 5
 	for (int i = 40; i < 50; i++)
 	{
-		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		
 
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 40) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65);
-		_renderWindow->mapCoordsToPixel(m_InventoryMap[i].getPosition());
+		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		
 
-		m_InventoryMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 40) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65);
+		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
 	}
 }
 
 void GUI::InitInventoryUI()
 {
+	// Current Item
+	m_CurrentItemIndicator.setTexture(*m_CIITexture, true);
+	m_CurrentItemIndicator.setOrigin(m_CurrentItemIndicator.getGlobalBounds().width / 2, m_CurrentItemIndicator.getGlobalBounds().height / 2);
+
+
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
@@ -257,12 +272,12 @@ void GUI::InitInventoryUI()
 		m_InventorySlotMap.emplace(i, test);
 		
 		//
-		// Actual Items
-		sf::Sprite ITEM = sf::Sprite();
-		ITEM.setTexture(*m_Dirt, true);
-		ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		m_InventoryMap.emplace(i, ITEM);
+		//// Actual Items
+		//sf::Sprite ITEM = sf::Sprite();
+		//ITEM.setTexture(*m_Dirt, true);
+		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
+		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
+		//m_InventoryMap.emplace(i, ITEM);
 	}
 
 
@@ -276,12 +291,12 @@ void GUI::InitInventoryUI()
 		m_InventorySlotMap.emplace(i, test);
 
 		//
-		// Actual Items
-		sf::Sprite ITEM = sf::Sprite();
-		ITEM.setTexture(*m_Dirt, true);
-		ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		m_InventoryMap.emplace(i, ITEM);
+		//// Actual Items
+		//sf::Sprite ITEM = sf::Sprite();
+		//ITEM.setTexture(*m_Dirt, true);
+		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
+		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
+		//m_InventoryMap.emplace(i, ITEM);
 		
 	}
 	// Row 3
@@ -293,13 +308,13 @@ void GUI::InitInventoryUI()
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
 
-		//
-		// Actual Items
-		sf::Sprite ITEM = sf::Sprite();
-		ITEM.setTexture(*m_Dirt, true);
-		ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		m_InventoryMap.emplace(i, ITEM);
+		////
+		//// Actual Items
+		//sf::Sprite ITEM = sf::Sprite();
+		//ITEM.setTexture(*m_Dirt, true);
+		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
+		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
+		//m_InventoryMap.emplace(i, ITEM);
 	}
 	// Row 4
 	for (int i = 30; i < 40; i++)
@@ -311,12 +326,12 @@ void GUI::InitInventoryUI()
 		m_InventorySlotMap.emplace(i, test);
 
 		//
-		// Actual Items
-		sf::Sprite ITEM = sf::Sprite();
-		ITEM.setTexture(*m_Dirt, true);
-		ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		m_InventoryMap.emplace(i, ITEM);
+		//// Actual Items
+		//sf::Sprite ITEM = sf::Sprite();
+		//ITEM.setTexture(*m_Dirt, true);
+		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
+		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
+		//m_InventoryMap.emplace(i, ITEM);
 	}
 	// Row 5
 	for (int i = 40; i < 50; i++)
@@ -328,12 +343,12 @@ void GUI::InitInventoryUI()
 		m_InventorySlotMap.emplace(i, test);
 
 		//
-		// Actual Items
-		sf::Sprite ITEM = sf::Sprite();
-		ITEM.setTexture(*m_Dirt, true);
-		ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		m_InventoryMap.emplace(i, ITEM);
+		//// Actual Items
+		//sf::Sprite ITEM = sf::Sprite();
+		//ITEM.setTexture(*m_Dirt, true);
+		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
+		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
+		//m_InventoryMap.emplace(i, ITEM);
 	}
 	
 }
@@ -356,6 +371,8 @@ void GUI::InitTextureMaster()
 	m_HeartFull->loadFromFile("Images/HeartFull.png");
 	m_HeartEmpty = new sf::Texture();
 	m_HeartEmpty->loadFromFile("Images/HeartEmpty.png");
+	m_CIITexture = new sf::Texture();
+	m_CIITexture->loadFromFile("Images/CurrentItem.png");
 
 	m_MousePos.setTexture(*m_MousePosTex, true);
 	m_MousePos.setOrigin(m_MousePos.getGlobalBounds().width / 2, m_MousePos.getGlobalBounds().height / 2);
@@ -367,16 +384,14 @@ void GUI::InitTextureMaster()
 	m_ItemSpacer->setSmooth(true);
 	m_HeartFull->setSmooth(true);
 	m_HeartEmpty->setSmooth(true);
+	m_CIITexture->setSmooth(true);
 }
 
-void GUI::ToggleInventoryUI()
-{
-	m_bInventoryOpen = !m_bInventoryOpen;
-}
 
-void GUI::CraftingUI(sf::RenderWindow* _renderWindow)
+
+void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
 {
-	if (m_bInventoryOpen)
+	if (_player->m_bInventoryOpen)
 	{
 		sf::Color color = sf::Color();
 		
@@ -397,15 +412,15 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow)
 	}
 }
 
-void GUI::Render(sf::RenderWindow* _renderWindow)
+void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player)
 {
-	if (m_bInventoryOpen)
+	if (_player->m_bInventoryOpen)
 	{
 		// Render
 		for (int i = 0; i < m_InventorySlotMap.size(); i++)
 		{
 			_renderWindow->draw(m_InventorySlotMap[i]);
-			_renderWindow->draw(m_InventoryMap[i]);
+			_renderWindow->draw(_player->m_InventoryMap[i].GetShape());
 		}
 	}
 	else
@@ -414,7 +429,7 @@ void GUI::Render(sf::RenderWindow* _renderWindow)
 		for (int i = 0; i < 10; i++)
 		{
 			_renderWindow->draw(m_InventorySlotMap[i]);
-			_renderWindow->draw(m_InventoryMap[i]);
+			_renderWindow->draw(_player->m_InventoryMap[i].GetShape());
 		}
 	}
 	
@@ -440,13 +455,8 @@ GUI::~GUI()
 		m_InventorySlotMap.erase(m_InventorySlotMap.begin());
 		//std::cout << "Inventory Piece Destroyed" << std::endl;
 	}
-	for (int i = 0; i < m_InventoryMap.size(); i++)
-	{
-		m_InventoryMap.erase(m_InventoryMap.begin());
-		//std::cout << "Inventory Piece Destroyed" << std::endl;
-	}
+	
 	m_InventorySlotMap.clear();
-	m_InventoryMap.clear();
 	delete m_miniMap;
 	delete m_HeartEmpty;
 	delete m_HeartFull;
@@ -455,6 +465,8 @@ GUI::~GUI()
 	delete m_Dirt;
 	delete m_Grass;
 	delete m_ItemSpacer;
+	delete m_CIITexture;
+	m_CIITexture = nullptr;
 	m_miniMap = nullptr;
 	m_HeartEmpty = nullptr;
 	m_HeartFull = nullptr;

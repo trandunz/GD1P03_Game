@@ -1,11 +1,14 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <box2d/box2d.h>
+#ifndef _PLAYER_H__
+#define _PLAYER_H__
+
 #include <vector>
-#include <list>
 
 #include "Chest.h"
 #include "Door.h"
+
+
+
 
 class CPlayer
 {
@@ -20,7 +23,7 @@ public:
 	void Movement(sf::Event& _event);
 	void ResetSpritePos();
 	
-	void PlaceBlocks(std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
+	void PlaceBlocks(std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
 	
 	b2Body* GetBody();
 	sf::Sprite GetShape();
@@ -28,19 +31,35 @@ public:
 	int GetCurrentHP();
 	int GetMaxHP();
 
+	bool bMouseNotOverBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
+	bool bMouseNotOverDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
+
+	void Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element);
+
+	void AddItemToInventory(CBlock* _block);
+	void AddItemToInventory(CDoor _door);
+	void RemoveItemToInventory();
+
+	void ToggleInventoryUI();
 	 
-	std::list<CBlock> m_Inventory;
+	std::map<int, CBlock> m_Inventory;
 
 	sf::Sprite m_MapIcon;
+
+	// Mouse
+	sf::Vector2f m_MousePos;
+
+	bool m_bCanPlace = true;
+
+	std::map<int, CBlock> m_InventoryMap;
+
+	bool m_bInventoryOpen = false;
 
 private:
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;
 	float m_Scale;
-
-	// Mouse
-	sf::Vector2f MousePos;
 
 	// Player
 	int m_MaxHP = 100;
@@ -70,6 +89,10 @@ private:
 	// Temp Block Pointer (Used To Create New Blocks During Block Placement)
 	CBlock* m_Block;
 
+	// Temp Door Pointer
+	CDoor* m_Door;
+
 	
 };
+#endif
 
