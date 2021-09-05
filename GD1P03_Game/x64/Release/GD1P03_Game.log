@@ -1,42 +1,36 @@
-﻿  main.cpp
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(290,117): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+﻿  Player.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(200,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(200,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(202,38): warning C4244: 'argument': conversion from 'const int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(207,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(302,50): warning C4244: '=': conversion from 'const T' to 'long', possible loss of data
           with
-          [
-              T=unsigned int
-          ]
-          and
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(290,88): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(408,56): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(409,47): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(428,55): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(430,47): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\utility(193,48): warning C4267: 'initializing': conversion from 'size_t' to '_Ty1', possible loss of data
           with
           [
-              T=unsigned int
+              _Ty1=const int
           ]
-          and
-          [
-              T=float
-          ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(308,115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(410): message : see reference to function template instantiation 'std::pair<const int,CBlock>::pair<unsigned __int64,CBlock&,0>(_Other1 &&,_Other2) noexcept(false)' being compiled
           with
           [
-              T=unsigned int
+              _Other1=unsigned __int64,
+              _Other2=CBlock &
           ]
-          and
-          [
-              T=float
-          ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(308,86): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(410): message : see reference to function template instantiation 'std::pair<const int,CBlock>::pair<unsigned __int64,CBlock&,0>(_Other1 &&,_Other2) noexcept(false)' being compiled
           with
           [
-              T=unsigned int
-          ]
-          and
-          [
-              T=float
+              _Other1=unsigned __int64,
+              _Other2=CBlock &
           ]
   Generating code
-  2 of 676 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  1 of 964 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code

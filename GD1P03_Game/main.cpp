@@ -24,6 +24,7 @@ sf::Font m_Font;
 
 // Main Render Window
 sf::RenderWindow* m_RenderWindow;
+sf::Event m_Event;
 
 // World
 CWorldManager* m_WorldManager;
@@ -54,6 +55,9 @@ CAudioManager* m_AudioManager;
 
 // Block Pointer If Needed To Make Stuff
 CBlock* m_Block;
+
+// Block Pointer If Needed To Make Stuff
+CDoor* m_Door;
 
 /// <summary>
 /// 
@@ -111,6 +115,7 @@ int main()
 	delete m_Player;
 	delete m_RenderWindow;
 	delete m_WorldManager;
+	m_Door = nullptr;
 	m_WorldManager = nullptr;
 	m_AudioManager = nullptr;
 	m_GUI = nullptr;
@@ -129,31 +134,85 @@ int main()
 /// </summary>
 void Start()
 {
-	// Player
-	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale/*, m_GUI*/);
-
-	
-
 	// UI
 	m_GUI = new GUI();
 
+	// Music
+	m_AudioManager = new CAudioManager();
+	m_AudioManager->PlayMusic();
+	
+	// Player
+	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager);
+	m_Player->Start();
+
 	InitUI();
-	InitWorldView();
-	CenterViewsToSprite(m_Player->GetShape());
 
 	// Map
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
 	m_WorldManager->Start();
 
-	m_Block = new CBlock(m_GUI->m_Dirt);
-	m_Player->AddItemToInventory(m_Block);
-	m_Block = nullptr;
-	m_Block = new CBlock(m_GUI->m_Planks);
-	m_Player->AddItemToInventory(m_Block);
-	m_Block = nullptr;
-	m_Block = new CBlock(m_GUI->m_Grass);
-	m_Player->AddItemToInventory(m_Block);
-	m_Block = nullptr;
+	InitWorldView();
+	CenterViewsToSprite(m_Player->GetShape());
+
+	
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Dirt);
+		m_Block->m_Type = m_Block->BLOCKTYPE::DIRT;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Planks);
+		m_Block->m_Type = m_Block->BLOCKTYPE::PLANKS;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Door = new CDoor();
+		m_Player->AddItemToInventory(m_Door);
+		m_Door = nullptr;
+	}
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Grass);
+		m_Block->m_Type = m_Block->BLOCKTYPE::GRASS;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Sand);
+		m_Block->m_Type = m_Block->BLOCKTYPE::SAND;
+		m_Player->AddItemToInventory(m_Block);
+
+		m_Block = nullptr;
+	}
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Wood);
+		m_Block->m_Type = m_Block->BLOCKTYPE::WOOD;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Stone);
+		m_Block->m_Type = m_Block->BLOCKTYPE::STONE;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_MossyBrick);
+		m_Block->m_Type = m_Block->BLOCKTYPE::MOSSYBRICK;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	
 
 
 	m_Block = nullptr;
@@ -162,15 +221,12 @@ void Start()
 
 	Render();
 
-	// Music
-	m_AudioManager = new CAudioManager();
-	m_AudioManager->PlayMusic();
+	
+	
 
 	m_bClose = false;
 
-	// World Thread
-	//m_WorldThread1.launch();
-	//m_WorldThread2.launch();
+	
 }
 
 /// <summary>
@@ -180,39 +236,44 @@ void Update()
 {
 	while (m_RenderWindow->isOpen())
 	{
-		sf::Event Event = sf::Event();
-		while (m_RenderWindow->pollEvent(Event))
+		m_Event = sf::Event();
+		while (m_RenderWindow->pollEvent(m_Event))
 		{
-			if (Event.type == sf::Event::GainedFocus)
+			if (m_Event.type == sf::Event::GainedFocus)
 			{
-				InitUI();
-				InitWorldView();
+
+				m_Player->m_bCanMove = true;
 			}
 
-			if (Event.type == sf::Event::Closed)
+			if (m_Event.type == sf::Event::LostFocus)
+			{
+				m_Player->m_bCanMove = false;
+			}
+
+			if (m_Event.type == sf::Event::Closed)
 			{
 				m_RenderWindow->close();
 				m_bClose = true;
 				break;
 			}
 
-			if (Event.type == sf::Event::Resized)
+			if (m_Event.type == sf::Event::Resized)
 			{
-				InitUI();
-				InitWorldView();
 				/*m_GUI->ToggleInventoryUI();*/
 			}
 
-			if (Event.type == sf::Event::KeyPressed)
+			if (m_Event.type == sf::Event::KeyPressed)
 			{
 				// Body Updates
-				m_WorldManager->Update(Event, MousePos);
+				m_WorldManager->Update(m_Event, MousePos);
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 				{
 					m_Player->ToggleInventoryUI();
 				}
 			}
+
+			
 		}
 
 		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
@@ -225,7 +286,7 @@ void Update()
 				CenterViewsToSprite(m_Player->GetShape());
 
 				// Body Updates
-				m_WorldManager->Update(Event, MousePos);
+				m_WorldManager->Update(m_Event, MousePos);
 
 				// Reset Players SFML Sprite To Box2D Body
 				m_Player->ResetSpritePos();
@@ -235,9 +296,9 @@ void Update()
 			}
 
 			// Block Placing
-			if (Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
+			if (m_Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
 			{
-				m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, Event, m_GUI->m_MousePos, m_GUI->m_Planks);
+				m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
 			}
 		}
 		else if (m_bClose)
@@ -272,7 +333,7 @@ void Render()
 	/////////////////////////////////////
 
 	m_GUI->HealthUI(m_RenderWindow, m_Player);
-	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView);
+	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event);
 	m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player);
 	m_GUI->CraftingUI(m_RenderWindow, m_Player);
 	m_GUI->Render(m_RenderWindow, m_Player);
@@ -290,6 +351,7 @@ void InitWorldView()
 	m_WorldView = sf::View(sf::Vector2f(0.0f,0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
 	m_WorldView.zoom(3.0f);
 	m_RenderWindow->setView(m_WorldView);
+
 }
 
 /// <summary>
@@ -302,7 +364,7 @@ void InitUI()
 	m_GUI->InitTextureMaster();
 	m_GUI->InitMiniMap(m_RenderWindow);
 	m_GUI->InitHealthUI(m_Player);
-	m_GUI->InitInventoryUI();
+	m_GUI->InitInventoryUI(m_Player, m_RenderWindow);
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));

@@ -2,6 +2,9 @@
 
 CBlock::CBlock()
 {
+	m_RenderWindow = nullptr;
+	m_Scale = 50.0f;
+	m_World = nullptr;
 	m_Scale = 50.0f;
 	m_Body = nullptr;
 	m_Type = BLOCKTYPE::BLOCK;
@@ -9,16 +12,18 @@ CBlock::CBlock()
 
 CBlock::CBlock(sf::Texture* _texture)
 {
+	m_RenderWindow = nullptr;
+	m_Scale = 50.0f;
+	m_World = nullptr;
 	m_Scale = 50.0f;
 	m_Body = nullptr;
 	m_Type = BLOCKTYPE::BLOCK;
-
 	m_Shape.setTexture(*_texture, true);
 	m_Shape.setScale(0.3f, 0.3f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 }
 
-CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, sf::Texture* _texture, const float& _scale, float _posX, float _posY)
+CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
@@ -91,13 +96,8 @@ void CBlock::Destroy()
 	//m_World->DestroyBody(m_Body);
 }
 
-void CBlock::SetPosition(int _x, int _y)
+void CBlock::SetPosition(float _x, float _y)
 {
-	if (m_Body != nullptr)
-	{
-		m_Body->SetTransform(b2Vec2(_x, _y), 0.0f);
-	}
-	
 	m_Shape.setPosition(_x, _y);
 }
 

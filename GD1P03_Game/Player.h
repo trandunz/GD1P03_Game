@@ -6,12 +6,13 @@
 
 #include "Chest.h"
 #include "Door.h"
+#include "AudioManager.h"
 
 
 class CPlayer
 {
 public:
-	CPlayer(sf::RenderWindow* _renderWindow, b2World& m_World, const float& _scale);
+	CPlayer(sf::RenderWindow* _renderWindow, b2World& m_World, const float& _scale, CAudioManager* _audioManager);
 	~CPlayer();
 
 	void Start();
@@ -21,7 +22,7 @@ public:
 	void Movement(sf::Event& _event);
 	void ResetSpritePos();
 	
-	void PlaceBlocks(std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, sf::Texture* _texture);
+	void PlaceBlocks(std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
 	
 	b2Body* GetBody();
 	sf::Sprite GetShape();
@@ -35,12 +36,18 @@ public:
 	void Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element);
 
 	void AddItemToInventory(CBlock* _block);
-	void AddItemToInventory(CDoor _door);
-	void RemoveItemToInventory();
+	void AddItemToInventory(CDoor* _door);
+	void RemoveItemFromInventory(int _position);
 
 	void ToggleInventoryUI();
+
+	bool SelectedItemIsEmpty();
+
+	bool IsItemInInventory(CBlock* _block);
+	bool IsItemInInventory(CDoor* _door);
 	 
 	std::map<int, CBlock> m_Inventory;
+	std::map<int, int> m_InventoryStackValues;
 
 	sf::Sprite m_MapIcon;
 
@@ -50,14 +57,21 @@ public:
 	bool m_bCanPlace = true;
 
 	std::map<int, CBlock> m_InventoryMap;
+	std::map<int, CDoor> m_DoorInventoryMap;
+
+	int m_CurrentItemIndex = 0;
 
 	bool m_bInventoryOpen = false;
+
+	bool m_bCanMove = true;
 
 private:
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;
 	float m_Scale;
+	CAudioManager* m_AudioManager;
+	sf::Clock* m_AnimationTimer;
 
 	// Player
 	int m_MaxHP = 100;
@@ -67,7 +81,7 @@ private:
 
 
 	int m_Health = 100;
-	const int m_MoveSpeed = 3;
+	const int m_MoveSpeed = 50;
 	
 	b2Vec2 m_Velocity;
 

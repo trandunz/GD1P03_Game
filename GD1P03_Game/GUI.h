@@ -28,8 +28,8 @@ public:
 	sf::Text InitHealthUI(CPlayer* _player);
 	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player);
 	void InitMiniMap(sf::RenderWindow* _renderWindow);
-	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView);
-	void InitInventoryUI();
+	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event);
+	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow);
 	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player);
 
 	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player);
@@ -49,6 +49,10 @@ public:
 	sf::Texture* m_HeartEmpty;
 	sf::Texture* m_CIITexture;
 	sf::Texture* m_Planks;
+	sf::Texture* m_Stone;
+	sf::Texture* m_Wood;
+	sf::Texture* m_Sand;
+	sf::Texture* m_MossyBrick;
 
 	//Sprites
 	sf::Sprite m_MousePos;
@@ -57,7 +61,6 @@ public:
 	sf::RenderTexture* m_miniMap;
 
 	std::map<int, sf::Sprite> m_InventorySlotMap;
-	
 
 private:
 	sf::Font m_Font;
@@ -72,7 +75,10 @@ private:
 
 	sf::Sprite m_MiniMapWorldBackGround;
 
-	sf::Sprite m_CurrentItemIndicator;
+	std::map<int, sf::Text> m_InventoryItemStackCounters;
+	
+
+	
 
 	
 

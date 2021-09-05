@@ -3,25 +3,30 @@
 #define _AUDIOMANAGER_H__
 
 #include <SFML/Audio.hpp>
+#include <iostream>
 
 
-
-class CAudioManager
+ class CAudioManager
 {
 public:
 	CAudioManager();
 	~CAudioManager();
 
-	void Start();
-	void Update();
+	static void Start();
+	static void Update();
 
-	void PlayMusic();
+	void PlayRunning();
+	void PlayBlockPlace();
+	void PlayGroundMine();
+	 void PlayMusic();
+
+	 sf::SoundBuffer m_Buffer;
+	 sf::Sound m_ActiveSound;
+
+	 sf::Music m_Music;
 
 private:
-	sf::SoundBuffer m_Buffer;
-	sf::Sound m_ActiveSound;
-
-	sf::Music m_Music;
+	
 
 };
 

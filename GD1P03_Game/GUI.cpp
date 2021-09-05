@@ -191,31 +191,90 @@ void GUI::InitMiniMap(sf::RenderWindow* _renderWindow)
 	m_MiniMapWorldBackGround.setScale(12, 12);
 }
 
-void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView)
+void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event)
 {
+	// Canvas Zooming
+	if (_event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+	{
+		if (_event.mouseWheelScroll.delta >= 1)
+		{
+			if (_player->m_CurrentItemIndex < 10 && _player->m_CurrentItemIndex >= 0)
+			{
+				_player->m_CurrentItemIndex--;
+			}
+			if (_player->m_CurrentItemIndex < 0)
+			{
+				_player->m_CurrentItemIndex = 9;
+			}
+			std::cout << "zoom In" << std::endl;
+		}
+		else if (_event.mouseWheelScroll.delta <= -1)
+		{
+			if (_player->m_CurrentItemIndex < 10)
+			{
+				_player->m_CurrentItemIndex++;
+			}
+			if (_player->m_CurrentItemIndex > 9)
+			{
+				_player->m_CurrentItemIndex = 0;
+			}
+			std::cout << "zoom out" << std::endl;
+		}
+	}
+	
+	if (_player->m_bInventoryOpen)
+	{
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+
+		}
+	}
+	else
+	{
+		
+	}
 
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
-		
-		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
-		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
-		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
 		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
+		_player->m_InventoryMap[i].SetPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
+
+		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
+		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
+
+		m_InventorySlotMap[i].setTexture(*m_ItemSpacer);
+
+		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		if (_player->m_InventoryStackValues[i] <= 1)
+		{
+			m_InventoryItemStackCounters[i].setString("");
+		}
+		else
+		{
+			m_InventoryItemStackCounters[i].setString(std::to_string(_player->m_InventoryStackValues[i]));
+		}
 	}
+	
 
 	// Row 2
 	for (int i = 10; i < 20; i++)
 	{
-		
-
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
 		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
 
 		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
 
-		
+		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		if (_player->m_InventoryStackValues[i] <= 1)
+		{
+			m_InventoryItemStackCounters[i].setString("");
+		}
+		else
+		{
+			m_InventoryItemStackCounters[i].setString(std::to_string(_player->m_InventoryStackValues[i]));
+		}
 	}
 	// Row 3
 	for (int i = 20; i < 30; i++)
@@ -228,6 +287,16 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
 		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
+
+		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		if (_player->m_InventoryStackValues[i] <= 1)
+		{
+			m_InventoryItemStackCounters[i].setString("");
+		}
+		else
+		{
+			m_InventoryItemStackCounters[i].setString(std::to_string(_player->m_InventoryStackValues[i]));
+		}
 	}
 	// Row 4
 	for (int i = 30; i < 40; i++)
@@ -240,6 +309,16 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
 		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
+
+		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		if (_player->m_InventoryStackValues[i] <= 1)
+		{
+			m_InventoryItemStackCounters[i].setString("");
+		}
+		else
+		{
+			m_InventoryItemStackCounters[i].setString(std::to_string(_player->m_InventoryStackValues[i]));
+		}
 	}
 	// Row 5
 	for (int i = 40; i < 50; i++)
@@ -252,16 +331,24 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 		_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
 		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
+
+		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		if (_player->m_InventoryStackValues[i] <= 1)
+		{
+			m_InventoryItemStackCounters[i].setString("");
+		}
+		else
+		{
+			m_InventoryItemStackCounters[i].setString(std::to_string(_player->m_InventoryStackValues[i]));
+		}
 	}
+
+	m_InventorySlotMap[_player->m_CurrentItemIndex].setTexture(*m_CIITexture);
 }
 
-void GUI::InitInventoryUI()
+void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow)
 {
-	// Current Item
-	m_CurrentItemIndicator.setTexture(*m_CIITexture, true);
-	m_CurrentItemIndicator.setOrigin(m_CurrentItemIndicator.getGlobalBounds().width / 2, m_CurrentItemIndicator.getGlobalBounds().height / 2);
-
-
+	
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
@@ -270,14 +357,22 @@ void GUI::InitInventoryUI()
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
+		sf::Color color = m_InventorySlotMap[i].getColor();
+		color.a = 230.0f;
+		m_InventorySlotMap[i].setColor(color);
+
+		sf::Text stackcounter = sf::Text();
+		stackcounter.setFont(m_Font);
+		stackcounter.setCharacterSize(18);
+		stackcounter.setFillColor(sf::Color::White);
+		stackcounter.setOutlineThickness(0.75f);
+		stackcounter.setOutlineColor(sf::Color::Black);
+		stackcounter.setString("");
+		_renderWindow->mapCoordsToPixel(stackcounter.getPosition());
+		m_InventoryItemStackCounters.insert({ i, stackcounter });;
+		m_InventoryItemStackCounters[i].setOrigin(m_InventoryItemStackCounters[i].getGlobalBounds().width / 2, m_InventoryItemStackCounters[i].getGlobalBounds().height / 2);
 		
-		//
-		//// Actual Items
-		//sf::Sprite ITEM = sf::Sprite();
-		//ITEM.setTexture(*m_Dirt, true);
-		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		//m_InventoryMap.emplace(i, ITEM);
+		_player->m_InventoryStackValues.emplace(i, 0);
 	}
 
 
@@ -289,15 +384,21 @@ void GUI::InitInventoryUI()
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
-
-		//
-		//// Actual Items
-		//sf::Sprite ITEM = sf::Sprite();
-		//ITEM.setTexture(*m_Dirt, true);
-		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		//m_InventoryMap.emplace(i, ITEM);
+		sf::Color color = m_InventorySlotMap[i].getColor();
+		color.a = 230.0f;
+		m_InventorySlotMap[i].setColor(color);
 		
+		sf::Text stackcounter = sf::Text();
+		stackcounter.setFont(m_Font);
+		stackcounter.setCharacterSize(18);
+		stackcounter.setFillColor(sf::Color::White);
+		stackcounter.setOutlineThickness(0.75f);
+		stackcounter.setOutlineColor(sf::Color::Black);
+		stackcounter.setString("");
+		m_InventoryItemStackCounters.insert({ i, stackcounter });
+		m_InventoryItemStackCounters[i].setOrigin(m_InventoryItemStackCounters[i].getGlobalBounds().width / 2, m_InventoryItemStackCounters[i].getGlobalBounds().height / 2);
+	
+		_player->m_InventoryStackValues.emplace(i, 0);
 	}
 	// Row 3
 	for (int i = 20; i < 30; i++)
@@ -307,14 +408,21 @@ void GUI::InitInventoryUI()
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
-
-		////
-		//// Actual Items
-		//sf::Sprite ITEM = sf::Sprite();
-		//ITEM.setTexture(*m_Dirt, true);
-		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		//m_InventoryMap.emplace(i, ITEM);
+		sf::Color color = m_InventorySlotMap[i].getColor();
+		color.a = 230.0f;
+		m_InventorySlotMap[i].setColor(color);
+		
+		sf::Text stackcounter = sf::Text();
+		stackcounter.setFont(m_Font);
+		stackcounter.setCharacterSize(18);
+		stackcounter.setFillColor(sf::Color::White);
+		stackcounter.setOutlineThickness(0.75f);
+		stackcounter.setOutlineColor(sf::Color::Black);
+		stackcounter.setString("");
+		m_InventoryItemStackCounters.insert({ i, stackcounter });
+		m_InventoryItemStackCounters[i].setOrigin(m_InventoryItemStackCounters[i].getGlobalBounds().width / 2, m_InventoryItemStackCounters[i].getGlobalBounds().height / 2);
+	
+		_player->m_InventoryStackValues.emplace(i, 0);
 	}
 	// Row 4
 	for (int i = 30; i < 40; i++)
@@ -324,14 +432,21 @@ void GUI::InitInventoryUI()
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
-
-		//
-		//// Actual Items
-		//sf::Sprite ITEM = sf::Sprite();
-		//ITEM.setTexture(*m_Dirt, true);
-		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		//m_InventoryMap.emplace(i, ITEM);
+		sf::Color color = m_InventorySlotMap[i].getColor();
+		color.a = 230.0f;
+		m_InventorySlotMap[i].setColor(color);
+		
+		sf::Text stackcounter = sf::Text();
+		stackcounter.setFont(m_Font);
+		stackcounter.setCharacterSize(18);
+		stackcounter.setFillColor(sf::Color::White);
+		stackcounter.setOutlineThickness(0.75f);
+		stackcounter.setOutlineColor(sf::Color::Black);
+		stackcounter.setString("");
+		m_InventoryItemStackCounters.insert({ i, stackcounter });
+		m_InventoryItemStackCounters[i].setOrigin(m_InventoryItemStackCounters[i].getGlobalBounds().width / 2, m_InventoryItemStackCounters[i].getGlobalBounds().height / 2);
+		
+		_player->m_InventoryStackValues.emplace( i, 0 );
 	}
 	// Row 5
 	for (int i = 40; i < 50; i++)
@@ -341,14 +456,21 @@ void GUI::InitInventoryUI()
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
-
-		//
-		//// Actual Items
-		//sf::Sprite ITEM = sf::Sprite();
-		//ITEM.setTexture(*m_Dirt, true);
-		//ITEM.setScale(sf::Vector2f(0.4, 0.4));
-		//ITEM.setOrigin(ITEM.getGlobalBounds().width / 2, ITEM.getGlobalBounds().height / 2);
-		//m_InventoryMap.emplace(i, ITEM);
+		sf::Color color = m_InventorySlotMap[i].getColor();
+		color.a = 230.0f;
+		m_InventorySlotMap[i].setColor(color);
+		
+		sf::Text stackcounter = sf::Text();
+		stackcounter.setFont(m_Font);
+		stackcounter.setCharacterSize(18);
+		stackcounter.setFillColor(sf::Color::White);
+		stackcounter.setOutlineThickness(0.75f);
+		stackcounter.setOutlineColor(sf::Color::Black);
+		stackcounter.setString("");
+		m_InventoryItemStackCounters.insert({ i, stackcounter });
+		m_InventoryItemStackCounters[i].setOrigin(m_InventoryItemStackCounters[i].getGlobalBounds().width / 2, m_InventoryItemStackCounters[i].getGlobalBounds().height / 2);
+		
+		_player->m_InventoryStackValues.emplace( i, 0 );
 	}
 	
 }
@@ -375,6 +497,14 @@ void GUI::InitTextureMaster()
 	m_CIITexture->loadFromFile("Images/CurrentItem.png");
 	m_Planks = new sf::Texture();
 	m_Planks->loadFromFile("Images/Planks.png");
+	m_Stone = new sf::Texture();
+	m_Stone->loadFromFile("Images/Stone.png");
+	m_Wood = new sf::Texture();
+	m_Wood->loadFromFile("Images/Wood.png");
+	m_Sand = new sf::Texture();
+	m_Sand->loadFromFile("Images/Sand.png");
+	m_MossyBrick = new sf::Texture();
+	m_MossyBrick->loadFromFile("Images/MossyBrick.png");
 
 	m_MousePos.setTexture(*m_MousePosTex, true);
 	m_MousePos.setOrigin(m_MousePos.getGlobalBounds().width / 2, m_MousePos.getGlobalBounds().height / 2);
@@ -388,6 +518,10 @@ void GUI::InitTextureMaster()
 	m_HeartEmpty->setSmooth(true);
 	m_CIITexture->setSmooth(true);
 	m_Planks->setSmooth(true);
+	m_Stone->setSmooth(true);
+	m_Sand->setSmooth(true);
+	m_Wood->setSmooth(true);
+	m_MossyBrick->setSmooth(true);
 }
 
 
@@ -424,6 +558,7 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player)
 		{
 			_renderWindow->draw(m_InventorySlotMap[i]);
 			_renderWindow->draw(_player->m_InventoryMap[i].GetShape());
+			_renderWindow->draw(m_InventoryItemStackCounters[i]);
 		}
 	}
 	else
@@ -433,6 +568,7 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player)
 		{
 			_renderWindow->draw(m_InventorySlotMap[i]);
 			_renderWindow->draw(_player->m_InventoryMap[i].GetShape());
+			_renderWindow->draw(m_InventoryItemStackCounters[i]);
 		}
 	}
 	
@@ -458,7 +594,7 @@ GUI::~GUI()
 		m_InventorySlotMap.erase(m_InventorySlotMap.begin());
 		//std::cout << "Inventory Piece Destroyed" << std::endl;
 	}
-	
+	m_InventoryItemStackCounters.clear();
 	m_InventorySlotMap.clear();
 	delete m_Planks;
 	delete m_miniMap;
@@ -470,6 +606,14 @@ GUI::~GUI()
 	delete m_Grass;
 	delete m_ItemSpacer;
 	delete m_CIITexture;
+	delete m_Stone;
+	delete m_Wood;
+	delete m_Sand;
+	delete m_MossyBrick;
+	m_MossyBrick = nullptr;
+	m_Stone = nullptr;
+	m_Wood = nullptr;
+	m_Sand = nullptr;
 	m_Planks = nullptr;
 	m_CIITexture = nullptr;
 	m_miniMap = nullptr;

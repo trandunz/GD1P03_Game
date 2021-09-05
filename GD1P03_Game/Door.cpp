@@ -1,5 +1,17 @@
 #include "Door.h"
 
+CDoor::CDoor()
+{
+	m_Scale = 50.0f;
+	m_Body = nullptr;
+	m_Type = BLOCKTYPE::DOOR;
+
+	m_Texture.loadFromFile("Images/DoorOpenLeft.png");
+	m_Shape.setTexture(m_Texture, true);
+	m_Shape.setScale(0.2f, 0.2f);
+	m_Shape.setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 + m_Shape.getGlobalBounds().height / 3);
+}
+
 CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;

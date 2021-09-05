@@ -22,6 +22,13 @@ public:
 		PICKAXE,
 		DOOR,
 		CHEST,
+		DIRT,
+		STONE,
+		WOOD,
+		PLANKS,
+		SAND,
+		MOSSYBRICK,
+		GRASS,
 		BLOCK,
 	};
 
@@ -29,7 +36,7 @@ public:
 
 	CBlock();
 	CBlock(sf::Texture* _texture);
-	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, sf::Texture* _texture, const float& _scale, float _posX, float _posY);
+	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY);
 	virtual ~CBlock();
 
 	void Start();
@@ -38,7 +45,7 @@ public:
 
 	void Destroy();
 
-	void SetPosition(int _x, int _y);
+	void SetPosition(float _x, float _y);
 	sf::Vector2f GetPosition();
 
 	virtual void SetSize(float _x, float _y);
@@ -55,13 +62,16 @@ public:
 	BLOCKTYPE m_Type;
 
 	long int m_ArrayIndex = -1;
+	int m_PositionInInventory = -1;
 
+	
 protected:
 	sf::RenderWindow* m_RenderWindow;
 
 	b2World* m_World;
 
 	sf::Sprite m_Shape;
+
 	sf::Texture m_Texture;
 
 	b2BodyDef m_BodyDef;

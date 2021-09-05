@@ -9,6 +9,7 @@
 class CDoor : public CBlock
 {
 public:
+	CDoor();
 	CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY);
 	virtual ~CDoor();
 
