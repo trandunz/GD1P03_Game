@@ -135,6 +135,8 @@ void Start()
 	
 
 	// UI
+	m_GUI = new GUI();
+
 	InitUI();
 	InitWorldView();
 	CenterViewsToSprite(m_Player->GetShape());
@@ -143,15 +145,20 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
 	m_WorldManager->Start();
 
-	m_Block = new CBlock(m_GUI->m_Grass);
-	m_Player->AddItemToInventory(m_Block);
-	m_Block = nullptr;
 	m_Block = new CBlock(m_GUI->m_Dirt);
 	m_Player->AddItemToInventory(m_Block);
 	m_Block = nullptr;
+	m_Block = new CBlock(m_GUI->m_Planks);
+	m_Player->AddItemToInventory(m_Block);
+	m_Block = nullptr;
 	m_Block = new CBlock(m_GUI->m_Grass);
 	m_Player->AddItemToInventory(m_Block);
 	m_Block = nullptr;
+
+
+	m_Block = nullptr;
+	m_Block = nullptr;
+
 
 	Render();
 
@@ -230,7 +237,7 @@ void Update()
 			// Block Placing
 			if (Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
 			{
-				m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, Event, m_GUI->m_MousePos);
+				m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, Event, m_GUI->m_MousePos, m_GUI->m_Planks);
 			}
 		}
 		else if (m_bClose)
@@ -264,9 +271,9 @@ void Render()
 	m_RenderWindow->setView(m_UIView);
 	/////////////////////////////////////
 
-	m_GUI->HealthUI(m_RenderWindow);
+	m_GUI->HealthUI(m_RenderWindow, m_Player);
 	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView);
-	m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk);
+	m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player);
 	m_GUI->CraftingUI(m_RenderWindow, m_Player);
 	m_GUI->Render(m_RenderWindow, m_Player);
 
@@ -291,11 +298,10 @@ void InitWorldView()
 void InitUI()
 {
 	// GUI
-	m_GUI = new GUI();
 	m_GUI->SetPlayer(m_Player);
 	m_GUI->InitTextureMaster();
 	m_GUI->InitMiniMap(m_RenderWindow);
-	m_GUI->InitHealthUI();
+	m_GUI->InitHealthUI(m_Player);
 	m_GUI->InitInventoryUI();
 
 	// UI View

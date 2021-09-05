@@ -8,8 +8,6 @@
 #include "Door.h"
 
 
-
-
 class CPlayer
 {
 public:
@@ -23,7 +21,7 @@ public:
 	void Movement(sf::Event& _event);
 	void ResetSpritePos();
 	
-	void PlaceBlocks(std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
+	void PlaceBlocks(std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, sf::Texture* _texture);
 	
 	b2Body* GetBody();
 	sf::Sprite GetShape();
@@ -77,7 +75,8 @@ private:
 	sf::Sprite m_Shape;
 	sf::Texture* m_PlayerRightTex;
 	sf::Texture* m_PlayerLeftTex;
-	sf::Texture* m_MapIconText;
+	sf::Texture* m_MapIconTex;
+	sf::Texture* m_MapIconTexRight;
 
 	// Box2d
 	b2BodyDef m_BodyDef;

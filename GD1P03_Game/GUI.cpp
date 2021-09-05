@@ -1,25 +1,25 @@
 #include "GUI.h"
 
-void GUI::HealthUI(sf::RenderWindow* _renderWindow)
+void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
 {
-	std::string string = "Life: " + ToString(m_Player->GetCurrentHP()) + " / " + ToString(m_Player->GetMaxHP());
+	std::string string = "Life: " + ToString(_player->GetCurrentHP()) + " / " + ToString(_player->GetMaxHP());
 	m_HealthText.setString(string);
 	m_HealthText.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 110, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 15);
 	_renderWindow->draw(m_HealthText);
 
-	if (m_Player->GetCurrentHP() > 0)
+	if (_player->GetCurrentHP() > 0)
 	{
 		heart1.setTexture(*m_HeartFull, true);
-		if (m_Player->GetCurrentHP() >= 20)
+		if (_player->GetCurrentHP() >= 20)
 		{
 			heart2.setTexture(*m_HeartFull, true);
-			if (m_Player->GetCurrentHP() >= 40)
+			if (_player->GetCurrentHP() >= 40)
 			{
 				heart3.setTexture(*m_HeartFull, true);
-				if (m_Player->GetCurrentHP() >= 60)
+				if (_player->GetCurrentHP() >= 60)
 				{
 					heart4.setTexture(*m_HeartFull, true);
-					if (m_Player->GetCurrentHP() >= 80)
+					if (_player->GetCurrentHP() >= 80)
 					{
 						heart5.setTexture(*m_HeartFull, true);
 					}
@@ -74,7 +74,7 @@ void GUI::HealthUI(sf::RenderWindow* _renderWindow)
 	_renderWindow->draw(heart5);
 }
 
-sf::Text GUI::InitHealthUI()
+sf::Text GUI::InitHealthUI(CPlayer* _player)
 {
 	// Heart Containers
 	heart1 = sf::Sprite();
@@ -97,7 +97,7 @@ sf::Text GUI::InitHealthUI()
 
 	// Health Text
 	m_HealthText = sf::Text();
-	m_HealthString = "Life: " + ToString(m_Player->GetCurrentHP()) + " / " + ToString(m_Player->GetMaxHP());
+	m_HealthString = "Life: " + ToString(_player->GetCurrentHP()) + " / " + ToString(_player->GetMaxHP());
 	m_HealthText.setString(m_HealthString);
 	m_HealthText.setFont(m_Font);
 	m_HealthText.setFillColor(sf::Color::White);
@@ -108,10 +108,10 @@ sf::Text GUI::InitHealthUI()
 	return m_HealthText;
 }
 
-void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk)
+void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player)
 {
 	// Assigning Render Texture View and Zooming
-	sf::View MiniMapView = sf::View(m_Player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
+	sf::View MiniMapView = sf::View(_player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
 	MiniMapView.zoom(57);
 	m_miniMap->setView(MiniMapView);
 	
@@ -126,7 +126,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	// Blocks
 	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
-		float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+		float Mag1 = sqrt(((it->GetShape().getPosition().x - _player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - _player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - _player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - _player->GetShape().getPosition().y)));
 		if (Mag1 < _renderWindow->getSize().x * 4.0f)
 		{
 			m_miniMap->draw(it->GetShape());
@@ -143,7 +143,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	_renderWindow->draw(m_MiniMapBG3);
 
 	// Draw Player To RendTexture
-	m_miniMap->draw(m_Player->m_MapIcon);
+	m_miniMap->draw(_player->m_MapIcon);
 	
 	// Update RendTexture
 	m_miniMap->display();
@@ -373,6 +373,8 @@ void GUI::InitTextureMaster()
 	m_HeartEmpty->loadFromFile("Images/HeartEmpty.png");
 	m_CIITexture = new sf::Texture();
 	m_CIITexture->loadFromFile("Images/CurrentItem.png");
+	m_Planks = new sf::Texture();
+	m_Planks->loadFromFile("Images/Planks.png");
 
 	m_MousePos.setTexture(*m_MousePosTex, true);
 	m_MousePos.setOrigin(m_MousePos.getGlobalBounds().width / 2, m_MousePos.getGlobalBounds().height / 2);
@@ -385,6 +387,7 @@ void GUI::InitTextureMaster()
 	m_HeartFull->setSmooth(true);
 	m_HeartEmpty->setSmooth(true);
 	m_CIITexture->setSmooth(true);
+	m_Planks->setSmooth(true);
 }
 
 
@@ -457,6 +460,7 @@ GUI::~GUI()
 	}
 	
 	m_InventorySlotMap.clear();
+	delete m_Planks;
 	delete m_miniMap;
 	delete m_HeartEmpty;
 	delete m_HeartFull;
@@ -466,6 +470,7 @@ GUI::~GUI()
 	delete m_Grass;
 	delete m_ItemSpacer;
 	delete m_CIITexture;
+	m_Planks = nullptr;
 	m_CIITexture = nullptr;
 	m_miniMap = nullptr;
 	m_HeartEmpty = nullptr;
@@ -479,12 +484,12 @@ GUI::~GUI()
 
 void GUI::SetPlayer(CPlayer* _player)
 {
-	m_Player = _player;
+	//m_Player = _player;
 }
 
 CPlayer* GUI::GetPlayer()
 {
-	return m_Player;
+	return nullptr;
 }
 
 void GUI::SetFont(sf::Font& _font)

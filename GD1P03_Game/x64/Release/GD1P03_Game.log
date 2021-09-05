@@ -1,5 +1,5 @@
 ﻿  main.cpp
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(283,117): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(290,117): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -8,7 +8,7 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(283,88): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(290,88): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -17,7 +17,7 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(302,115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(308,115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -26,7 +26,7 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(302,86): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(308,86): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=unsigned int
@@ -36,8 +36,8 @@ C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.
               T=float
           ]
   Generating code
-  2 of 696 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  2 of 676 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   GD1P03_Game.vcxproj -> C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Release\GD1P03_Game.exe
