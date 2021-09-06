@@ -127,7 +127,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
 		float Mag1 = sqrt(((it->GetShape().getPosition().x - _player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - _player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - _player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - _player->GetShape().getPosition().y)));
-		if (Mag1 < _renderWindow->getSize().x * 4.0f)
+		if (Mag1 < _renderWindow->getSize().x * 1.3f)
 		{
 			m_miniMap->draw(it->GetShape());
 		}
@@ -222,23 +222,24 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		}
 	}
 	
-	if (_player->m_bInventoryOpen)
-	{
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-
-		}
-	}
-	else
-	{
-		
-	}
+	
 
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
+		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) /*&& m_MousePos.getGlobalBounds().contains(_player->m_Inventory[i].GetShape().getPosition())*/)
+		{
+			_player->m_Inventory[i].GetShape().setPosition(_player->m_MousePos);
+			std::cout << m_MousePos.getPosition().x << m_MousePos.getPosition().y << std::endl;
+		}
+		else
+		{
+			
+		}
+		std::cout << _player->m_InventoryMap[0].GetPosition().x << _player->m_InventoryMap[0].GetPosition().y << std::endl;
 		_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition());
 		_player->m_InventoryMap[i].SetPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
+		
 
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition());
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);

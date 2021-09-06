@@ -41,7 +41,7 @@ void CWorldManager::Start()
 void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
 {
     // Shapes
-    m_Player->Update(_mousePos);
+    m_Player->Update(_mousePos, _event);
     m_Player->Movement(_event);
 
     for (sf::RectangleShape& sky : m_SkyChunk)

@@ -48,7 +48,7 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 
 	m_FixtureDef.density = 1.0f;
 	m_FixtureDef.shape = &m_b2pShape;
-	m_FixtureDef.friction = 0.5f;
+	m_FixtureDef.friction = 2.0f;
 
 	m_Body->CreateFixture(&m_FixtureDef);
 
@@ -103,7 +103,7 @@ void CPlayer::Start()
 	m_AnimationTimer = new sf::Clock();
 }
 
-void CPlayer::Update(sf::Vector2f _mousePos)
+void CPlayer::Update(sf::Vector2f _mousePos, sf::Event& _event)
 {
 	m_MousePos = _mousePos;
 
@@ -113,7 +113,21 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 
 	m_MapIcon.setPosition(m_Shape.getPosition());
 
-	
+	if (m_bInventoryOpen)
+	{
+		std::map<int, CBlock>::iterator it;
+		for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
+		{
+			if (sf::Mouse::isButtonPressed && it->second.GetShape().getGlobalBounds().contains(_mousePos))
+			{
+				it->second.GetShape().setPosition(_mousePos);
+			}
+		}
+		if (_event.type == sf::Event::MouseButtonReleased)
+		{
+
+		}
+	}
 }
 
 void CPlayer::Render()
@@ -199,7 +213,7 @@ void CPlayer::Movement(sf::Event& _event)
 
 		m_Velocity = b2Vec2(x, y);
 
-		m_Body->ApplyLinearImpulseToCenter(m_MoveSpeed * m_Velocity, true);
+		m_Body->ApplyLinearImpulseToCenter(15 * m_Velocity, true);
 
 		float Mag = sqrt((m_Body->GetLinearVelocityFromWorldPoint(worldposition).x * m_Body->GetLinearVelocityFromWorldPoint(worldposition).x));
 		if (Mag > m_MoveSpeed)
@@ -236,8 +250,6 @@ void CPlayer::Movement(sf::Event& _event)
 		{
 			m_Shape.setTexture(*m_PlayerLeftTex);
 			m_MapIcon.setTexture(*m_MapIconTex);
-
-			
 		}
 		if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
 		{
@@ -245,7 +257,7 @@ void CPlayer::Movement(sf::Event& _event)
 			{
 				m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
 			}
-			
+
 			else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
 			{
 				m_Shape.setTextureRect(sf::IntRect(100, 0, 100, 200));
@@ -260,8 +272,6 @@ void CPlayer::Movement(sf::Event& _event)
 
 	if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x > 15.0f)
 	{
-		
-
 		if (m_AudioManager != nullptr)
 		{
 			m_AudioManager->PlayRunning();
@@ -269,7 +279,6 @@ void CPlayer::Movement(sf::Event& _event)
 	}
 	else if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x < -15.0f)
 	{
-
 		if (m_AudioManager != nullptr)
 		{
 			m_AudioManager->PlayRunning();
@@ -280,8 +289,8 @@ void CPlayer::Movement(sf::Event& _event)
 	/*m_Body->SetLinearVelocity(m_MoveSpeed * m_Velocity);*/
 	
 	/*m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);*/
-	std::cout << m_Shape.getPosition().x << std::endl;
-	std::cout << m_Shape.getPosition().y << std::endl;
+	//std::cout << m_Shape.getPosition().x << std::endl;
+	//std::cout << m_Shape.getPosition().y << std::endl;
 	
 }
 
@@ -396,7 +405,7 @@ void CPlayer::Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterat
 
 void CPlayer::AddItemToInventory(CBlock* _block)
 {
-	if (IsItemInInventory(_block))
+	if (IsBlockInInventory(_block))
 	{
 		
 	}
@@ -417,7 +426,7 @@ void CPlayer::AddItemToInventory(CBlock* _block)
 
 void CPlayer::AddItemToInventory(CDoor* _door)
 {
-	if (IsItemInInventory(_door))
+	if (IsDoorInInventory(_door))
 	{
 	}
 	else
@@ -475,7 +484,7 @@ bool CPlayer::SelectedItemIsEmpty()
 	return true;
 }
 
-bool CPlayer::IsItemInInventory(CBlock* _block)
+bool CPlayer::IsBlockInInventory(CBlock* _block)
 {
 	std::map<int, CBlock>::iterator it;
 	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
@@ -492,7 +501,7 @@ bool CPlayer::IsItemInInventory(CBlock* _block)
 	return false;
 }
 
-bool CPlayer::IsItemInInventory(CDoor* _door)
+bool CPlayer::IsDoorInInventory(CDoor* _door)
 {
 	std::map<int, CBlock>::iterator it;
 	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)

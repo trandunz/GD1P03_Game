@@ -16,7 +16,7 @@ public:
 	~CPlayer();
 
 	void Start();
-	void Update(sf::Vector2f _mousePos);
+	void Update(sf::Vector2f _mousePos, sf::Event& _event);
 	void Render();
 
 	void Movement(sf::Event& _event);
@@ -43,8 +43,8 @@ public:
 
 	bool SelectedItemIsEmpty();
 
-	bool IsItemInInventory(CBlock* _block);
-	bool IsItemInInventory(CDoor* _door);
+	bool IsBlockInInventory(CBlock* _block);
+	bool IsDoorInInventory(CDoor* _door);
 	 
 	std::map<int, CBlock> m_Inventory;
 	std::map<int, int> m_InventoryStackValues;
