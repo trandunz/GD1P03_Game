@@ -46,7 +46,6 @@ public:
 	bool IsBlockInInventory(CBlock* _block);
 	bool IsDoorInInventory(CDoor* _door);
 	 
-	std::map<int, CBlock> m_Inventory;
 	std::map<int, int> m_InventoryStackValues;
 
 	sf::Sprite m_MapIcon;

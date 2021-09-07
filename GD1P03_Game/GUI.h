@@ -32,7 +32,7 @@ public:
 	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow);
 	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player);
 
-	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player);
+	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView);
 
 	std::string ToString(int32 integer);
 
@@ -53,6 +53,7 @@ public:
 	sf::Texture* m_Wood;
 	sf::Texture* m_Sand;
 	sf::Texture* m_MossyBrick;
+	sf::Texture* m_MousePointerTex;
 
 	//Sprites
 	sf::Sprite m_MousePos;
@@ -78,9 +79,9 @@ private:
 	std::map<int, sf::Text> m_InventoryItemStackCounters;
 	
 
-	
+	// Mouse Pointer
+	sf::Sprite m_MousePointer;
 
-	
 
 	// Heart Containers
 	sf::Sprite heart1;

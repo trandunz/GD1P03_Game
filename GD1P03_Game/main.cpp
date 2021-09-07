@@ -59,6 +59,8 @@ CBlock* m_Block;
 // Block Pointer If Needed To Make Stuff
 CDoor* m_Door;
 
+
+
 /// <summary>
 /// 
 /// </summary>
@@ -134,6 +136,8 @@ int main()
 /// </summary>
 void Start()
 {
+	m_Event = sf::Event();
+
 	// UI
 	m_GUI = new GUI();
 
@@ -153,6 +157,9 @@ void Start()
 
 	InitWorldView();
 	CenterViewsToSprite(m_Player->GetShape());
+
+	
+	/*m_RenderWindow->mapCoordsToPixel(m_MousePointer.getPosition());*/
 
 	
 	for (int i = 0; i < 1337; i++)
@@ -236,9 +243,10 @@ void Update()
 {
 	while (m_RenderWindow->isOpen())
 	{
-		m_Event = sf::Event();
 		while (m_RenderWindow->pollEvent(m_Event))
 		{
+			MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
+
 			if (m_Event.type == sf::Event::GainedFocus)
 			{
 
@@ -273,39 +281,44 @@ void Update()
 				}
 			}
 
-			
+			if (!m_bClose)
+			{
+				if (m_Player != nullptr)
+				{
+					// Centre View To Player
+					CenterViewsToSprite(m_Player->GetShape());
+
+					m_Player->Update(MousePos, m_Event);
+
+					// Reset Players SFML Sprite To Box2D Body
+					m_Player->ResetSpritePos();
+
+					
+				}
+
+				// Block Placing
+				if (m_Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
+				{
+					m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
+				}
+			}
+			else if (m_bClose)
+			{
+				m_WorldManager->CleanUpBlocks();
+				m_WorldManager->CleanUpSky();
+			}
 		}
 
-		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
 		
-		if (!m_bClose)
-		{
-			if (m_Player != nullptr)
-			{
-				// Centre View To Player
-				CenterViewsToSprite(m_Player->GetShape());
 
-				// Body Updates
-				m_WorldManager->Update(m_Event, MousePos);
+		// Body Updates
+		m_WorldManager->Update(m_Event, MousePos);
 
-				// Reset Players SFML Sprite To Box2D Body
-				m_Player->ResetSpritePos();
+		
 
-				// Render
-				Render();
-			}
-
-			// Block Placing
-			if (m_Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
-			{
-				m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
-			}
-		}
-		else if (m_bClose)
-		{
-			m_WorldManager->CleanUpBlocks();
-			m_WorldManager->CleanUpSky();
-		}
+		// Render
+		Render();
+		
 	}
 }
 
@@ -326,7 +339,6 @@ void Render()
 
 	// Player
 	m_Player->Render();
-	m_RenderWindow->draw(m_GUI->m_MousePos);
 
 	// UI
 	m_RenderWindow->setView(m_UIView);
@@ -336,7 +348,7 @@ void Render()
 	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event);
 	m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player);
 	m_GUI->CraftingUI(m_RenderWindow, m_Player);
-	m_GUI->Render(m_RenderWindow, m_Player);
+	m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView);
 
 	/////////////////////////////////////
 	m_RenderWindow->display();

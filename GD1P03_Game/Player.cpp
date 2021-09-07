@@ -112,27 +112,12 @@ void CPlayer::Update(sf::Vector2f _mousePos, sf::Event& _event)
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 
 	m_MapIcon.setPosition(m_Shape.getPosition());
-
-	if (m_bInventoryOpen)
-	{
-		std::map<int, CBlock>::iterator it;
-		for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
-		{
-			if (sf::Mouse::isButtonPressed && it->second.GetShape().getGlobalBounds().contains(_mousePos))
-			{
-				it->second.GetShape().setPosition(_mousePos);
-			}
-		}
-		if (_event.type == sf::Event::MouseButtonReleased)
-		{
-
-		}
-	}
 }
 
 void CPlayer::Render()
 {
 	m_RenderWindow->draw(m_Shape);
+	
 }
 
 sf::Sprite CPlayer::GetShape()
