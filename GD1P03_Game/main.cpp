@@ -249,7 +249,6 @@ void Update()
 
 			if (m_Event.type == sf::Event::GainedFocus)
 			{
-
 				m_Player->m_bCanMove = true;
 			}
 
@@ -272,52 +271,57 @@ void Update()
 
 			if (m_Event.type == sf::Event::KeyPressed)
 			{
-				// Body Updates
-				m_WorldManager->Update(m_Event, MousePos);
-
+				m_Player->Update(MousePos, m_Event);
+				m_Player->Movement(m_Event);
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 				{
 					m_Player->ToggleInventoryUI();
 				}
 			}
 
-			if (!m_bClose)
+			if (m_Event.type == sf::Event::MouseWheelScrolled)
 			{
-				if (m_Player != nullptr)
-				{
-					// Centre View To Player
-					CenterViewsToSprite(m_Player->GetShape());
-
-					m_Player->Update(MousePos, m_Event);
-
-					// Reset Players SFML Sprite To Box2D Body
-					m_Player->ResetSpritePos();
-
-					
-				}
-
-				// Block Placing
-				if (m_Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
-				{
-					m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
-				}
+				m_GUI->HotBarScrolling(m_Event, m_Player);
 			}
-			else if (m_bClose)
+			
+			// Block Placing
+			if (m_Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
 			{
-				m_WorldManager->CleanUpBlocks();
-				m_WorldManager->CleanUpSky();
+				m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
 			}
+
 		}
 
 		
+		if (!m_bClose)
+		{
+			if (m_Player != nullptr)
+			{
+				// Centre View To Player
+				CenterViewsToSprite(m_Player->GetShape());
 
-		// Body Updates
-		m_WorldManager->Update(m_Event, MousePos);
+				//m_Player->Movement(m_Event);
+				m_Player->Update(MousePos, m_Event);
+				m_Player->Movement(m_Event);
 
+				// Reset Players SFML Sprite To Box2D Body
+				m_Player->ResetSpritePos();
+
+				// Body Updates
+				m_WorldManager->Update(m_Event, MousePos);
+
+				// Render
+				Render();
+			}
+
+			
+		}
+		else if (m_bClose)
+		{
+			m_WorldManager->CleanUpBlocks();
+			m_WorldManager->CleanUpSky();
+		}
 		
-
-		// Render
-		Render();
 		
 	}
 }
@@ -345,8 +349,10 @@ void Render()
 	/////////////////////////////////////
 
 	m_GUI->HealthUI(m_RenderWindow, m_Player);
-	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event);
 	m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player);
+
+	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event);
+	
 	m_GUI->CraftingUI(m_RenderWindow, m_Player);
 	m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView);
 

@@ -451,6 +451,7 @@ void CPlayer::RemoveItemFromInventory(int _position)
 void CPlayer::ToggleInventoryUI()
 {
 	m_bInventoryOpen = !m_bInventoryOpen;
+	m_bCanMove = !m_bInventoryOpen;
 }
 
 bool CPlayer::SelectedItemIsEmpty()

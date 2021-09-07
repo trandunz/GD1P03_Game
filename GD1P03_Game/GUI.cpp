@@ -193,40 +193,11 @@ void GUI::InitMiniMap(sf::RenderWindow* _renderWindow)
 
 void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event)
 {
-	// Canvas Zooming
-	if (_event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
-	{
-		if (_event.mouseWheelScroll.delta >= 1)
-		{
-			if (_player->m_CurrentItemIndex < 10 && _player->m_CurrentItemIndex >= 0)
-			{
-				_player->m_CurrentItemIndex--;
-			}
-			if (_player->m_CurrentItemIndex < 0)
-			{
-				_player->m_CurrentItemIndex = 9;
-			}
-			std::cout << "zoom In" << std::endl;
-		}
-		else if (_event.mouseWheelScroll.delta <= -1)
-		{
-			if (_player->m_CurrentItemIndex < 10)
-			{
-				_player->m_CurrentItemIndex++;
-			}
-			if (_player->m_CurrentItemIndex > 9)
-			{
-				_player->m_CurrentItemIndex = 0;
-			}
-			std::cout << "zoom out" << std::endl;
-		}
-	}
-	
+
 	_renderWindow->setView(_uiView);
 
 	sf::Vector2f MousePos = _renderWindow->mapPixelToCoords((sf::Mouse::getPosition(*_renderWindow)), _uiView);
 	m_MousePointer.setPosition(MousePos);
-
 
 	// Row 1
 	for (int i = 0; i < 10; i++)
@@ -234,37 +205,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
 
-		if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[i].GetShape().getGlobalBounds()) && _event.type == sf::Event::MouseButtonReleased && _player->m_bInventoryOpen)
-		{
-
-			for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
-			{
-				if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()))
-				{
-					_player->m_InventoryMap[sit->first];
-					_player->m_InventoryStackValues[sit->first];
-					std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(i);
-					std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(i);
-
-					std::cout << cit->first << "th ITEM" << std::endl;
-					std::cout << sit->first << "th SPACE" << std::endl;
-
-					if (sit->first != cit->first)
-					{
-						std::cout << "Mouse Released!" << std::endl;
-						_player->m_InventoryMap[i].m_PositionInInventory = sit->first;
-						std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
-						std::swap(_player->m_InventoryMap[sit->first], cit->second);
-						_player->m_InventoryMap.erase(cit);
-						_player->m_InventoryStackValues.erase(vit);
-					}
-
-					vit = _player->m_InventoryStackValues.end();
-					sit = m_InventorySlotMap.end();
-				}
-				
-			}
-		}
+		LetGoOfItemInInventory(_event, _player, i);
 
 		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(MousePos) && _player->m_bInventoryOpen)
 		{
@@ -300,37 +241,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 	{
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
-
-		if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[i].GetShape().getGlobalBounds()) && _event.type == sf::Event::MouseButtonReleased && _player->m_bInventoryOpen)
-		{
-			for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
-			{
-				if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()))
-				{
-					_player->m_InventoryMap[sit->first];
-					_player->m_InventoryStackValues[sit->first];
-					std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(i);
-					std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(i);
-
-					std::cout << cit->first << "th ITEM" << std::endl;
-					std::cout << sit->first << "th SPACE" << std::endl;
-
-					if (sit->first != cit->first)
-					{
-						std::cout << "Mouse Released!" << std::endl;
-						_player->m_InventoryMap[i].m_PositionInInventory = sit->first;
-						std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
-						std::swap(_player->m_InventoryMap[sit->first], cit->second);
-						_player->m_InventoryMap.erase(cit);
-						_player->m_InventoryStackValues.erase(vit);
-
-						vit = _player->m_InventoryStackValues.end();
-						sit = m_InventorySlotMap.end();
-					}
-				}
-			}
-		}
-
+		LetGoOfItemInInventory(_event, _player, i);
 		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(MousePos) && _player->m_bInventoryOpen)
 		{
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 10, MousePos.y - 10);
@@ -358,37 +269,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 20) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 200);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
-
-		if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[i].GetShape().getGlobalBounds()) && _event.type == sf::Event::MouseButtonReleased && _player->m_bInventoryOpen)
-		{
-			for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
-			{
-				if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()))
-				{
-					_player->m_InventoryMap[sit->first];
-					_player->m_InventoryStackValues[sit->first];
-					std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(i);
-					std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(i);
-
-					std::cout << cit->first << "th ITEM" << std::endl;
-					std::cout << sit->first << "th SPACE" << std::endl;
-
-					if (sit->first != cit->first)
-					{
-						std::cout << "Mouse Released!" << std::endl;
-						_player->m_InventoryMap[i].m_PositionInInventory = sit->first;
-						std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
-						std::swap(_player->m_InventoryMap[sit->first], cit->second);
-						_player->m_InventoryMap.erase(cit);
-						_player->m_InventoryStackValues.erase(vit);
-
-						vit = _player->m_InventoryStackValues.end();
-						sit = m_InventorySlotMap.end();
-					}
-				}
-			}
-		}
-
+		LetGoOfItemInInventory(_event, _player, i);
 		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(MousePos) && _player->m_bInventoryOpen)
 		{
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 10, MousePos.y - 10);
@@ -416,37 +297,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 30) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
-
-		if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[i].GetShape().getGlobalBounds()) && _event.type == sf::Event::MouseButtonReleased && _player->m_bInventoryOpen)
-		{
-			for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
-			{
-				if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()))
-				{
-					_player->m_InventoryMap[sit->first];
-					_player->m_InventoryStackValues[sit->first];
-					std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(i);
-					std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(i);
-
-					std::cout << cit->first << "th ITEM" << std::endl;
-					std::cout << sit->first << "th SPACE" << std::endl;
-
-					if (sit->first != cit->first)
-					{
-						std::cout << "Mouse Released!" << std::endl;
-						_player->m_InventoryMap[i].m_PositionInInventory = sit->first;
-						std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
-						std::swap(_player->m_InventoryMap[sit->first], cit->second);
-						_player->m_InventoryMap.erase(cit);
-						_player->m_InventoryStackValues.erase(vit);
-
-						vit = _player->m_InventoryStackValues.end();
-						sit = m_InventorySlotMap.end();
-					}
-				}
-			}
-		}
-
+		LetGoOfItemInInventory(_event, _player, i);
 		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(MousePos) && _player->m_bInventoryOpen)
 		{
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 10, MousePos.y - 10);
@@ -473,37 +324,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 40) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
-
-		if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[i].GetShape().getGlobalBounds()) && _event.type == sf::Event::MouseButtonReleased && _player->m_bInventoryOpen)
-		{
-			for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
-			{
-				if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()))
-				{
-					_player->m_InventoryMap[sit->first];
-					_player->m_InventoryStackValues[sit->first];
-					std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(i);
-					std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(i);
-
-					std::cout << cit->first << "th ITEM" << std::endl;
-					std::cout << sit->first << "th SPACE" << std::endl;
-
-					if (sit->first != cit->first)
-					{
-						std::cout << "Mouse Released!" << std::endl;
-						_player->m_InventoryMap[i].m_PositionInInventory = sit->first;
-						std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
-						std::swap(_player->m_InventoryMap[sit->first], cit->second);
-						_player->m_InventoryMap.erase(cit);
-						_player->m_InventoryStackValues.erase(vit);
-
-						vit = _player->m_InventoryStackValues.end();
-						sit = m_InventorySlotMap.end();
-					}
-				}
-			}
-		}
-
+		LetGoOfItemInInventory(_event, _player, i);
 		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(MousePos) && _player->m_bInventoryOpen)
 		{
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 10, MousePos.y - 10);
@@ -713,6 +534,71 @@ void GUI::InitTextureMaster()
 	m_Wood->setSmooth(true);
 	m_MossyBrick->setSmooth(true);
 	m_MousePointerTex->setSmooth(true);
+}
+
+void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
+{
+	// Canvas Zooming
+	if (_event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+	{
+		if (_event.mouseWheelScroll.delta >= 1)
+		{
+			if (_player->m_CurrentItemIndex < 10 && _player->m_CurrentItemIndex >= 0)
+			{
+				_player->m_CurrentItemIndex--;
+			}
+			if (_player->m_CurrentItemIndex < 0)
+			{
+				_player->m_CurrentItemIndex = 9;
+			}
+			std::cout << "zoom In" << std::endl;
+		}
+		else if (_event.mouseWheelScroll.delta <= -1)
+		{
+			if (_player->m_CurrentItemIndex < 10)
+			{
+				_player->m_CurrentItemIndex++;
+			}
+			if (_player->m_CurrentItemIndex > 9)
+			{
+				_player->m_CurrentItemIndex = 0;
+			}
+			std::cout << "zoom out" << std::endl;
+		}
+	}
+}
+
+void GUI::LetGoOfItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator)
+{
+	if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[_iterator].GetShape().getGlobalBounds()) && _player->m_bInventoryOpen)
+	{
+		for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
+		{
+			if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()))
+			{
+				_player->m_InventoryMap[sit->first];
+				_player->m_InventoryStackValues[sit->first];
+				std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(_iterator);
+				std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(_iterator);
+
+				std::cout << cit->first << "th ITEM" << std::endl;
+				std::cout << sit->first << "th SPACE" << std::endl;
+
+				if (sit->first != cit->first)
+				{
+					std::cout << "Mouse Released!" << std::endl;
+					_player->m_InventoryMap[_iterator].m_PositionInInventory = sit->first;
+					std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+					std::swap(_player->m_InventoryMap[sit->first], cit->second);
+					_player->m_InventoryMap.erase(cit);
+					_player->m_InventoryStackValues.erase(vit);
+
+					vit = _player->m_InventoryStackValues.end();
+					sit = m_InventorySlotMap.end();
+				}
+			}
+		}
+	}
 }
 
 

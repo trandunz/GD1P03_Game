@@ -39,6 +39,9 @@ public:
 	// Texture Master
 	void InitTextureMaster();
 
+	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
+	void LetGoOfItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator);
+
 	// Textures
 	sf::Texture* m_MousePosTex;
 	sf::Texture* m_Dirt;
