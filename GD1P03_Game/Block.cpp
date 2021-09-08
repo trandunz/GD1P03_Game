@@ -5,7 +5,6 @@ CBlock::CBlock()
 	m_RenderWindow = nullptr;
 	m_Scale = 50.0f;
 	m_World = nullptr;
-	m_Scale = 50.0f;
 	m_Body = nullptr;
 	m_Type = BLOCKTYPE::BLOCK;
 }
@@ -32,7 +31,6 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Textu
 	m_Shape.setTexture(*_texture, true);
 
 	//ground physics
-	
 	m_BodyDef.type = b2_staticBody;
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
 	m_Body = m_World->CreateBody(&m_BodyDef);

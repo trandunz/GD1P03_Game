@@ -145,6 +145,7 @@
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Pickaxe.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="Chest.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="GUI.h" />
+    <ClInclude Include="Pickaxe.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>

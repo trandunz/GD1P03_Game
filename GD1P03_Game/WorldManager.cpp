@@ -40,10 +40,6 @@ void CWorldManager::Start()
 
 void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
 {
-    // Shapes
-    //m_Player->Update(_mousePos, _event);
-   
-
     for (sf::RectangleShape& sky : m_SkyChunk)
     {
         if (sky.getGlobalBounds().contains(_mousePos))
@@ -73,6 +69,14 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
         }
     }
 
+    for (CChest& chest : m_Chests)
+    {
+        if (chest.GetShape().getGlobalBounds().contains(_mousePos))
+        {
+            m_GUI->m_MousePos.setPosition(chest.GetShape().getPosition());
+        }
+    }
+
     // World Step
     m_World->Step(1 / 60.0f, 60, 60);
 }
@@ -83,13 +87,18 @@ void CWorldManager::Render()
     m_WorldBackGround.setPosition(m_RenderWindow->getView().getCenter());
     m_RenderWindow->draw(m_WorldBackGround);
 
+    // Draw All Blocks In Radius 1.8f
     std::list<CBlock>::iterator it;
-
-
-    for (CBlock& block : m_Chunk)
+    // Blocks
+    for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
     {
-        block.Render();
+        float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+        if (Mag1 < m_RenderWindow->getSize().x * 1.8f)
+        {
+            m_RenderWindow->draw(it->GetShape());
+        }
     }
+
     for (CDoor& door : m_Doors)
     {
         door.Render();

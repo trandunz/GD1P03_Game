@@ -43,10 +43,6 @@ GUI* m_GUI;
 // Player
 CPlayer* m_Player;
 
-// Garbage Filter
-b2Filter* m_GarbageFilter;
-int m_NumberOfBlocksToClean = 0;
-
 // Close App?
 bool m_bClose = false;
 
@@ -59,7 +55,8 @@ CBlock* m_Block;
 // Block Pointer If Needed To Make Stuff
 CDoor* m_Door;
 
-
+// Block Pointer If Needed To Make Stuff
+CPickaxe* m_Pickaxe;
 
 /// <summary>
 /// 
@@ -69,11 +66,11 @@ int main()
 {
 	// Render Window Settings
 	sf::ContextSettings m_Settings;
-	m_Settings.antialiasingLevel = 8;
+	m_Settings.antialiasingLevel = 12;
 
 	// Render Window Creation
 	m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "BiomeWorks.exe", sf::Style::Default, m_Settings);
-	m_RenderWindow->setFramerateLimit(60);
+	m_RenderWindow->setFramerateLimit(120);
 	/*m_RenderWindow->setVerticalSyncEnabled(true);*/
 	m_RenderWindow->setKeyRepeatEnabled(false);
 
@@ -81,11 +78,6 @@ int main()
 	sf::Image icon;
 	icon.loadFromFile("Images/Chest.png");
 	m_RenderWindow->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
-	m_GarbageFilter = new b2Filter();
-	m_GarbageFilter->categoryBits = 1;
-	m_GarbageFilter->maskBits = 0;
-	m_GarbageFilter->groupIndex = 0;
 
 	//
 	Start();
@@ -113,20 +105,20 @@ int main()
 	}
 	delete m_AudioManager;
 	delete m_GUI;
-	delete m_GarbageFilter;
 	delete m_Player;
 	delete m_RenderWindow;
 	delete m_WorldManager;
+	m_Pickaxe = nullptr;
 	m_Door = nullptr;
 	m_WorldManager = nullptr;
 	m_AudioManager = nullptr;
 	m_GUI = nullptr;
-	m_GarbageFilter = nullptr;
 	m_Player = nullptr;
 	m_RenderWindow = nullptr;
 	m_Block = nullptr;
 
 	//
+	std::cout << "Return Main" << std::endl;
 	return 0;
 	//
 }
@@ -149,19 +141,20 @@ void Start()
 	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager);
 	m_Player->Start();
 
+	// Init UI
 	InitUI();
 
 	// Map
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
 	m_WorldManager->Start();
 
+	// Init World
 	InitWorldView();
+
+	// Center All Views To Player
 	CenterViewsToSprite(m_Player->GetShape());
 
-	
-	/*m_RenderWindow->mapCoordsToPixel(m_MousePointer.getPosition());*/
-
-	
+	// Debug Add Items To Inventory
 	for (int i = 0; i < 1337; i++)
 	{
 		m_Block = new CBlock(m_GUI->m_Dirt);
@@ -176,12 +169,11 @@ void Start()
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
-	
-	for (int i = 0; i < 1337; i++)
+	for (int i = 0; i < 1; i++)
 	{
-		m_Door = new CDoor();
-		m_Player->AddItemToInventory(m_Door);
-		m_Door = nullptr;
+		m_Pickaxe = new CPickaxe();
+		m_Player->AddItemToInventory(m_Pickaxe);
+		m_Pickaxe = nullptr;
 	}
 	for (int i = 0; i < 1337; i++)
 	{
@@ -219,21 +211,34 @@ void Start()
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
+	for (int i = 0; i < 5; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Chest);
+		m_Block->m_Type = m_Block->BLOCKTYPE::CHEST;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	for (int i = 0; i < 6; i++)
+	{
+		m_Door = new CDoor();
+		m_Player->AddItemToInventory(m_Door);
+		m_Door = nullptr;
+	}
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_GUI->m_Leaves);
+		m_Block->m_Type = m_Block->BLOCKTYPE::LEAVES;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
 	
-
-
+	m_Door = nullptr;
+	m_Pickaxe = nullptr;
 	m_Block = nullptr;
-	m_Block = nullptr;
-
-
-	Render();
-
-	
-	
-
 	m_bClose = false;
 
-	
+	// Render
+	Render();
 }
 
 /// <summary>
@@ -247,16 +252,19 @@ void Update()
 		{
 			MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
 
+			// Regained Focus
 			if (m_Event.type == sf::Event::GainedFocus)
 			{
 				m_Player->m_bCanMove = true;
 			}
 
+			// Click Out Of Window
 			if (m_Event.type == sf::Event::LostFocus)
 			{
 				m_Player->m_bCanMove = false;
 			}
 
+			// Exit
 			if (m_Event.type == sf::Event::Closed)
 			{
 				m_RenderWindow->close();
@@ -264,11 +272,13 @@ void Update()
 				break;
 			}
 
+			// Resize
 			if (m_Event.type == sf::Event::Resized)
 			{
 				/*m_GUI->ToggleInventoryUI();*/
 			}
 
+			// General Key Pressed
 			if (m_Event.type == sf::Event::KeyPressed)
 			{
 				m_Player->Update(MousePos, m_Event);
@@ -279,50 +289,58 @@ void Update()
 				}
 			}
 
+			// Mouse Wheel Scroll
 			if (m_Event.type == sf::Event::MouseWheelScrolled)
 			{
 				m_GUI->HotBarScrolling(m_Event, m_Player);
 			}
 			
-			// Block Placing
-			if (m_Event.type == sf::Event::MouseButtonPressed && m_Player->m_bCanPlace)
+			// Right On Press Mouse
+			if (m_Player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
 			{
-				m_Player->PlaceBlocks(m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
+				m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
 			}
 
+			// General On Press Mouse
+			if (m_Event.type == sf::Event::MouseButtonPressed)
+			{
+				//m_Player->Movement(m_Event);
+				m_Player->Interact(m_WorldManager->m_Chests,m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
+			}
 		}
 
-		
+		//
+		// UnPolled Update
+		//
 		if (!m_bClose)
 		{
+			// Player Exists
 			if (m_Player != nullptr)
 			{
 				// Centre View To Player
 				CenterViewsToSprite(m_Player->GetShape());
 
-				//m_Player->Movement(m_Event);
+				// Player Update And Movement
 				m_Player->Update(MousePos, m_Event);
 				m_Player->Movement(m_Event);
 
 				// Reset Players SFML Sprite To Box2D Body
 				m_Player->ResetSpritePos();
 
-				// Body Updates
+				// b2World Step & MousePosBox Position
 				m_WorldManager->Update(m_Event, MousePos);
 
-				// Render
+				//
+				// Main Render
+				//
 				Render();
 			}
-
-			
 		}
 		else if (m_bClose)
 		{
 			m_WorldManager->CleanUpBlocks();
 			m_WorldManager->CleanUpSky();
 		}
-		
-		
 	}
 }
 
@@ -369,7 +387,6 @@ void InitWorldView()
 	m_WorldView = sf::View(sf::Vector2f(0.0f,0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
 	m_WorldView.zoom(3.0f);
 	m_RenderWindow->setView(m_WorldView);
-
 }
 
 /// <summary>

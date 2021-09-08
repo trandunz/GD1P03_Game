@@ -7,6 +7,7 @@
 #include "Chest.h"
 #include "Door.h"
 #include "AudioManager.h"
+#include "Pickaxe.h"
 
 
 class CPlayer
@@ -22,7 +23,7 @@ public:
 	void Movement(sf::Event& _event);
 	void ResetSpritePos();
 	
-	void PlaceBlocks(std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
+	void Interact(std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
 	
 	b2Body* GetBody();
 	sf::Sprite GetShape();
@@ -32,6 +33,7 @@ public:
 
 	bool bMouseNotOverBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
 	bool bMouseNotOverDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
+	bool bMouseNotOverChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
 
 	void Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element);
 
@@ -45,6 +47,9 @@ public:
 
 	bool IsBlockInInventory(CBlock* _block);
 	bool IsDoorInInventory(CDoor* _door);
+
+	void Lst_MoveToFront(std::list<CDoor>& list, std::list<CDoor>::iterator element);
+	void Lst_MoveToFront(std::list<CChest>& list, std::list<CChest>::iterator element);
 	 
 	std::map<int, int> m_InventoryStackValues;
 
@@ -56,13 +61,16 @@ public:
 	bool m_bCanPlace = true;
 
 	std::map<int, CBlock> m_InventoryMap;
-	std::map<int, CDoor> m_DoorInventoryMap;
 
 	int m_CurrentItemIndex = 0;
 
 	bool m_bInventoryOpen = false;
 
 	bool m_bCanMove = true;
+
+	// Textures
+	sf::Texture* m_PlayerRightTex;
+	sf::Texture* m_PlayerLeftTex;
 
 private:
 	// Essentials
@@ -86,8 +94,6 @@ private:
 
 	// Textures
 	sf::Sprite m_Shape;
-	sf::Texture* m_PlayerRightTex;
-	sf::Texture* m_PlayerLeftTex;
 	sf::Texture* m_MapIconTex;
 	sf::Texture* m_MapIconTexRight;
 
@@ -103,6 +109,10 @@ private:
 
 	// Temp Door Pointer
 	CDoor* m_Door;
+
+	CPickaxe* m_Pickaxe;
+
+	CChest* m_Chest;
 
 	
 };

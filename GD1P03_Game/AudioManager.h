@@ -4,6 +4,8 @@
 
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 
  class CAudioManager
@@ -27,7 +29,12 @@ public:
 
 private:
 	
+	sf::SoundBuffer m_MineBuffer1;
+	sf::SoundBuffer m_MineBuffer2;
+	sf::SoundBuffer m_MineBuffer3;
+	sf::SoundBuffer m_MineBuffer4;
 
+	sf::SoundBuffer MineSoundBuffers[4]; 
 };
 
 #endif

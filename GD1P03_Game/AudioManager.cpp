@@ -2,6 +2,17 @@
 
 CAudioManager::CAudioManager()
 {
+	srand(time(NULL));
+
+	m_MineBuffer1.loadFromFile("Sounds/GroundMine.wav");
+	m_MineBuffer2.loadFromFile("Sounds/GroundMine2.wav");
+	m_MineBuffer3.loadFromFile("Sounds/GroundMine3.wav");
+	m_MineBuffer4.loadFromFile("Sounds/GroundMine4.wav");
+
+	MineSoundBuffers[0] = m_MineBuffer1;
+	MineSoundBuffers[1] = m_MineBuffer2;
+	MineSoundBuffers[2] = m_MineBuffer3;
+	MineSoundBuffers[3] = m_MineBuffer4;
 }
 
 CAudioManager::~CAudioManager()
@@ -47,8 +58,7 @@ void CAudioManager::PlayBlockPlace()
 
 void CAudioManager::PlayGroundMine()
 {
-	m_Buffer.loadFromFile("Sounds/GroundMine.wav");
-	m_ActiveSound.setBuffer(m_Buffer);
+	m_ActiveSound.setBuffer(MineSoundBuffers[1 + rand() % 2]);
 	m_ActiveSound.setVolume(25.0f);
 	m_ActiveSound.play();
 }

@@ -5,6 +5,8 @@ CChest::CChest(sf::RenderWindow* _renderWindow, b2World& _world, const float& _s
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
+	CBlock::m_Type = BLOCKTYPE::CHEST;
+	m_Type = BLOCKTYPE::CHEST;
 
 	m_Texture.loadFromFile("Images/Chest.png");
 	m_Shape.setTexture(m_Texture, true);

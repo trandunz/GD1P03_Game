@@ -40,7 +40,10 @@ public:
 	void InitTextureMaster();
 
 	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
-	void LetGoOfItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator);
+	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player, int _iterator);
+	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator);
+	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
+	bool MousePointerOverSlot();
 
 	// Textures
 	sf::Texture* m_MousePosTex;
@@ -57,6 +60,9 @@ public:
 	sf::Texture* m_Sand;
 	sf::Texture* m_MossyBrick;
 	sf::Texture* m_MousePointerTex;
+	sf::Texture* m_Chest;
+	sf::Texture* m_Leaves;
+	
 
 	//Sprites
 	sf::Sprite m_MousePos;
@@ -65,6 +71,9 @@ public:
 	sf::RenderTexture* m_miniMap;
 
 	std::map<int, sf::Sprite> m_InventorySlotMap;
+
+	// Mouse Pointer
+	sf::Sprite m_MousePointer;
 
 private:
 	sf::Font m_Font;
@@ -82,8 +91,7 @@ private:
 	std::map<int, sf::Text> m_InventoryItemStackCounters;
 	
 
-	// Mouse Pointer
-	sf::Sprite m_MousePointer;
+	
 
 
 	// Heart Containers
@@ -92,6 +100,8 @@ private:
 	sf::Sprite heart3;
 	sf::Sprite heart4;
 	sf::Sprite heart5;
+
+	
 
 };
 #endif

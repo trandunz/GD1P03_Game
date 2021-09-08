@@ -30,6 +30,7 @@ public:
 		MOSSYBRICK,
 		GRASS,
 		BLOCK,
+		LEAVES,
 	};
 
 	bool MARKASDESTROY = false;
@@ -63,7 +64,10 @@ public:
 
 	long int m_ArrayIndex = -1;
 	int m_PositionInInventory = -1;
+	bool m_bIsMovingItemInInv = false;
 
+	bool m_bIsItemAndSelected = false;
+	
 	
 protected:
 	sf::RenderWindow* m_RenderWindow;

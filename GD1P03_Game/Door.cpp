@@ -4,6 +4,7 @@ CDoor::CDoor()
 {
 	m_Scale = 50.0f;
 	m_Body = nullptr;
+	CBlock::m_Type = BLOCKTYPE::DOOR;
 	m_Type = BLOCKTYPE::DOOR;
 
 	m_Texture.loadFromFile("Images/DoorOpenLeft.png");
