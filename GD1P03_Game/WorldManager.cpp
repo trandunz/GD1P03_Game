@@ -184,7 +184,8 @@ void CWorldManager::CreateSurfaceLayerPart1()
     GlobalMutex.lock();
     for (int i = 10; i < 21400 / 1.9f; i += 100)
     {
-        m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Grass, Utils::m_Scale, i, 400);
+        m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Grass, Utils::m_Scale, i, 400, CBlock::BLOCKTYPE::GRASS);
+        if (i % 1000)
         //m_Block->SetSize(100, 100);
         m_Chunk.push_back(*m_Block);
         m_Block->m_ArrayIndex = i;
@@ -192,7 +193,7 @@ void CWorldManager::CreateSurfaceLayerPart1()
 
         for (int j = 500; j < 21400 / 1.9f; j += 100)
         {
-            m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Dirt, Utils::m_Scale, i, j);
+            m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Dirt, Utils::m_Scale, i, j, CBlock::BLOCKTYPE::DIRT);
             //m_Block->SetSize(100, 100);
             m_Chunk. push_back(*m_Block);
             m_Block->m_ArrayIndex = i;
@@ -207,7 +208,7 @@ void CWorldManager::CreateSurfaceLayerPart2()
     GlobalMutex.lock();
     for (int i = -90; i > -21100 / 1.9f; i -= 100)
     {
-        m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Grass, Utils::m_Scale, i, 400);
+        m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Grass, Utils::m_Scale, i, 400, CBlock::BLOCKTYPE::GRASS);
         //m_Block->SetSize(100, 100);
         m_Chunk.push_back(*m_Block);
         m_Block->m_ArrayIndex = i;
@@ -215,7 +216,7 @@ void CWorldManager::CreateSurfaceLayerPart2()
 
         for (int j = 500; j < 21400 / 1.9f; j += 100)
         {
-            m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Dirt, Utils::m_Scale, i, j);
+            m_Block = new CBlock(m_RenderWindow, *m_World, m_GUI->m_Dirt, Utils::m_Scale, i, j, CBlock::BLOCKTYPE::DIRT);
             //m_Block->SetSize(100, 100);
             m_Chunk.push_back(*m_Block);
             m_Block->m_ArrayIndex = i;

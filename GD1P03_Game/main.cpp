@@ -157,14 +157,14 @@ void Start()
 	// Debug Add Items To Inventory
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Dirt);
+		m_Block = new CBlock(m_GUI->m_Dirt, CBlock::BLOCKTYPE::DIRT);
 		m_Block->m_Type = m_Block->BLOCKTYPE::DIRT;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Planks);
+		m_Block = new CBlock(m_GUI->m_Planks, CBlock::BLOCKTYPE::PLANKS);
 		m_Block->m_Type = m_Block->BLOCKTYPE::PLANKS;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
@@ -177,43 +177,42 @@ void Start()
 	}
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Grass);
+		m_Block = new CBlock(m_GUI->m_Grass, CBlock::BLOCKTYPE::GRASS);
 		m_Block->m_Type = m_Block->BLOCKTYPE::GRASS;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Sand);
+		m_Block = new CBlock(m_GUI->m_Sand, CBlock::BLOCKTYPE::SAND);
 		m_Block->m_Type = m_Block->BLOCKTYPE::SAND;
 		m_Player->AddItemToInventory(m_Block);
-
 		m_Block = nullptr;
 	}
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Wood);
+		m_Block = new CBlock(m_GUI->m_Wood, CBlock::BLOCKTYPE::WOOD);
 		m_Block->m_Type = m_Block->BLOCKTYPE::WOOD;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Stone);
+		m_Block = new CBlock(m_GUI->m_Stone, CBlock::BLOCKTYPE::STONE);
 		m_Block->m_Type = m_Block->BLOCKTYPE::STONE;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
 	for (int i = 0; i < 5; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_MossyBrick);
+		m_Block = new CBlock(m_GUI->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
 		m_Block->m_Type = m_Block->BLOCKTYPE::MOSSYBRICK;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
 	for (int i = 0; i < 5; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Chest);
+		m_Block = new CBlock(m_GUI->m_Chest, CBlock::BLOCKTYPE::CHEST);
 		m_Block->m_Type = m_Block->BLOCKTYPE::CHEST;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
@@ -221,12 +220,13 @@ void Start()
 	for (int i = 0; i < 6; i++)
 	{
 		m_Door = new CDoor();
+		m_Door->m_Type = m_Block->BLOCKTYPE::DOOR;
 		m_Player->AddItemToInventory(m_Door);
 		m_Door = nullptr;
 	}
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Leaves);
+		m_Block = new CBlock(m_GUI->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
 		m_Block->m_Type = m_Block->BLOCKTYPE::LEAVES;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
@@ -321,6 +321,7 @@ void Update()
 				CenterViewsToSprite(m_Player->GetShape());
 
 				// Player Update And Movement
+				m_Player->Interact(m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
 				m_Player->Update(MousePos, m_Event);
 				m_Player->Movement(m_Event);
 
@@ -387,6 +388,10 @@ void InitWorldView()
 	m_WorldView = sf::View(sf::Vector2f(0.0f,0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
 	m_WorldView.zoom(3.0f);
 	m_RenderWindow->setView(m_WorldView);
+
+	sf::View m_BoardView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(640, 640));
+	m_BoardView.setCenter(320, 320);
+	m_RenderWindow->setView(m_BoardView);
 }
 
 /// <summary>

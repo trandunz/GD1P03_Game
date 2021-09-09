@@ -694,6 +694,16 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 
 					vit = _player->m_InventoryStackValues.end();
 					sit = m_InventorySlotMap.end();
+
+					// Moved Item Into Currently Selected Slot?
+					for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
+					{
+						if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == iit->second.PICKAXE && iit->second.m_bIsItemAndSelected == false)
+						{
+							std::cout << "Pickaxe Selected!" << std::endl;
+							iit->second.m_bIsItemAndSelected = true;
+						}
+					}
 				}
 				else if (sit->first == cit->first)
 				{

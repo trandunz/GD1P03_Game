@@ -6,27 +6,32 @@ CBlock::CBlock()
 	m_Scale = 50.0f;
 	m_World = nullptr;
 	m_Body = nullptr;
-	m_Type = BLOCKTYPE::BLOCK;
+	m_Type = BLOCK;
+
+	Start();
 }
 
-CBlock::CBlock(sf::Texture* _texture)
+CBlock::CBlock(sf::Texture* _texture, BLOCKTYPE _type)
 {
 	m_RenderWindow = nullptr;
 	m_Scale = 50.0f;
 	m_World = nullptr;
 	m_Scale = 50.0f;
 	m_Body = nullptr;
-	m_Type = BLOCKTYPE::BLOCK;
+	m_Type = _type;
 	m_Shape.setTexture(*_texture, true);
 	m_Shape.setScale(0.3f, 0.3f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+
+	Start();
 }
 
-CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY)
+CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, BLOCKTYPE _type)
 {
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
+	m_Type = _type;
 
 	m_Shape.setTexture(*_texture, true);
 
@@ -46,6 +51,7 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Textu
 	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 
+	Start();
 	Render();
 }
 
@@ -64,7 +70,66 @@ CBlock::~CBlock()
 
 void CBlock::Start()
 {
-	
+	switch (m_Type)
+	{
+	case CBlock::DOOR:
+	{
+		m_BlockStrength = 5;
+		break;
+	}
+	case CBlock::CHEST:
+	{
+		m_BlockStrength = 5;
+		break;
+	}
+	case CBlock::DIRT:
+	{
+		m_BlockStrength = 2;
+		break;
+	}
+	case CBlock::STONE:
+	{
+		m_BlockStrength = 3;
+		break;
+	}
+	case CBlock::WOOD:
+	{
+		m_BlockStrength = 4;
+		break;
+	}
+	case CBlock::PLANKS:
+	{
+		m_BlockStrength = 3;
+		break;
+	}
+	case CBlock::SAND:
+	{
+		m_BlockStrength = 2;
+		break;
+	}
+	case CBlock::MOSSYBRICK:
+	{
+		m_BlockStrength = 3;
+		break;
+	}
+	case CBlock::GRASS:
+	{
+		m_BlockStrength = 3;
+		break;
+	}
+	case CBlock::LEAVES:
+	{
+		m_BlockStrength = 1;
+		break;
+	}
+		
+	default:
+	{
+		m_BlockStrength = 3;
+		break;
+	}
+		
+	}
 }
 
 void CBlock::Update()
@@ -78,20 +143,9 @@ void CBlock::Update()
 	}
 }
 
-
-
 void CBlock::Render()
 {
 	m_RenderWindow->draw(m_Shape);
-}
-
-void CBlock::Destroy()
-{
-	//// remove sprite
-	//m_Shape = sf::Sprite();
-
-	//// remove physical body
-	//m_World->DestroyBody(m_Body);
 }
 
 void CBlock::SetPosition(float _x, float _y)

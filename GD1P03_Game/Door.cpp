@@ -7,6 +7,8 @@ CDoor::CDoor()
 	CBlock::m_Type = BLOCKTYPE::DOOR;
 	m_Type = BLOCKTYPE::DOOR;
 
+	m_BlockStrength = 5;
+
 	m_Texture.loadFromFile("Images/DoorOpenLeft.png");
 	m_Shape.setTexture(m_Texture, true);
 	m_Shape.setScale(0.2f, 0.2f);
@@ -28,6 +30,8 @@ CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _sca
 
 	CBlock::m_Type = BLOCKTYPE::DOOR;
 	m_Type = BLOCKTYPE::DOOR;
+
+	m_BlockStrength = 5;
 }
 
 CDoor::~CDoor()

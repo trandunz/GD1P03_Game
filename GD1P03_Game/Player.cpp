@@ -72,6 +72,12 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 
 CPlayer::~CPlayer()
 {
+	if (m_World != nullptr && m_Body != nullptr)
+	{
+		m_World->DestroyBody(m_Body);
+		//std::cout << "Destructing Block" << std::endl;
+	}
+
 	if (m_Pickaxe != nullptr)
 	{
 		delete m_Pickaxe;
@@ -95,6 +101,8 @@ CPlayer::~CPlayer()
 	m_PlayerRightTex = nullptr;
 	delete m_PlayerLeftTex;
 	delete m_AnimationTimer;
+	delete m_MineTimer;
+	m_MineTimer = nullptr;
 	m_AnimationTimer = nullptr;
 	m_PlayerLeftTex = nullptr;
 	m_Block = nullptr;
@@ -107,6 +115,7 @@ CPlayer::~CPlayer()
 void CPlayer::Start()
 {
 	m_AnimationTimer = new sf::Clock();
+	m_MineTimer = new sf::Clock();
 }
 
 void CPlayer::Update(sf::Vector2f _mousePos, sf::Event& _event)
@@ -196,7 +205,7 @@ bool CPlayer::bMouseNotOverDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePos
 	{
 		if (door.GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
 		{
-			std::cout << "Mouse Is Over Door!" << std::endl;
+			//std::cout << "Mouse Is Over Door!" << std::endl;
 			return false;
 		}
 	}
@@ -209,7 +218,7 @@ bool CPlayer::bMouseNotOverChest(std::list<CChest>& m_Chests, sf::Sprite& _mouse
 	{
 		if (Chest.GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
 		{
-			std::cout << "Mouse Is Over Door!" << std::endl;
+			//std::cout << "Mouse Is Over Chest!" << std::endl;
 			return false;
 		}
 	}
@@ -397,7 +406,7 @@ void CPlayer::Movement(sf::Event& _event)
 void CPlayer::Interact(std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite)
 {
 	float Mag = sqrt(((_mousePositionSprite.getPosition().x - GetShape().getPosition().x) * (_mousePositionSprite.getPosition().x - GetShape().getPosition().x)) + ((_mousePositionSprite.getPosition().y - GetShape().getPosition().y) * (_mousePositionSprite.getPosition().y - GetShape().getPosition().y)));
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && Mag > 80.0f && m_bCanPlace && _event.type == sf::Event::MouseButtonPressed)
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && Mag > 80.0f && m_bCanPlace)
 	{
 		// Item
 		if (m_Pickaxe != nullptr)
@@ -410,11 +419,7 @@ void CPlayer::Interact(std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, s
 				{
 					if (!bMouseNotOverBlock(m_Chunk, _mousePositionSprite))
 					{
-						Lst_MoveToFront(m_Chunk, it);
-						m_Chunk.pop_front();
-
-						m_AudioManager->PlayGroundMine();
-
+						Mine(m_Chunk, it);
 						return;
 					}
 				}
@@ -427,10 +432,7 @@ void CPlayer::Interact(std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, s
 				{
 					if (!bMouseNotOverDoor(m_Doors, _mousePositionSprite))
 					{
-						Lst_MoveToFront(m_Doors, dit);
-						m_Doors.pop_front();
-
-						m_AudioManager->PlayGroundMine();
+						MineDoor(m_Doors, dit);
 
 						return;
 					}
@@ -444,10 +446,7 @@ void CPlayer::Interact(std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, s
 				{
 					if (!bMouseNotOverChest(m_Chests, _mousePositionSprite))
 					{
-						Lst_MoveToFront(m_Chests, chit);
-						m_Chests.pop_front();
-
-						m_AudioManager->PlayGroundMine();
+						MineChest(m_Chests, chit);
 
 						return;
 					}
@@ -460,109 +459,63 @@ void CPlayer::Interact(std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, s
 			// Place Door
 			if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::DOOR)
 			{
-				// Door
-				m_Door = new CDoor(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
-				m_Door->SetSize(100, 200);
-				m_Doors.push_back(*m_Door);
-				m_Door->m_ArrayIndex = (m_Shape.getPosition().x);
-				m_Block = nullptr;
-				m_Door = nullptr;
-
-				// Decrement Stack Counter / Remove Item From Inventory
-				if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
-				{
-					RemoveItemFromInventory(m_CurrentItemIndex);
-				}
-				else
-				{
-					m_InventoryStackValues[m_CurrentItemIndex]--;
-				}
-
-				// Audio
-				m_AudioManager->PlayBlockPlace();
+				PlaceDoor(m_Doors, _mousePositionSprite);
 			}
 			// Swing Pickaxe
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::PICKAXE)
 			{
-				// Animation
 			}
 			//Chest
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::CHEST)
 			{
-				// Chest
-				m_Chest = new CChest(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
-				m_Chest->SetSize(100, 200);
-				m_Chests.push_back(*m_Chest);
-				m_Chest->m_ArrayIndex = (m_Shape.getPosition().x);
-				m_Chest = nullptr;
-
-				// Decrement Stack Counter / Remove Item From Inventory
-				if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
-				{
-					RemoveItemFromInventory(m_CurrentItemIndex);
-				}
-				else
-				{
-					m_InventoryStackValues[m_CurrentItemIndex]--;
-				}
-
-				// Audio
-				m_AudioManager->PlayBlockPlace();
+				PlaceChest(m_Chests, _mousePositionSprite);
 			}
 			// Place Block
 			else
 			{
-				// Block
-				m_Block = new CBlock(m_RenderWindow, *m_World, m_InventoryMap[m_CurrentItemIndex].GetShape().getTexture(), m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
-				m_Chunk.push_back(*m_Block);
-				m_Block = nullptr;
-				m_Door = nullptr;
-
-
-				if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
-				{
-					RemoveItemFromInventory(m_CurrentItemIndex);
-				}
-				else
-				{
-					m_InventoryStackValues[m_CurrentItemIndex]--;
-				}
-
-				// Audio
-				m_AudioManager->PlayBlockPlace();
+				PlaceBlock(m_Chunk, _mousePositionSprite);
 			}
-
-			
 		}
 		
 	}
-	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && Mag < m_InteractionRange * 100 && m_bCanPlace && _event.type == sf::Event::MouseButtonPressed)
+	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && Mag < m_InteractionRange * 100 && m_bCanPlace)
 	{
 		//std::cout << "Mouse Right" << std::endl;
+
+		// Door Opening And Closing
 		for (CDoor& doors : m_Doors)
 		{
 			if (doors.GetShape().getPosition() == _mousePositionSprite.getPosition())
 			{
 				if (bMouseNotOverBlock(m_Chunk, _mousePositionSprite) && !bMouseNotOverDoor(m_Doors, _mousePositionSprite))
 				{
-					std::cout << "Open Door" << std::endl;
-					doors.OCDoor(m_Shape.getPosition());
-					return;
+					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+					{
+						std::cout << "Open Door" << std::endl;
+						doors.OCDoor(m_Shape.getPosition());
+						m_MineTimer->restart();
+						return;
+					}
+					
 				}
 			}
 		}
-
+		// Chest Opening
 		for (CChest& chest : m_Chests)
 		{
 			if (chest.GetShape().getPosition() == _mousePositionSprite.getPosition())
 			{
 				if (bMouseNotOverBlock(m_Chunk, _mousePositionSprite) && !bMouseNotOverChest(m_Chests, _mousePositionSprite))
 				{
-					std::cout << "Open Chest" << std::endl;
-					m_bInventoryOpen = true;
-					m_bCanPlace = !m_bInventoryOpen;
-					m_bCanMove = !m_bInventoryOpen;
-					return;
+					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+					{
+						std::cout << "Open Chest" << std::endl;
+						m_bInventoryOpen = true;
+						m_bCanPlace = !m_bInventoryOpen;
+						m_bCanMove = !m_bInventoryOpen;
+						m_MineTimer->restart();
+						return;
+					}
 				}
 			}
 		}
@@ -592,6 +545,18 @@ void CPlayer::Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterat
 	}
 }
 
+bool CPlayer::bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Sprite& _mousePositionSprite)
+{
+	for (std::map<int, CBlock>::iterator iit = m_Inventory.begin(); iit != m_Inventory.end(); iit++)
+	{
+		if (iit->second.GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 /// <summary>
 /// 
 /// </summary>
@@ -602,6 +567,129 @@ void CPlayer::Lst_MoveToFront(std::list<CDoor>& list, std::list<CDoor>::iterator
 	if (element != list.begin())
 	{
 		list.splice(list.begin(), list, element, std::next(element));
+	}
+}
+
+void CPlayer::PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+	{
+		// Block
+		m_Block = new CBlock(m_RenderWindow, *m_World, m_InventoryMap[m_CurrentItemIndex].GetShape().getTexture(), m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, m_InventoryMap[m_CurrentItemIndex].m_Type);
+		m_Chunk.push_back(*m_Block);
+		m_Block = nullptr;
+		m_Door = nullptr;
+
+
+		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+		{
+			RemoveItemFromInventory(m_CurrentItemIndex);
+		}
+		else
+		{
+			m_InventoryStackValues[m_CurrentItemIndex]--;
+		}
+
+		// Audio
+		m_AudioManager->PlayBlockPlace();
+		m_MineTimer->restart();
+	}
+}
+
+void CPlayer::PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+	{
+		// Door
+		m_Door = new CDoor(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
+		m_Door->SetSize(100, 200);
+		m_Doors.push_back(*m_Door);
+		m_Door->m_ArrayIndex = (m_Shape.getPosition().x);
+		m_Block = nullptr;
+		m_Door = nullptr;
+
+		// Decrement Stack Counter / Remove Item From Inventory
+		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+		{
+			RemoveItemFromInventory(m_CurrentItemIndex);
+		}
+		else
+		{
+			m_InventoryStackValues[m_CurrentItemIndex]--;
+		}
+
+		// Audio
+		m_AudioManager->PlayBlockPlace();
+		m_MineTimer->restart();
+	}
+}
+
+void CPlayer::PlaceChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+	{
+		// Chest
+		m_Chest = new CChest(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
+		m_Chest->SetSize(100, 200);
+		m_Chests.push_back(*m_Chest);
+		m_Chest->m_ArrayIndex = (m_Shape.getPosition().x);
+		m_Chest = nullptr;
+
+		// Decrement Stack Counter / Remove Item From Inventory
+		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+		{
+			RemoveItemFromInventory(m_CurrentItemIndex);
+		}
+		else
+		{
+			m_InventoryStackValues[m_CurrentItemIndex]--;
+		}
+
+		// Audio
+		m_AudioManager->PlayBlockPlace();
+		m_MineTimer->restart();
+	}
+}
+
+void CPlayer::Mine(std::list<CBlock>& m_Chunk, std::list<CBlock>::iterator _block)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
+	{
+		--_block->m_BlockStrength;
+		if (_block->m_BlockStrength <= 0)
+		{
+			m_Chunk.erase(_block);
+		}
+		m_MineTimer->restart();
+		m_AudioManager->PlayGroundMine();
+	}
+}
+
+void CPlayer::MineDoor(std::list<CDoor>& m_Doors, std::list<CDoor>::iterator _door)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
+	{
+		--_door->m_BlockStrength;
+		if (_door->m_BlockStrength <= 0)
+		{
+			m_Doors.erase(_door);
+		}
+		m_MineTimer->restart();
+		m_AudioManager->PlayGroundMine();
+	}
+}
+
+void CPlayer::MineChest(std::list<CChest>& m_Chests, std::list<CChest>::iterator _chest)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
+	{
+		--_chest->m_BlockStrength;
+		if (_chest->m_BlockStrength <= 0)
+		{
+			m_Chests.erase(_chest);
+		}
+		m_MineTimer->restart();
+		m_AudioManager->PlayGroundMine();
 	}
 }
 
@@ -693,7 +781,7 @@ bool CPlayer::SelectedItemIsEmpty()
 	{
 		if (m_CurrentItemIndex == it->second.m_PositionInInventory)
 		{
-			std::cout << " I Have A Block!" << std::endl;
+			//std::cout << " I Have A Block!" << std::endl;
 			return false;
 		}
 		it++;

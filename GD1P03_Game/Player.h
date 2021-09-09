@@ -35,6 +35,8 @@ public:
 	bool bMouseNotOverDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
 	bool bMouseNotOverChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
 
+	bool bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Sprite& _mousePositionSprite);
+
 	void Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element);
 
 	void AddItemToInventory(CBlock* _block);
@@ -50,6 +52,13 @@ public:
 
 	void Lst_MoveToFront(std::list<CDoor>& list, std::list<CDoor>::iterator element);
 	void Lst_MoveToFront(std::list<CChest>& list, std::list<CChest>::iterator element);
+
+	void Mine(std::list<CBlock>& m_Chunk, std::list<CBlock>::iterator _block);
+	void MineDoor(std::list<CDoor>& m_Doors, std::list<CDoor>::iterator _door);
+	void MineChest(std::list<CChest>& m_Chests, std::list<CChest>::iterator _chest);
+	void PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
+	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
+	void PlaceChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
 	 
 	std::map<int, int> m_InventoryStackValues;
 
@@ -79,6 +88,7 @@ private:
 	float m_Scale;
 	CAudioManager* m_AudioManager;
 	sf::Clock* m_AnimationTimer;
+	sf::Clock* m_MineTimer;
 
 	// Player
 	int m_MaxHP = 100;

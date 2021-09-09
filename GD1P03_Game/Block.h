@@ -19,7 +19,7 @@ class CBlock
 public:
 	enum BLOCKTYPE
 	{
-		PICKAXE,
+		PICKAXE = 0,
 		DOOR,
 		CHEST,
 		DIRT,
@@ -31,20 +31,23 @@ public:
 		GRASS,
 		BLOCK,
 		LEAVES,
+		FURNACE,
+		IRON,
+		GOLD,
+		DIAMOND,
+		COAL
 	};
 
 	bool MARKASDESTROY = false;
 
 	CBlock();
-	CBlock(sf::Texture* _texture);
-	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY);
+	CBlock(sf::Texture* _texture, BLOCKTYPE _type = BLOCK);
+	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, BLOCKTYPE _type = BLOCK);
 	virtual ~CBlock();
 
 	void Start();
 	virtual void Update();
 	void Render();
-
-	void Destroy();
 
 	void SetPosition(float _x, float _y);
 	sf::Vector2f GetPosition();
@@ -67,6 +70,8 @@ public:
 	bool m_bIsMovingItemInInv = false;
 
 	bool m_bIsItemAndSelected = false;
+
+	int m_BlockStrength = 3;
 	
 	
 protected:
