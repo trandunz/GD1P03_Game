@@ -97,7 +97,7 @@ private:
 	int m_InteractionRange = 10;
 
 
-	int m_Health = 100;
+	int m_Health = 17;
 	const int m_MoveSpeed = 50;
 	
 	b2Vec2 m_Velocity;

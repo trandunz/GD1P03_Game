@@ -306,6 +306,10 @@ void Update()
 			{
 				//m_Player->Movement(m_Event);
 				m_Player->Interact(m_WorldManager->m_Chests,m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
+				
+				// b2World Step & MousePosBox Position
+				m_WorldManager->Update(m_Event, MousePos);
+				break;
 			}
 		}
 
