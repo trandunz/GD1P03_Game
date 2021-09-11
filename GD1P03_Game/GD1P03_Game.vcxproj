@@ -141,7 +141,9 @@
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="CFurnace.cpp" />
     <ClCompile Include="Chest.cpp" />
+    <ClCompile Include="CTextureMaster.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="main.cpp" />
@@ -152,7 +154,9 @@
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="CFurnace.h" />
     <ClInclude Include="Chest.h" />
+    <ClInclude Include="CTextureMaster.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Pickaxe.h" />

@@ -8,9 +8,9 @@ CDoor::CDoor()
 	m_Type = BLOCKTYPE::DOOR;
 
 	m_BlockStrength = 5;
-
-	m_Texture.loadFromFile("Images/DoorOpenLeft.png");
-	m_Shape.setTexture(m_Texture, true);
+	m_Texture = new sf::Texture();
+	m_Texture->loadFromFile("Images/DoorOpenLeft.png");
+	m_Shape.setTexture(*m_Texture, true);
 	m_Shape.setScale(0.2f, 0.2f);
 	m_Shape.setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 + m_Shape.getGlobalBounds().height / 3);
 }
@@ -23,8 +23,9 @@ CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _sca
 
 	m_OpenLeftTex.loadFromFile("Images/DoorOpenLeft.png");
 	m_OpenRightTex.loadFromFile("Images/DoorOpenRight.png");
-	m_Texture.loadFromFile("Images/Door.png");
-	m_Shape.setTexture(m_Texture, true);
+	m_Texture = new sf::Texture();
+	m_Texture->loadFromFile("Images/Door.png");
+	m_Shape.setTexture(*m_Texture, true);
 
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, _posY / m_Scale);
 
@@ -41,7 +42,8 @@ CDoor::~CDoor()
 		m_World->DestroyBody(m_Body);
 		//std::cout << "Destructing Block" << std::endl;
 	}
-
+	delete m_Texture;
+	m_Texture = nullptr;
 	m_Body = nullptr;
 	m_RenderWindow = nullptr;
 	m_World = nullptr;
@@ -78,7 +80,7 @@ void CDoor::OCDoor(sf::Vector2f _playerPosition)
 	}
 	else if (!m_bOpen)
 	{
-		m_Shape.setTexture(m_Texture, true);
+		m_Shape.setTexture(*m_Texture, true);
 		m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, (m_Shape.getGlobalBounds().height / 2));
 			
 		if (m_World != nullptr && m_Body == nullptr)

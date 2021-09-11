@@ -35,14 +35,15 @@ public:
 		IRON,
 		GOLD,
 		DIAMOND,
-		COAL
+		COAL,
+		OBSIDIAN
 	};
 
 	bool MARKASDESTROY = false;
 
 	CBlock();
 	CBlock(sf::Texture* _texture, BLOCKTYPE _type = BLOCK);
-	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, BLOCKTYPE _type = BLOCK);
+	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, bool _bWallpaper, BLOCKTYPE _type = BLOCK);
 	virtual ~CBlock();
 
 	void Start();
@@ -62,6 +63,9 @@ public:
 	}
 
 	b2Body* m_Body;
+	b2BodyDef m_BodyDef;
+	b2PolygonShape m_b2pShape;
+	b2FixtureDef m_FixtureDef;
 
 	BLOCKTYPE m_Type;
 
@@ -71,9 +75,9 @@ public:
 
 	bool m_bIsItemAndSelected = false;
 
-	int m_BlockStrength = 3;
+	float m_BlockStrength = 3;
 	
-	
+	sf::Texture* m_Texture;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 
@@ -81,11 +85,9 @@ protected:
 
 	sf::Sprite m_Shape;
 
-	sf::Texture m_Texture;
-
-	b2BodyDef m_BodyDef;
-	b2PolygonShape m_b2pShape;
-	b2FixtureDef m_FixtureDef;
+	
+	
+	
 
 	float m_Scale;
 	sf::Vector2f m_Size = sf::Vector2f(100, 100);

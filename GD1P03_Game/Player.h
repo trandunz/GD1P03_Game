@@ -8,12 +8,14 @@
 #include "Door.h"
 #include "AudioManager.h"
 #include "Pickaxe.h"
+#include "CTextureMaster.h"
+#include "CFurnace.h"
 
 
 class CPlayer
 {
 public:
-	CPlayer(sf::RenderWindow* _renderWindow, b2World& m_World, const float& _scale, CAudioManager* _audioManager);
+	CPlayer(sf::RenderWindow* _renderWindow, b2World& m_World, const float& _scale, CAudioManager* _audioManager, CTextureMaster* _textureMaster);
 	~CPlayer();
 
 	void Start();
@@ -23,7 +25,7 @@ public:
 	void Movement(sf::Event& _event);
 	void ResetSpritePos();
 	
-	void Interact(std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
+	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
 	
 	b2Body* GetBody();
 	sf::Sprite GetShape();
@@ -34,6 +36,7 @@ public:
 	bool bMouseNotOverBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
 	bool bMouseNotOverDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
 	bool bMouseNotOverChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
+	bool bMouseNotOverFurnace(std::list<CFurnace>& m_Furnaces, sf::Sprite& _mousePositionSprite);
 
 	bool bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Sprite& _mousePositionSprite);
 
@@ -59,7 +62,10 @@ public:
 	void PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
 	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
 	void PlaceChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
-	 
+	void PlaceFurnace(std::list<CFurnace>& m_Chests, sf::Sprite& _mousePositionSprite);
+
+	void MineFurnace(std::list<CFurnace>& m_Furnaces, std::list<CFurnace>::iterator _furnace);
+
 	std::map<int, int> m_InventoryStackValues;
 
 	sf::Sprite m_MapIcon;
@@ -89,6 +95,8 @@ private:
 	CAudioManager* m_AudioManager;
 	sf::Clock* m_AnimationTimer;
 	sf::Clock* m_MineTimer;
+	CTextureMaster* m_TextureMaster;
+	int m_InventorySize = -1;
 
 	// Player
 	int m_MaxHP = 100;
@@ -123,6 +131,8 @@ private:
 	CPickaxe* m_Pickaxe;
 
 	CChest* m_Chest;
+
+	CFurnace* m_Furnace;
 
 	
 };

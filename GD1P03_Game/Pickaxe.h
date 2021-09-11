@@ -18,6 +18,8 @@ public:
 
 	bool m_bOpen = false;
 
+	float m_PickaxePower = 1.2f;
+
 	sf::Sprite* m_Sprite;
 private:
 	sf::Texture m_LeftTex;

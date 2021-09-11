@@ -2,6 +2,10 @@
 #ifndef _WORLDMANAGER_H__
 #define _WORLDMANAGER_H__
 
+#include <stdio.h>      /* printf, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>
+
 #include "Player.h"
 #include "GUI.h"
 
@@ -20,13 +24,13 @@ public:
 	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui);
 	~CWorldManager();
 
-	void Start();
+	void Start(CTextureMaster* _textureMaster);
 	void Update(sf::Event& _event, sf::Vector2f _mousePos);
 	void Render();
 
 	void CreateSkyChunk();
-	void CreateSurfaceLayerPart1();
-	void CreateSurfaceLayerPart2();
+	void CreateSurfaceLayerPart1(CTextureMaster* _textureMaster);
+	void CreateSurfaceLayerPart2(CTextureMaster* _textureMaster);
 
 	void UpdateWorldTexture(sf::View& _view);
 
@@ -36,6 +40,7 @@ public:
 
 	std::list<CBlock> m_Chunk = {};
 	std::list<CChest> m_Chests = {};
+	std::list<CFurnace> m_Furnaces = {};
 	std::list<CDoor> m_Doors = {};
 	std::list<sf::RectangleShape> m_SkyChunk = {};
 

@@ -42,6 +42,12 @@
     <ClCompile Include="Pickaxe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CTextureMaster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CFurnace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -66,6 +72,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Pickaxe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CTextureMaster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CFurnace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

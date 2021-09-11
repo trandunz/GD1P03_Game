@@ -7,6 +7,7 @@ CBlock::CBlock()
 	m_World = nullptr;
 	m_Body = nullptr;
 	m_Type = BLOCK;
+	m_Texture = nullptr;
 
 	Start();
 }
@@ -19,6 +20,7 @@ CBlock::CBlock(sf::Texture* _texture, BLOCKTYPE _type)
 	m_Scale = 50.0f;
 	m_Body = nullptr;
 	m_Type = _type;
+	m_Texture = _texture;
 	m_Shape.setTexture(*_texture, true);
 	m_Shape.setScale(0.3f, 0.3f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -26,30 +28,43 @@ CBlock::CBlock(sf::Texture* _texture, BLOCKTYPE _type)
 	Start();
 }
 
-CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, BLOCKTYPE _type)
+CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, bool _bWallpaper, BLOCKTYPE _type)
 {
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
 	m_Type = _type;
+	m_Texture = const_cast<sf::Texture*>(_texture);
 
 	m_Shape.setTexture(*_texture, true);
 
-	//ground physics
-	m_BodyDef.type = b2_staticBody;
-	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
-	m_Body = m_World->CreateBody(&m_BodyDef);
-
-	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
-
-	m_FixtureDef.density = 1.0f;
-	m_FixtureDef.shape = &m_b2pShape;
-	m_Body->CreateFixture(&m_FixtureDef);
-	
 	//Set SFML Shape Transform To Box 2D Body Transform
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
-	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
-	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+
+	if (!_bWallpaper)
+	{
+		//ground physics
+		m_BodyDef.type = b2_staticBody;
+		m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
+		m_Body = m_World->CreateBody(&m_BodyDef);
+
+		m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
+
+		m_FixtureDef.density = 1.0f;
+		m_FixtureDef.shape = &m_b2pShape;
+		m_Body->CreateFixture(&m_FixtureDef);
+
+		m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
+		m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+	}
+	else if (_bWallpaper)
+	{
+		m_Shape.setPosition(_posX, _posY);
+	}
+	
+	
+	
+	
 
 	Start();
 	Render();
@@ -63,6 +78,7 @@ CBlock::~CBlock()
 		//std::cout << "Destructing Block" << std::endl;
 	}
 
+	m_Texture = nullptr;
 	m_Body = nullptr;
 	m_RenderWindow = nullptr;
 	m_World = nullptr;
@@ -109,7 +125,7 @@ void CBlock::Start()
 	}
 	case CBlock::MOSSYBRICK:
 	{
-		m_BlockStrength = 3;
+		m_BlockStrength = 6;
 		break;
 	}
 	case CBlock::GRASS:
@@ -120,6 +136,31 @@ void CBlock::Start()
 	case CBlock::LEAVES:
 	{
 		m_BlockStrength = 1;
+		break;
+	}
+	case CBlock::OBSIDIAN:
+	{
+		m_BlockStrength = 100;
+		break;
+	}
+	case CBlock::IRON:
+	{
+		m_BlockStrength = 5;
+		break;
+	}
+	case CBlock::COAL:
+	{
+		m_BlockStrength = 5;
+		break;
+	}
+	case CBlock::GOLD:
+	{
+		m_BlockStrength = 6;
+		break;
+	}
+	case CBlock::DIAMOND:
+	{
+		m_BlockStrength = 6;
 		break;
 	}
 		

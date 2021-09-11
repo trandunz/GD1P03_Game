@@ -9,6 +9,7 @@
 #include <map>
 #include <fstream>
 #include "Player.h"
+#include "CTextureMaster.h"
 
 
 
@@ -24,20 +25,20 @@ public:
 
 	void SetFont(sf::Font& _font);
 
-	void HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player);
+	void HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster);
 	sf::Text InitHealthUI(CPlayer* _player);
 	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player);
-	void InitMiniMap(sf::RenderWindow* _renderWindow);
-	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event);
-	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow);
-	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player);
+	void InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
+	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster);
+	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
+	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster);
 
 	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView);
 
 	std::string ToString(int32 integer);
 
 	// Texture Master
-	void InitTextureMaster();
+	void InitMousePosSprite(CTextureMaster* _textureMaster);
 
 	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
 	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player, int _iterator);
@@ -45,23 +46,7 @@ public:
 	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
 	bool MousePointerOverSlot();
 
-	// Textures
-	sf::Texture* m_MousePosTex;
-	sf::Texture* m_Dirt;
-	sf::Texture* m_Grass;
-	sf::Texture* m_Sky;
-	sf::Texture* m_ItemSpacer;
-	sf::Texture* m_HeartFull;
-	sf::Texture* m_HeartEmpty;
-	sf::Texture* m_CIITexture;
-	sf::Texture* m_Planks;
-	sf::Texture* m_Stone;
-	sf::Texture* m_Wood;
-	sf::Texture* m_Sand;
-	sf::Texture* m_MossyBrick;
-	sf::Texture* m_MousePointerTex;
-	sf::Texture* m_Chest;
-	sf::Texture* m_Leaves;
+	
 	
 
 	//Sprites

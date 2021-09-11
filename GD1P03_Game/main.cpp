@@ -16,6 +16,8 @@ void InitUI();
 
 void CenterViewsToSprite(sf::Sprite _object);
 
+void Test_AddDirtToInv();
+
 // Mouse
 sf::Vector2f MousePos;
 
@@ -57,6 +59,8 @@ CDoor* m_Door;
 
 // Block Pointer If Needed To Make Stuff
 CPickaxe* m_Pickaxe;
+
+CTextureMaster* m_TextureMaster;
 
 /// <summary>
 /// 
@@ -103,6 +107,7 @@ int main()
 	{
 		std::cout << "Cleanup Success" << std::endl;
 	}
+	delete m_TextureMaster;
 	delete m_AudioManager;
 	delete m_GUI;
 	delete m_Player;
@@ -128,6 +133,7 @@ int main()
 /// </summary>
 void Start()
 {
+	m_TextureMaster = new CTextureMaster();
 	m_Event = sf::Event();
 
 	// UI
@@ -138,7 +144,7 @@ void Start()
 	m_AudioManager->PlayMusic();
 	
 	// Player
-	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager);
+	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
 	m_Player->Start();
 
 	// Init UI
@@ -146,7 +152,7 @@ void Start()
 
 	// Map
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
-	m_WorldManager->Start();
+	m_WorldManager->Start(m_TextureMaster);
 
 	// Init World
 	InitWorldView();
@@ -155,20 +161,6 @@ void Start()
 	CenterViewsToSprite(m_Player->GetShape());
 
 	// Debug Add Items To Inventory
-	for (int i = 0; i < 1337; i++)
-	{
-		m_Block = new CBlock(m_GUI->m_Dirt, CBlock::BLOCKTYPE::DIRT);
-		m_Block->m_Type = m_Block->BLOCKTYPE::DIRT;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
-	for (int i = 0; i < 1337; i++)
-	{
-		m_Block = new CBlock(m_GUI->m_Planks, CBlock::BLOCKTYPE::PLANKS);
-		m_Block->m_Type = m_Block->BLOCKTYPE::PLANKS;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
 	for (int i = 0; i < 1; i++)
 	{
 		m_Pickaxe = new CPickaxe();
@@ -177,60 +169,46 @@ void Start()
 	}
 	for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Grass, CBlock::BLOCKTYPE::GRASS);
-		m_Block->m_Type = m_Block->BLOCKTYPE::GRASS;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
-	for (int i = 0; i < 1337; i++)
-	{
-		m_Block = new CBlock(m_GUI->m_Sand, CBlock::BLOCKTYPE::SAND);
+		m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
 		m_Block->m_Type = m_Block->BLOCKTYPE::SAND;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
-	for (int i = 0; i < 1337; i++)
-	{
-		m_Block = new CBlock(m_GUI->m_Wood, CBlock::BLOCKTYPE::WOOD);
-		m_Block->m_Type = m_Block->BLOCKTYPE::WOOD;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
-	for (int i = 0; i < 1337; i++)
-	{
-		m_Block = new CBlock(m_GUI->m_Stone, CBlock::BLOCKTYPE::STONE);
-		m_Block->m_Type = m_Block->BLOCKTYPE::STONE;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
 	for (int i = 0; i < 5; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
-		m_Block->m_Type = m_Block->BLOCKTYPE::MOSSYBRICK;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
-	for (int i = 0; i < 5; i++)
-	{
-		m_Block = new CBlock(m_GUI->m_Chest, CBlock::BLOCKTYPE::CHEST);
+		m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
 		m_Block->m_Type = m_Block->BLOCKTYPE::CHEST;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 5; i++)
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+		m_Block->m_Type = m_Block->BLOCKTYPE::FURNACE;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}
+	for (int i = 0; i < 1; i++)
 	{
 		m_Door = new CDoor();
 		m_Door->m_Type = m_Block->BLOCKTYPE::DOOR;
 		m_Player->AddItemToInventory(m_Door);
 		m_Door = nullptr;
 	}
-	for (int i = 0; i < 1337; i++)
+	/*for (int i = 0; i < 1337; i++)
 	{
-		m_Block = new CBlock(m_GUI->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
+		m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
 		m_Block->m_Type = m_Block->BLOCKTYPE::LEAVES;
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 	}
+	for (int i = 0; i < 1337; i++)
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
+		m_Block->m_Type = m_Block->BLOCKTYPE::OBSIDIAN;
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+	}*/
 	
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
@@ -287,6 +265,11 @@ void Update()
 				{
 					m_Player->ToggleInventoryUI();
 				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+				{
+					Test_AddDirtToInv();
+					break;
+				}
 			}
 
 			// Mouse Wheel Scroll
@@ -305,7 +288,7 @@ void Update()
 			if (m_Event.type == sf::Event::MouseButtonPressed)
 			{
 				//m_Player->Movement(m_Event);
-				m_Player->Interact(m_WorldManager->m_Chests,m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
+				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests,m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
 				
 				// b2World Step & MousePosBox Position
 				m_WorldManager->Update(m_Event, MousePos);
@@ -325,7 +308,7 @@ void Update()
 				CenterViewsToSprite(m_Player->GetShape());
 
 				// Player Update And Movement
-				m_Player->Interact(m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
+				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
 				m_Player->Update(MousePos, m_Event);
 				m_Player->Movement(m_Event);
 
@@ -371,12 +354,12 @@ void Render()
 	m_RenderWindow->setView(m_UIView);
 	/////////////////////////////////////
 
-	m_GUI->HealthUI(m_RenderWindow, m_Player);
+	m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
 	m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player);
 
-	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event);
+	m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster);
 	
-	m_GUI->CraftingUI(m_RenderWindow, m_Player);
+	m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster);
 	m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView);
 
 	/////////////////////////////////////
@@ -405,10 +388,10 @@ void InitUI()
 {
 	// GUI
 	m_GUI->SetPlayer(m_Player);
-	m_GUI->InitTextureMaster();
-	m_GUI->InitMiniMap(m_RenderWindow);
+	m_GUI->InitMousePosSprite(m_TextureMaster);
+	m_GUI->InitMiniMap(m_RenderWindow, m_TextureMaster);
 	m_GUI->InitHealthUI(m_Player);
-	m_GUI->InitInventoryUI(m_Player, m_RenderWindow);
+	m_GUI->InitInventoryUI(m_Player, m_RenderWindow, m_TextureMaster);
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
@@ -424,6 +407,14 @@ void CenterViewsToSprite(sf::Sprite _object)
 	m_WorldView.setCenter(_object.getPosition());
 	m_UIView.setCenter(_object.getPosition());
 	m_RenderWindow->setView(m_WorldView);
+}
+
+void Test_AddDirtToInv()
+{
+	m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+	m_Block->m_Type = m_Block->BLOCKTYPE::DIRT;
+	m_Player->AddItemToInventory(m_Block);
+	m_Block = nullptr;
 }
 
 

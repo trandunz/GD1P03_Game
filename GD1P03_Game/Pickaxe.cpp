@@ -6,15 +6,16 @@ CPickaxe::CPickaxe()
 	m_Body = nullptr;
 	CBlock::m_Type = BLOCKTYPE::PICKAXE;
 	m_Type = BLOCKTYPE::PICKAXE;
-
 	m_Sprite = new sf::Sprite();
 	m_Sprite->setColor(sf::Color::White);
-	m_Texture.loadFromFile("Images/PickAxeRight.png");
-	m_Sprite->setTexture(m_Texture, true);
+	m_Texture = nullptr;
+	m_Texture = new sf::Texture();
+	m_Texture->loadFromFile("Images/PickAxeRight.png");
+	m_Sprite->setTexture(*m_Texture, true);
 	m_Sprite->setScale(0.2f, 0.2f);
 	m_Sprite->setOrigin(m_Sprite->getGlobalBounds().width / 2, m_Sprite->getGlobalBounds().height / 2);
 
-	m_Shape.setTexture(m_Texture, true);
+	m_Shape.setTexture(*m_Texture, true);
 	m_Shape.setScale(0.3f, 0.3f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2 , m_Shape.getGlobalBounds().height / 2);
 }
@@ -24,13 +25,16 @@ CPickaxe::CPickaxe(sf::RenderWindow* _renderWindow, b2World& _world, const float
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
+	m_Texture = nullptr;
 
 	m_Sprite = new sf::Sprite();
 	m_Sprite->setColor(sf::Color::White);
 	m_LeftTex.loadFromFile("Images/PickAxeLeft.png");
 	m_RightTex.loadFromFile("Images/PickAxeRight.png");
-	m_Texture.loadFromFile("Images/PickAxeRight.png");
-	m_Sprite->setTexture(m_Texture, true);
+	m_Texture = new sf::Texture();
+	m_Texture->loadFromFile("Images/PickAxeRight.png");
+	
+	m_Sprite->setTexture(*m_Texture, true);
 	m_Sprite->setOrigin(m_Sprite->getGlobalBounds().width / 2, (m_Sprite->getGlobalBounds().height / 2));
 	m_Sprite->setPosition(-10000, -10000);
 	CBlock::m_Type = BLOCKTYPE::PICKAXE;
@@ -40,6 +44,7 @@ CPickaxe::CPickaxe(sf::RenderWindow* _renderWindow, b2World& _world, const float
 CPickaxe::~CPickaxe()
 {
 	std::cout << "Pickaxe Deleted!" << std::endl;
+	delete m_Texture;
 	delete m_Sprite;
 	m_Sprite = nullptr;
 	m_Body = nullptr;

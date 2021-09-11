@@ -16,43 +16,15 @@ GUI::~GUI()
 	}
 	m_InventoryItemStackCounters.clear();
 	m_InventorySlotMap.clear();
-	delete m_Planks;
+	
 	delete m_miniMap;
-	delete m_HeartEmpty;
-	delete m_HeartFull;
-	delete m_Sky;
-	delete m_MousePosTex;
-	delete m_Dirt;
-	delete m_Grass;
-	delete m_ItemSpacer;
-	delete m_CIITexture;
-	delete m_Stone;
-	delete m_Wood;
-	delete m_Sand;
-	delete m_MossyBrick;
-	delete m_MousePointerTex;
-	delete m_Chest;
-	delete m_Leaves;
-	m_Leaves = nullptr;
-	m_Chest = nullptr;
-	m_MousePointerTex = nullptr;
-	m_MossyBrick = nullptr;
-	m_Stone = nullptr;
-	m_Wood = nullptr;
-	m_Sand = nullptr;
-	m_Planks = nullptr;
-	m_CIITexture = nullptr;
+	
+	
 	m_miniMap = nullptr;
-	m_HeartEmpty = nullptr;
-	m_HeartFull = nullptr;
-	m_ItemSpacer = nullptr;
-	m_Sky = nullptr;
-	m_MousePosTex = nullptr;
-	m_Dirt = nullptr;
-	m_Grass = nullptr;
+	
 }
 
-void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
+void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster)
 {
 	std::string string = "Life: " + ToString(_player->GetCurrentHP()) + " / " + ToString(_player->GetMaxHP());
 	m_HealthText.setString(string);
@@ -61,56 +33,56 @@ void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
 
 	if (_player->GetCurrentHP() > 0)
 	{
-		heart1.setTexture(*m_HeartFull, true);
+		heart1.setTexture(*_textureMaster->m_HeartFull, true);
 		if (_player->GetCurrentHP() >= 20)
 		{
-			heart2.setTexture(*m_HeartFull, true);
+			heart2.setTexture(*_textureMaster->m_HeartFull, true);
 			if (_player->GetCurrentHP() >= 40)
 			{
-				heart3.setTexture(*m_HeartFull, true);
+				heart3.setTexture(*_textureMaster->m_HeartFull, true);
 				if (_player->GetCurrentHP() >= 60)
 				{
-					heart4.setTexture(*m_HeartFull, true);
+					heart4.setTexture(*_textureMaster->m_HeartFull, true);
 					if (_player->GetCurrentHP() >= 80)
 					{
-						heart5.setTexture(*m_HeartFull, true);
+						heart5.setTexture(*_textureMaster->m_HeartFull, true);
 					}
 					else
 					{
-						heart5.setTexture(*m_HeartEmpty, true);
+						heart5.setTexture(*_textureMaster->m_HeartEmpty, true);
 					}
 					
 				}
 				else
 				{
-					heart4.setTexture(*m_HeartEmpty, true);
-					heart5.setTexture(*m_HeartEmpty, true);
+					heart4.setTexture(*_textureMaster->m_HeartEmpty, true);
+					heart5.setTexture(*_textureMaster->m_HeartEmpty, true);
 				}
 				
 			}
 			else
 			{
-				heart3.setTexture(*m_HeartEmpty, true);
-				heart4.setTexture(*m_HeartEmpty, true);
-				heart5.setTexture(*m_HeartEmpty, true);
+				heart3.setTexture(*_textureMaster->m_HeartEmpty, true);
+				heart4.setTexture(*_textureMaster->m_HeartEmpty, true);
+				heart5.setTexture(*_textureMaster->m_HeartEmpty, true);
 			}
 			
 		}
 		else
 		{
-			heart2.setTexture(*m_HeartEmpty, true);
-			heart3.setTexture(*m_HeartEmpty, true);
-			heart4.setTexture(*m_HeartEmpty, true);
-			heart5.setTexture(*m_HeartEmpty, true);
+			heart2.setTexture(*_textureMaster->m_HeartEmpty, true);
+			heart3.setTexture(*_textureMaster->m_HeartEmpty, true);
+			heart4.setTexture(*_textureMaster->m_HeartEmpty, true);
+			heart5.setTexture(*_textureMaster->m_HeartEmpty, true);
 		}
 	}
 	else
 	{
-		heart1.setTexture(*m_HeartEmpty, true);
-		heart2.setTexture(*m_HeartEmpty, true);
-		heart3.setTexture(*m_HeartEmpty, true);
-		heart4.setTexture(*m_HeartEmpty, true);
-		heart5.setTexture(*m_HeartEmpty, true);
+		heart1.setTexture(*_textureMaster->m_HeartEmpty, true);
+		heart2.setTexture(*_textureMaster->m_HeartEmpty, true);
+		heart3.setTexture(*_textureMaster->m_HeartEmpty, true);
+		heart4.setTexture(*_textureMaster->m_HeartEmpty, true);
+		heart5.setTexture(*_textureMaster->m_HeartEmpty, true);
 	}
 
 	// Position And Draw
@@ -208,7 +180,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	_renderWindow->draw(m_MiniMapShape);
 }
 
-void GUI::InitMiniMap(sf::RenderWindow* _renderWindow)
+void GUI::InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
 	m_miniMap = new sf::RenderTexture();
 	m_miniMap->create(200, 200);
@@ -241,17 +213,16 @@ void GUI::InitMiniMap(sf::RenderWindow* _renderWindow)
 	
 	// World BackGround
 	m_MiniMapWorldBackGround = sf::Sprite();
-	m_MiniMapWorldBackGround.setTexture(*m_Sky, true);
+	m_MiniMapWorldBackGround.setTexture(*_textureMaster->m_Sky, true);
 	m_MiniMapWorldBackGround.setOrigin(m_MiniMapWorldBackGround.getGlobalBounds().width / 2, m_MiniMapWorldBackGround.getGlobalBounds().height / 2);
 	m_MiniMapWorldBackGround.setScale(12, 12);
 }
 
-void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event)
+void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster)
 {
 	_renderWindow->setView(_uiView);
 
 	sf::Vector2f MousePos = _renderWindow->mapPixelToCoords((sf::Mouse::getPosition(*_renderWindow)), _uiView);
-	m_MousePointer.setPosition(MousePos);
 
 	// Row 1
 	for (int i = 0; i < 10; i++)
@@ -264,9 +235,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->m_bInventoryOpen)
+		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 7, MousePos.y - 7);
+			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
 		}
 		else
 		{
@@ -277,7 +249,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		//std::cout << _player->m_InventoryMap[0].GetPosition().x << _player->m_InventoryMap[0].GetPosition().y << std::endl;
 
 		
-		m_InventorySlotMap[i].setTexture(*m_ItemSpacer);
+		m_InventorySlotMap[i].setTexture(*_textureMaster->m_ItemSpacer);
 
 		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
 		if (_player->m_InventoryStackValues[i] <= 1)
@@ -300,9 +272,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->m_bInventoryOpen)
+		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 7, MousePos.y - 7);
+			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
 		}
 		else
 		{
@@ -333,9 +306,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->m_bInventoryOpen)
+		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 7, MousePos.y - 7);
+			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
 		}
 		else
 		{
@@ -366,9 +340,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->m_bInventoryOpen)
+		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 7, MousePos.y - 7);
+			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
 		}
 		else
 		{
@@ -395,9 +370,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		LetGoOfItemInInventory(_renderWindow,_uiView,_worldView,_event,_player,i);
 
 		m_MousePointer.setPosition(MousePos);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->m_bInventoryOpen)
+		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 7, MousePos.y - 7);
+			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
 		}
 		else
 		{
@@ -416,18 +392,18 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		}
 	}
 
-	m_InventorySlotMap[_player->m_CurrentItemIndex].setTexture(*m_CIITexture);
+	m_InventorySlotMap[_player->m_CurrentItemIndex].setTexture(*_textureMaster->m_CIITexture);
 
 }
 
-void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow)
+void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
 	
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
 		sf::Sprite test = sf::Sprite();
-		test.setTexture(*m_ItemSpacer, true);
+		test.setTexture(*_textureMaster->m_ItemSpacer, true);
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
@@ -454,7 +430,7 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow)
 	for (int i = 10; i < 20; i++)
 	{
 		sf::Sprite test = sf::Sprite();
-		test.setTexture(*m_ItemSpacer, true);
+		test.setTexture(*_textureMaster->m_ItemSpacer, true);
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
@@ -478,7 +454,7 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow)
 	for (int i = 20; i < 30; i++)
 	{
 		sf::Sprite test = sf::Sprite();
-		test.setTexture(*m_ItemSpacer, true);
+		test.setTexture(*_textureMaster->m_ItemSpacer, true);
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
@@ -502,7 +478,7 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow)
 	for (int i = 30; i < 40; i++)
 	{
 		sf::Sprite test = sf::Sprite();
-		test.setTexture(*m_ItemSpacer, true);
+		test.setTexture(*_textureMaster->m_ItemSpacer, true);
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
@@ -526,7 +502,7 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow)
 	for (int i = 40; i < 50; i++)
 	{
 		sf::Sprite test = sf::Sprite();
-		test.setTexture(*m_ItemSpacer, true);
+		test.setTexture(*_textureMaster->m_ItemSpacer, true);
 		test.setScale(sf::Vector2f(0.6, 0.6));
 		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 		m_InventorySlotMap.emplace(i, test);
@@ -549,67 +525,19 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow)
 
 	// Mouse Pointer
 	m_MousePointer = sf::Sprite();
-	m_MousePointer.setTexture(*m_MousePointerTex);
+	m_MousePointer.setTexture(*_textureMaster->m_MousePointerTex);
 	m_MousePointer.setOrigin(m_MousePointer.getGlobalBounds().width / 2, m_MousePointer.getGlobalBounds().height / 2);
 	
 }
 
-void GUI::InitTextureMaster()
+void GUI::InitMousePosSprite(CTextureMaster* _textureMaster)
 {
-	//Textures
-	m_Dirt = new sf::Texture();
-	m_Dirt->loadFromFile("Images/Dirt.png"); // Dirt
-	m_Grass = new sf::Texture();
-	m_Grass->loadFromFile("Images/Grass.png"); // Grass
-	m_MousePosTex = new sf::Texture();
-	m_MousePosTex->loadFromFile("Images/MousePos.png"); // Mouse Pos Indicator
-	m_Sky = new sf::Texture();
-	m_Sky->loadFromFile("Images/TerrariaBG.jpg"); // Sky Blue
-	m_Sky->setSmooth(true);
-	m_ItemSpacer = new sf::Texture();
-	m_ItemSpacer->loadFromFile("Images/ItemSpacer.png");
-	m_HeartFull = new sf::Texture();
-	m_HeartFull->loadFromFile("Images/HeartFull.png");
-	m_HeartEmpty = new sf::Texture();
-	m_HeartEmpty->loadFromFile("Images/HeartEmpty.png");
-	m_CIITexture = new sf::Texture();
-	m_CIITexture->loadFromFile("Images/CurrentItem.png");
-	m_Planks = new sf::Texture();
-	m_Planks->loadFromFile("Images/Planks.png");
-	m_Stone = new sf::Texture();
-	m_Stone->loadFromFile("Images/Stone.png");
-	m_Wood = new sf::Texture();
-	m_Wood->loadFromFile("Images/Wood.png");
-	m_Sand = new sf::Texture();
-	m_Sand->loadFromFile("Images/Sand.png");
-	m_MossyBrick = new sf::Texture();
-	m_MossyBrick->loadFromFile("Images/MossyBrick.png");
-	m_MousePointerTex = new sf::Texture();
-	m_MousePointerTex->loadFromFile("Images/Mouse.png");
-	m_Chest = new sf::Texture();
-	m_Chest->loadFromFile("Images/Chest.png");
-	m_Leaves = new sf::Texture();
-	m_Leaves->loadFromFile("Images/Leaves.png");
+	
 
-	m_MousePos.setTexture(*m_MousePosTex, true);
+	m_MousePos.setTexture(*_textureMaster->m_MousePosTex, true);
 	m_MousePos.setOrigin(m_MousePos.getGlobalBounds().width / 2, m_MousePos.getGlobalBounds().height / 2);
 
-	// Set Smooth
-	m_Dirt->setSmooth(true);
-	m_Grass->setSmooth(true);
-	m_Sky->setSmooth(true);
-	m_ItemSpacer->setSmooth(true);
-	m_HeartFull->setSmooth(true);
-	m_HeartEmpty->setSmooth(true);
-	m_CIITexture->setSmooth(true);
-	m_Planks->setSmooth(true);
-	m_Stone->setSmooth(true);
-	m_Sand->setSmooth(true);
-	m_Wood->setSmooth(true);
-	m_MossyBrick->setSmooth(true);
-	m_MousePointerTex->setSmooth(true);
-	m_Chest->setSmooth(true);
-	m_Leaves->setSmooth(true);
+	
 }
 
 void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
@@ -685,6 +613,7 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 
 				if (sit->first != cit->first)
 				{
+					
 					std::cout << "Mouse Released!" << std::endl;
 					_player->m_InventoryMap[_iterator].m_PositionInInventory = sit->first;
 					std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
@@ -765,7 +694,7 @@ bool GUI::MousePointerOverSlot()
 	return false;
 }
 
-void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
+void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster)
 {
 	if (_player->m_bInventoryOpen)
 	{
@@ -775,7 +704,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
 		for (int i = 50; i < 55; i++)
 		{
 			sf::Sprite test = sf::Sprite();
-			test.setTexture(*m_ItemSpacer, true);
+			test.setTexture(*_textureMaster->m_ItemSpacer, true);
 			test.setScale(sf::Vector2f(0.6, 0.6));
 			test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
 			_renderWindow->mapCoordsToPixel(test.getPosition());
