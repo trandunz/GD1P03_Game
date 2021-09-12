@@ -7,7 +7,10 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_World = &_world;
     m_GUI = _gui;
     m_Block = nullptr;
-    srand(time(NULL));
+    _gui->m_CurrentSeed = time(NULL);
+    //_gui->m_CurrentSeed = 1631416783;
+    srand(_gui->m_CurrentSeed);
+    std::cout << _gui->m_CurrentSeed << std::endl;
     m_Chunk = std::list<CBlock>{};
 }
 
@@ -37,6 +40,7 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
     CreateSkyChunk();
     CreateSurfaceLayerPart1(_textureMaster);
     CreateSurfaceLayerPart2(_textureMaster);
+    CreateWorldBoundary(_textureMaster);
 }
 
 void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
@@ -85,6 +89,9 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
             m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
         }
     }
+
+    
+        
 
     // World Step
     m_World->Step(1 / 60.0f, 60, 60);
@@ -197,129 +204,20 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
     GlobalMutex.lock();
     for (int i = 10; i < 21400 / 1.9f; i += 100)
     {
-        // Trees
-        if (rand() % 5 == 0)
+        if (i > 4800 && i < 5000)
         {
-            // Trunk
-            if (true)
+            // Underground And Ores
+            for (int j = 500; j < 21400 / 1.9f; j += 100)
             {
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 300, true, CBlock::BLOCKTYPE::WOOD);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 200, true, CBlock::BLOCKTYPE::WOOD);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 100, true, CBlock::BLOCKTYPE::WOOD);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 000, true, CBlock::BLOCKTYPE::WOOD);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, -100, true, CBlock::BLOCKTYPE::WOOD);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-            }
-            // Leaves
-            if (true)
-            {
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -300, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -400, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -500, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 300, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 300, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -300, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -300, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -300, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -300, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -400, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -400, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-            }
-
-        }
-
-        // Grass
-        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Grass, Utils::m_Scale, i, 400, false, CBlock::BLOCKTYPE::GRASS);
-
-        //m_Block->SetSize(100, 100);
-        m_Chunk.push_back(*m_Block);
-        m_Block->m_ArrayIndex = i;
-        m_Block = nullptr;
-
-        // Underground And Ores
-        for (int j = 500; j < 21400 / 1.9f; j += 100)
-        {
-            if ((rand() % j < 1000))
-            {
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIRT);
-                //m_Block->SetSize(100, 100);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-            }
-            else
-            {
-                if (rand() % 64 == 0)
+                if (rand() % i <= 3000)
+                {
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                    //m_Block->SetSize(100, 100);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                }
+                else if (rand() % i <= 1000)
                 {
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
                     //m_Block->SetSize(100, 100);
@@ -327,62 +225,245 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     m_Block->m_ArrayIndex = i;
                     m_Block = nullptr;
                 }
-                else if ((rand() % j < 6000) && (rand() % j > 3000))
+                else if (rand() % i <= 800)
                 {
-                    if (rand() % 16 == 0)
-                    {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
-                        //m_Block->SetSize(100, 100);
-                        m_Chunk.push_back(*m_Block);
-                        m_Block->m_ArrayIndex = i;
-                        m_Block = nullptr;
-                    }
-                    else
-                    {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
-                        //m_Block->SetSize(100, 100);
-                        m_Chunk.push_back(*m_Block);
-                        m_Block->m_ArrayIndex = i;
-                        m_Block = nullptr;
-                    }
-
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                    //m_Block->SetSize(100, 100);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
                 }
-                else if ((rand() % j < 8000) && (rand() % j > 7000))
-                {
-
-                    if (rand() % 45 == 0)
-                    {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMOND);
-                        //m_Block->SetSize(100, 100);
-                        m_Chunk.push_back(*m_Block);
-                        m_Block->m_ArrayIndex = i;
-                        m_Block = nullptr;
-
-                    }
-                    else if (rand() % 28 == 0)
-                    {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLD);
-                        //m_Block->SetSize(100, 100);
-                        m_Chunk.push_back(*m_Block);
-                        m_Block->m_ArrayIndex = i;
-                        m_Block = nullptr;
-                    }
-                    else
-                    {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
-                        //m_Block->SetSize(100, 100);
-                        m_Chunk.push_back(*m_Block);
-                        m_Block->m_ArrayIndex = i;
-                        m_Block = nullptr;
-                    }
-                }
-                else
+            }
+        }
+        else if (i > 4000 && i < 4200)
+        {
+            // Underground And Ores
+            for (int j = 500; j < 21400 / 1.9f; j += 100)
+            {
+                if (rand() % i <= 3000)
                 {
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
                     //m_Block->SetSize(100, 100);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = i;
                     m_Block = nullptr;
+                }
+                else if (rand() % i <= 1000)
+                {
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                    //m_Block->SetSize(100, 100);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                }
+                else if (rand() % i <= 800)
+                {
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                    //m_Block->SetSize(100, 100);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                }
+            }
+        }
+        else if (i > 4200 && i < 4800)
+        {
+            // Gap
+        }
+        else
+        {
+            // Trees
+            if (rand() % 5 == 0)
+            {
+                // Trunk
+                if (true)
+                {
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 300, true, CBlock::BLOCKTYPE::WOOD);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 200, true, CBlock::BLOCKTYPE::WOOD);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 100, true, CBlock::BLOCKTYPE::WOOD);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, 000, true, CBlock::BLOCKTYPE::WOOD);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, -100, true, CBlock::BLOCKTYPE::WOOD);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, -200, true, CBlock::BLOCKTYPE::WOOD);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                }
+                // Leaves
+                if (true)
+                {
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -500, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -600, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 300, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 300, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -500, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -500, false, CBlock::BLOCKTYPE::LEAVES);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                }
+            }
+
+            // Grass
+            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Grass, Utils::m_Scale, i, 400, false, CBlock::BLOCKTYPE::GRASS);
+
+            //m_Block->SetSize(100, 100);
+            m_Chunk.push_back(*m_Block);
+            m_Block->m_ArrayIndex = i;
+            m_Block = nullptr;
+
+            // Underground And Ores
+            for (int j = 500; j < 21400 / 1.9f; j += 100)
+            {
+
+                if ((rand() % j < 1000))
+                {
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIRT);
+                    //m_Block->SetSize(100, 100);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = i;
+                    m_Block = nullptr;
+                }
+                else
+                {
+                    if (rand() % 64 == 0)
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
+                    else if ((rand() % j < 6000) && (rand() % j > 3000))
+                    {
+                        if (rand() % 16 == 0)
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = i;
+                            m_Block = nullptr;
+                        }
+                        else
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = i;
+                            m_Block = nullptr;
+                        }
+
+                    }
+                    else if ((rand() % j < 8000) && (rand() % j > 7000))
+                    {
+
+                        if (rand() % 45 == 0)
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMOND);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = i;
+                            m_Block = nullptr;
+
+                        }
+                        else if (rand() % 28 == 0)
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLD);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = i;
+                            m_Block = nullptr;
+                        }
+                        else
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = i;
+                            m_Block = nullptr;
+                        }
+                    }
+                    else
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+
+                    }
                 }
             }
         }
@@ -421,79 +502,82 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, i, -200, true, CBlock::BLOCKTYPE::WOOD);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = i;
+                m_Block = nullptr;
             }
             // Leaves
             if (true)
             {
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -200, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -300, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -300, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -400, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -400, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -500, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -500, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i+ 200, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 300, -200, true, CBlock::BLOCKTYPE::LEAVES);
-                m_Chunk.push_back(*m_Block);
-                m_Block->m_ArrayIndex = i;
-                m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 300, -200, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i, -600, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
 
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -300, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -300, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -300, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -300, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -300, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -300, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -300, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = i;
+                m_Block = nullptr;
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 300, -300, false, CBlock::BLOCKTYPE::LEAVES);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = i;
+                m_Block = nullptr;
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 300, -300, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
 
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -400, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -400, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -400, true, CBlock::BLOCKTYPE::LEAVES);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = i;
+                m_Block = nullptr;
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 100, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = i;
+                m_Block = nullptr;
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i - 200, -400, false, CBlock::BLOCKTYPE::LEAVES);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = i;
+                m_Block = nullptr;
+
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 100, -500, false, CBlock::BLOCKTYPE::LEAVES);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = i;
+                m_Block = nullptr;
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, i + 200, -500, false, CBlock::BLOCKTYPE::LEAVES);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = i;
                 m_Block = nullptr;
             }
-            
         }
 
         // Grass
@@ -507,6 +591,7 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
         // Underground And Ores
         for (int j = 500; j < 21400 / 1.9f; j += 100)
         {
+
             if ((rand() % j < 1000))
             {
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIRT);
@@ -581,10 +666,75 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = i;
                     m_Block = nullptr;
+                    
                 }
             }
             
         }
+    }
+    GlobalMutex.unlock();
+}
+
+void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
+{
+    GlobalMutex.lock();
+    for (int i = -90; i > -21100 / 1.9f; i -= 100)
+    {
+        // Grass
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, -6000, false, CBlock::BLOCKTYPE::OBSIDIAN);
+
+        //m_Block->SetSize(100, 100);
+        m_Chunk.push_back(*m_Block);
+        m_Block = nullptr;
+    }
+    for (int i = -90; i > -21100 / 1.9f; i -= 100)
+    {
+        // Grass
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, 11300, false, CBlock::BLOCKTYPE::OBSIDIAN);
+
+        //m_Block->SetSize(100, 100);
+        m_Chunk.push_back(*m_Block);
+        m_Block = nullptr;
+    }
+    for (int j = 500 - 6500; j < 21400 / 1.9f; j += 100)
+    {
+
+        // Grass
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, -21190 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
+
+        //m_Block->SetSize(100, 100);
+        m_Chunk.push_back(*m_Block);
+        m_Block = nullptr;
+    }
+
+    for (int i = 10; i < 21400 / 1.9f; i += 100)
+    {
+        // Grass
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, -6000, false, CBlock::BLOCKTYPE::OBSIDIAN);
+
+        //m_Block->SetSize(100, 100);
+        m_Chunk.push_back(*m_Block);
+        m_Block->m_ArrayIndex = i;
+        m_Block = nullptr;
+    }
+    for (int i = 10; i < 21400 / 1.9f; i += 100)
+    {
+        // Grass
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, 11300, false, CBlock::BLOCKTYPE::OBSIDIAN);
+
+        //m_Block->SetSize(100, 100);
+        m_Chunk.push_back(*m_Block);
+        m_Block->m_ArrayIndex = i;
+        m_Block = nullptr;
+    }
+    for (int j = 500 - 6500; j < 21400 / 1.9f; j += 100)
+    {
+        // Grass
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +21490 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
+
+        //m_Block->SetSize(100, 100);
+        m_Chunk.push_back(*m_Block);
+        m_Block = nullptr;
     }
     GlobalMutex.unlock();
 }
@@ -648,4 +798,9 @@ bool CWorldManager::CleanUpSky()
         m_SkyChunk.pop_front();
     }
     return true;
+}
+
+void CWorldManager::InitPointer(CPlayer* _player)
+{
+    m_Player = _player;
 }

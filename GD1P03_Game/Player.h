@@ -87,6 +87,16 @@ public:
 	sf::Texture* m_PlayerRightTex;
 	sf::Texture* m_PlayerLeftTex;
 
+	int m_Health = 100;
+
+	CPickaxe* m_Pickaxe;
+
+	// Box2d
+	b2BodyDef m_BodyDef;
+	b2Body* m_Body;
+	b2PolygonShape m_b2pShape;
+	b2FixtureDef m_FixtureDef;
+	b2Filter m_PlayerFilter;
 private:
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
@@ -105,7 +115,7 @@ private:
 	int m_InteractionRange = 10;
 
 
-	int m_Health = 17;
+	
 	const int m_MoveSpeed = 50;
 	
 	b2Vec2 m_Velocity;
@@ -115,12 +125,7 @@ private:
 	sf::Texture* m_MapIconTex;
 	sf::Texture* m_MapIconTexRight;
 
-	// Box2d
-	b2BodyDef m_BodyDef;
-	b2Body* m_Body;
-	b2PolygonShape m_b2pShape;
-	b2FixtureDef m_FixtureDef;
-	b2Filter m_PlayerFilter;
+	
 
 	// Temp Block Pointer (Used To Create New Blocks During Block Placement)
 	CBlock* m_Block;
@@ -128,7 +133,7 @@ private:
 	// Temp Door Pointer
 	CDoor* m_Door;
 
-	CPickaxe* m_Pickaxe;
+	
 
 	CChest* m_Chest;
 

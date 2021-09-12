@@ -38,8 +38,9 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 
 	//falling object physics
 	m_BodyDef = b2BodyDef();
-	m_BodyDef.position = b2Vec2(m_Shape.getPosition().x / _scale, (m_Shape.getPosition().y / _scale) - 5);
+	m_BodyDef.position = b2Vec2(100.0f / _scale, (100.0f / _scale) - 5);
 	m_BodyDef.type = b2_dynamicBody;
+	m_BodyDef.enabled = true;
 	m_BodyDef.linearDamping = 0.2f;
 	m_BodyDef.angularDamping = 0.0f;
 	m_BodyDef.fixedRotation = true;
@@ -52,8 +53,8 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 
 	m_FixtureDef.density = 2.0f;
 	m_FixtureDef.shape = &m_b2pShape;
-	m_FixtureDef.friction = 1.0f;
-	m_FixtureDef.restitution = 0.1f;
+	m_FixtureDef.friction = 0.9f;
+	m_FixtureDef.restitution = 0.2f;
 
 	m_Body->CreateFixture(&m_FixtureDef);
 
@@ -159,6 +160,27 @@ void CPlayer::Update(sf::Vector2f _mousePos, sf::Event& _event)
 			m_Pickaxe = nullptr;
 		}
 	}
+	
+	for (b2Contact* contact = m_World->GetContactList(); contact; contact = contact->GetNext())
+	{
+		b2Fixture* a = contact->GetFixtureA();
+		b2Fixture* b = contact->GetFixtureB();
+		b2WorldManifold worldManifold;
+		contact->GetWorldManifold(&worldManifold);
+
+		b2Vec2 vel1 = a->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+		b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+		b2Vec2 impactVelocity = vel1 - vel2;
+
+		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
+		
+		if (impactVelocity.y >= 119.0f && (a->GetBody() == m_Body || b->GetBody() == m_Body))
+		{
+			m_Health -= 100.0f;
+		}
+		a = nullptr;
+		b = nullptr;
+	}
 }
 
 void CPlayer::Render()
@@ -253,13 +275,13 @@ void CPlayer::Movement(sf::Event& _event)
 		// Fly
 		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space)
 		{
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -750.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -450.0f), true);
 		}
 
 		// Jump
 		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::W)
 		{
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -750.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -450.0f), true);
 		}
 
 		// Down

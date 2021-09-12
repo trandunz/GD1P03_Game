@@ -41,6 +41,7 @@ public:
 	void InitMousePosSprite(CTextureMaster* _textureMaster);
 
 	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
+	void InitHotBarScrolling(sf::Event& _event, CPlayer* _player);
 	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player, int _iterator);
 	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator);
 	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
@@ -60,6 +61,8 @@ public:
 	// Mouse Pointer
 	sf::Sprite m_MousePointer;
 
+	unsigned int m_CurrentSeed = 0;
+
 private:
 	sf::Font m_Font;
 
@@ -74,10 +77,6 @@ private:
 	sf::Sprite m_MiniMapWorldBackGround;
 
 	std::map<int, sf::Text> m_InventoryItemStackCounters;
-	
-
-	
-
 
 	// Heart Containers
 	sf::Sprite heart1;

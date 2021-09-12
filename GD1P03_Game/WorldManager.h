@@ -5,6 +5,7 @@
 #include <stdio.h>      /* printf, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
+#include <box2d/b2_world_callbacks.h>
 
 #include "Player.h"
 #include "GUI.h"
@@ -31,12 +32,14 @@ public:
 	void CreateSkyChunk();
 	void CreateSurfaceLayerPart1(CTextureMaster* _textureMaster);
 	void CreateSurfaceLayerPart2(CTextureMaster* _textureMaster);
+	void CreateWorldBoundary(CTextureMaster* _textureMaster);
 
 	void UpdateWorldTexture(sf::View& _view);
 
 	bool CleanUpBlocks();
 	bool CleanUpSky();
 
+	void InitPointer(CPlayer* _player);
 
 	std::list<CBlock> m_Chunk = {};
 	std::list<CChest> m_Chests = {};
@@ -55,6 +58,8 @@ private:
 	CBlock* m_Block;
 
 	sf::Sprite m_WorldBackGround;
+
+	b2WorldManifold m_WorldManifold;
 
 	// Blocks / Tiles
 	sf::RenderTexture m_WorldTexture;

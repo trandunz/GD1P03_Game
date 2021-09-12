@@ -592,6 +592,19 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 	}
 }
 
+void GUI::InitHotBarScrolling(sf::Event& _event, CPlayer* _player)
+{
+	// Items
+	for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
+	{
+		if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == iit->second.PICKAXE)
+		{
+			std::cout << "Pickaxe Selected!" << std::endl;
+			iit->second.m_bIsItemAndSelected = true;
+		}
+	}
+}
+
 void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player, int _iterator)
 {
 
