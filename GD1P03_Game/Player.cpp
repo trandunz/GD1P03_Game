@@ -168,12 +168,22 @@ void CPlayer::Update(sf::Vector2f _mousePos, sf::Event& _event)
 		b2WorldManifold worldManifold;
 		contact->GetWorldManifold(&worldManifold);
 
-		b2Vec2 vel1 = a->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+		b2Vec2 vel1 = m_Body->GetLinearVelocityFromWorldPoint(m_Body->GetPosition());
 		b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
 		b2Vec2 impactVelocity = vel1 - vel2;
 
 		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 		
+		if ((vel1.y <= 1.f && vel1.y >= -1.f) && (a->GetBody() == m_Body || b->GetBody() == m_Body))
+		{
+			m_bCanJump = true;
+		}
+		else
+		{
+			m_bCanJump = false;
+		}
+
+
 		if (impactVelocity.y >= 119.0f && (a->GetBody() == m_Body || b->GetBody() == m_Body))
 		{
 			m_Health -= 100.0f;
@@ -273,13 +283,13 @@ void CPlayer::Movement(sf::Event& _event)
 		int y = 0;
 
 		// Fly
-		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space)
+		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space && m_bCanJump)
 		{
 			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -450.0f), true);
 		}
 
 		// Jump
-		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::W)
+		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::W && m_bCanJump)
 		{
 			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -450.0f), true);
 		}

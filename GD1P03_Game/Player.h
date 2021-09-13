@@ -114,7 +114,7 @@ private:
 
 	int m_InteractionRange = 10;
 
-
+	bool m_bCanJump = false;
 	
 	const int m_MoveSpeed = 50;
 	
