@@ -9,10 +9,20 @@ CAudioManager::CAudioManager()
 	m_MineBuffer3.loadFromFile("Sounds/GroundMine3.wav");
 	m_MineBuffer4.loadFromFile("Sounds/GroundMine4.wav");
 
+	m_PlayerHurt1.loadFromFile("Sounds/PlayerHit1.wav");
+	m_PlayerHurt2.loadFromFile("Sounds/PlayerHit2.wav");
+	m_PlayerHurt3.loadFromFile("Sounds/PlayerHit3.wav");
+
+	m_DeathBuffer.loadFromFile("Sounds/Death.wav");
+
 	MineSoundBuffers[0] = m_MineBuffer1;
 	MineSoundBuffers[1] = m_MineBuffer2;
 	MineSoundBuffers[2] = m_MineBuffer3;
 	MineSoundBuffers[3] = m_MineBuffer4;
+
+	PlayerHurtBuffers[0] = m_PlayerHurt1;
+	PlayerHurtBuffers[1] = m_PlayerHurt2;
+	PlayerHurtBuffers[2] = m_PlayerHurt3;
 }
 
 CAudioManager::~CAudioManager()
@@ -59,6 +69,20 @@ void CAudioManager::PlayBlockPlace()
 void CAudioManager::PlayGroundMine()
 {
 	m_ActiveSound.setBuffer(MineSoundBuffers[1 + rand() % 2]);
+	m_ActiveSound.setVolume(25.0f);
+	m_ActiveSound.play();
+}
+
+void CAudioManager::PlayPlayerDamage()
+{
+	m_ActiveSound.setBuffer(PlayerHurtBuffers[rand() % 2]);
+	m_ActiveSound.setVolume(25.0f);
+	m_ActiveSound.play();
+}
+
+void CAudioManager::PlayPlayerDeath()
+{
+	m_ActiveSound.setBuffer(m_DeathBuffer);
 	m_ActiveSound.setVolume(25.0f);
 	m_ActiveSound.play();
 }

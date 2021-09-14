@@ -12,10 +12,6 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_Pickaxe = nullptr;
 	m_TextureMaster = _textureMaster;
 
-	m_PlayerFilter.categoryBits = 1;
-	m_PlayerFilter.maskBits = 65535;
-	m_PlayerFilter.groupIndex = 0;
-
 	// Textures
 	m_PlayerRightTex = new sf::Texture();
 	m_PlayerLeftTex = new sf::Texture();
@@ -171,23 +167,45 @@ void CPlayer::Update(sf::Vector2f _mousePos, sf::Event& _event)
 		b2Vec2 vel1 = m_Body->GetLinearVelocityFromWorldPoint(m_Body->GetPosition());
 		b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
 		b2Vec2 impactVelocity = vel1 - vel2;
-
 		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 		
-		if ((vel1.y <= 1.f && vel1.y >= -1.f) && (a->GetBody() == m_Body || b->GetBody() == m_Body))
+		// Can Jump?
+		if ((vel1.y <= 0.8f && vel1.y >= -0.8f) && (a->GetBody() == m_Body || b->GetBody() == m_Body) )
 		{
 			m_bCanJump = true;
+			
+			
+		}
+		// Can Take Fall Damage?
+		else if ((vel1.y > 0.0f) && (a->GetBody() == m_Body || b->GetBody() == m_Body))
+		{
+			m_bCanFallDamage = true;
+			
 		}
 		else
 		{
 			m_bCanJump = false;
+			
 		}
 
-
-		if (impactVelocity.y >= 119.0f && (a->GetBody() == m_Body || b->GetBody() == m_Body))
-		{
-			m_Health -= 100.0f;
+		// Fall Damage
+		if (worldManifold.normal.y > 0 && (a->GetBody() == m_Body || b->GetBody() == m_Body) && m_bCanFallDamage)
+		{	
+			if (impactVelocity.y <= -23.7f)
+			{
+				m_AudioManager->PlayPlayerDeath();
+				m_Health -= 300;
+			}
+			else if (impactVelocity.y <= -15.87f)
+			{
+				m_AudioManager->PlayPlayerDamage();
+				m_Health += impactVelocity.y * 2;
+			}
+			
+			m_bCanFallDamage = false;
+			
 		}
+		
 		a = nullptr;
 		b = nullptr;
 	}

@@ -96,7 +96,6 @@ public:
 	b2Body* m_Body;
 	b2PolygonShape m_b2pShape;
 	b2FixtureDef m_FixtureDef;
-	b2Filter m_PlayerFilter;
 private:
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
@@ -115,6 +114,7 @@ private:
 	int m_InteractionRange = 10;
 
 	bool m_bCanJump = false;
+	bool m_bCanFallDamage = true;
 	
 	const int m_MoveSpeed = 50;
 	

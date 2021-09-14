@@ -20,12 +20,15 @@ public:
 	void PlayRunning();
 	void PlayBlockPlace();
 	void PlayGroundMine();
-	 void PlayMusic();
+	void PlayMusic();
 
-	 sf::SoundBuffer m_Buffer;
-	 sf::Sound m_ActiveSound;
+	void PlayPlayerDamage();
+	void PlayPlayerDeath();
 
-	 sf::Music m_Music;
+	sf::SoundBuffer m_Buffer;
+	sf::Sound m_ActiveSound;
+
+	sf::Music m_Music;
 
 private:
 	
@@ -34,7 +37,14 @@ private:
 	sf::SoundBuffer m_MineBuffer3;
 	sf::SoundBuffer m_MineBuffer4;
 
+	sf::SoundBuffer m_PlayerHurt1;
+	sf::SoundBuffer m_PlayerHurt2;
+	sf::SoundBuffer m_PlayerHurt3;
+
+	sf::SoundBuffer m_DeathBuffer;
+
 	sf::SoundBuffer MineSoundBuffers[4]; 
+	sf::SoundBuffer PlayerHurtBuffers[3];
 };
 
 #endif
