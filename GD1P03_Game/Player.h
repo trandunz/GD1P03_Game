@@ -46,14 +46,11 @@ public:
 
 	void ResetSpritePos();
 
-	bool bMouseNotOverBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
-	bool bMouseNotOverDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
-	bool bMouseNotOverChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
-	bool bMouseNotOverFurnace(std::list<CFurnace>& m_Furnaces, sf::Sprite& _mousePositionSprite);
+	template <class T>
+	bool bMouseNotOver(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
 	bool bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Sprite& _mousePositionSprite);
 	
 	bool IsBlockInInventory(CBlock* _block);
-	bool IsDoorInInventory(CDoor* _door);
 
 	void AddItemToInventory(CBlock* _block, int _position);
 	void AddItemToInventory(CBlock* _block);

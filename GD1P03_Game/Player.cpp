@@ -402,7 +402,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				if (it->GetShape().getPosition() == _mousePositionSprite.getPosition())
 				{
-					if (!bMouseNotOverBlock(m_Chunk, _mousePositionSprite))
+					if (!bMouseNotOver(m_Chunk, _mousePositionSprite))
 					{
 						Mine(m_Chunk, it);
 						return;
@@ -415,7 +415,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				if (dit->GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
 				{
-					if (!bMouseNotOverDoor(m_Doors, _mousePositionSprite))
+					if (!bMouseNotOver(m_Doors, _mousePositionSprite))
 					{
 						MineDoor(m_Doors, dit);
 
@@ -429,7 +429,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				if (chit->GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
 				{
-					if (!bMouseNotOverChest(m_Chests, _mousePositionSprite))
+					if (!bMouseNotOver(m_Chests, _mousePositionSprite))
 					{
 						MineChest(m_Chests, chit);
 
@@ -443,7 +443,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				if (fit->GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
 				{
-					if (!bMouseNotOverFurnace(m_Furnaces, _mousePositionSprite))
+					if (!bMouseNotOver(m_Furnaces, _mousePositionSprite))
 					{
 						MineFurnace(m_Furnaces, fit);
 
@@ -453,7 +453,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			}
 		}
 		// Left Mouse Clicked And In Empty Space
-		else if (bMouseNotOverBlock(m_Chunk, _mousePositionSprite) && bMouseNotOverDoor(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOverChest(m_Chests, _mousePositionSprite))
+		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite))
 		{
 			// Place Door
 			if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::DOOR)
@@ -491,7 +491,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		{
 			if (doors.GetShape().getPosition() == _mousePositionSprite.getPosition())
 			{
-				if (bMouseNotOverBlock(m_Chunk, _mousePositionSprite) && !bMouseNotOverDoor(m_Doors, _mousePositionSprite))
+				if (bMouseNotOver(m_Chunk, _mousePositionSprite) && !bMouseNotOver(m_Doors, _mousePositionSprite))
 				{
 					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
 					{
@@ -508,7 +508,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		{
 			if (chest.GetShape().getPosition() == _mousePositionSprite.getPosition())
 			{
-				if (bMouseNotOverBlock(m_Chunk, _mousePositionSprite) && !bMouseNotOverChest(m_Chests, _mousePositionSprite))
+				if (bMouseNotOver(m_Chunk, _mousePositionSprite) && !bMouseNotOver(m_Chests, _mousePositionSprite))
 				{
 					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
 					{
@@ -527,7 +527,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		{
 			if (furnace.GetShape().getPosition() == _mousePositionSprite.getPosition())
 			{
-				if (bMouseNotOverBlock(m_Chunk, _mousePositionSprite) && !bMouseNotOverFurnace(m_Furnaces, _mousePositionSprite))
+				if (bMouseNotOver(m_Chunk, _mousePositionSprite) && !bMouseNotOver(m_Furnaces, _mousePositionSprite))
 				{
 					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
 					{
@@ -617,51 +617,13 @@ void CPlayer::ResetSpritePos()
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 }
 
-bool CPlayer::bMouseNotOverBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite)
+template <class T>
+bool CPlayer::bMouseNotOver(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 {
-	for (CBlock& block : m_Chunk)
+	for (T& block : m_Chunk)
 	{
 		if (block.GetShape().getPosition() == _mousePositionSprite.getPosition())
 		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool CPlayer::bMouseNotOverDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite)
-{
-	for (CDoor& door : m_Doors)
-	{
-		if (door.GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
-		{
-			//std::cout << "Mouse Is Over Door!" << std::endl;
-			return false;
-		}
-	}
-	return true;
-}
-
-bool CPlayer::bMouseNotOverChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite)
-{
-	for (CChest& Chest : m_Chests)
-	{
-		if (Chest.GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
-		{
-			//std::cout << "Mouse Is Over Chest!" << std::endl;
-			return false;
-		}
-	}
-	return true;
-}
-
-bool CPlayer::bMouseNotOverFurnace(std::list<CFurnace>& m_Furnaces, sf::Sprite& _mousePositionSprite)
-{
-	for (CFurnace& Furnace : m_Furnaces)
-	{
-		if (Furnace.GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
-		{
-			//std::cout << "Mouse Is Over Furnace!" << std::endl;
 			return false;
 		}
 	}
@@ -692,23 +654,6 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 
 			delete _block;
 			_block = nullptr;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool CPlayer::IsDoorInInventory(CDoor* _door)
-{
-	std::map<int, CBlock>::iterator it;
-	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
-	{
-		if (it->second.m_Type == _door->m_Type)
-		{
-			// increase number of that type
-			m_InventoryStackValues[it->first]++;
-			delete _door;
-			_door = nullptr;
 			return true;
 		}
 	}

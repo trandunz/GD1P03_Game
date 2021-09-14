@@ -38,6 +38,7 @@ CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _sca
 
 CDoor::~CDoor()
 {
+	DestroyBody();
 	delete m_Texture;
 	m_Texture = nullptr;
 	m_Body = nullptr;

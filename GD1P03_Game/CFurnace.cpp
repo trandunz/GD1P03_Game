@@ -35,6 +35,7 @@ CFurnace::CFurnace(sf::RenderWindow* _renderWindow, b2World& _world, const float
 
 CFurnace::~CFurnace()
 {
+	DestroyBody();
 	delete m_Texture;
 	m_Texture = nullptr;
 	m_Body = nullptr;
