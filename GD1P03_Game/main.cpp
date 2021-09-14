@@ -231,9 +231,7 @@ void Update()
 			{
 				if (m_Player != nullptr)
 				{
-					m_Player->m_bCanMove = true;
 				}
-				
 			}
 
 			// Click Out Of Window
@@ -241,9 +239,8 @@ void Update()
 			{
 				if (m_Player != nullptr)
 				{
-					m_Player->m_bCanMove = false;
+					m_Player->bCanMove(false);
 				}
-				
 			}
 
 			// Exit
@@ -257,7 +254,6 @@ void Update()
 			// Resize
 			if (m_Event.type == sf::Event::Resized)
 			{
-				/*m_GUI->ToggleInventoryUI();*/
 			}
 
 			// General Key Pressed
@@ -265,8 +261,8 @@ void Update()
 			{
 				if (m_Player != nullptr)
 				{
-					m_Player->Update(MousePos, m_Event);
 					m_Player->Movement(m_Event);
+
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 					{
 						m_Player->ToggleInventoryUI();
@@ -277,7 +273,6 @@ void Update()
 						break;
 					}
 				}
-				
 			}
 
 			// Mouse Wheel Scroll
@@ -294,7 +289,7 @@ void Update()
 			if (m_Player != nullptr)
 			{
 				
-				if (m_Player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
+				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
 				{
 					m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
 				}
@@ -306,9 +301,6 @@ void Update()
 			{
 				if (m_Player != nullptr)
 				{
-					//m_Player->Movement(m_Event);
-					m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
-
 				}
 				
 				// b2World Step & MousePosBox Position
@@ -330,8 +322,8 @@ void Update()
 
 				// Player Update And Movement
 				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
-				m_Player->Update(MousePos, m_Event);
-				m_Player->Movement(m_Event);
+				m_Player->Update(MousePos);
+				m_Player->Movement();
 
 				// Reset Players SFML Sprite To Box2D Body
 				m_Player->ResetSpritePos();
@@ -339,7 +331,7 @@ void Update()
 				// b2World Step & MousePosBox Position
 				m_WorldManager->Update(m_Event, MousePos);
 
-				if (m_Player->m_Health <= 0.0f && m_Player != nullptr)
+				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
 				{
 					DeathTimer.restart();
 					delete m_Player;
@@ -464,7 +456,7 @@ void Test_AddDirtToInv()
 {
 	m_Pickaxe = new CPickaxe();
 	m_Pickaxe->m_Type = m_Block->BLOCKTYPE::PICKAXE;
-	m_Player->AddItemToInventory(m_Pickaxe);
+	m_Player->AddItemToInventory(m_Pickaxe, 5);
 	m_Pickaxe = nullptr;
 }
 

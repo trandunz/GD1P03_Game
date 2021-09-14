@@ -7,6 +7,7 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_World = &_world;
     m_GUI = _gui;
     m_Block = nullptr;
+    m_Zombieptr = nullptr;
     _gui->m_CurrentSeed = time(NULL);
     //_gui->m_CurrentSeed = 1631416783;
     srand(_gui->m_CurrentSeed);
@@ -16,12 +17,39 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
 
 CWorldManager::~CWorldManager()
 {
+    //
+    // ofstream
+    // x Pos
+    std::ofstream out_file;
+    out_file.open("Output/output_x.txt");
+    out_file.clear();
+
+    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    {
+        out_file << it->GetShape().getPosition().x << std::endl;
+    }
+    out_file.close();
+
+    // y Pos
+    out_file.open("Output/output_y.txt");
+    out_file.clear();
+
+    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    {
+        out_file << it->GetShape().getPosition().y << std::endl;
+    }
+    out_file.close();
+    //
+    //
+
     m_Chunk.clear();
     m_SkyChunk.clear();
     m_Chests.clear();
     m_Doors.clear();
     m_Furnaces.clear();
+    m_Zombies.clear();
 
+    m_Zombieptr = nullptr;
     m_Block = nullptr;
     m_GUI = nullptr;
     m_Player = nullptr;
@@ -41,6 +69,24 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
     CreateSurfaceLayerPart1(_textureMaster);
     CreateSurfaceLayerPart2(_textureMaster);
     CreateWorldBoundary(_textureMaster);
+
+
+    m_Zombieptr = new Zombie(m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 100, -100);
+    m_Zombies.push_back(*m_Zombieptr);
+    m_Zombieptr = nullptr;
+
+    /*std::string line;
+    std::ifstream myfile("example.txt");
+    if (myfile.is_open())
+    {
+        std::getline(myfile, line);
+        
+        std::list<CBlock>::iterator it = m_Chunk.begin();
+        while (it != m_Chunk.end())
+        {
+            it->m_
+        }
+    }*/
 }
 
 void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
@@ -90,8 +136,10 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
         }
     }
 
-    
-        
+    for (Zombie& zombie : m_Zombies)
+    {
+        zombie.Update();
+    }
 
     // World Step
     m_World->Step(1 / 60.0f, 60, 60);
@@ -127,7 +175,11 @@ void CWorldManager::Render()
     {
         furnace.Render();
     }
-   
+
+    for (Zombie& slime : m_Zombies)
+    {
+        slime.Render();
+    }
 }
 
 void CWorldManager::CreateSkyChunk()

@@ -6,9 +6,12 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
 #include <box2d/b2_world_callbacks.h>
+#include <fstream>
+#include <algorithm>
 
 #include "Player.h"
 #include "GUI.h"
+#include "Zombie.h"
 
 
 
@@ -47,6 +50,8 @@ public:
 	std::list<CDoor> m_Doors = {};
 	std::list<sf::RectangleShape> m_SkyChunk = {};
 
+	std::list<Zombie> m_Zombies = {};
+
 private:
 
 	sf::RenderWindow* m_RenderWindow;
@@ -67,6 +72,9 @@ private:
 
 	// Threads
 	sf::Mutex GlobalMutex;
+
+	// NPC's
+	Zombie* m_Zombieptr;
 };
 #endif
 

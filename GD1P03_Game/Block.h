@@ -48,12 +48,12 @@ public:
 
 	void Start();
 	virtual void Update();
-	void Render();
+	virtual void Render();
 
 	void SetPosition(float _x, float _y);
 	sf::Vector2f GetPosition();
 
-	virtual void SetSize(float _x, float _y);
+	virtual void SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y);
 	sf::Vector2f GetSize();
 
 	sf::Sprite GetShape();
@@ -61,6 +61,9 @@ public:
 	{
 		return m_Body;
 	}
+
+	virtual void DestroyBody();
+	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 
 	b2Body* m_Body;
 	b2BodyDef m_BodyDef;

@@ -235,7 +235,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
@@ -272,7 +272,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
@@ -306,7 +306,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
@@ -340,7 +340,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
@@ -370,7 +370,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		LetGoOfItemInInventory(_renderWindow,_uiView,_worldView,_event,_player,i);
 
 		m_MousePointer.setPosition(MousePos);
-		if (_player->m_bInventoryOpen && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
@@ -609,7 +609,7 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 {
 
 	_renderWindow->setView(_uiView);
-	if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[_iterator].GetShape().getGlobalBounds()) && _player->m_bInventoryOpen)
+	if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[_iterator].GetShape().getGlobalBounds()) && _player->bInventoryOpen())
 	{
 		for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
 		{
@@ -659,7 +659,7 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 
 void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator)
 {
-	if (_player->m_bInventoryOpen && _event.type == sf::Event::MouseButtonPressed && _player->m_InventoryMap[_iterator].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->m_bInventoryOpen)
+	if (_player->bInventoryOpen() && _event.type == sf::Event::MouseButtonPressed && _player->m_InventoryMap[_iterator].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->bInventoryOpen())
 	{
 		if (!_player->m_InventoryMap[_iterator].m_bIsMovingItemInInv)
 		{
@@ -709,7 +709,7 @@ bool GUI::MousePointerOverSlot()
 
 void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster)
 {
-	if (_player->m_bInventoryOpen)
+	if (_player->bInventoryOpen())
 	{
 		sf::Color color = sf::Color();
 		
@@ -732,7 +732,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 
 void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView)
 {
-	if (_player->m_bInventoryOpen)
+	if (_player->bInventoryOpen())
 	{
 		// Render
 		for (int i = 0; i < m_InventorySlotMap.size(); i++)
@@ -753,7 +753,7 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _w
 		}
 	}
 
-	if (_player->m_bInventoryOpen)
+	if (_player->bInventoryOpen())
 	{
 		//std::cout << _player->m_InventoryMap[0].GetShape().getPosition().x << "-" << _player->m_InventoryMap[0].GetShape().getPosition().y << " Item" << std::endl;
 		//std::cout << m_MousePointer.getPosition().x << "-" << m_MousePointer.getPosition().y << " Mouse" << std::endl;

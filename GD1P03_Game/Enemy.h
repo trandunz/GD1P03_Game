@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
+#include <iostream>
+
 #include "CTextureMaster.h"
 class CEnemy
 {
@@ -13,6 +15,9 @@ public:
 	virtual void Render();
 
 	virtual void Movement();
+
+	void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
+	void DestroyBody();
 
 protected:
 	// Essentials
@@ -31,6 +36,8 @@ protected:
 	b2Body* m_Body;
 	b2PolygonShape m_b2pShape;
 	b2FixtureDef m_FixtureDef;
+
+	sf::Texture* m_Texture;
 	
 
 

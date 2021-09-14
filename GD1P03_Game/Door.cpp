@@ -10,6 +10,7 @@ CDoor::CDoor()
 	m_BlockStrength = 5;
 	m_Texture = new sf::Texture();
 	m_Texture->loadFromFile("Images/DoorOpenLeft.png");
+
 	m_Shape.setTexture(*m_Texture, true);
 	m_Shape.setScale(0.2f, 0.2f);
 	m_Shape.setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 + m_Shape.getGlobalBounds().height / 3);
@@ -27,7 +28,7 @@ CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _sca
 	m_Texture->loadFromFile("Images/Door.png");
 	m_Shape.setTexture(*m_Texture, true);
 
-	m_BodyDef.position = b2Vec2(_posX / m_Scale, _posY / m_Scale);
+	CreateBody(_posX, _posY, b2_staticBody);
 
 	CBlock::m_Type = BLOCKTYPE::DOOR;
 	m_Type = BLOCKTYPE::DOOR;
@@ -37,11 +38,6 @@ CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _sca
 
 CDoor::~CDoor()
 {
-	if (m_World != nullptr && m_Body != nullptr)
-	{
-		m_World->DestroyBody(m_Body);
-		//std::cout << "Destructing Block" << std::endl;
-	}
 	delete m_Texture;
 	m_Texture = nullptr;
 	m_Body = nullptr;
@@ -70,13 +66,7 @@ void CDoor::OCDoor(sf::Vector2f _playerPosition)
 			m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 		}
 		
-
-		if (m_World != nullptr && m_Body != nullptr)
-		{
-			m_World->DestroyBody(m_Body);
-			m_Body = nullptr;
-			//std::cout << "Destructing Block" << std::endl;
-		}
+		DestroyBody();
 	}
 	else if (!m_bOpen)
 	{
@@ -85,15 +75,7 @@ void CDoor::OCDoor(sf::Vector2f _playerPosition)
 			
 		if (m_World != nullptr && m_Body == nullptr)
 		{
-			m_BodyDef.type = b2_staticBody;
-			m_BodyDef.position = b2Vec2(m_Shape.getPosition().x / m_Scale, (m_Shape.getPosition().y / m_Scale));
-			m_Body = m_World->CreateBody(&m_BodyDef);
-
-			m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
-
-			m_FixtureDef.density = 1.0f;
-			m_FixtureDef.shape = &m_b2pShape;
-			m_Body->CreateFixture(&m_FixtureDef);
+			CreateBody(m_Shape.getPosition().x, m_Shape.getPosition().y, b2_staticBody);
 		}
 
 		m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
@@ -102,27 +84,13 @@ void CDoor::OCDoor(sf::Vector2f _playerPosition)
 
 }
 
-void CDoor::SetSize(float _x, float _y)
+void CDoor::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y)
 {
 	m_Size.x = _x;
 	m_Size.y = _y;
 
-	/*m_Shape.setSize(m_Size);*/
-	m_BodyDef.position = b2Vec2(m_BodyDef.position.x, m_BodyDef.position.y - 1);
-
-	//ground physics
-	m_BodyDef.type = b2_staticBody;
-	m_Body = m_World->CreateBody(&m_BodyDef);
-
-	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
-
-	m_FixtureDef.density = 1.0f;
-	m_FixtureDef.shape = &m_b2pShape;
-	m_Body->CreateFixture(&m_FixtureDef);
-
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, (m_Shape.getGlobalBounds().height / 2));
-	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
-	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+	DestroyBody();
+	CreateBody(_currentPosX, _currentPosY - m_Shape.getGlobalBounds().height / 4, b2_staticBody);
 
 	Render();
 }

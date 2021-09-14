@@ -14,7 +14,7 @@ public:
 	virtual ~CDoor();
 
 	void OCDoor(sf::Vector2f _playerPosition);
-	virtual void SetSize(float _x, float _y);
+	virtual void SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y);
 
 	void Update();
 	

@@ -6,7 +6,7 @@ CBlock::CBlock()
 	m_Scale = 50.0f;
 	m_World = nullptr;
 	m_Body = nullptr;
-	m_Type = BLOCK;
+	m_Type = BLOCKTYPE::BLOCK;
 	m_Texture = nullptr;
 
 	Start();
@@ -43,41 +43,20 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Textu
 
 	if (!_bWallpaper)
 	{
-		//ground physics
-		m_BodyDef.type = b2_staticBody;
-		m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
-		m_Body = m_World->CreateBody(&m_BodyDef);
-
-		m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
-
-		m_FixtureDef.density = 1.0f;
-		m_FixtureDef.shape = &m_b2pShape;
-		m_Body->CreateFixture(&m_FixtureDef);
-
-		m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
-		m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+		CreateBody(_posX, _posY, b2_staticBody);
 	}
 	else if (_bWallpaper)
 	{
 		m_Shape.setPosition(_posX, _posY);
 	}
 	
-	
-	
-	
-
 	Start();
 	Render();
 }
 
 CBlock::~CBlock()
 {
-	if (m_World != nullptr && m_Body != nullptr)
-	{
-		m_World->DestroyBody(m_Body);
-		//std::cout << "Destructing Block" << std::endl;
-	}
-
+	DestroyBody();
 	m_Texture = nullptr;
 	m_Body = nullptr;
 	m_RenderWindow = nullptr;
@@ -199,24 +178,13 @@ sf::Vector2f CBlock::GetPosition()
 	return m_Shape.getPosition();
 }
 
-void CBlock::SetSize(float _x, float _y)
+void CBlock::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y)
 {
 	m_Size.x = _x;
 	m_Size.y = _y;
 
-	/*m_Shape.setSize(m_Size);*/
-
-	//ground physics
-	m_BodyDef.type = b2_staticBody;
-	m_Body = m_World->CreateBody(&m_BodyDef);
-
-	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
-
-	m_FixtureDef.density = 1.0f;
-	m_FixtureDef.shape = &m_b2pShape;
-	m_Body->CreateFixture(&m_FixtureDef);
-
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	DestroyBody();
+	CreateBody(_currentPosX, _currentPosY, b2_staticBody);
 
 	Render();
 }
@@ -229,4 +197,35 @@ sf::Vector2f CBlock::GetSize()
 sf::Sprite CBlock::GetShape()
 {
 	return m_Shape;
+}
+
+void CBlock::DestroyBody()
+{
+	if (m_World != nullptr && m_Body != nullptr)
+	{
+		m_World->DestroyBody(m_Body);
+		m_Body = nullptr;
+	}
+}
+
+void CBlock::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
+{
+	//ground physics
+	m_BodyDef.type = _type;
+	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
+	m_Body = m_World->CreateBody(&m_BodyDef);
+
+	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
+
+	if (_sensor)
+	{
+		m_FixtureDef.isSensor = true;
+	}
+	m_FixtureDef.density = 1.0f;
+	m_FixtureDef.shape = &m_b2pShape;
+	m_Body->CreateFixture(&m_FixtureDef);
+
+	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
+	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 }
