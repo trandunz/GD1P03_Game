@@ -35,7 +35,21 @@ void CEnemy::Render()
 	m_RenderWindow->draw(m_Shape);
 }
 
+void CEnemy::SetHealth(int _value)
+{
+	m_Health = _value;
+}
+
+int CEnemy::GetHealth()
+{
+	return m_Health;
+}
+
 void CEnemy::Movement()    
+{
+}
+
+void CEnemy::Attack()
 {
 }
 

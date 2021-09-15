@@ -96,6 +96,7 @@ public:
 	b2PolygonShape m_b2pShape;
 	b2FixtureDef m_FixtureDef;
 
+	CAudioManager* m_AudioManager;
 private:
 	// Mouse
 	sf::Vector2f m_MousePos;
@@ -118,7 +119,6 @@ private:
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;
 	float m_Scale;
-	CAudioManager* m_AudioManager;
 	sf::Clock* m_AnimationTimer;
 	sf::Clock* m_MineTimer;
 	CTextureMaster* m_TextureMaster;

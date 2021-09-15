@@ -10,6 +10,13 @@
 class CEnemy
 {
 public:
+	enum ENEMYTYPE
+	{
+		DEFAULT = 0,
+		ZOMBIE,
+		SLIME
+	};
+
 	CEnemy();
 	virtual ~CEnemy();
 
@@ -17,10 +24,18 @@ public:
 	virtual void Update();
 	virtual void Render();
 
+	void SetHealth(int _value);
+	int GetHealth();
+
 	virtual void Movement();
+	virtual void Attack();
 
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 	void DestroyBody();
+
+	ENEMYTYPE m_Type = DEFAULT;
+
+	bool m_MARKASDESTORY = false;
 
 protected:
 	// Essentials

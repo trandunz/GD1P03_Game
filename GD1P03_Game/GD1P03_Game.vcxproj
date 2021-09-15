@@ -150,6 +150,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pickaxe.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Slime.cpp" />
+    <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="Zombie.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
@@ -164,6 +166,8 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Pickaxe.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Slime.h" />
+    <ClInclude Include="Spawner.h" />
     <ClInclude Include="Zombie.h" />
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>
