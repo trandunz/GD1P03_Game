@@ -10,7 +10,7 @@
 class CEnemy
 {
 public:
-	enum ENEMYTYPE
+	enum class ENEMYTYPE
 	{
 		DEFAULT = 0,
 		ZOMBIE,
@@ -33,7 +33,7 @@ public:
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 	void DestroyBody();
 
-	ENEMYTYPE m_Type = DEFAULT;
+	ENEMYTYPE m_Type = ENEMYTYPE::DEFAULT;
 
 	bool m_MARKASDESTORY = false;
 

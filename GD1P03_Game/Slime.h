@@ -7,6 +7,16 @@
 class Slime : public CEnemy
 {
 public:
+	enum class SLIMETYPE
+	{
+		GREEN,
+		BLUE,
+		RED,
+		PURPLE,
+		YELLOW,
+		BOSS
+	};
+
 	Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY);
 	virtual ~Slime();
 
@@ -24,6 +34,10 @@ public:
 	virtual void Attack();
 
 private:
+	bool m_bIsBoss = false;
+
+	SLIMETYPE m_SlimeType = SLIMETYPE::GREEN;
+
 	CPlayer* m_Player;
 
 	bool m_bCanFallDamage = true;

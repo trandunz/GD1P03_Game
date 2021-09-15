@@ -164,7 +164,7 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, 0, m_Player);
+	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, 0, m_Player, CEnemy::ENEMYTYPE::SLIME);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 

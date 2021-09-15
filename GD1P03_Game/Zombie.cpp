@@ -10,7 +10,7 @@ Zombie::Zombie(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster*
 	m_Shape.setTextureRect(sf::IntRect(0, 0, 100, 200));
 	m_Player = nullptr;
 
-	m_Type = ZOMBIE;
+	m_Type = ENEMYTYPE::ZOMBIE;
 
 	CreateBody(_posX, _posY, b2_dynamicBody);
 }

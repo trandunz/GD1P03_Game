@@ -4,16 +4,85 @@ Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _
 {
 	m_RenderWindow = _renderWindow;
 	m_Texture = new sf::Texture();
-	m_Texture->loadFromFile("Images/Slime.png");
+
+	srand((unsigned)time(NULL));
+
+	// Random Slime Type
+	if (rand() % 5 == 0)
+	{
+		m_SlimeType = SLIMETYPE::GREEN;
+	}
+	else if (rand() % 5 == 1)
+	{
+		m_SlimeType = SLIMETYPE::RED;
+	}
+	else if (rand() % 5 == 2)
+	{
+		m_SlimeType = SLIMETYPE::BLUE;
+	}
+	else if (rand() % 5 == 3)
+	{
+		m_SlimeType = SLIMETYPE::YELLOW;
+	}
+	else if (rand() % 5 == 4)
+	{
+		m_SlimeType = SLIMETYPE::PURPLE;
+	}
+	else if (rand() % 5 == 4)
+	{
+		m_SlimeType = SLIMETYPE::BOSS;
+	}
+	else
+	{
+		m_SlimeType = SLIMETYPE::GREEN;
+	}
+
+	// Set Appropriate Texture
+	switch (m_SlimeType)
+	{
+	case Slime::SLIMETYPE::GREEN:
+	{
+		m_Texture->loadFromFile("Images/Slime.png");
+		break;
+	}
+	case Slime::SLIMETYPE::BLUE:
+	{
+		m_Texture->loadFromFile("Images/BlueSlime.png");
+		break;
+	}
+	case Slime::SLIMETYPE::RED:
+	{
+		m_Texture->loadFromFile("Images/RedSlime.png");
+		break;
+	}
+	case Slime::SLIMETYPE::PURPLE:
+	{
+		m_Texture->loadFromFile("Images/PurpleSlime.png");
+		break;
+	}
+	case Slime::SLIMETYPE::YELLOW:
+	{
+		m_Texture->loadFromFile("Images/YellowSlime.png");
+		break;
+	}
+	case Slime::SLIMETYPE::BOSS:
+	{
+		m_Texture->loadFromFile("Images/BossSlime.png");
+		m_bIsBoss = true;
+		break;
+	}
+	default:
+	{
+		m_Texture->loadFromFile("Images/Slime.png");
+		break;
+	}
+	}
+	
 	m_World = &_world;
 	m_Shape.setTexture(*m_Texture, true);
 	m_Player = nullptr;
 
-	m_Type = SLIME;
-
 	CreateBody(_posX, _posY, b2_dynamicBody);
-
-	srand(unsigned(NULL));
 }
 
 Slime::~Slime()
@@ -63,16 +132,11 @@ void Slime::Update()
 			if (worldManifold.normal.y > 0 && m_bCanFallDamage)
 			{
 				//std::cout << "A Slime Landed" << "( Impact Velocity: " << impactVelocity.y << ")" << std::endl;
-				if (impactVelocity.y <= -23.7f)
-				{
-					//m_AudioManager->PlayPlayerDeath();
-					m_Health -= 300;
-				}
-				else if (impactVelocity.y <= -15.87f)
-				{
-					//m_AudioManager->PlayPlayerDamage();
-					m_Health += impactVelocity.y * 2;
-				}
+				//if (impactVelocity.y <= -25.5f)
+				//{
+				//	//m_AudioManager->PlayPlayerDeath();
+				//	m_Health -= 300;
+				//}
 
 				m_bCanFallDamage = false;
 			}
@@ -117,11 +181,27 @@ void Slime::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 	m_BodyDef.type = _type;
 	m_BodyDef.fixedRotation = true;
 	m_BodyDef.linearDamping = 0.6f;
-	m_BodyDef.gravityScale = 10.0f;
+
+	if (m_bIsBoss)
+	{
+		m_BodyDef.gravityScale = 3.0f;
+	}
+	else
+	{
+		m_BodyDef.gravityScale = 10.0f;
+	}
+	
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
-	m_b2pShape.SetAsBox((100 / 2) / m_Scale, (100 / 2) / m_Scale);
+	if (m_bIsBoss)
+	{
+		m_b2pShape.SetAsBox((300 / 2) / m_Scale, (300 / 2) / m_Scale);
+	}
+	else
+	{
+		m_b2pShape.SetAsBox((100 / 2) / m_Scale, (100 / 2) / m_Scale);
+	}
 
 	if (_sensor)
 	{
@@ -130,7 +210,7 @@ void Slime::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 	m_FixtureDef.density = 2.0f;
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 1.0f;
-	m_FixtureDef.restitution = 0.3f;
+	m_FixtureDef.restitution = 0.1f;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -165,9 +245,58 @@ void Slime::Movement()
 			// Face Left
 			m_Shape.setScale(1, 1);
 
-			// Move Left
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 400), true);
+			switch (m_SlimeType)
+			{
+			case Slime::SLIMETYPE::GREEN:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BLUE:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 200, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::RED:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+				break;
+			}
+			case Slime::SLIMETYPE::PURPLE:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 400, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::YELLOW:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSS:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 2400, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 2400), true);
+				break;
+			}
+			default:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+				break;
+			}
+			}
 		}
 		else if (velocity.x < 1.0f && velocity.x > -1.0f && DirectionToPlayer > 0)
 		{
@@ -191,12 +320,69 @@ void Slime::Attack()
 		DistanceToPlayer = sqrt(((m_Player->m_Shape.getPosition().x - m_Shape.getPosition().x) * (m_Player->m_Shape.getPosition().x - m_Shape.getPosition().x)) + ((m_Player->m_Shape.getPosition().y - m_Shape.getPosition().y) * (m_Player->m_Shape.getPosition().y - m_Shape.getPosition().y)));
 		DirectionToPlayer = m_Player->m_Shape.getPosition().x - m_Shape.getPosition().x ;
 
-		if (DistanceToPlayer <= 125)
+		if (DistanceToPlayer <= 350)
 		{
 			std::cout << "Attack Player" << std::endl;
 			m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5,-200), true);
-			m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 5, 0), true);
-			m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 12.25f);
+			m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1/2, 0), true);
+
+			switch (m_SlimeType)
+			{
+			case Slime::SLIMETYPE::GREEN:
+			{
+				if (DistanceToPlayer <= 150)
+				{
+					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 12.25f);
+				}
+				break;
+			}
+			case Slime::SLIMETYPE::BLUE:
+			{
+				if (DistanceToPlayer <= 150)
+				{
+					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 10.0f);
+				}
+				break;
+			}
+			case Slime::SLIMETYPE::RED:
+			{
+				if (DistanceToPlayer <= 150)
+				{
+					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 15.0f);
+				}
+				break;
+			}
+			case Slime::SLIMETYPE::PURPLE:
+			{
+				if (DistanceToPlayer <= 150)
+				{
+					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 10.0f);
+				}
+				break;
+			}
+			case Slime::SLIMETYPE::YELLOW:
+			{
+				if (DistanceToPlayer <= 150)
+				{
+					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 13.25f);
+				}
+				break;
+			}
+			case Slime::SLIMETYPE::BOSS:
+			{
+				m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 20.0f);
+				break;
+			}
+			default:
+			{
+				if (DistanceToPlayer <= 150)
+				{
+					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 12.25f);
+				}
+				break;
+			}
+			}
+
 			m_Player->m_AudioManager->PlayPlayerDamage();
 		}
 	}
