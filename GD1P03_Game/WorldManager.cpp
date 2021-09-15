@@ -7,7 +7,6 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_World = &_world;
     m_GUI = _gui;
     m_Block = nullptr;
-    m_Zombieptr = nullptr;
     _gui->m_CurrentSeed = time(NULL);
     //_gui->m_CurrentSeed = 1631416783;
     srand(_gui->m_CurrentSeed);
@@ -17,39 +16,15 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
 
 CWorldManager::~CWorldManager()
 {
-    //
-    // ofstream
-    // x Pos
-    std::ofstream out_file;
-    out_file.open("Output/output_x.txt");
-    out_file.clear();
-
-    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
-    {
-        out_file << it->GetShape().getPosition().x << std::endl;
-    }
-    out_file.close();
-
-    // y Pos
-    out_file.open("Output/output_y.txt");
-    out_file.clear();
-
-    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
-    {
-        out_file << it->GetShape().getPosition().y << std::endl;
-    }
-    out_file.close();
-    //
-    //
+    OutPutWorldToFiles();
 
     m_Chunk.clear();
     m_SkyChunk.clear();
     m_Chests.clear();
     m_Doors.clear();
     m_Furnaces.clear();
-    m_Zombies.clear();
 
-    m_Zombieptr = nullptr;
+
     m_Block = nullptr;
     m_GUI = nullptr;
     m_Player = nullptr;
@@ -65,16 +40,15 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
     m_WorldBackGround.setOrigin(m_WorldBackGround.getGlobalBounds().width / 2, m_WorldBackGround.getGlobalBounds().height / 2);
     m_WorldBackGround.setScale(4.7, 4.7);
 
+    // World
     CreateSkyChunk();
     CreateSurfaceLayerPart1(_textureMaster);
     CreateSurfaceLayerPart2(_textureMaster);
     CreateWorldBoundary(_textureMaster);
 
-
-    m_Zombieptr = new Zombie(m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 100, -100);
-    m_Zombies.push_back(*m_Zombieptr);
-    m_Zombieptr = nullptr;
-
+    //
+    // Reading From File??
+    //
     /*std::string line;
     std::ifstream myfile("example.txt");
     if (myfile.is_open())
@@ -136,11 +110,6 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
         }
     }
 
-    for (Zombie& zombie : m_Zombies)
-    {
-        zombie.Update();
-    }
-
     // World Step
     m_World->Step(1 / 60.0f, 60, 60);
 }
@@ -156,7 +125,7 @@ void CWorldManager::Render()
     // Blocks
     for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
     {
-        float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+        float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->m_Shape.getPosition().x) * (it->GetShape().getPosition().x - m_Player->m_Shape.getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->m_Shape.getPosition().y) * (it->GetShape().getPosition().y - m_Player->m_Shape.getPosition().y)));
         if (Mag1 < m_RenderWindow->getSize().x * 1.8f)
         {
             m_RenderWindow->draw(it->GetShape());
@@ -175,16 +144,11 @@ void CWorldManager::Render()
     {
         furnace.Render();
     }
-
-    for (Zombie& slime : m_Zombies)
-    {
-        slime.Render();
-    }
 }
 
 void CWorldManager::CreateSkyChunk()
 {
-    sf::Vector2f playerPos = sf::Vector2f(m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
+    sf::Vector2f playerPos = sf::Vector2f(m_Player->m_Shape.getPosition().x, m_Player->m_Shape.getPosition().y);
     m_SkyChunk.clear();
     for (int i = 0; i < 20000; i += 100)
     {
@@ -801,7 +765,7 @@ void CWorldManager::UpdateWorldTexture(sf::View& _view)
     // Blocks
     for (CBlock& block : m_Chunk)
     {
-        float Mag1 = sqrt(((block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+        float Mag1 = sqrt(((block.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x) * (block.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x)) + ((block.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y) * (block.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y)));
         if (Mag1 < m_RenderWindow->getSize().x * 1.80f)
         {
             m_WorldTexture.draw(block.GetShape());
@@ -811,7 +775,7 @@ void CWorldManager::UpdateWorldTexture(sf::View& _view)
     // Doors
     for (CDoor& door : m_Doors)
     {
-        float Mag1 = sqrt(((door.GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (door.GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((door.GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (door.GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+        float Mag1 = sqrt(((door.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x) * (door.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x)) + ((door.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y) * (door.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y)));
         if (Mag1 < m_RenderWindow->getSize().x * 1.80f)
         {
             m_WorldTexture.draw(door.GetShape());
@@ -855,4 +819,64 @@ bool CWorldManager::CleanUpSky()
 void CWorldManager::InitPointer(CPlayer* _player)
 {
     m_Player = _player;
+}
+
+void CWorldManager::OutPutWorldToFiles(std::string _xPositions, std::string _yPositions)
+{
+    //
+    // ofstream
+    // x Pos
+    std::ofstream out_file;
+
+    out_file.open(_xPositions);
+    
+    out_file.clear();
+
+    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    {
+        out_file << it->GetShape().getPosition().x << std::endl;
+    }
+    out_file.close();
+
+    out_file.open(_yPositions);
+    
+    out_file.clear();
+
+    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    {
+        out_file << it->GetShape().getPosition().y << std::endl;
+    }
+    out_file.close();
+    //
+    //
+}
+
+void CWorldManager::OutPutWorldToFiles()
+{
+    //
+    // ofstream
+    // x Pos
+    std::ofstream out_file;
+
+    out_file.open("Output/output_x.txt");
+
+    out_file.clear();
+
+    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    {
+        out_file << it->GetShape().getPosition().x << std::endl;
+    }
+    out_file.close();
+
+    out_file.open("Output/output_y.txt");
+
+    out_file.clear();
+
+    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    {
+        out_file << it->GetShape().getPosition().y << std::endl;
+    }
+    out_file.close();
+    //
+    //
 }

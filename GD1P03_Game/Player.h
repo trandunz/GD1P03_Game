@@ -28,7 +28,6 @@ public:
 	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
 	
 	b2Body* GetBody();
-	sf::Sprite GetShape();
 
 	int GetCurrentHP();
 	int GetMaxHP();
@@ -61,10 +60,8 @@ public:
 
 	bool SelectedItemIsEmpty();
 
-	void Mine(std::list<CBlock>& m_Chunk, std::list<CBlock>::iterator _block);
-	void MineDoor(std::list<CDoor>& m_Doors, std::list<CDoor>::iterator _door);
-	void MineChest(std::list<CChest>& m_Chests, std::list<CChest>::iterator _chest);
-	void MineFurnace(std::list<CFurnace>& m_Furnaces, std::list<CFurnace>::iterator _furnace);
+	template <typename T>
+	void Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
 
 	void PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
 	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
@@ -90,6 +87,8 @@ public:
 	sf::Texture* m_PlayerLeftTex;
 
 	CPickaxe* m_Pickaxe;
+
+	sf::Sprite m_Shape;
 
 	// Box2d
 	b2BodyDef m_BodyDef;
@@ -126,7 +125,6 @@ private:
 	int m_InventorySize = -1;
 
 	// Textures
-	sf::Sprite m_Shape;
 	sf::Texture* m_MapIconTex;
 	sf::Texture* m_MapIconTexRight;
 

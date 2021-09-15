@@ -89,6 +89,10 @@ void CPlayer::Start()
 {
 	m_AnimationTimer = new sf::Clock();
 	m_MineTimer = new sf::Clock();
+
+	m_Pickaxe = new CPickaxe();
+	AddItemToInventory(m_Pickaxe);
+	m_Pickaxe = nullptr;
 }
 
 void CPlayer::Update(sf::Vector2f _mousePos)
@@ -390,66 +394,28 @@ void CPlayer::Movement(sf::Event& _event)
 
 void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite)
 {
-	float Mag = sqrt(((_mousePositionSprite.getPosition().x - GetShape().getPosition().x) * (_mousePositionSprite.getPosition().x - GetShape().getPosition().x)) + ((_mousePositionSprite.getPosition().y - GetShape().getPosition().y) * (_mousePositionSprite.getPosition().y - GetShape().getPosition().y)));
+	float Mag = sqrt(((_mousePositionSprite.getPosition().x - m_Shape.getPosition().x) * (_mousePositionSprite.getPosition().x - m_Shape.getPosition().x)) + ((_mousePositionSprite.getPosition().y - m_Shape.getPosition().y) * (_mousePositionSprite.getPosition().y - m_Shape.getPosition().y)));
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && Mag > 80.0f && m_bCanPlace)
 	{
 		// Item
 		if (m_Pickaxe != nullptr)
 		{
 			// Break Block
-			std::list<CBlock>::iterator it;
-			for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+			if (!bMouseNotOver(m_Chunk, _mousePositionSprite))
 			{
-				if (it->GetShape().getPosition() == _mousePositionSprite.getPosition())
-				{
-					if (!bMouseNotOver(m_Chunk, _mousePositionSprite))
-					{
-						Mine(m_Chunk, it);
-						return;
-					}
-				}
+				Mine(m_Chunk, _mousePositionSprite);
 			}
-			// Break Door?
-			std::list<CDoor>::iterator dit;
-			for (dit = m_Doors.begin(); dit != m_Doors.end(); dit++)
+			else if (!bMouseNotOver(m_Doors, _mousePositionSprite))
 			{
-				if (dit->GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
-				{
-					if (!bMouseNotOver(m_Doors, _mousePositionSprite))
-					{
-						MineDoor(m_Doors, dit);
-
-						return;
-					}
-				}
+				Mine(m_Doors, _mousePositionSprite);
 			}
-			// Break Chest?
-			std::list<CChest>::iterator chit;
-			for (chit = m_Chests.begin(); chit != m_Chests.end(); chit++)
+			else if (!bMouseNotOver(m_Chests, _mousePositionSprite))
 			{
-				if (chit->GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
-				{
-					if (!bMouseNotOver(m_Chests, _mousePositionSprite))
-					{
-						MineChest(m_Chests, chit);
-
-						return;
-					}
-				}
+				Mine(m_Chests, _mousePositionSprite);
 			}
-			// Break Furnace?
-			std::list<CFurnace>::iterator fit;
-			for (fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
+			else if (!bMouseNotOver(m_Furnaces, _mousePositionSprite))
 			{
-				if (fit->GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
-				{
-					if (!bMouseNotOver(m_Furnaces, _mousePositionSprite))
-					{
-						MineFurnace(m_Furnaces, fit);
-
-						return;
-					}
-				}
+				Mine(m_Furnaces, _mousePositionSprite);
 			}
 		}
 		// Left Mouse Clicked And In Empty Space
@@ -547,11 +513,6 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 b2Body* CPlayer::GetBody()
 {
 	return m_Body;
-}
-
-sf::Sprite CPlayer::GetShape()
-{
-	return m_Shape;
 }
 
 int CPlayer::GetCurrentHP()
@@ -770,85 +731,57 @@ bool CPlayer::SelectedItemIsEmpty()
 	return true;
 }
 
-void CPlayer::Mine(std::list<CBlock>& m_Chunk, std::list<CBlock>::iterator _block)
+template <typename T>
+void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 {
-	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
+	typename std::list<T>::iterator it;
+	for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
 	{
-		if (_block->m_BlockStrength <= m_Pickaxe->m_PickaxePower * 5)
+		if (it->GetShape().getPosition() == _mousePositionSprite.getPosition())
 		{
-			_block->m_BlockStrength -= 1 * m_Pickaxe->m_PickaxePower;
-		}
+			if (!bMouseNotOver(m_Chunk, _mousePositionSprite))
+			{
+				if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
+				{
+					if (it->m_BlockStrength <= m_Pickaxe->m_PickaxePower * 5)
+					{
+						it->m_BlockStrength -= 1 * m_Pickaxe->m_PickaxePower;
+					}
 
-		if (_block->m_BlockStrength <= 0)
-		{
-			m_Block = new CBlock(_block->m_Texture, _block->m_Type);
-			AddItemToInventory(m_Block);
-			m_Chunk.erase(_block);
-			m_Block = nullptr;
+					if (it->m_BlockStrength <= 0)
+					{
+						if (it->m_Type == CBlock::BLOCKTYPE::DOOR)
+						{
+							m_Door = new CDoor();
+							AddItemToInventory(m_Door);
+						}
+						else if (it->m_Type == CBlock::BLOCKTYPE::CHEST)
+						{
+							m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
+							AddItemToInventory(m_Block);
+						}
+						else if (it->m_Type == CBlock::BLOCKTYPE::FURNACE)
+						{
+							m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+							AddItemToInventory(m_Block);
+						}
+						else
+						{
+							m_Block = new CBlock(it->m_Texture, it->m_Type);
+							AddItemToInventory(m_Block);
+						}
+						m_Chunk.erase(it);
+						m_Block = nullptr;
+						m_Door = nullptr;
+					}
+					m_MineTimer->restart();
+					m_AudioManager->PlayGroundMine();
+					break;
+				}
+			}
 		}
-		m_MineTimer->restart();
-		m_AudioManager->PlayGroundMine();
 	}
-}
-
-void CPlayer::MineDoor(std::list<CDoor>& m_Doors, std::list<CDoor>::iterator _door)
-{
-	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
-	{
-		if (_door->m_BlockStrength <= m_Pickaxe->m_PickaxePower * 5)
-		{
-			_door->m_BlockStrength -= 1 * m_Pickaxe->m_PickaxePower;
-		}
-		if (_door->m_BlockStrength <= 0)
-		{
-			m_Door = new CDoor();
-			AddItemToInventory(m_Door);
-			m_Doors.erase(_door);
-			m_Door = nullptr;
-		}
-		m_MineTimer->restart();
-		m_AudioManager->PlayGroundMine();
-	}
-}
-
-void CPlayer::MineChest(std::list<CChest>& m_Chests, std::list<CChest>::iterator _chest)
-{
-	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
-	{
-		if (_chest->m_BlockStrength <= m_Pickaxe->m_PickaxePower * 5)
-		{
-			_chest->m_BlockStrength -= 1 * m_Pickaxe->m_PickaxePower;
-		}
-		if (_chest->m_BlockStrength <= 0)
-		{
-			m_Chest = new CChest();
-			AddItemToInventory(m_Chest);
-			m_Chests.erase(_chest);
-			m_Chest = nullptr;
-		}
-		m_MineTimer->restart();
-		m_AudioManager->PlayGroundMine();
-	}
-}
-
-void CPlayer::MineFurnace(std::list<CFurnace>& m_Furnaces, std::list<CFurnace>::iterator _furnace)
-{
-	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.3f)))
-	{
-		if (_furnace->m_BlockStrength <= m_Pickaxe->m_PickaxePower * 5)
-		{
-			_furnace->m_BlockStrength -= 1 * m_Pickaxe->m_PickaxePower;
-		}
-		if (_furnace->m_BlockStrength <= 0)
-		{
-			m_Furnace = new CFurnace();
-			AddItemToInventory(m_Furnace);
-			m_Furnaces.erase(_furnace);
-			m_Furnace = nullptr;
-		}
-		m_MineTimer->restart();
-		m_AudioManager->PlayGroundMine();
-	}
+	
 }
 
 void CPlayer::PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite)

@@ -44,13 +44,14 @@ public:
 
 	void InitPointer(CPlayer* _player);
 
+	void OutPutWorldToFiles();
+	void OutPutWorldToFiles(std::string _xPositions, std::string _yPositions);
+
 	std::list<CBlock> m_Chunk = {};
 	std::list<CChest> m_Chests = {};
 	std::list<CFurnace> m_Furnaces = {};
 	std::list<CDoor> m_Doors = {};
 	std::list<sf::RectangleShape> m_SkyChunk = {};
-
-	std::list<Zombie> m_Zombies = {};
 
 private:
 
@@ -72,9 +73,6 @@ private:
 
 	// Threads
 	sf::Mutex GlobalMutex;
-
-	// NPC's
-	Zombie* m_Zombieptr;
 };
 #endif
 

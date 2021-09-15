@@ -1,73 +1,44 @@
-﻿  Player.cpp
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(171,38): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(225,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(225,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(227,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(232,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,1): error C2451: a conditional expression of type 'std::_List_iterator<std::_List_val<std::_List_simple_types<_Ty>>>' is not valid
+﻿  main.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(171,93): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(412,117): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
-              _Ty=CDoor
+              T=unsigned int
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,20): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(461): message : see reference to function template instantiation 'void CPlayer::PlaceBlock<CDoor>(std::list<CDoor,std::allocator<CDoor>> &,sf::Sprite &)' being compiled
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(878,1): error C2661: 'CDoor::CDoor': no overloaded function takes 8 arguments
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,1): error C2664: 'void std::list<CDoor,std::allocator<CDoor>>::push_back(_Ty &&)': cannot convert argument 1 from 'CBlock' to '_Ty &&'
+          and
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(412,88): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
-              _Ty=CDoor
+              T=unsigned int
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,1): message : Reason: cannot convert from 'CBlock' to '_Ty'
+          and
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(435,115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
-              _Ty=CDoor
+              T=unsigned int
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,21): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\list(972,10): message : see declaration of 'std::list<CDoor,std::allocator<CDoor>>::push_back'
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,1): error C2451: a conditional expression of type 'std::_List_iterator<std::_List_val<std::_List_simple_types<_Ty>>>' is not valid
+          and
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(435,86): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
-              _Ty=CChest
+              T=unsigned int
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,20): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(470): message : see reference to function template instantiation 'void CPlayer::PlaceBlock<CChest>(std::list<CChest,std::allocator<CChest>> &,sf::Sprite &)' being compiled
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(878,1): error C2661: 'CChest::CChest': no overloaded function takes 8 arguments
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,1): error C2664: 'void std::list<CChest,std::allocator<CChest>>::push_back(_Ty &&)': cannot convert argument 1 from 'CBlock' to '_Ty &&'
-          with
+          and
           [
-              _Ty=CChest
+              T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,1): message : Reason: cannot convert from 'CBlock' to '_Ty'
-          with
-          [
-              _Ty=CChest
-          ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,21): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\list(972,10): message : see declaration of 'std::list<CChest,std::allocator<CChest>>::push_back'
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,1): error C2451: a conditional expression of type 'std::_List_iterator<std::_List_val<std::_List_simple_types<_Ty>>>' is not valid
-          with
-          [
-              _Ty=CFurnace
-          ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,20): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(475): message : see reference to function template instantiation 'void CPlayer::PlaceBlock<CFurnace>(std::list<CFurnace,std::allocator<CFurnace>> &,sf::Sprite &)' being compiled
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(878,1): error C2661: 'CFurnace::CFurnace': no overloaded function takes 8 arguments
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,1): error C2664: 'void std::list<CFurnace,std::allocator<CFurnace>>::push_back(_Ty &&)': cannot convert argument 1 from 'CBlock' to '_Ty &&'
-          with
-          [
-              _Ty=CFurnace
-          ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,1): message : Reason: cannot convert from 'CBlock' to '_Ty'
-          with
-          [
-              _Ty=CFurnace
-          ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(895,21): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\list(972,10): message : see declaration of 'std::list<CFurnace,std::allocator<CFurnace>>::push_back'
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,1): error C2451: a conditional expression of type 'std::_List_iterator<std::_List_val<std::_List_simple_types<_Ty>>>' is not valid
-          with
-          [
-              _Ty=CBlock
-          ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(877,20): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(480): message : see reference to function template instantiation 'void CPlayer::PlaceBlock<CBlock>(std::list<CBlock,std::allocator<CBlock>> &,sf::Sprite &)' being compiled
+  Generating code
+  1 of 1266 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    5 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  GD1P03_Game.vcxproj -> C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Release\GD1P03_Game.exe

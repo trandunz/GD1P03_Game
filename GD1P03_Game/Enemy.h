@@ -1,9 +1,12 @@
 #pragma once
+#ifndef _ENEMY_H__
+#define _ENEMY_H__
+
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
-
 #include "CTextureMaster.h"
+
 class CEnemy
 {
 public:
@@ -16,7 +19,7 @@ public:
 
 	virtual void Movement();
 
-	void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
+	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 	void DestroyBody();
 
 protected:
@@ -38,8 +41,6 @@ protected:
 	b2FixtureDef m_FixtureDef;
 
 	sf::Texture* m_Texture;
-	
-
-
 };
+#endif
 

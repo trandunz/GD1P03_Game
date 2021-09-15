@@ -64,6 +64,10 @@ CTextureMaster* m_TextureMaster;
 
 sf::Clock DeathTimer;
 
+// Enemies (Move to a manager)
+Zombie* m_Zombieptr;
+std::list<Zombie> m_Zombies = {};
+
 /// <summary>
 /// 
 /// </summary>
@@ -113,12 +117,15 @@ int main()
 	{
 		std::cout << "Cleanup Success" << std::endl;
 	}
+	m_Zombies.clear();
+	delete m_Zombieptr;
 	delete m_TextureMaster;
 	delete m_AudioManager;
 	delete m_GUI;
 	delete m_Player;
 	delete m_RenderWindow;
 	delete m_WorldManager;
+	m_Zombieptr = nullptr;
 	m_TextureMaster = nullptr;
 	m_Pickaxe = nullptr;
 	m_Door = nullptr;
@@ -149,59 +156,36 @@ void Start()
 	// Music
 	m_AudioManager = new CAudioManager();
 	m_AudioManager->PlayMusic();
-	
+
 	// Player
 	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
 	m_Player->Start();
-
-	// Init UI
-	InitUI();
 
 	// Map
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
 	m_WorldManager->Start(m_TextureMaster);
 
+	// Object Instances
+	for (int i = -2000; i > -10000; i -= 100)
+	{
+		m_Zombieptr = new Zombie(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -3000, i);
+		m_Zombies.push_back(*m_Zombieptr);
+		m_Zombieptr = nullptr;
+	}
+
+	for (Zombie& zombie : m_Zombies)
+	{
+		zombie.SetPlayer(m_Player);
+	}
+
+	// Init UI
+	InitUI();
+
 	// Init World
 	InitWorldView();
 
 	// Center All Views To Player
-	CenterViewsToSprite(m_Player->GetShape());
-
-	// Debug Add Items To Inventory
-	for (int i = 0; i < 1; i++)
-	{
-		m_Pickaxe = new CPickaxe();
-		m_Player->AddItemToInventory(m_Pickaxe);
-		m_Pickaxe = nullptr;
-	}
-	for (int i = 0; i < 1337; i++)
-	{
-		m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
-		m_Block->m_Type = m_Block->BLOCKTYPE::SAND;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
-	for (int i = 0; i < 5; i++)
-	{
-		m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
-		m_Block->m_Type = m_Block->BLOCKTYPE::CHEST;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
-	for (int i = 0; i < 5; i++)
-	{
-		m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
-		m_Block->m_Type = m_Block->BLOCKTYPE::FURNACE;
-		m_Player->AddItemToInventory(m_Block);
-		m_Block = nullptr;
-	}
-	for (int i = 0; i < 1; i++)
-	{
-		m_Door = new CDoor();
-		m_Door->m_Type = m_Block->BLOCKTYPE::DOOR;
-		m_Player->AddItemToInventory(m_Door);
-		m_Door = nullptr;
-	}
+	CenterViewsToSprite(m_Player->m_Shape);
 	
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
@@ -222,16 +206,16 @@ void Update()
 {
 	while (m_RenderWindow->isOpen())
 	{
+		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
+		
+		//
+		// Polled Update
+		//
 		while (m_RenderWindow->pollEvent(m_Event))
 		{
-			MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
-
 			// Regained Focus
 			if (m_Event.type == sf::Event::GainedFocus)
 			{
-				if (m_Player != nullptr)
-				{
-				}
 			}
 
 			// Click Out Of Window
@@ -267,11 +251,6 @@ void Update()
 					{
 						m_Player->ToggleInventoryUI();
 					}
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
-					{
-						Test_AddDirtToInv();
-						break;
-					}
 				}
 			}
 
@@ -282,30 +261,22 @@ void Update()
 				{
 					m_GUI->HotBarScrolling(m_Event, m_Player);
 				}
-				
 			}
 			
 			// Right On Press Mouse
 			if (m_Player != nullptr)
 			{
-				
 				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
 				{
 					m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
 				}
 			}
-			
 
 			// General On Press Mouse
 			if (m_Event.type == sf::Event::MouseButtonPressed)
 			{
-				if (m_Player != nullptr)
-				{
-				}
-				
 				// b2World Step & MousePosBox Position
 				m_WorldManager->Update(m_Event, MousePos);
-				break;
 			}
 		}
 
@@ -318,7 +289,7 @@ void Update()
 			if (m_Player != nullptr)
 			{
 				// Centre View To Player
-				CenterViewsToSprite(m_Player->GetShape());
+				CenterViewsToSprite(m_Player->m_Shape);
 
 				// Player Update And Movement
 				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
@@ -328,6 +299,11 @@ void Update()
 				// Reset Players SFML Sprite To Box2D Body
 				m_Player->ResetSpritePos();
 
+				for (Zombie& zombie : m_Zombies)
+				{
+					zombie.Update();
+				}
+
 				// b2World Step & MousePosBox Position
 				m_WorldManager->Update(m_Event, MousePos);
 
@@ -336,6 +312,12 @@ void Update()
 					DeathTimer.restart();
 					delete m_Player;
 					m_Player = nullptr;
+
+					// Enemies Loose The Player Pointer
+					for (Zombie& zombie : m_Zombies)
+					{
+						zombie.LoosePlayer();
+					}
 					//m_bClose = true;
 				}
 
@@ -355,6 +337,14 @@ void Update()
 					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
 					m_Player->Start();
 					m_WorldManager->InitPointer(m_Player);
+
+					for (Zombie& zombie : m_Zombies)
+					{
+						zombie.SetPlayer(m_Player);
+					}
+
+					// Already Has A Pickaxe Somehow?
+					m_GUI->InitHotBarScrolling(m_Event, m_Player);
 				}
 			}
 		}
@@ -383,6 +373,11 @@ void Render()
 	m_WorldManager->CreateSkyChunk();
 
 	m_WorldManager->Render();
+
+	for (Zombie& zombie : m_Zombies)
+	{
+		zombie.Render();
+	}
 
 	// Player
 	if (m_Player != nullptr)
