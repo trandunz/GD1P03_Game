@@ -12,7 +12,7 @@ public:
 
 	virtual void Start();
 	virtual void Update();
-	void Render();
+	virtual void Render();
 
 	void SetPlayer(CPlayer* _player);
 	virtual void LoosePlayer();

@@ -18,6 +18,7 @@ void InitUI();
 void CenterViewsToSprite(sf::Sprite _object);
 
 void Test_AddDirtToInv();
+bool PickupItemOnGround();
 
 // Mouse
 sf::Vector2f MousePos;
@@ -78,11 +79,11 @@ int main()
 	{
 		// Render Window Settings
 		sf::ContextSettings m_Settings;
-		m_Settings.antialiasingLevel = 12;
+		m_Settings.antialiasingLevel = 8;
 
-		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "BiomeWorks.exe", sf::Style::Default, m_Settings);
-		m_RenderWindow->setFramerateLimit(120);
-		/*m_RenderWindow->setVerticalSyncEnabled(true);*/
+		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetsrary", sf::Style::Default, m_Settings);
+		//m_RenderWindow->setFramerateLimit(120);
+		m_RenderWindow->setVerticalSyncEnabled(true);
 		m_RenderWindow->setKeyRepeatEnabled(false);
 
 		// Window Icon
@@ -167,6 +168,7 @@ void Start()
 	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, 0, m_Player, CEnemy::ENEMYTYPE::SLIME);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
+	m_SlimeSpawner->SetSpawnCount(50);
 
 	// Init UI
 	InitUI();
@@ -175,7 +177,7 @@ void Start()
 	InitWorldView();
 
 	// Center All Views To Player
-	CenterViewsToSprite(m_Player->m_Shape);
+	CenterViewsToSprite(m_Player->GetShape());
 	
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
@@ -281,7 +283,7 @@ void Update()
 			if (m_Player != nullptr)
 			{
 				// Centre View To Player
-				CenterViewsToSprite(m_Player->m_Shape);
+				CenterViewsToSprite(m_Player->GetShape());
 
 				// Player Update And Movement
 				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
@@ -315,7 +317,7 @@ void Update()
 			}
 			else if (m_Player == nullptr)
 			{
-				if (DeathTimer.getElapsedTime() >= sf::Time(sf::seconds(3.f)))
+				if (DeathTimer.getElapsedTime().asSeconds() >= 3)
 				{
 					// Player
 					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
@@ -374,8 +376,6 @@ void Render()
 		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster);
 		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView);
 	}
-	
-	
 
 	/////////////////////////////////////
 	m_RenderWindow->display();
@@ -432,6 +432,47 @@ void Test_AddDirtToInv()
 	m_Player->AddItemToInventory(m_Pickaxe, 5);
 	m_Pickaxe = nullptr;
 }
+
+bool PickupItemOnGround()
+{
+	//b2Contact* contact;
+	//bool sensorA;
+	//bool sensorB;
+	//for (contact = m_World.GetContactList(); contact; contact = contact->GetNext())
+	//{
+	//	b2Fixture* fixtureA = contact->GetFixtureA();
+	//	b2Fixture* fixtureB = contact->GetFixtureB();
+
+	//	//make sure only one of the fixtures was a sensor
+	//	sensorA = fixtureA->IsSensor();
+	//	sensorB = fixtureB->IsSensor();
+	//	if ((sensorA || sensorB) && (fixtureA->GetBody() == m_Player->m_Body || fixtureB->GetBody() == m_Player->m_Body))
+	//	{
+	//		std::list<Items>::iterator it;
+	//		for (it = m_Items->begin(); it != m_Items->end(); it++)
+	//		{
+	//			if (it->GetBody() == fixtureA || it->GetBody() == fixtureB)
+	//			{
+	//				break;
+	//			}
+	//		}
+	//		m_Player->AddItemToInventory(it);
+
+	//		fixtureA = nullptr;
+	//		fixtureB = nullptr;
+	//		contact = nullptr;
+	//		return true;
+	//	}
+
+	//	fixtureA = nullptr;
+	//	fixtureB = nullptr;
+	//}
+	//contact = nullptr;
+
+	//return false;
+}
+
+
 
 
 

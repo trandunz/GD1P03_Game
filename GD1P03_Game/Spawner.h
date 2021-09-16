@@ -16,6 +16,9 @@ public:
 	void LoosePlayer();
 	void SetPlayer(CPlayer* _player);
 
+	void SetSpawnCount(int _amount);
+	int GetSpawnCount();
+
 	void ToggleSpawning();
 
 	~Spawner();
@@ -23,6 +26,9 @@ public:
 	std::list<Slime> m_Slimes;
 	std::list<Zombie> m_Zombies;
 private:
+	sf::Sprite m_Shape;
+	sf::Texture* m_Texture;
+
 	CEnemy::ENEMYTYPE m_Type;
 
 	bool m_bSpawn = false;

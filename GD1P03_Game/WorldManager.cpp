@@ -125,7 +125,7 @@ void CWorldManager::Render()
     // Blocks
     for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
     {
-        float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->m_Shape.getPosition().x) * (it->GetShape().getPosition().x - m_Player->m_Shape.getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->m_Shape.getPosition().y) * (it->GetShape().getPosition().y - m_Player->m_Shape.getPosition().y)));
+        float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
         if (Mag1 < m_RenderWindow->getSize().x * 1.8f)
         {
             m_RenderWindow->draw(it->GetShape());
@@ -148,7 +148,7 @@ void CWorldManager::Render()
 
 void CWorldManager::CreateSkyChunk()
 {
-    sf::Vector2f playerPos = sf::Vector2f(m_Player->m_Shape.getPosition().x, m_Player->m_Shape.getPosition().y);
+    sf::Vector2f playerPos = sf::Vector2f(m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
     m_SkyChunk.clear();
     for (int i = 0; i < 20000; i += 100)
     {
@@ -765,7 +765,7 @@ void CWorldManager::UpdateWorldTexture(sf::View& _view)
     // Blocks
     for (CBlock& block : m_Chunk)
     {
-        float Mag1 = sqrt(((block.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x) * (block.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x)) + ((block.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y) * (block.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y)));
+        float Mag1 = sqrt(((block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (block.GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (block.GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
         if (Mag1 < m_RenderWindow->getSize().x * 1.80f)
         {
             m_WorldTexture.draw(block.GetShape());
@@ -775,7 +775,7 @@ void CWorldManager::UpdateWorldTexture(sf::View& _view)
     // Doors
     for (CDoor& door : m_Doors)
     {
-        float Mag1 = sqrt(((door.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x) * (door.GetShape().getPosition().x - m_Player->m_Shape.getPosition().x)) + ((door.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y) * (door.GetShape().getPosition().y - m_Player->m_Shape.getPosition().y)));
+        float Mag1 = sqrt(((door.GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (door.GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((door.GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (door.GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
         if (Mag1 < m_RenderWindow->getSize().x * 1.80f)
         {
             m_WorldTexture.draw(door.GetShape());

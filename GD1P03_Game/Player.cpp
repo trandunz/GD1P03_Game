@@ -27,9 +27,6 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_Shape.setTexture(*m_PlayerRightTex, true);
 	m_Shape.setTextureRect(sf::IntRect(0, 0, 100, 200));
 
-
-	
-
 	CreateBody(100, -100, b2_dynamicBody);
 
 	// Velocity
@@ -43,7 +40,6 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_MapIcon.setTexture(*m_MapIconTexRight, true);
 	m_MapIcon.setOrigin(m_MapIcon.getGlobalBounds().width / 2, m_MapIcon.getGlobalBounds().height / 2);
 	m_MapIcon.setScale(12, 12);
-	
 }
 
 CPlayer::~CPlayer()
@@ -525,6 +521,11 @@ int CPlayer::GetMaxHP()
 	return m_MaxHP;
 }
 
+sf::Sprite& CPlayer::GetShape()
+{
+	return m_Shape;
+}
+
 void CPlayer::SetCurrentHP(int _amount)
 {
 	m_Health = _amount;
@@ -804,12 +805,10 @@ void CPlayer::PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionS
 			m_Block->m_FixtureDef.shape = &m_Block->m_b2pShape;
 			m_Block->m_FixtureDef.friction = 2.0f;
 			m_Block->m_Body->CreateFixture(&m_Block->m_FixtureDef);
-
 		}
 		m_Chunk.push_back(*m_Block);
 		m_Block = nullptr;
 		m_Door = nullptr;
-
 
 		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
 		{

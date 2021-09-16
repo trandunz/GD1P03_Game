@@ -1,42 +1,501 @@
-﻿  Slime.cpp
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(232,57): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+﻿  AudioManager.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\AudioManager.cpp(5,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Block.cpp
+  CFurnace.cpp
+  Chest.cpp
+  CTextureMaster.cpp
+  Door.cpp
+  Enemy.cpp
+  GUI.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(116,39): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(253,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(254,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(260,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(261,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(267,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(268,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(274,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(275,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(281,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(282,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(288,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(289,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(295,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(296,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(307,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(308,57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(321,57): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(117,39): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(326,64): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(327,80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(335,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(343,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(351,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(359,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(367,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(373,53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(380,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(118,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(119,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(120,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(407,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(411,13): warning C4244: '=': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(434,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(438,13): warning C4244: '=': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(458,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(462,13): warning C4244: '=': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(482,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(486,13): warning C4244: '=': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(506,38): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(510,13): warning C4244: '=': conversion from 'float' to 'sf::Uint8', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(721,39): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\GUI.cpp(727,20): warning C4244: '=': conversion from 'float' to 'sf::Uint8', possible loss of data
+  main.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(390,117): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(390,88): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(413,115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\main.cpp(413,86): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  Pickaxe.cpp
+  Player.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(171,38): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(225,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(225,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(227,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(232,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(836,48): warning C4244: '=': conversion from 'const T' to 'long', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(864,49): warning C4244: '=': conversion from 'const T' to 'long', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Player.cpp(891,51): warning C4244: '=': conversion from 'const T' to 'long', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Slime.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(8,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(246,60): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(269,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(270,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(276,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(277,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(283,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(284,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(290,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(291,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(297,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(298,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(304,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(305,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(311,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(312,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(328,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(329,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(335,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(336,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(342,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(343,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(349,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(350,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(356,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(357,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(363,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(364,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(370,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(371,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(387,60): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(398,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(399,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(401,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(414,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(415,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(419,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(430,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(431,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(433,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(446,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(447,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(449,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(462,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(463,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(465,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(478,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(479,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(481,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(494,66): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(495,83): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Slime.cpp(497,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Spawner.cpp
+  Zombie.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\Zombie.cpp(102,60): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+  WorldManager.cpp
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(10,31): warning C4244: '=': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(41,40): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,49): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,46): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,88): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,85): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,129): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,126): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,168): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(157,165): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(164,54): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(164,48): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,49): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,46): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,88): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,85): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,129): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,126): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,168): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(171,165): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(178,54): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(178,48): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,49): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,46): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,88): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,85): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,129): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,126): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,168): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(189,165): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(196,54): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(196,48): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,49): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,46): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,88): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,85): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,129): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,126): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,168): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(203,165): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(210,54): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(210,48): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(230,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(230,109): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(238,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(238,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(246,114): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(246,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(261,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(261,109): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(269,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(269,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(277,114): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(277,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(297,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(301,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(305,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(309,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(313,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(317,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(325,110): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(329,110): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(333,110): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(337,110): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(342,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(346,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(350,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(354,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(358,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(362,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(367,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(371,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(375,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(379,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(384,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(388,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(396,101): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(409,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(409,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(419,115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(419,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(429,122): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(429,119): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(437,120): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(437,117): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(450,125): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(450,122): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(459,122): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(459,119): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(467,120): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(467,117): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(476,116): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(476,113): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(501,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(505,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(509,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(513,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(517,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(521,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(529,106): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(533,106): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(537,106): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(541,106): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(546,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(550,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(554,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(558,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(562,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(566,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(571,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(575,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(579,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(583,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(588,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(592,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(600,97): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(613,107): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(613,104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(623,111): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(623,108): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(633,118): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(633,115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(641,116): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(641,113): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(654,121): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(654,118): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(663,118): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(663,115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(671,116): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(671,113): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(680,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(680,109): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(700,100): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(709,100): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(719,115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(729,100): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(739,100): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\GD1P03_Game\WorldManager.cpp(749,115): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating code
-  1 of 1336 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    5 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB not found, fall back to full compilation.
+  All 1337 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   GD1P03_Game.vcxproj -> C:\Users\trand\Documents\GITHUB\GD1P03_Game (SFML)\GD1P03_Game\x64\Release\GD1P03_Game.exe

@@ -10,6 +10,12 @@ Spawner::Spawner(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaste
 	m_Zombieptr = nullptr;
 	m_Scale = _scale;
 	m_Type = _type;
+
+	m_Texture = new sf::Texture();
+	m_Texture->loadFromFile("Images/SlimeSpawner.png");
+	m_Shape.setTexture(*m_Texture, true);
+	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	m_Shape.setPosition(_posX, _posY);
 }
 
 void Spawner::Start()
@@ -27,11 +33,11 @@ void Spawner::Update()
 		break;
 	case CEnemy::ENEMYTYPE::SLIME:
 	{
-		if (m_bSpawn && m_Slimes.size() < 30)
+		if (m_bSpawn && m_Slimes.size() < m_SpawnCount)
 		{
 			if (m_SpawnTimer.getElapsedTime().asSeconds() >= 5)
 			{
-				m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, 10000, -100);
+				m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
 				m_Slimeptr->SetPlayer(m_Player);
 				m_Slimes.push_back(*m_Slimeptr);
 				m_Slimeptr = nullptr;
@@ -84,6 +90,9 @@ void Spawner::Update()
 
 void Spawner::Render()
 {
+	// Sprite
+	m_RenderWindow->draw(m_Shape);
+
 	switch (m_Type)
 	{
 	case CEnemy::ENEMYTYPE::DEFAULT:
@@ -125,6 +134,16 @@ void Spawner::SetPlayer(CPlayer* _player)
 	}
 }
 
+void Spawner::SetSpawnCount(int _amount)
+{
+	m_SpawnCount = _amount;
+}
+
+int Spawner::GetSpawnCount()
+{
+	return m_SpawnCount;
+}
+
 void Spawner::ToggleSpawning()
 {
 	m_bSpawn = !m_bSpawn;
@@ -135,6 +154,8 @@ Spawner::~Spawner()
 	m_Zombies.clear();
 	m_Slimes.clear();
 
+	delete m_Texture;
+	m_Texture = nullptr;
 	m_Player = nullptr;
 	m_World = nullptr;
 	m_RenderWindow = nullptr;

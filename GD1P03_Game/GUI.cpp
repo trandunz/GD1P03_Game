@@ -135,7 +135,7 @@ sf::Text GUI::InitHealthUI(CPlayer* _player)
 void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player)
 {
 	// Assigning Render Texture View and Zooming
-	sf::View MiniMapView = sf::View(_player->m_Shape.getPosition(), sf::Vector2f(200.0f, 200.0f));
+	sf::View MiniMapView = sf::View(_player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
 	MiniMapView.zoom(57);
 	m_miniMap->setView(MiniMapView);
 	
@@ -149,7 +149,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	// Blocks
 	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
-		float Mag1 = sqrt(((it->GetShape().getPosition().x - _player->m_Shape.getPosition().x) * (it->GetShape().getPosition().x - _player->m_Shape.getPosition().x)) + ((it->GetShape().getPosition().y - _player->m_Shape.getPosition().y) * (it->GetShape().getPosition().y - _player->m_Shape.getPosition().y)));
+		float Mag1 = sqrt(((it->GetShape().getPosition().x - _player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - _player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - _player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - _player->GetShape().getPosition().y)));
 		if (Mag1 < 1920 * 4.0f)
 		{
 			m_miniMap->draw(it->GetShape());

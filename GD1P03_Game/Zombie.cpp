@@ -98,8 +98,8 @@ void Zombie::Movement()
 	int DirectionToPlayer;
 	if (bHasPlayer())
 	{
-		DistanceToPlayer = sqrt(((m_Player->m_Shape.getPosition().x - m_Shape.getPosition().x) * (m_Player->m_Shape.getPosition().x - m_Shape.getPosition().x)) + ((m_Player->m_Shape.getPosition().y - m_Shape.getPosition().y) * (m_Player->m_Shape.getPosition().y - m_Shape.getPosition().y)));
-		DirectionToPlayer = m_Player->m_Shape.getPosition().x - m_Shape.getPosition().x;
+		DistanceToPlayer = sqrt(((m_Player->GetShape().getPosition().x - m_Shape.getPosition().x) * (m_Player->GetShape().getPosition().x - m_Shape.getPosition().x)) + ((m_Player->GetShape().getPosition().y - m_Shape.getPosition().y) * (m_Player->GetShape().getPosition().y - m_Shape.getPosition().y)));
+		DirectionToPlayer = m_Player->GetShape().getPosition().x - m_Shape.getPosition().x;
 	}
 	else
 	{

@@ -25,7 +25,7 @@ public:
 	void Render();
 
 	void SetPlayer(CPlayer* _player);
-	virtual void LoosePlayer();
+	void LoosePlayer();
 	bool bHasPlayer();
 
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
@@ -41,5 +41,7 @@ private:
 	CPlayer* m_Player;
 
 	bool m_bCanFallDamage = true;
+
+	sf::Clock m_AttackTimer;
 };
 #endif

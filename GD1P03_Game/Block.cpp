@@ -213,7 +213,9 @@ void CBlock::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor
 	//ground physics
 	m_BodyDef.type = _type;
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
+	m_BodyDef.allowSleep = true;
 	m_Body = m_World->CreateBody(&m_BodyDef);
+	m_Body->SetAwake(false);
 
 	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
 

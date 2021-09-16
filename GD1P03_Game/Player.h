@@ -32,6 +32,8 @@ public:
 	int GetCurrentHP();
 	int GetMaxHP();
 
+	sf::Sprite& GetShape();
+
 	void SetCurrentHP(int _amount);
 	void SetMaxHP(int _amount);
 	void SetMousePos(sf::Vector2f _position);
@@ -88,8 +90,6 @@ public:
 
 	CPickaxe* m_Pickaxe;
 
-	sf::Sprite m_Shape;
-
 	// Box2d
 	b2BodyDef m_BodyDef;
 	b2Body* m_Body;
@@ -100,6 +100,8 @@ public:
 private:
 	// Mouse
 	sf::Vector2f m_MousePos;
+
+	sf::Sprite m_Shape;
 
 	// Player
 	b2Vec2 m_Velocity;
