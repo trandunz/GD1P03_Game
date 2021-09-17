@@ -132,11 +132,11 @@ void Slime::Update()
 			if (worldManifold.normal.y > 0 && m_bCanFallDamage)
 			{
 				//std::cout << "A Slime Landed" << "( Impact Velocity: " << impactVelocity.y << ")" << std::endl;
-				//if (impactVelocity.y <= -25.5f)
-				//{
-				//	//m_AudioManager->PlayPlayerDeath();
-				//	m_Health -= 300;
-				//}
+				if (impactVelocity.y <= -30.5f)
+				{
+					//m_AudioManager->PlayPlayerDeath();
+					m_Health += impactVelocity.y / 2;
+				}
 
 				m_bCanFallDamage = false;
 			}
@@ -252,7 +252,7 @@ void Slime::Movement()
 	}
 
 	// Movement
-	if (DistanceToPlayer > 100.0f)
+	if (DistanceToPlayer > 150.0f)
 	{
 		// Move Left
 		if (velocity.x < 1.0f && velocity.x > -1.0f && DirectionToPlayer < 0)

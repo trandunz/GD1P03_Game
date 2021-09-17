@@ -220,71 +220,86 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
     GlobalMutex.lock();
     for (int i = 10; i < 21400 / 1.9f; i += 100)
     {
+        // Gap Edges Right
         if (i > 4800 && i < 5000)
         {
-            // Underground And Ores
             for (int j = 500; j < 21400 / 1.9f; j += 100)
             {
-                if (rand() % i <= 3000)
+                // Cave
+                if (j > 9200 && j < 10100)
                 {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
-                    //m_Block->SetSize(100, 100);
-                    m_Chunk.push_back(*m_Block);
-                    m_Block->m_ArrayIndex = i;
-                    m_Block = nullptr;
                 }
-                else if (rand() % i <= 1000)
+                else
                 {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
-                    //m_Block->SetSize(100, 100);
-                    m_Chunk.push_back(*m_Block);
-                    m_Block->m_ArrayIndex = i;
-                    m_Block = nullptr;
-                }
-                else if (rand() % i <= 800)
-                {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
-                    //m_Block->SetSize(100, 100);
-                    m_Chunk.push_back(*m_Block);
-                    m_Block->m_ArrayIndex = i;
-                    m_Block = nullptr;
+                    if (rand() % i <= 3000)
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
+                    else if (rand() % i <= 1000)
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
+                    else if (rand() % i <= 800)
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
                 }
             }
         }
+        // Gap Edges Left
         else if (i > 4000 && i < 4200)
         {
-            // Underground And Ores
             for (int j = 500; j < 21400 / 1.9f; j += 100)
             {
-                if (rand() % i <= 3000)
+                // Cave
+                if (j > 9200 && j < 10100)
                 {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
-                    //m_Block->SetSize(100, 100);
-                    m_Chunk.push_back(*m_Block);
-                    m_Block->m_ArrayIndex = i;
-                    m_Block = nullptr;
                 }
-                else if (rand() % i <= 1000)
+                else
                 {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
-                    //m_Block->SetSize(100, 100);
-                    m_Chunk.push_back(*m_Block);
-                    m_Block->m_ArrayIndex = i;
-                    m_Block = nullptr;
+                    if (rand() % i <= 3000)
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
+                    else if (rand() % i <= 1000)
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
+                    else if (rand() % i <= 800)
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
                 }
-                else if (rand() % i <= 800)
-                {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
-                    //m_Block->SetSize(100, 100);
-                    m_Chunk.push_back(*m_Block);
-                    m_Block->m_ArrayIndex = i;
-                    m_Block = nullptr;
-                }
+                
             }
         }
+        // Gap
         else if (i > 4200 && i < 4800)
         {
-            // Gap
         }
         else
         {
@@ -399,22 +414,22 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
             m_Chunk.push_back(*m_Block);
             m_Block->m_ArrayIndex = i;
             m_Block = nullptr;
-
+            
             // Underground And Ores
             for (int j = 500; j < 21400 / 1.9f; j += 100)
             {
-
-                if ((rand() % j < 1000))
+                // Cave
+                if (j > 9300 && j < 10100 && i > 4200)
                 {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIRT);
-                    //m_Block->SetSize(100, 100);
-                    m_Chunk.push_back(*m_Block);
-                    m_Block->m_ArrayIndex = i;
-                    m_Block = nullptr;
-                }
-                else
-                {
-                    if (rand() % 64 == 0)
+                    if (rand() % i <= 3000 && (j == 9400 || j == 10000))
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
+                    else if (rand() % i <= 1000 && (j == 9400 || j == 10000))
                     {
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
                         //m_Block->SetSize(100, 100);
@@ -422,63 +437,94 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                         m_Block->m_ArrayIndex = i;
                         m_Block = nullptr;
                     }
-                    else if ((rand() % j < 6000) && (rand() % j > 3000))
+                    else if (rand() % i <= 800 && (j == 9400 || j == 10000))
                     {
-                        if (rand() % 16 == 0)
-                        {
-                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
-                            //m_Block->SetSize(100, 100);
-                            m_Chunk.push_back(*m_Block);
-                            m_Block->m_ArrayIndex = i;
-                            m_Block = nullptr;
-                        }
-                        else
-                        {
-                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
-                            //m_Block->SetSize(100, 100);
-                            m_Chunk.push_back(*m_Block);
-                            m_Block->m_ArrayIndex = i;
-                            m_Block = nullptr;
-                        }
-
-                    }
-                    else if ((rand() % j < 8000) && (rand() % j > 7000))
-                    {
-
-                        if (rand() % 45 == 0)
-                        {
-                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMOND);
-                            //m_Block->SetSize(100, 100);
-                            m_Chunk.push_back(*m_Block);
-                            m_Block->m_ArrayIndex = i;
-                            m_Block = nullptr;
-
-                        }
-                        else if (rand() % 28 == 0)
-                        {
-                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLD);
-                            //m_Block->SetSize(100, 100);
-                            m_Chunk.push_back(*m_Block);
-                            m_Block->m_ArrayIndex = i;
-                            m_Block = nullptr;
-                        }
-                        else
-                        {
-                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
-                            //m_Block->SetSize(100, 100);
-                            m_Chunk.push_back(*m_Block);
-                            m_Block->m_ArrayIndex = i;
-                            m_Block = nullptr;
-                        }
-                    }
-                    else
-                    {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
                         m_Block = nullptr;
+                    }
+                }
+                // World
+                else
+                {
+                    if ((rand() % j < 1000))
+                    {
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIRT);
+                        //m_Block->SetSize(100, 100);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = i;
+                        m_Block = nullptr;
+                    }
+                    else
+                    {
+                        if (rand() % 64 == 0)
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = i;
+                            m_Block = nullptr;
+                        }
+                        else if ((rand() % j < 6000) && (rand() % j > 3000))
+                        {
+                            if (rand() % 16 == 0)
+                            {
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                                //m_Block->SetSize(100, 100);
+                                m_Chunk.push_back(*m_Block);
+                                m_Block->m_ArrayIndex = i;
+                                m_Block = nullptr;
+                            }
+                            else
+                            {
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                                //m_Block->SetSize(100, 100);
+                                m_Chunk.push_back(*m_Block);
+                                m_Block->m_ArrayIndex = i;
+                                m_Block = nullptr;
+                            }
 
+                        }
+                        else if ((rand() % j < 8000) && (rand() % j > 7000))
+                        {
+
+                            if (rand() % 45 == 0)
+                            {
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMOND);
+                                //m_Block->SetSize(100, 100);
+                                m_Chunk.push_back(*m_Block);
+                                m_Block->m_ArrayIndex = i;
+                                m_Block = nullptr;
+
+                            }
+                            else if (rand() % 28 == 0)
+                            {
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLD);
+                                //m_Block->SetSize(100, 100);
+                                m_Chunk.push_back(*m_Block);
+                                m_Block->m_ArrayIndex = i;
+                                m_Block = nullptr;
+                            }
+                            else
+                            {
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                                //m_Block->SetSize(100, 100);
+                                m_Chunk.push_back(*m_Block);
+                                m_Block->m_ArrayIndex = i;
+                                m_Block = nullptr;
+                            }
+                        }
+                        else
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::STONE);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = i;
+                            m_Block = nullptr;
+
+                        }
                     }
                 }
             }

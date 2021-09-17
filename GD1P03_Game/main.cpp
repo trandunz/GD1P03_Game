@@ -67,6 +67,7 @@ CTextureMaster* m_TextureMaster;
 sf::Clock DeathTimer;
 
 Spawner* m_SlimeSpawner;
+std::list<Spawner> m_SlimeSpawners;
 
 /// <summary>
 /// 
@@ -117,6 +118,7 @@ int main()
 	{
 		std::cout << "Cleanup Success" << std::endl;
 	}
+	m_SlimeSpawners.clear();
 
 	delete m_SlimeSpawner;
 	delete m_TextureMaster;
@@ -165,10 +167,26 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, 0, m_Player, CEnemy::ENEMYTYPE::SLIME);
+	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
-	m_SlimeSpawner->SetSpawnCount(50);
+	m_SlimeSpawner->SetSpawnCount(20);
+	m_SlimeSpawners.push_back(*m_SlimeSpawner);
+	m_SlimeSpawner = nullptr;
+
+	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME);
+	m_SlimeSpawner->Start();
+	m_SlimeSpawner->ToggleSpawning();
+	m_SlimeSpawner->SetSpawnCount(5);
+	m_SlimeSpawners.push_back(*m_SlimeSpawner);
+	m_SlimeSpawner = nullptr;
+
+	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME);
+	m_SlimeSpawner->Start();
+	m_SlimeSpawner->ToggleSpawning();
+	m_SlimeSpawner->SetSpawnCount(5);
+	m_SlimeSpawners.push_back(*m_SlimeSpawner);
+	m_SlimeSpawner = nullptr;
 
 	// Init UI
 	InitUI();
@@ -277,7 +295,10 @@ void Update()
 		//
 		if (!m_bClose)
 		{
-			m_SlimeSpawner->Update();
+			for (Spawner& spawner : m_SlimeSpawners)
+			{
+				spawner.Update();
+			}
 
 			// Player Exists
 			if (m_Player != nullptr)
@@ -302,7 +323,10 @@ void Update()
 					delete m_Player;
 					m_Player = nullptr;
 
-					m_SlimeSpawner->LoosePlayer();
+					for (Spawner& spawner : m_SlimeSpawners)
+					{
+						spawner.LoosePlayer();
+					}
 					
 					//m_bClose = true;
 				}
@@ -324,7 +348,10 @@ void Update()
 					m_Player->Start();
 					m_WorldManager->InitPointer(m_Player);
 
-					m_SlimeSpawner->SetPlayer(m_Player);
+					for (Spawner& spawner : m_SlimeSpawners)
+					{
+						spawner.SetPlayer(m_Player);
+					}
 
 					// Already Has A Pickaxe Somehow?
 					m_GUI->InitHotBarScrolling(m_Event, m_Player);
@@ -360,7 +387,10 @@ void Render()
 	// Player
 	if (m_Player != nullptr)
 	{
-		m_SlimeSpawner->Render();
+		for (Spawner& spawner : m_SlimeSpawners)
+		{
+			spawner.Render();
+		}
 
 		m_Player->Render();
 
