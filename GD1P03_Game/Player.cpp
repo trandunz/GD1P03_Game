@@ -52,12 +52,8 @@ CPlayer::~CPlayer()
 		m_Pickaxe = nullptr;
 	}
 
-	for (int i = 0; i < m_InventoryMap.size(); i++)
-	{
-		m_InventoryMap.erase(m_InventoryMap.begin());
-		//std::cout << "Inventory Piece Destroyed" << std::endl;
-	}
 	m_InventoryMap.clear();
+
 	m_Furnace = nullptr;
 	m_Chest = nullptr;
 	m_Door = nullptr;
@@ -375,14 +371,14 @@ void CPlayer::Movement(sf::Event& _event)
 		// Fly
 		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space && m_bCanJump)
 		{
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -450.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -420.0f), true);
 			m_bCanJump = false;
 		}
 
 		// Jump
 		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::W && m_bCanJump)
 		{
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -450.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -420.0f), true);
 			m_bCanJump = false;
 		}
 	}
@@ -918,13 +914,13 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_BodyDef.angularDamping = 0.0f;
 	m_BodyDef.fixedRotation = true;
 	m_BodyDef.allowSleep = false;
-	m_BodyDef.awake = true;
 	m_BodyDef.gravityScale = 10.0f;
+	m_BodyDef.bullet = true;
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
 	m_b2pShape.SetAsBox((100 / 4) / m_Scale, (190 / 2) / m_Scale);
 
-	m_FixtureDef.density = 2.0f;
+	m_FixtureDef.density = 1.9f;
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 0.9f;
 	m_FixtureDef.restitution = 0.2f;

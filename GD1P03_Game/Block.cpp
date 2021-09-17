@@ -163,9 +163,9 @@ void CBlock::Update()
 	}
 }
 
-void CBlock::Render()
+void CBlock::Render(sf::Shader* _shader)
 {
-	m_RenderWindow->draw(m_Shape);
+	m_RenderWindow->draw(m_Shape, _shader);
 }
 
 void CBlock::SetPosition(float _x, float _y)
@@ -185,8 +185,6 @@ void CBlock::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, flo
 
 	DestroyBody();
 	CreateBody(_currentPosX, _currentPosY, b2_staticBody);
-
-	Render();
 }
 
 sf::Vector2f CBlock::GetSize()

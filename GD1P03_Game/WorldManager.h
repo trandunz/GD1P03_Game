@@ -25,7 +25,7 @@ namespace Utils
 class CWorldManager
 {
 public:
-	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui);
+	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader = NULL, sf::Shader* _surfaceShader = NULL);
 	~CWorldManager();
 
 	void Start(CTextureMaster* _textureMaster);
@@ -54,6 +54,8 @@ public:
 	std::list<sf::RectangleShape> m_SkyChunk = {};
 
 private:
+	sf::Shader* m_Shader;
+	sf::Shader* m_SurfaceShader;
 
 	sf::RenderWindow* m_RenderWindow;
 	CPlayer* m_Player;
@@ -73,6 +75,7 @@ private:
 
 	// Threads
 	sf::Mutex GlobalMutex;
+
 };
 #endif
 

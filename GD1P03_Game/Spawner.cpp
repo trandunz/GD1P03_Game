@@ -1,6 +1,6 @@
 #include "Spawner.h"
 
-Spawner::Spawner(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type)
+Spawner::Spawner(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader)
 {
 	m_World = &_world;
 	m_RenderWindow = _renderWindow;
@@ -10,6 +10,7 @@ Spawner::Spawner(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaste
 	m_Zombieptr = nullptr;
 	m_Scale = _scale;
 	m_Type = _type;
+	m_Shader = _shader;
 
 	m_Texture = new sf::Texture();
 	m_Texture->loadFromFile("Images/SlimeSpawner.png");
@@ -91,7 +92,7 @@ void Spawner::Update()
 void Spawner::Render()
 {
 	// Sprite
-	m_RenderWindow->draw(m_Shape);
+	m_RenderWindow->draw(m_Shape, m_Shader);
 
 	switch (m_Type)
 	{
@@ -103,7 +104,7 @@ void Spawner::Render()
 	{
 		for (Slime& slime : m_Slimes)
 		{
-			slime.Render();
+			slime.Render(m_Shader);
 		}
 		break;
 	}
@@ -155,6 +156,7 @@ Spawner::~Spawner()
 	m_Slimes.clear();
 
 	delete m_Texture;
+	m_Shader = nullptr;
 	m_Texture = nullptr;
 	m_Player = nullptr;
 	m_World = nullptr;

@@ -105,4 +105,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\fragment_shader.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\vertex_shader.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\fragment_shader_surface.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\vertex_shader_surface.vert">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\fragment_shader _black.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Shaders\fragment_shader _black.vert">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

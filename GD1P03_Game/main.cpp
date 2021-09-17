@@ -20,6 +20,8 @@ void CenterViewsToSprite(sf::Sprite _object);
 void Test_AddDirtToInv();
 bool PickupItemOnGround();
 
+void InitShaders();
+
 // Mouse
 sf::Vector2f MousePos;
 
@@ -69,6 +71,10 @@ sf::Clock DeathTimer;
 Spawner* m_SlimeSpawner;
 std::list<Spawner> m_SlimeSpawners;
 
+sf::Shader m_CoreShader;
+sf::Shader m_SurfaceShader;
+sf::Shader m_ShaderBlack;
+
 /// <summary>
 /// 
 /// </summary>
@@ -83,8 +89,8 @@ int main()
 		m_Settings.antialiasingLevel = 8;
 
 		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetsrary", sf::Style::Default, m_Settings);
-		//m_RenderWindow->setFramerateLimit(120);
-		m_RenderWindow->setVerticalSyncEnabled(true);
+		m_RenderWindow->setFramerateLimit(144);
+		//m_RenderWindow->setVerticalSyncEnabled(true);
 		m_RenderWindow->setKeyRepeatEnabled(false);
 
 		// Window Icon
@@ -149,6 +155,8 @@ int main()
 /// </summary>
 void Start()
 {
+	InitShaders();
+
 	m_TextureMaster = new CTextureMaster();
 	m_Event = sf::Event();
 
@@ -164,24 +172,24 @@ void Start()
 	m_Player->Start();
 
 	// Map
-	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI);
+	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME);
+	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(20);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME);
+	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(5);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME);
+	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(5);
@@ -326,8 +334,9 @@ void Update()
 					for (Spawner& spawner : m_SlimeSpawners)
 					{
 						spawner.LoosePlayer();
+						
 					}
-					
+					m_WorldManager->InitPointer(nullptr);
 					//m_bClose = true;
 				}
 
@@ -399,7 +408,7 @@ void Render()
 		/////////////////////////////////////
 
 		m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
-		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player);
+		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, &m_SurfaceShader, &m_ShaderBlack);
 
 		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster);
 
@@ -500,6 +509,25 @@ bool PickupItemOnGround()
 	//contact = nullptr;
 
 	//return false;
+}
+
+void InitShaders()
+{
+	if (!m_CoreShader.loadFromFile("Shaders/vertex_shader.vert", "Shaders/fragment_shader.frag"))
+	{
+		std::cout << "Core Shader Failed To Load!" << std::endl;
+	}
+
+	if (!m_SurfaceShader.loadFromFile("Shaders/vertex_shader_surface.vert", "Shaders/fragment_shader_surface.frag"))
+	{
+		std::cout << "Surface Shader Failed To Load!" << std::endl;
+	}
+
+	if (!m_ShaderBlack.loadFromFile("Shaders/vertex_shader_black.vert", "Shaders/fragment_shader_black.frag"))
+	{
+		std::cout << "Black Shader Failed To Load!" << std::endl;
+	}
+	
 }
 
 

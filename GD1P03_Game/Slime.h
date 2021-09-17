@@ -22,7 +22,7 @@ public:
 
 	virtual void Start();
 	virtual void Update();
-	void Render();
+	void Render(sf::Shader* _shader = NULL);
 
 	void SetPlayer(CPlayer* _player);
 	void LoosePlayer();

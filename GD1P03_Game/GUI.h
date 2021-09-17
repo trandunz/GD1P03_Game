@@ -27,7 +27,7 @@ public:
 
 	void HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster);
 	sf::Text InitHealthUI(CPlayer* _player);
-	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player);
+	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderBlack);
 	void InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
 	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster);
 	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
@@ -85,7 +85,9 @@ private:
 	sf::Sprite heart4;
 	sf::Sprite heart5;
 
-	
+	sf::Clock m_DrawTimer;
+
+	sf::Texture* m_BlackTexture;
 
 };
 #endif

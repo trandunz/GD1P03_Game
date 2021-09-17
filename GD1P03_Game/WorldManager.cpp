@@ -1,12 +1,15 @@
 #include "WorldManager.h"
 
-CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui)
+CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader, sf::Shader* _surfaceShader)
 {
+    m_Shader = _shader;
     m_RenderWindow = _renderWindow;
     m_Player = _player;
     m_World = &_world;
     m_GUI = _gui;
     m_Block = nullptr;
+    m_SurfaceShader = _surfaceShader;
+
     _gui->m_CurrentSeed = time(NULL);
     //_gui->m_CurrentSeed = 1631416783;
     srand(_gui->m_CurrentSeed);
@@ -24,7 +27,8 @@ CWorldManager::~CWorldManager()
     m_Doors.clear();
     m_Furnaces.clear();
 
-
+    m_SurfaceShader = nullptr;
+    m_Shader = nullptr;
     m_Block = nullptr;
     m_GUI = nullptr;
     m_Player = nullptr;
@@ -46,6 +50,7 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
     CreateSurfaceLayerPart2(_textureMaster);
     CreateWorldBoundary(_textureMaster);
 
+
     //
     // Reading From File??
     //
@@ -61,6 +66,8 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
             it->m_
         }
     }*/
+
+    
 }
 
 void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
@@ -116,43 +123,138 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
 
 void CWorldManager::Render()
 {
+    m_SurfaceShader->setUniform("hasTexture", true);
+    m_SurfaceShader->setUniform("lightPos", sf::Vector2f(0, -500));
+
     // World BackGround
     m_WorldBackGround.setPosition(m_RenderWindow->getView().getCenter());
     m_RenderWindow->draw(m_WorldBackGround);
 
-    // Draw All Blocks In Radius 1.8f
-    std::list<CBlock>::iterator it;
-    // Blocks
-    for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    if (m_Player != nullptr)
     {
-        float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
-        if (Mag1 < m_RenderWindow->getSize().x * 1.8f)
+        m_Shader->setUniform("hasTexture", true);
+        m_Shader->setUniform("lightPos", m_Player->GetShape().getPosition());
+
+        // Draw All Blocks
+        std::list<CBlock>::iterator it;
+        // Blocks
+        for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
         {
-            m_RenderWindow->draw(it->GetShape());
+            float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+            if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y > 1300)
+            {
+                m_RenderWindow->draw(it->GetShape(), m_Shader);
+            }
+            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1300 && it->GetShape().getPosition().y >= 400)
+            {
+                if (Mag1 < 190 && m_Player->GetShape().getPosition().y > 1250)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_Shader);
+                }
+                else
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                }
+                
+            }
+            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y < 400)
+            {
+                if (Mag1 < 190 && m_Player->GetShape().getPosition().y > 1250)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_Shader);
+                }
+                else
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                }
+                
+            }
+        }
+
+        for (CDoor& door : m_Doors)
+        {
+            door.Render(m_Shader);
+        }
+        for (CChest& chest : m_Chests)
+        {
+            chest.Render(m_Shader);
+        }
+        for (CFurnace& furnace : m_Furnaces)
+        {
+            furnace.Render(m_Shader);
+        }
+    }
+    else
+    {
+        // Draw All Blocks
+        std::list<CBlock>::iterator it;
+        // Blocks
+        for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+        {
+            float Mag1 = 0;
+            if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y > 1300)
+            {
+                m_RenderWindow->draw(it->GetShape(), m_Shader);
+            }
+            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1300 && it->GetShape().getPosition().y >= 400)
+            {
+                if (Mag1 < 190 && m_Player->GetShape().getPosition().y > 1250)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_Shader);
+                }
+                else
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                }
+                
+            }
+            else if (Mag1 < 1920 * 1.8f && m_Player->GetShape().getPosition().y < 400)
+            {
+                if (Mag1 < 190 && it->GetShape().getPosition().y > 1250)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_Shader);
+                }
+                else
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                }
+                
+            }
+        }
+
+        for (CDoor& door : m_Doors)
+        {
+            door.Render(m_Shader);
+        }
+        for (CChest& chest : m_Chests)
+        {
+            chest.Render(m_Shader);
+        }
+        for (CFurnace& furnace : m_Furnaces)
+        {
+            furnace.Render(m_Shader);
         }
     }
 
-    for (CDoor& door : m_Doors)
-    {
-        door.Render();
-    }
-    for (CChest& chest : m_Chests)
-    {
-        chest.Render();
-    }
-    for (CFurnace& furnace : m_Furnaces)
-    {
-        furnace.Render();
-    }
+    
 }
 
 void CWorldManager::CreateSkyChunk()
 {
-    sf::Vector2f playerPos = sf::Vector2f(m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
+    sf::Vector2f playerPos;
+    if (m_Player != nullptr)
+    {
+        playerPos = sf::Vector2f(m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
+    }
+    else
+    {
+        playerPos = sf::Vector2f(0, 0);
+    }
+    
     m_SkyChunk.clear();
     for (int i = 0; i < 20000; i += 100)
     {
-        for (int j = 0; j < 20000; j += 100)
+        for (int j = 0; j < 8000; j += 100)
         {
             float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
             if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
@@ -198,7 +300,7 @@ void CWorldManager::CreateSkyChunk()
                 m_RenderWindow->draw(m_SkyChunk.front());
             }
         }
-        for (int j = 0; j < 20000; j += 100)
+        for (int j = 0; j <  8000; j += 100)
         {
             float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
             if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
@@ -536,7 +638,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
 void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
 {
     GlobalMutex.lock();
-    for (int i = -90; i > -21100 / 1.9f; i -= 100)
+    for (int i = -90; i > -21400 / 1.9f; i -= 100)
     {
         // Trees
         if (rand() % 5 == 0)
@@ -792,7 +894,7 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
     for (int j = 500 - 6500; j < 21400 / 1.9f; j += 100)
     {
         // Grass
-        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +21490 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +21190 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
 
         //m_Block->SetSize(100, 100);
         m_Chunk.push_back(*m_Block);

@@ -9,19 +9,13 @@ GUI::GUI()
 
 GUI::~GUI()
 {
-	for (int i = 0; i < m_InventorySlotMap.size(); i++)
-	{
-		m_InventorySlotMap.erase(m_InventorySlotMap.begin());
-		//std::cout << "Inventory Piece Destroyed" << std::endl;
-	}
 	m_InventoryItemStackCounters.clear();
 	m_InventorySlotMap.clear();
 	
+	delete m_BlackTexture;
+	m_BlackTexture = nullptr;
 	delete m_miniMap;
-	
-	
 	m_miniMap = nullptr;
-	
 }
 
 void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster)
@@ -132,14 +126,15 @@ sf::Text GUI::InitHealthUI(CPlayer* _player)
 	return m_HealthText;
 }
 
-void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player)
+void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderBlack)
 {
+	/*_shaderBlack->setUniform("hasTexture", true);
+	_shaderBlack->setUniform("lightPos", 0);*/
+
 	// Assigning Render Texture View and Zooming
 	sf::View MiniMapView = sf::View(_player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
-	MiniMapView.zoom(57);
+	MiniMapView.zoom(40);
 	m_miniMap->setView(MiniMapView);
-	
-	m_miniMap->clear();
 
 	m_MiniMapWorldBackGround.setPosition(_renderWindow->getView().getCenter());
 	m_miniMap->draw(m_MiniMapWorldBackGround);
@@ -150,13 +145,21 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
 		float Mag1 = sqrt(((it->GetShape().getPosition().x - _player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - _player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - _player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - _player->GetShape().getPosition().y)));
-		if (Mag1 < 1920 * 4.0f)
+		if (Mag1 < 1920 * 2.9f)
 		{
-			m_miniMap->draw(it->GetShape());
-		}
-		if (Mag1 < _renderWindow->getSize().x * 1.0f)
-		{
-			it->GetShape().setColor(sf::Color::White);
+			//m_miniMap->draw(it->GetShape());
+			if (it->m_bHasBeenSpotted)
+			{
+				m_miniMap->draw(it->GetShape());
+			}
+			else if (Mag1 > 500)
+			{
+				m_miniMap->draw(it->GetShape());
+			}
+			else if (Mag1 <= 500)
+			{
+				m_miniMap->draw(it->GetShape());
+			}
 		}
 	}
 
@@ -177,11 +180,19 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	/*m_MiniMapShape.getTexture()->copyToImage().saveToFile("MINIMAP.png");*/
 	
 	// Draw Shape With Applied RenderText To Main Window
-	_renderWindow->draw(m_MiniMapShape);
+	_renderWindow->draw(m_MiniMapShape, _shader);
 }
 
 void GUI::InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
+	m_BlackTexture = new sf::Texture();
+	if (!m_BlackTexture->loadFromFile("Images/Black.png"))
+	{
+		std::cout << "Black Texture Failed!" << std::endl;
+	}
+	
+	
+
 	m_miniMap = new sf::RenderTexture();
 	m_miniMap->create(200, 200);
 
@@ -216,6 +227,8 @@ void GUI::InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureM
 	m_MiniMapWorldBackGround.setTexture(*_textureMaster->m_Sky, true);
 	m_MiniMapWorldBackGround.setOrigin(m_MiniMapWorldBackGround.getGlobalBounds().width / 2, m_MiniMapWorldBackGround.getGlobalBounds().height / 2);
 	m_MiniMapWorldBackGround.setScale(12, 12);
+
+	m_DrawTimer.restart();
 }
 
 void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster)
@@ -755,8 +768,6 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _w
 
 	if (_player->bInventoryOpen())
 	{
-		//std::cout << _player->m_InventoryMap[0].GetShape().getPosition().x << "-" << _player->m_InventoryMap[0].GetShape().getPosition().y << " Item" << std::endl;
-		//std::cout << m_MousePointer.getPosition().x << "-" << m_MousePointer.getPosition().y << " Mouse" << std::endl;
 		_renderWindow->draw(m_MousePointer);
 	}
 	else

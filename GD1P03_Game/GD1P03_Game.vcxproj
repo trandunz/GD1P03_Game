@@ -171,6 +171,14 @@
     <ClInclude Include="Zombie.h" />
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\fragment_shader _black.frag" />
+    <None Include="Shaders\fragment_shader _black.vert" />
+    <None Include="Shaders\fragment_shader.frag" />
+    <None Include="Shaders\fragment_shader_surface.frag" />
+    <None Include="Shaders\vertex_shader.vert" />
+    <None Include="Shaders\vertex_shader_surface.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -39,8 +39,6 @@ public:
 		OBSIDIAN
 	};
 
-	bool MARKASDESTROY = false;
-
 	CBlock();
 	CBlock(sf::Texture* _texture, BLOCKTYPE _type = BLOCK);
 	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, bool _bWallpaper, BLOCKTYPE _type = BLOCK);
@@ -48,7 +46,7 @@ public:
 
 	void Start();
 	virtual void Update();
-	virtual void Render();
+	virtual void Render(sf::Shader* _shader = NULL);
 
 	void SetPosition(float _x, float _y);
 	sf::Vector2f GetPosition();
@@ -62,7 +60,7 @@ public:
 		return m_Body;
 	}
 
-	virtual void DestroyBody();
+	void DestroyBody();
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 
 	b2Body* m_Body;
@@ -71,6 +69,9 @@ public:
 	b2FixtureDef m_FixtureDef;
 
 	BLOCKTYPE m_Type;
+
+
+	bool MARKASDESTROY = false;
 
 	long int m_ArrayIndex = -1;
 	int m_PositionInInventory = -1;
@@ -81,6 +82,8 @@ public:
 	float m_BlockStrength = 3;
 	
 	sf::Texture* m_Texture;
+
+	bool m_bHasBeenSpotted = false;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 
@@ -88,16 +91,8 @@ protected:
 
 	sf::Sprite m_Shape;
 
-	
-	
-	
-
 	float m_Scale;
 	sf::Vector2f m_Size = sf::Vector2f(100, 100);
-
-	
-
-	
 };
 #endif
 
