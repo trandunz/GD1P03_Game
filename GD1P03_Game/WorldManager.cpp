@@ -116,9 +116,6 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
             m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
         }
     }
-
-    // World Step
-    m_World->Step(1 / 60.0f, 60, 60);
 }
 
 void CWorldManager::Render()
@@ -198,7 +195,7 @@ void CWorldManager::Render()
             }
             else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1300 && it->GetShape().getPosition().y >= 400)
             {
-                if (Mag1 < 190 && m_Player->GetShape().getPosition().y > 1250)
+                if (Mag1 < 190 && m_RenderWindow->getView().getCenter().y > 1250)
                 {
                     m_RenderWindow->draw(it->GetShape(), m_Shader);
                 }
@@ -208,7 +205,7 @@ void CWorldManager::Render()
                 }
                 
             }
-            else if (Mag1 < 1920 * 1.8f && m_Player->GetShape().getPosition().y < 400)
+            else if (Mag1 < 1920 * 1.8f && m_RenderWindow->getView().getCenter().y < 400)
             {
                 if (Mag1 < 190 && it->GetShape().getPosition().y > 1250)
                 {

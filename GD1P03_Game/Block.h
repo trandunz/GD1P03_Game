@@ -17,7 +17,7 @@
 class CBlock
 {
 public:
-	enum BLOCKTYPE
+	enum class BLOCKTYPE
 	{
 		PICKAXE = 0,
 		DOOR,
@@ -36,12 +36,13 @@ public:
 		GOLD,
 		DIAMOND,
 		COAL,
-		OBSIDIAN
+		OBSIDIAN,
+		BOW,
 	};
 
 	CBlock();
-	CBlock(sf::Texture* _texture, BLOCKTYPE _type = BLOCK);
-	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, bool _bWallpaper, BLOCKTYPE _type = BLOCK);
+	CBlock(sf::Texture* _texture, BLOCKTYPE _type = BLOCKTYPE::BLOCK);
+	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, bool _bWallpaper, BLOCKTYPE _type = BLOCKTYPE::BLOCK);
 	virtual ~CBlock();
 
 	void Start();
@@ -84,6 +85,8 @@ public:
 	sf::Texture* m_Texture;
 
 	bool m_bHasBeenSpotted = false;
+
+	bool m_bCanCraft = false;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 

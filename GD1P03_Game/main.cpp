@@ -73,7 +73,7 @@ std::list<Spawner> m_SlimeSpawners;
 
 sf::Shader m_CoreShader;
 sf::Shader m_SurfaceShader;
-sf::Shader m_ShaderBlack;
+sf::Shader m_ShaderMiniMap;
 
 /// <summary>
 /// 
@@ -126,7 +126,6 @@ int main()
 	}
 	m_SlimeSpawners.clear();
 
-	delete m_SlimeSpawner;
 	delete m_TextureMaster;
 	delete m_AudioManager;
 	delete m_GUI;
@@ -175,21 +174,21 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(20);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(5);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
-	m_SlimeSpawner = new Spawner(m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(5);
@@ -327,6 +326,7 @@ void Update()
 
 				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
 				{
+					m_AudioManager->PlayPlayerDeath();
 					DeathTimer.restart();
 					delete m_Player;
 					m_Player = nullptr;
@@ -342,6 +342,9 @@ void Update()
 
 				if (m_WorldManager != nullptr)
 				{
+					// World Step
+					m_World.Step(1 / 60.0f, 60, 60);
+ 
 					//
 					// Main Render
 					//
@@ -366,6 +369,7 @@ void Update()
 					m_GUI->InitHotBarScrolling(m_Event, m_Player);
 				}
 			}
+
 		}
 		else if (m_bClose)
 		{
@@ -408,11 +412,11 @@ void Render()
 		/////////////////////////////////////
 
 		m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
-		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, &m_SurfaceShader, &m_ShaderBlack);
+		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, &m_SurfaceShader, &m_ShaderMiniMap);
 
+		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
 		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster);
-
-		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster);
+		
 		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView);
 	}
 
@@ -445,7 +449,9 @@ void InitUI()
 	m_GUI->InitMousePosSprite(m_TextureMaster);
 	m_GUI->InitMiniMap(m_RenderWindow, m_TextureMaster);
 	m_GUI->InitHealthUI(m_Player);
+	m_GUI->InitCraftingUI(m_TextureMaster);
 	m_GUI->InitInventoryUI(m_Player, m_RenderWindow, m_TextureMaster);
+	
 	
 
 	// UI View
@@ -467,7 +473,7 @@ void CenterViewsToSprite(sf::Sprite _object)
 void Test_AddDirtToInv()
 {
 	m_Pickaxe = new CPickaxe();
-	m_Pickaxe->m_Type = m_Block->BLOCKTYPE::PICKAXE;
+	m_Pickaxe->m_Type = CBlock::BLOCKTYPE::PICKAXE;
 	m_Player->AddItemToInventory(m_Pickaxe, 5);
 	m_Pickaxe = nullptr;
 }
@@ -523,7 +529,7 @@ void InitShaders()
 		std::cout << "Surface Shader Failed To Load!" << std::endl;
 	}
 
-	if (!m_ShaderBlack.loadFromFile("Shaders/vertex_shader_black.vert", "Shaders/fragment_shader_black.frag"))
+	if (!m_ShaderMiniMap.loadFromFile("Shaders/vertex_shader_UI.vert", "Shaders/fragment_shader_UI.frag"))
 	{
 		std::cout << "Black Shader Failed To Load!" << std::endl;
 	}

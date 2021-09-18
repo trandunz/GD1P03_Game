@@ -12,6 +12,7 @@ CEnemy::CEnemy()
 CEnemy::~CEnemy()
 {
 	DestroyBody();
+
 	m_Texture = nullptr;
 	m_Body = nullptr;
 	m_World = nullptr;

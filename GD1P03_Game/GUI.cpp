@@ -11,6 +11,8 @@ GUI::~GUI()
 {
 	m_InventoryItemStackCounters.clear();
 	m_InventorySlotMap.clear();
+	m_CraftingSlots.clear();
+	m_CraftList.clear();
 	
 	delete m_BlackTexture;
 	m_BlackTexture = nullptr;
@@ -126,10 +128,10 @@ sf::Text GUI::InitHealthUI(CPlayer* _player)
 	return m_HealthText;
 }
 
-void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderBlack)
+void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI)
 {
-	/*_shaderBlack->setUniform("hasTexture", true);
-	_shaderBlack->setUniform("lightPos", 0);*/
+	_shaderUI->setUniform("hasTexture", true);
+	_shaderUI->setUniform("lightPos", sf::Vector2f(0, 0));
 
 	// Assigning Render Texture View and Zooming
 	sf::View MiniMapView = sf::View(_player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
@@ -180,7 +182,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	/*m_MiniMapShape.getTexture()->copyToImage().saveToFile("MINIMAP.png");*/
 	
 	// Draw Shape With Applied RenderText To Main Window
-	_renderWindow->draw(m_MiniMapShape, _shader);
+	_renderWindow->draw(m_MiniMapShape);
 }
 
 void GUI::InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
@@ -411,7 +413,6 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
-	
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
@@ -437,8 +438,6 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTe
 		
 		_player->m_InventoryStackValues.emplace(i, 0);
 	}
-
-
 	// Row 2
 	for (int i = 10; i < 20; i++)
 	{
@@ -545,12 +544,8 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTe
 
 void GUI::InitMousePosSprite(CTextureMaster* _textureMaster)
 {
-	
-
 	m_MousePos.setTexture(*_textureMaster->m_MousePosTex, true);
 	m_MousePos.setOrigin(m_MousePos.getGlobalBounds().width / 2, m_MousePos.getGlobalBounds().height / 2);
-
-	
 }
 
 void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
@@ -560,11 +555,16 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 	{
 		if (_event.mouseWheelScroll.delta >= 1)
 		{
-			if (_player->m_CurrentItemIndex < 10 && _player->m_CurrentItemIndex >= 0)
+			if (_player->bInventoryOpen())
+			{
+				// Cycle through crafting items
+			}
+
+			if (_player->m_CurrentItemIndex < 10 && _player->m_CurrentItemIndex >= 0 && !_player->bInventoryOpen())
 			{
 				_player->m_CurrentItemIndex--;
 			}
-			if (_player->m_CurrentItemIndex < 0)
+			if (_player->m_CurrentItemIndex < 0 && !_player->bInventoryOpen())
 			{
 				_player->m_CurrentItemIndex = 9;
 			}
@@ -573,20 +573,30 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
-				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == iit->second.PICKAXE)
+				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen())
 				{
 					std::cout << "Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen())
+				{
+					std::cout << "Bow Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
 				}
 			}
 		}
 		else if (_event.mouseWheelScroll.delta <= -1)
 		{
-			if (_player->m_CurrentItemIndex < 10)
+			if (_player->bInventoryOpen())
+			{
+				// Cycle through crafting items
+			}
+
+			if (_player->m_CurrentItemIndex < 10 && !_player->bInventoryOpen())
 			{
 				_player->m_CurrentItemIndex++;
 			}
-			if (_player->m_CurrentItemIndex > 9)
+			if (_player->m_CurrentItemIndex > 9 && !_player->bInventoryOpen())
 			{
 				_player->m_CurrentItemIndex = 0;
 			}
@@ -595,9 +605,14 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
-				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == iit->second.PICKAXE)
+				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen())
 				{
 					std::cout << "Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen())
+				{
+					std::cout << "Bow Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
 				}
 			}
@@ -610,9 +625,15 @@ void GUI::InitHotBarScrolling(sf::Event& _event, CPlayer* _player)
 	// Items
 	for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 	{
-		if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == iit->second.PICKAXE)
+		if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
 		{
 			std::cout << "Pickaxe Selected!" << std::endl;
+			iit->second.m_bIsItemAndSelected = true;
+		}
+
+		else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW)
+		{
+			std::cout << "Bow Selected!" << std::endl;
 			iit->second.m_bIsItemAndSelected = true;
 		}
 	}
@@ -644,8 +665,7 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 					_player->m_InventoryMap[_iterator].m_PositionInInventory = sit->first;
 					std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
 					std::swap(_player->m_InventoryMap[sit->first], cit->second);
-					_player->m_InventoryMap.erase(cit);
-					_player->m_InventoryStackValues.erase(vit);
+					_player->m_InventoryMap[_iterator].m_PositionInInventory = _iterator;
 
 					vit = _player->m_InventoryStackValues.end();
 					sit = m_InventorySlotMap.end();
@@ -653,9 +673,14 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 					// Moved Item Into Currently Selected Slot?
 					for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 					{
-						if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == iit->second.PICKAXE && iit->second.m_bIsItemAndSelected == false)
+						if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 						{
 							std::cout << "Pickaxe Selected!" << std::endl;
+							iit->second.m_bIsItemAndSelected = true;
+						}
+						else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+						{
+							std::cout << "Bow Selected!" << std::endl;
 							iit->second.m_bIsItemAndSelected = true;
 						}
 					}
@@ -720,44 +745,95 @@ bool GUI::MousePointerOverSlot()
 	return false;
 }
 
-void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster)
+void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster, sf::View& _uiView)
 {
 	if (_player->bInventoryOpen())
 	{
-		sf::Color color = sf::Color();
-		
 		// Row 1
-		for (int i = 50; i < 55; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			sf::Sprite test = sf::Sprite();
-			test.setTexture(*_textureMaster->m_ItemSpacer, true);
-			test.setScale(sf::Vector2f(0.6, 0.6));
-			test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
-			_renderWindow->mapCoordsToPixel(test.getPosition());
-			m_InventorySlotMap.emplace(i, test);
-			m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65 + ((i-50) * 65));
-			color = m_InventorySlotMap[i].getColor();
-			color.a = 55.0f * (i - 50 );
-			m_InventorySlotMap[i].setColor(color);
+			_renderWindow->mapCoordsToPixel(m_CraftingSlots[i].getPosition(), _uiView);
+			m_CraftingSlots[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65 + ((i) * 65));
+		
+			for (CBlock& item : m_CraftList)
+			{
+				if (item.m_bCanCraft)
+				{
+					item.SetPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65 + ((i) * 65));
+					_renderWindow->draw(item.GetShape());
+				}
+			}
 		}
+
+		for (CBlock& item : m_CraftList)
+		{
+			if (_player->IsItemInventory(CBlock::BLOCKTYPE::WOOD) && item.m_Type == CBlock::BLOCKTYPE::PLANKS)
+			{
+				item.m_bCanCraft = true;
+			}
+			else if (!_player->IsItemInventory(CBlock::BLOCKTYPE::WOOD) && item.m_Type == CBlock::BLOCKTYPE::PLANKS)
+			{
+				item.m_bCanCraft = false;
+			}
+		}
+		
 	}
+}
+
+void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
+{
+	sf::Color color = sf::Color();
+
+	// Row 1
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << "Create Crafting Space" << std::endl;
+
+		sf::Sprite test = sf::Sprite();
+		test.setTexture(*_textureMaster->m_ItemSpacer, true);
+		test.setScale(sf::Vector2f(0.6, 0.6));
+		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
+
+		m_CraftingSlots.emplace(i, test);
+
+		color = m_CraftingSlots[i].getColor();
+		color.a = 55.0f * (i);
+		m_CraftingSlots[i].setColor(color);
+	}
+
+	std::cout << "Size of slots: " << m_CraftingSlots.size() << std::endl;
+
+	// Init Craft List
+	CBlock Recipe = CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
+	m_CraftList.push_back(Recipe);
+	CBlock Recipe2 = CBlock(_textureMaster->m_DoorLeft, CBlock::BLOCKTYPE::DOOR);
+	m_CraftList.push_back(Recipe2);
+	CBlock Recipe3 = CBlock(_textureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+	m_CraftList.push_back(Recipe3);
+	CBlock Recipe4 = CBlock(_textureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
+	m_CraftList.push_back(Recipe4);
+	CBlock Recipe5 = CBlock(_textureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+	m_CraftList.push_back(Recipe5);
 }
 
 void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView)
 {
 	if (_player->bInventoryOpen())
 	{
-		// Render
 		for (int i = 0; i < m_InventorySlotMap.size(); i++)
 		{
 			_renderWindow->draw(m_InventorySlotMap[i]);
 			_renderWindow->draw(_player->m_InventoryMap[i].GetShape());
 			_renderWindow->draw(m_InventoryItemStackCounters[i]);
 		}
+
+		for (int i = 0; i < m_CraftingSlots.size(); i++)
+		{
+			_renderWindow->draw(m_CraftingSlots[i]);
+		}
 	}
 	else
 	{
-		// Render
 		for (int i = 0; i < 10; i++)
 		{
 			_renderWindow->draw(m_InventorySlotMap[i]);

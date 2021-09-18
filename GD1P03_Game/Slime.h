@@ -33,6 +33,8 @@ public:
 	virtual void Movement();
 	virtual void Attack();
 
+	void TakeDamage(float _damage, bool _projectile = false);
+
 private:
 	bool m_bIsBoss = false;
 
@@ -42,6 +44,7 @@ private:
 
 	bool m_bCanFallDamage = true;
 
-	sf::Clock m_AttackTimer;
+	sf::Clock m_DamageTimer;
+
 };
 #endif

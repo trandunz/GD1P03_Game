@@ -2,35 +2,34 @@
 
 CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, CAudioManager* _audioManager, CTextureMaster* _textureMaster)
 {
+	// Init
 	m_AudioManager = _audioManager;
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
+	m_TextureMaster = _textureMaster;
 	m_Block = nullptr;
 	m_Chest = nullptr;
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
-	m_TextureMaster = _textureMaster;
 
 	// Textures
 	m_PlayerRightTex = new sf::Texture();
 	m_PlayerLeftTex = new sf::Texture();
 	if (m_PlayerRightTex->loadFromFile("Images/PlayerSpritesRight.png"))
 	{
-		std::cout << "Loaded Player" << std::endl;
+		std::cout << "Loaded Player Right Texture." << std::endl;
 	}
 	if (m_PlayerLeftTex->loadFromFile("Images/PlayerSpritesLeft.png"))
 	{
-		std::cout << "Loaded Player" << std::endl;
+		std::cout << "Loaded Player Left Texture." << std::endl;
 	}
 	m_Shape = sf::Sprite();
 	m_Shape.setTexture(*m_PlayerRightTex, true);
 	m_Shape.setTextureRect(sf::IntRect(0, 0, 100, 200));
 
+	// Body
 	CreateBody(100, -100, b2_dynamicBody);
-
-	// Velocity
-	m_Velocity = b2Vec2(0.0f, 0.0f);
 
 	// Map Icon
 	m_MapIconTex = new sf::Texture();
@@ -52,7 +51,14 @@ CPlayer::~CPlayer()
 		m_Pickaxe = nullptr;
 	}
 
+	if (m_Bow != nullptr)
+	{
+		delete m_Bow;
+		m_Bow = nullptr;
+	}
+
 	m_InventoryMap.clear();
+	m_Projectiles.clear();
 
 	m_Furnace = nullptr;
 	m_Chest = nullptr;
@@ -66,6 +72,10 @@ CPlayer::~CPlayer()
 	delete m_PlayerLeftTex;
 	delete m_AnimationTimer;
 	delete m_MineTimer;
+	delete m_DamageTimer;
+	delete m_DamageIndicatorTimer;
+	m_DamageIndicatorTimer = nullptr;
+	m_DamageTimer = nullptr;
 	m_MineTimer = nullptr;
 	m_AnimationTimer = nullptr;
 	m_PlayerLeftTex = nullptr;
@@ -81,14 +91,27 @@ void CPlayer::Start()
 {
 	m_AnimationTimer = new sf::Clock();
 	m_MineTimer = new sf::Clock();
+	m_DamageTimer = new sf::Clock();
+	m_DamageIndicatorTimer = new sf::Clock();
 
 	m_Pickaxe = new CPickaxe();
 	AddItemToInventory(m_Pickaxe);
 	m_Pickaxe = nullptr;
+
+	m_Bow = new Bow();
+	AddItemToInventory(m_Bow);
+	m_Bow = nullptr;
 }
 
 void CPlayer::Update(sf::Vector2f _mousePos)
 {
+	// Player Is Red From Damage
+	if (m_DamageIndicatorTimer->getElapsedTime().asSeconds() >= 0.2f && m_Shape.getColor() == sf::Color(100, 0, 0, 255))
+	{
+		m_Shape.setColor(sf::Color::White);
+		m_DamageIndicatorTimer->restart();
+	}
+
 	m_MousePos = _mousePos;
 
 	// Set SFML Shape Transform To Box 2D Body Transform
@@ -97,33 +120,57 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 
 	m_MapIcon.setPosition(m_Shape.getPosition());
 
-	// Player Has Pickaxe ? Orient Sprite : Nothing
+	// Player Has Pickaxe ? Orient Sprite
 	if (m_Pickaxe != nullptr)
 	{
 		m_Pickaxe->FlipSprite(m_Shape.getPosition(), m_Shape, m_PlayerLeftTex, m_PlayerRightTex);
+	}
+	// Player Has Bow ? Orient Sprite
+	else if (m_Bow != nullptr)
+	{
+		m_Bow->FlipSprite(m_Shape.getPosition(), m_Shape, m_PlayerLeftTex, m_PlayerRightTex);
 	}
 
 	// Items
 	for (std::map<int, CBlock>::iterator iit = m_InventoryMap.begin(); iit != m_InventoryMap.end(); iit++)
 	{
 		// Player Selects Pickaxe
-		if (iit->second.m_bIsItemAndSelected == true)
+		if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
 		{
 			std::cout << "New Pickaxe Created!" << std::endl;
 			m_Pickaxe = new CPickaxe(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
 			iit->second.m_bIsItemAndSelected = false;
 		}
+		// Player Selects Bow
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::BOW)
+		{
+			std::cout << "New Bow Created!" << std::endl;
+			m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
+			iit->second.m_bIsItemAndSelected = false;
+		}
 		// Player Unselects PickAxe
-		else if (iit->second.m_Type == iit->second.PICKAXE && m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first)
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
 		}
+		// Player Unselects Bow
+		else if ((m_Bow != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW))
+		{
+			delete m_Bow;
+			m_Bow = nullptr;
+		}
 		// Pickaxe Moves Slots Wealst Out
-		else if (iit->second.m_Type != iit->second.PICKAXE && m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first)
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
+		}
+		// Bow Moves Slots Wealst Out
+		else if ((m_Bow != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::BOW))
+		{
+			delete m_Bow;
+			m_Bow = nullptr;
 		}
 	}
 	
@@ -156,15 +203,13 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 			// Fall Damage
 			if (worldManifold.normal.y > 0 && m_bCanFallDamage)
 			{
-				if (impactVelocity.y <= -23.7f)
+				if (impactVelocity.y <= -20.7f)
 				{
-					m_AudioManager->PlayPlayerDeath();
-					m_Health -= 300;
+					TakeDamage(-impactVelocity.y);
 				}
 				else if (impactVelocity.y <= -15.87f)
 				{
-					m_AudioManager->PlayPlayerDamage();
-					m_Health += impactVelocity.y * 2;
+					TakeDamage(-impactVelocity.y + impactVelocity.y / 4);
 				}
 
 				m_bCanFallDamage = false;
@@ -179,6 +224,16 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		b = nullptr;
 	}
 	contact = nullptr;
+
+	if (m_Bow != nullptr)
+	{
+		Attack();
+	}
+
+	for (CProjectile& projectile : m_Projectiles)
+	{
+		projectile.Update();
+	}
 }
 
 void CPlayer::Render()
@@ -187,6 +242,15 @@ void CPlayer::Render()
 	if (m_Pickaxe != nullptr)
 	{
 		m_Pickaxe->Render();
+	}
+	else if (m_Bow != nullptr)
+	{
+		m_Bow->Render();
+	}
+
+	for (CProjectile& projectile : m_Projectiles)
+	{
+		m_RenderWindow->draw(projectile.m_Shape);
 	}
 
 	m_RenderWindow->draw(m_Shape);
@@ -410,25 +474,32 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 				Mine(m_Furnaces, _mousePositionSprite);
 			}
 		}
+		else if (m_Bow != nullptr)
+		{
+		}
 		// Left Mouse Clicked And In Empty Space
 		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite))
 		{
 			// Place Door
-			if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::DOOR)
+			if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::DOOR)
 			{
 				PlaceDoor(m_Doors, _mousePositionSprite);
 			}
 			// Swing Pickaxe
-			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::PICKAXE)
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PICKAXE)
+			{
+			}
+			// Bow
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::BOW)
 			{
 			}
 			//Chest
-			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::CHEST)
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::CHEST)
 			{
 				PlaceChest(m_Chests, _mousePositionSprite);
 			}
 			//Furnace
-			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == m_InventoryMap[m_CurrentItemIndex].BLOCKTYPE::FURNACE)
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::FURNACE)
 			{
 				PlaceFurnace(m_Furnaces, _mousePositionSprite);
 			}
@@ -502,6 +573,28 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 	}
 }
 
+void CPlayer::Attack()
+{
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && m_AttackTimer.getElapsedTime().asSeconds() >= m_AttackSpeed)
+	{
+		m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos);
+		
+		m_Projectiles.push_back(*m_Projectile);
+		m_Projectile = nullptr;
+		m_AttackTimer.restart();
+	}
+
+	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
+	while (pit != m_Projectiles.end())
+	{
+		if (pit->m_bMARKASDESTROY)
+		{
+			m_Projectiles.erase(pit);
+		}
+		pit++;
+	}
+}
+
 b2Body* CPlayer::GetBody()
 {
 	return m_Body;
@@ -515,6 +608,34 @@ int CPlayer::GetCurrentHP()
 int CPlayer::GetMaxHP()
 {
 	return m_MaxHP;
+}
+
+void CPlayer::TakeDamage(float _damage, bool _fallDamage)
+{
+	if (m_DamageTimer->getElapsedTime().asSeconds() >= 0.4f && !_fallDamage)
+	{
+
+		std::cout << "Player Took Damage!" << std::endl;
+		m_Health -= _damage;
+		m_DamageTimer->restart();
+		m_DamageIndicatorTimer->restart();
+		m_AudioManager->PlayPlayerDamage();
+
+		// Set Red
+		m_Shape.setColor(sf::Color(100, 0, 0, 255));
+	}
+	else if (m_DamageTimer->getElapsedTime().asSeconds() >= 0.1f && _fallDamage)
+	{
+		std::cout << "Player Took Damage!" << std::endl;
+		m_Health -= m_Health;
+		m_DamageTimer->restart();
+		m_DamageIndicatorTimer->restart();
+		m_AudioManager->PlayPlayerDamage();
+
+		// Set Red
+		m_Shape.setColor(sf::Color(100, 0, 0, 255));
+		
+	}
 }
 
 sf::Sprite& CPlayer::GetShape()
@@ -662,6 +783,18 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position)
 	_block = nullptr;
 }
 
+bool CPlayer::IsItemInventory(CBlock::BLOCKTYPE _type)
+{
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		if (m_InventoryMap[i].m_Type == _type)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void CPlayer::AddItemToInventory(CDoor* _door)
 {
 	if (/*IsDoorInInventory(_door)*/ false)
@@ -787,7 +920,7 @@ void CPlayer::PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionS
 	{
 		// Block
 		m_Block = new CBlock(m_RenderWindow, *m_World, m_InventoryMap[m_CurrentItemIndex].GetShape().getTexture(), m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y,false, m_InventoryMap[m_CurrentItemIndex].m_Type);
-		if (m_Block->m_Type == m_Block->BLOCKTYPE::SAND)
+		if (m_Block->m_Type == CBlock::BLOCKTYPE::SAND)
 		{
 			m_World->DestroyBody(m_Block->m_Body);
 			m_Block->m_BodyDef.type = b2_dynamicBody;
@@ -915,7 +1048,7 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_BodyDef.fixedRotation = true;
 	m_BodyDef.allowSleep = false;
 	m_BodyDef.gravityScale = 10.0f;
-	m_BodyDef.bullet = true;
+	m_BodyDef.bullet = false;
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
 	m_b2pShape.SetAsBox((100 / 4) / m_Scale, (190 / 2) / m_Scale);
@@ -924,6 +1057,8 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 0.9f;
 	m_FixtureDef.restitution = 0.2f;
+	m_FixtureDef.filter.categoryBits = 0x0002;
+	
 
 	m_Body->CreateFixture(&m_FixtureDef);
 

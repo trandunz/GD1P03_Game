@@ -67,77 +67,77 @@ void CBlock::Start()
 {
 	switch (m_Type)
 	{
-	case CBlock::DOOR:
+	case CBlock::BLOCKTYPE::DOOR:
 	{
 		m_BlockStrength = 5;
 		break;
 	}
-	case CBlock::CHEST:
+	case CBlock::BLOCKTYPE::CHEST:
 	{
 		m_BlockStrength = 5;
 		break;
 	}
-	case CBlock::DIRT:
+	case CBlock::BLOCKTYPE::DIRT:
 	{
 		m_BlockStrength = 2;
 		break;
 	}
-	case CBlock::STONE:
+	case CBlock::BLOCKTYPE::STONE:
 	{
 		m_BlockStrength = 3;
 		break;
 	}
-	case CBlock::WOOD:
+	case CBlock::BLOCKTYPE::WOOD:
 	{
 		m_BlockStrength = 4;
 		break;
 	}
-	case CBlock::PLANKS:
+	case CBlock::BLOCKTYPE::PLANKS:
 	{
 		m_BlockStrength = 3;
 		break;
 	}
-	case CBlock::SAND:
+	case CBlock::BLOCKTYPE::SAND:
 	{
 		m_BlockStrength = 2;
 		break;
 	}
-	case CBlock::MOSSYBRICK:
+	case CBlock::BLOCKTYPE::MOSSYBRICK:
 	{
 		m_BlockStrength = 6;
 		break;
 	}
-	case CBlock::GRASS:
+	case CBlock::BLOCKTYPE::GRASS:
 	{
 		m_BlockStrength = 3;
 		break;
 	}
-	case CBlock::LEAVES:
+	case CBlock::BLOCKTYPE::LEAVES:
 	{
 		m_BlockStrength = 1;
 		break;
 	}
-	case CBlock::OBSIDIAN:
+	case CBlock::BLOCKTYPE::OBSIDIAN:
 	{
 		m_BlockStrength = 100;
 		break;
 	}
-	case CBlock::IRON:
+	case CBlock::BLOCKTYPE::IRON:
 	{
 		m_BlockStrength = 5;
 		break;
 	}
-	case CBlock::COAL:
+	case CBlock::BLOCKTYPE::COAL:
 	{
 		m_BlockStrength = 5;
 		break;
 	}
-	case CBlock::GOLD:
+	case CBlock::BLOCKTYPE::GOLD:
 	{
 		m_BlockStrength = 6;
 		break;
 	}
-	case CBlock::DIAMOND:
+	case CBlock::BLOCKTYPE::DIAMOND:
 	{
 		m_BlockStrength = 6;
 		break;
@@ -223,6 +223,7 @@ void CBlock::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor
 	}
 	m_FixtureDef.density = 1.0f;
 	m_FixtureDef.shape = &m_b2pShape;
+	m_FixtureDef.filter.categoryBits = 0x0004;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);

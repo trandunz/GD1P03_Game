@@ -141,8 +141,10 @@
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Bow.cpp" />
     <ClCompile Include="CFurnace.cpp" />
     <ClCompile Include="Chest.cpp" />
+    <ClCompile Include="CProjectile.cpp" />
     <ClCompile Include="CTextureMaster.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -158,8 +160,10 @@
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Bow.h" />
     <ClInclude Include="CFurnace.h" />
     <ClInclude Include="Chest.h" />
+    <ClInclude Include="CProjectile.h" />
     <ClInclude Include="CTextureMaster.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Enemy.h" />
@@ -172,12 +176,12 @@
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragment_shader _black.frag" />
-    <None Include="Shaders\fragment_shader _black.vert" />
+    <None Include="Shaders\fragment_shader _UI.frag" />
     <None Include="Shaders\fragment_shader.frag" />
     <None Include="Shaders\fragment_shader_surface.frag" />
     <None Include="Shaders\vertex_shader.vert" />
     <None Include="Shaders\vertex_shader_surface.vert" />
+    <None Include="Shaders\vertex_shader_UI.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

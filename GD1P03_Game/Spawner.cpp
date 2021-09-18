@@ -1,6 +1,6 @@
 #include "Spawner.h"
 
-Spawner::Spawner(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader)
+Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader)
 {
 	m_World = &_world;
 	m_RenderWindow = _renderWindow;
@@ -11,6 +11,7 @@ Spawner::Spawner(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaste
 	m_Scale = _scale;
 	m_Type = _type;
 	m_Shader = _shader;
+	m_AudioManager = _audioManager;
 
 	m_Texture = new sf::Texture();
 	m_Texture->loadFromFile("Images/SlimeSpawner.png");
@@ -21,7 +22,7 @@ Spawner::Spawner(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaste
 
 void Spawner::Start()
 {
-	m_SpawnTimer = sf::Clock();
+	m_SpawnTimer = new sf::Clock();
 }
 
 void Spawner::Update()
@@ -36,14 +37,14 @@ void Spawner::Update()
 	{
 		if (m_bSpawn && m_Slimes.size() < m_SpawnCount)
 		{
-			if (m_SpawnTimer.getElapsedTime().asSeconds() >= 5)
+			if (m_SpawnTimer->getElapsedTime().asSeconds() >= 5)
 			{
 				m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
 				m_Slimeptr->SetPlayer(m_Player);
 				m_Slimes.push_back(*m_Slimeptr);
 				m_Slimeptr = nullptr;
 				std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-				m_SpawnTimer.restart();
+				m_SpawnTimer->restart();
 			}
 		}
 
@@ -74,6 +75,7 @@ void Spawner::Update()
 			{
 				if (sit->m_MARKASDESTORY)
 				{
+					//m_AudioManager->PlaySlimeDeath();
 					m_Slimes.erase(sit);
 				}
 			}
@@ -155,6 +157,9 @@ Spawner::~Spawner()
 	m_Zombies.clear();
 	m_Slimes.clear();
 
+	delete m_SpawnTimer;
+	m_SpawnTimer = nullptr;
+	m_AudioManager = nullptr;
 	delete m_Texture;
 	m_Shader = nullptr;
 	m_Texture = nullptr;

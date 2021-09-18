@@ -7,6 +7,7 @@
 #include <list>
 #include <set>
 #include <map>
+#include <vector>
 #include <fstream>
 #include "Player.h"
 #include "CTextureMaster.h"
@@ -31,7 +32,8 @@ public:
 	void InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
 	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster);
 	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
-	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster);
+	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster, sf::View& _uiView);
+	void InitCraftingUI(CTextureMaster* _textureMaster);
 
 	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView);
 
@@ -57,6 +59,8 @@ public:
 	sf::RenderTexture* m_miniMap;
 
 	std::map<int, sf::Sprite> m_InventorySlotMap;
+	std::map<int, sf::Sprite> m_CraftingSlots;
+	std::vector<CBlock> m_CraftList;
 
 	// Mouse Pointer
 	sf::Sprite m_MousePointer;

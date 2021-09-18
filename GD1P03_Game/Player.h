@@ -10,6 +10,8 @@
 #include "Pickaxe.h"
 #include "CTextureMaster.h"
 #include "CFurnace.h"
+#include "CProjectile.h"
+#include "Bow.h"
 
 
 class CPlayer
@@ -27,10 +29,13 @@ public:
 
 	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
 	
+	void Attack();
+
 	b2Body* GetBody();
 
 	int GetCurrentHP();
 	int GetMaxHP();
+	void TakeDamage(float _damage, bool _fallDamage = false);
 
 	sf::Sprite& GetShape();
 
@@ -52,6 +57,8 @@ public:
 	bool bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Sprite& _mousePositionSprite);
 	
 	bool IsBlockInInventory(CBlock* _block);
+
+	bool IsItemInventory(CBlock::BLOCKTYPE _type);
 
 	void AddItemToInventory(CBlock* _block, int _position);
 	void AddItemToInventory(CBlock* _block);
@@ -89,6 +96,7 @@ public:
 	sf::Texture* m_PlayerLeftTex;
 
 	CPickaxe* m_Pickaxe;
+	Bow* m_Bow;
 
 	// Box2d
 	b2BodyDef m_BodyDef;
@@ -110,6 +118,7 @@ private:
 	int m_HPRegenRate_s = 1;
 	int m_Health = 100;
 	int m_InteractionRange = 10;
+	float m_AttackSpeed = 0.6f;
 
 	bool m_bCanPlace = true;
 	bool m_bInventoryOpen = false;
@@ -123,6 +132,8 @@ private:
 	float m_Scale;
 	sf::Clock* m_AnimationTimer;
 	sf::Clock* m_MineTimer;
+	sf::Clock* m_DamageTimer;
+	sf::Clock* m_DamageIndicatorTimer;
 	CTextureMaster* m_TextureMaster;
 	int m_InventorySize = -1;
 
@@ -139,6 +150,12 @@ private:
 	CChest* m_Chest;
 
 	CFurnace* m_Furnace;
+
+	CProjectile* m_Projectile;
+	std::list<CProjectile> m_Projectiles;
+
+	sf::Clock m_AttackTimer;
+
 };
 #endif
 

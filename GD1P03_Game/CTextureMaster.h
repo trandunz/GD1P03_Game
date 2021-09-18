@@ -31,5 +31,6 @@ public:
 	sf::Texture* m_DiamondOre;
 	sf::Texture* m_Furnace;
 	sf::Texture* m_DoorLeft;
+	sf::Texture* m_Bow;
 };
 

@@ -3,6 +3,7 @@
 Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;
+	m_AudioManager = _audioManager;
 	m_Texture = new sf::Texture();
 
 	srand(time(NULL));
@@ -88,6 +89,7 @@ Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _
 Slime::~Slime()
 {
 	//std::cout << "A Slime Died!" << std::endl;
+
 	delete m_Texture;
 	m_Player = nullptr;
 }
@@ -135,12 +137,19 @@ void Slime::Update()
 				if (impactVelocity.y <= -30.5f)
 				{
 					//m_AudioManager->PlayPlayerDeath();
-					m_Health += impactVelocity.y / 2;
+					TakeDamage(-impactVelocity.y);
 				}
 
 				m_bCanFallDamage = false;
 			}
+
+			if (a->GetBody()->GetFixtureList()->IsSensor() || b->GetBody()->GetFixtureList()->IsSensor())
+			{
+				TakeDamage(50.0f, true);
+			}
 		}
+
+		
 
 		a = nullptr;
 		b = nullptr;
@@ -241,6 +250,7 @@ void Slime::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 1.0f;
 	m_FixtureDef.restitution = 0.1f;
+	m_FixtureDef.filter.categoryBits = 0x0004;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -407,120 +417,97 @@ void Slime::Attack()
 			{
 			case Slime::SLIMETYPE::GREEN:
 			{
-				if (DistanceToPlayer <= 150 && m_AttackTimer.getElapsedTime().asSeconds() >= 0.5f)
+				if (DistanceToPlayer <= 150)
 				{
-					std::cout << "Attack Player" << std::endl;
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
-					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 12.25f);
-
-					m_Player->m_AudioManager->PlayPlayerDamage();
-
-					m_AttackTimer.restart();
+					m_Player->TakeDamage(12.25f);
 				}
 				break;
 			}
 			case Slime::SLIMETYPE::BLUE:
 			{
-				if (DistanceToPlayer <= 130 && m_AttackTimer.getElapsedTime().asSeconds() >= 0.5f)
+				if (DistanceToPlayer <= 130)
 				{
-					std::cout << "Attack Player" << std::endl;
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
-					m_Player->m_AudioManager->PlayPlayerDamage();
+					
 
-					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 10.0f);
-
-					m_AttackTimer.restart();
+					m_Player->TakeDamage(10.0f);
 				}
 				break;
 			}
 			case Slime::SLIMETYPE::RED:
 			{
-				if (DistanceToPlayer <= 170 && m_AttackTimer.getElapsedTime().asSeconds() >= 0.5f)
+				if (DistanceToPlayer <= 170)
 				{
-					std::cout << "Attack Player" << std::endl;
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
-					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 15.0f);
-
-					m_Player->m_AudioManager->PlayPlayerDamage();
-
-					m_AttackTimer.restart();
+					m_Player->TakeDamage(15.0f);
 				}
 				break;
 			}
 			case Slime::SLIMETYPE::PURPLE:
 			{
-				if (DistanceToPlayer <= 130 && m_AttackTimer.getElapsedTime().asSeconds() >= 0.5f)
+				if (DistanceToPlayer <= 130)
 				{
-					std::cout << "Attack Player" << std::endl;
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
-					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 10.0f);
-
-					m_Player->m_AudioManager->PlayPlayerDamage();
-
-					m_AttackTimer.restart();
+					m_Player->TakeDamage(10.0f);
 				}
 				break;
 			}
 			case Slime::SLIMETYPE::YELLOW:
 			{
-				if (DistanceToPlayer <= 150 && m_AttackTimer.getElapsedTime().asSeconds() >= 0.5f)
+				if (DistanceToPlayer <= 150)
 				{
-					std::cout << "Attack Player" << std::endl;
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
-					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 13.25f);
-
-					m_Player->m_AudioManager->PlayPlayerDamage();
-
-					m_AttackTimer.restart();
+					m_Player->TakeDamage(13.25f);
 				}
 				break;
 			}
 			case Slime::SLIMETYPE::BOSS:
 			{
-				if (m_AttackTimer.getElapsedTime().asSeconds() >= 0.5f)
-				{
-					std::cout << "Attack Player" << std::endl;
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
-					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
+				m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
-					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 20.0f);
-
-					m_Player->m_AudioManager->PlayPlayerDamage();
-
-					m_AttackTimer.restart();
-				}
+				m_Player->TakeDamage(20.0f);
 				break;
 			}
 			default:
 			{
-				if (DistanceToPlayer <= 150 && m_AttackTimer.getElapsedTime().asSeconds() >= 0.5f)
+				if (DistanceToPlayer <= 150)
 				{
-					std::cout << "Attack Player" << std::endl;
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
-					m_Player->SetCurrentHP(m_Player->GetCurrentHP() - 12.25f);
-
-					m_Player->m_AudioManager->PlayPlayerDamage();
-
-					m_AttackTimer.restart();
+					m_Player->TakeDamage(12.25f);
 				}
 				break;
 			}
 			}
-
-			
 		}
+	}
+}
+
+void Slime::TakeDamage(float _damage, bool _projectile)
+{
+	if (m_DamageTimer.getElapsedTime().asSeconds() >= 0.5f)
+	{
+		if (_projectile)
+		{
+			std::cout << "Slime Damaged! " << "(" << _damage << ")" << std::endl;
+		}
+		
+		m_Health -= _damage;
+		m_DamageTimer.restart();
+
 	}
 }
 
