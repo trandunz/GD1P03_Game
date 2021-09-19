@@ -30,7 +30,7 @@ CFurnace::CFurnace(sf::RenderWindow* _renderWindow, b2World& _world, const float
 	m_Shape.setTexture(*m_Texture, true);
 
 
-	CreateBody(_posX, _posY, b2_staticBody);
+	CreateBody(_posX, _posY, b2_staticBody, true);
 }
 
 CFurnace::~CFurnace()

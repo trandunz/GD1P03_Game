@@ -44,7 +44,7 @@ private:
 
 	bool m_bCanFallDamage = true;
 
-	sf::Clock m_DamageTimer;
+	sf::Clock* m_DamageTimer;
 
 };
 #endif

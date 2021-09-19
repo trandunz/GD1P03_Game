@@ -29,7 +29,7 @@ CChest::CChest(sf::RenderWindow* _renderWindow, b2World& _world, const float& _s
 	m_Texture->loadFromFile("Images/Chest.png");
 	m_Shape.setTexture(*m_Texture, true);
 
-	CreateBody(_posX, _posY, b2_staticBody);
+	CreateBody(_posX, _posY, b2_staticBody, true);
 }
 
 CChest::~CChest()

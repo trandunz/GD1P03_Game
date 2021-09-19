@@ -3,6 +3,7 @@
 #define _PLAYER_H__
 
 #include <vector>
+#include <fstream>
 
 #include "Chest.h"
 #include "Door.h"
@@ -59,10 +60,11 @@ public:
 	bool IsBlockInInventory(CBlock* _block);
 
 	bool IsItemInventory(CBlock::BLOCKTYPE _type);
+	int	GetPositionInInventory(CBlock::BLOCKTYPE _type);
+	int IsItemInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount);
 
 	void AddItemToInventory(CBlock* _block, int _position);
-	void AddItemToInventory(CBlock* _block);
-	void AddItemToInventory(CDoor* _door);
+	void AddItemToInventory(CBlock* _block, bool _canStack = true);
 	void RemoveItemFromInventory(int _position);
 
 	void ToggleInventoryUI();
@@ -83,6 +85,9 @@ public:
 	void Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element);
 	void Lst_MoveToFront(std::list<CDoor>& list, std::list<CDoor>::iterator element);
 	void Lst_MoveToFront(std::list<CChest>& list, std::list<CChest>::iterator element);
+
+	b2World* GetWorld();
+
 
 	std::map<int, int> m_InventoryStackValues;
 	std::map<int, CBlock> m_InventoryMap;

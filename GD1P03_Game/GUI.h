@@ -9,6 +9,8 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <cstddef>        // std::size_t
+
 #include "Player.h"
 #include "CTextureMaster.h"
 
@@ -34,6 +36,7 @@ public:
 	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
 	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster, sf::View& _uiView);
 	void InitCraftingUI(CTextureMaster* _textureMaster);
+	bool bIsCraftingSpaceEmpty(int _position);
 
 	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView);
 
@@ -48,6 +51,8 @@ public:
 	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator);
 	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
 	bool MousePointerOverSlot();
+
+	int FindFirstEmptyInventorySlot(CPlayer* _player);
 
 	
 	
@@ -90,8 +95,11 @@ private:
 	sf::Sprite heart5;
 
 	sf::Clock m_DrawTimer;
+	sf::Clock* m_CraftTimer;
+	sf::Clock* m_FirstEmpySlotTimer;
 
-	sf::Texture* m_BlackTexture;
+	CBlock* m_TempBlock;
+
 
 };
 #endif

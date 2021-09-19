@@ -62,7 +62,7 @@ void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _s
 	m_BodyDef.type = _type;
 	m_BodyDef.fixedRotation = false;
 	m_BodyDef.position = b2Vec2(_posX / 50.0f, (_posY / 50.0f));
-	m_BodyDef.bullet = false;
+	m_BodyDef.bullet = true;
 	m_BodyDef.gravityScale = 4;
 
 	m_Body = m_World->CreateBody(&m_BodyDef);

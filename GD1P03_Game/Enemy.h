@@ -27,6 +27,8 @@ public:
 	void SetHealth(int _value);
 	int GetHealth();
 
+	sf::Sprite GetShape();
+
 	virtual void Movement();
 	virtual void Attack();
 

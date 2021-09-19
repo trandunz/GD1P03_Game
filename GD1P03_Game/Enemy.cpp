@@ -46,6 +46,11 @@ int CEnemy::GetHealth()
 	return m_Health;
 }
 
+sf::Sprite CEnemy::GetShape()
+{
+	return m_Shape;
+}
+
 void CEnemy::Movement()    
 {
 }

@@ -26,7 +26,7 @@ public:
 	void PlayPlayerDeath();
 
 	void PlaySlimeDamage();
-	void PlaySlimeDeath();
+	void PlaySlimeDeath(int _volume = 10);
 
 	sf::SoundBuffer m_Buffer;
 	sf::Sound m_ActiveSound;

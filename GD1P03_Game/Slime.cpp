@@ -3,7 +3,6 @@
 Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;
-	m_AudioManager = _audioManager;
 	m_Texture = new sf::Texture();
 
 	srand(time(NULL));
@@ -88,7 +87,8 @@ Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _
 
 Slime::~Slime()
 {
-	//std::cout << "A Slime Died!" << std::endl;
+	delete m_DamageTimer;
+	m_DamageTimer = nullptr;
 
 	delete m_Texture;
 	m_Player = nullptr;
@@ -96,7 +96,7 @@ Slime::~Slime()
 
 void Slime::Start()
 {
-	
+	m_DamageTimer = new sf::Clock();
 }
 
 void Slime::Update()
@@ -134,7 +134,7 @@ void Slime::Update()
 			if (worldManifold.normal.y > 0 && m_bCanFallDamage)
 			{
 				//std::cout << "A Slime Landed" << "( Impact Velocity: " << impactVelocity.y << ")" << std::endl;
-				if (impactVelocity.y <= -30.5f)
+				if (impactVelocity.y <= -40.5f)
 				{
 					//m_AudioManager->PlayPlayerDeath();
 					TakeDamage(-impactVelocity.y);
@@ -159,7 +159,16 @@ void Slime::Update()
 
 void Slime::Render(sf::Shader* _shader)
 {
-	float DistanceToPlayer = sqrt(((m_Player->GetShape().getPosition().x - m_Shape.getPosition().x) * (m_Player->GetShape().getPosition().x - m_Shape.getPosition().x)) + ((m_Player->GetShape().getPosition().y - m_Shape.getPosition().y) * (m_Player->GetShape().getPosition().y - m_Shape.getPosition().y)));
+	float DistanceToPlayer;
+	if (m_Player != nullptr)
+	{
+		DistanceToPlayer = sqrt(((m_Player->GetShape().getPosition().x - m_Shape.getPosition().x) * (m_Player->GetShape().getPosition().x - m_Shape.getPosition().x)) + ((m_Player->GetShape().getPosition().y - m_Shape.getPosition().y) * (m_Player->GetShape().getPosition().y - m_Shape.getPosition().y)));
+	}
+	else
+	{
+		DistanceToPlayer = 0;
+	}
+	
 	if (DistanceToPlayer > 1920 * 1.8)
 	{
 	}
@@ -167,13 +176,12 @@ void Slime::Render(sf::Shader* _shader)
 	{
 		m_RenderWindow->draw(m_Shape);
 	}
-	else if (DistanceToPlayer <= 1920 * 1.8 && m_Shape.getPosition().y > 1100)
+	else if (DistanceToPlayer <= 1920 * 1.8 && m_Shape.getPosition().y > 1100 && m_Player != nullptr)
 	{
 		_shader->setUniform("hasTexture", true);
 		_shader->setUniform("lightPos", m_Player->GetShape().getPosition());
 		m_RenderWindow->draw(m_Shape, _shader);
 	}
-	
 }
 
 void Slime::SetPlayer(CPlayer* _player)
@@ -215,7 +223,7 @@ void Slime::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 	}
 	
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
-	m_BodyDef.bullet = true;
+	m_BodyDef.bullet = false;
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
 	if (m_bIsBoss)
@@ -498,7 +506,7 @@ void Slime::Attack()
 
 void Slime::TakeDamage(float _damage, bool _projectile)
 {
-	if (m_DamageTimer.getElapsedTime().asSeconds() >= 0.5f)
+	if (m_DamageTimer->getElapsedTime().asSeconds() >= 0.5f)
 	{
 		if (_projectile)
 		{
@@ -506,8 +514,7 @@ void Slime::TakeDamage(float _damage, bool _projectile)
 		}
 		
 		m_Health -= _damage;
-		m_DamageTimer.restart();
-
+		m_DamageTimer->restart();
 	}
 }
 

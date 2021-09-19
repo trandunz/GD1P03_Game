@@ -119,25 +119,20 @@ int main()
 	//}
 	//output.close();
 
-	// Cleanup
-	if (m_WorldManager->CleanUpBlocks() && m_WorldManager->CleanUpSky())
-	{
-		std::cout << "Cleanup Success" << std::endl;
-	}
 	m_SlimeSpawners.clear();
 
 	delete m_TextureMaster;
-	delete m_AudioManager;
 	delete m_GUI;
 	delete m_Player;
 	delete m_RenderWindow;
 	delete m_WorldManager;
+	delete m_AudioManager;
+	m_AudioManager = nullptr;
 	m_SlimeSpawner = nullptr;
 	m_TextureMaster = nullptr;
 	m_Pickaxe = nullptr;
 	m_Door = nullptr;
 	m_WorldManager = nullptr;
-	m_AudioManager = nullptr;
 	m_GUI = nullptr;
 	m_Player = nullptr;
 	m_RenderWindow = nullptr;
@@ -175,21 +170,18 @@ void Start()
 	m_WorldManager->Start(m_TextureMaster);
 
 	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
-	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(20);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
 	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
-	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(5);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
 	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
-	m_SlimeSpawner->Start();
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(5);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
@@ -334,7 +326,6 @@ void Update()
 					for (Spawner& spawner : m_SlimeSpawners)
 					{
 						spawner.LoosePlayer();
-						
 					}
 					m_WorldManager->InitPointer(nullptr);
 					//m_bClose = true;
@@ -369,15 +360,7 @@ void Update()
 					m_GUI->InitHotBarScrolling(m_Event, m_Player);
 				}
 			}
-
-		}
-		else if (m_bClose)
-		{
-			if (m_WorldManager != nullptr)
-			{
-				m_WorldManager->CleanUpBlocks();
-				m_WorldManager->CleanUpSky();
-			}
+			
 		}
 	}
 }

@@ -13,9 +13,6 @@ CAudioManager::CAudioManager()
 	m_PlayerHurt2.loadFromFile("Sounds/PlayerHit2.wav");
 	m_PlayerHurt3.loadFromFile("Sounds/PlayerHit3.wav");
 
-	m_SlimeHurt1.loadFromFile("Sounds/SlimeHurt1.wav");
-	m_SlimeHurt2.loadFromFile("Sounds/SlimeHurt2.wav");
-
 	m_DeathBuffer.loadFromFile("Sounds/Death.wav");
 	m_SlimeDeathBuffer.loadFromFile("Sounds/SlimeDeath.wav");
 
@@ -27,9 +24,6 @@ CAudioManager::CAudioManager()
 	PlayerHurtBuffers[0] = m_PlayerHurt1;
 	PlayerHurtBuffers[1] = m_PlayerHurt2;
 	PlayerHurtBuffers[2] = m_PlayerHurt3;
-
-	SlimeHurtBuffers[0] = m_SlimeHurt1;
-	SlimeHurtBuffers[1] = m_SlimeHurt2;
 }
 
 CAudioManager::~CAudioManager()
@@ -89,15 +83,13 @@ void CAudioManager::PlayPlayerDamage()
 
 void CAudioManager::PlaySlimeDamage()
 {
-	m_PlayerDamageSound.setBuffer(PlayerHurtBuffers[rand() % 2]);
-	m_PlayerDamageSound.setVolume(25.0f);
-	m_PlayerDamageSound.play();
+
 }
 
-void CAudioManager::PlaySlimeDeath()
+void CAudioManager::PlaySlimeDeath(int _volume)
 {
 	m_SlimeDeathSound.setBuffer(m_SlimeDeathBuffer);
-	m_SlimeDeathSound.setVolume(25.0f);
+	m_SlimeDeathSound.setVolume(_volume);
 	m_SlimeDeathSound.play();
 }
 

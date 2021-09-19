@@ -95,11 +95,11 @@ void CPlayer::Start()
 	m_DamageIndicatorTimer = new sf::Clock();
 
 	m_Pickaxe = new CPickaxe();
-	AddItemToInventory(m_Pickaxe);
+	AddItemToInventory(m_Pickaxe, (int)m_InventoryMap.size());
 	m_Pickaxe = nullptr;
 
 	m_Bow = new Bow();
-	AddItemToInventory(m_Bow);
+	AddItemToInventory(m_Bow, (int)m_InventoryMap.size());
 	m_Bow = nullptr;
 }
 
@@ -730,7 +730,6 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 		{
 			// increase number of that type
 			m_InventoryStackValues[it->first]++;
-
 			delete _block;
 			_block = nullptr;
 			return true;
@@ -739,23 +738,71 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 	return false;
 }
 
-void CPlayer::AddItemToInventory(CBlock* _block)
+void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 {
-	if (IsBlockInInventory(_block))
+
+	if (_canStack == true)
 	{
+		if (IsBlockInInventory(_block))
+		{
+		}
+		else
+		{
+			//
+			// Reading From File??
+			//
+			std::string line;
+			std::ifstream myfile("Output/FirstEmptyInventorySlot.txt");
+			myfile.is_open();
+			int firstEmpty;
+			myfile >> firstEmpty;
+
+			_block->GetShape().setScale(0.4f, 0.4f);
+			_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+			m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
+			m_InventorySize++;
+			// increase number of that type
+			m_InventoryStackValues[firstEmpty]++;
+			_block->m_PositionInInventory = firstEmpty;
+			m_InventoryMap.insert_or_assign(firstEmpty, *_block);
+			//std::cout << "Added Item To Inventory - ";
+			std::cout << firstEmpty << std::endl;
+
+			myfile.close();
+		}
 	}
 	else
 	{
-		_block->GetShape().setScale(0.4f, 0.4f);
-		_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+		//
+		// Reading From File??
+		//
+		std::string line;
+		std::ifstream myfile("Output/FirstEmptyInventorySlot.txt");
+		myfile.is_open();
+		int firstEmpty;
+		myfile >> firstEmpty;
+
+		if (_block->m_Type == CBlock::BLOCKTYPE::DOOR)
+		{
+			_block->GetShape().setScale(0.23f, 0.23f);
+			_block->GetShape().setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 - m_Shape.getGlobalBounds().height / 3.75f);
+		}
+		else
+		{
+			_block->GetShape().setScale(0.4f, 0.4f);
+			_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+		}
+		
 		m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
 		m_InventorySize++;
 		// increase number of that type
-		m_InventoryStackValues[m_InventorySize]++;
-		_block->m_PositionInInventory = m_InventorySize;
-		m_InventoryMap.insert_or_assign(m_InventorySize, *_block);
+		m_InventoryStackValues[firstEmpty]++;
+		_block->m_PositionInInventory = firstEmpty;
+		m_InventoryMap.insert_or_assign(firstEmpty, *_block);
 		//std::cout << "Added Item To Inventory - ";
-		std::cout << m_InventorySize << std::endl;
+		std::cout << firstEmpty << std::endl;
+
+		myfile.close();
 	}
 
 	_block = nullptr;
@@ -768,6 +815,8 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position)
 	}
 	else
 	{
+
+
 		_block->GetShape().setScale(0.4f, 0.4f);
 		_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
 		m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
@@ -778,6 +827,8 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position)
 		m_InventoryMap.insert_or_assign(_position, *_block);
 		//std::cout << "Added Item To Inventory - ";
 		std::cout << _position << std::endl;
+
+
 	}
 
 	_block = nullptr;
@@ -795,28 +846,30 @@ bool CPlayer::IsItemInventory(CBlock::BLOCKTYPE _type)
 	return false;
 }
 
-void CPlayer::AddItemToInventory(CDoor* _door)
+int CPlayer::GetPositionInInventory(CBlock::BLOCKTYPE _type)
 {
-	if (/*IsDoorInInventory(_door)*/ false)
+	for (int i = 0; i < m_InventoryMap.size(); i++)
 	{
+		if (m_InventoryMap[i].m_Type == _type)
+		{
+			return m_InventoryMap[i].m_PositionInInventory;
+		}
 	}
-	else
+	return NULL;
+}
+
+int CPlayer::IsItemInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount)
+{
+	int tempCount = 0;
+	for (int i = 0; i < m_InventoryMap.size(); i++)
 	{
-
-		_door->GetShape().setScale(0.4f, 0.4f);
-		_door->GetShape().setOrigin(_door->GetShape().getGlobalBounds().width / 2, _door->GetShape().getGlobalBounds().height / 2);
-		m_RenderWindow->mapCoordsToPixel(_door->GetShape().getPosition());
-		m_InventorySize++;
-		// increase number of that type
-		m_InventoryStackValues[m_InventorySize]++;
-		_door->m_PositionInInventory = m_InventorySize;
-		m_InventoryMap.insert_or_assign(m_InventorySize, *_door);
-		//std::cout << "Added Item To Inventory - ";
-		std::cout << m_InventorySize << std::endl;
-
-		_door = nullptr;
+		if (m_InventoryMap[i].m_Type == _type)
+		{
+			tempCount = m_InventoryStackValues[i];
+			return tempCount;
+		}
 	}
-
+	return tempCount;
 }
 
 void CPlayer::RemoveItemFromInventory(int _position)
@@ -883,7 +936,7 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 						if (it->m_Type == CBlock::BLOCKTYPE::DOOR)
 						{
 							m_Door = new CDoor();
-							AddItemToInventory(m_Door);
+							AddItemToInventory(m_Door, false);
 						}
 						else if (it->m_Type == CBlock::BLOCKTYPE::CHEST)
 						{
@@ -1100,3 +1153,10 @@ void CPlayer::Lst_MoveToFront(std::list<CChest>& list, std::list<CChest>::iterat
 		list.splice(list.begin(), list, element, std::next(element));
 	}
 }
+
+b2World* CPlayer::GetWorld()
+{
+	return m_World;
+}
+
+

@@ -192,7 +192,7 @@ sf::Vector2f CBlock::GetSize()
 	return m_Size;
 }
 
-sf::Sprite CBlock::GetShape()
+sf::Sprite& CBlock::GetShape()
 {
 	return m_Shape;
 }

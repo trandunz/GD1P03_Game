@@ -55,7 +55,7 @@ public:
 	virtual void SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y);
 	sf::Vector2f GetSize();
 
-	sf::Sprite GetShape();
+	sf::Sprite& GetShape();
 	b2Body* GetBody()
 	{
 		return m_Body;

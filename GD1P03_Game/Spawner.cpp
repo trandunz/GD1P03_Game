@@ -18,6 +18,8 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 	m_Shape.setTexture(*m_Texture, true);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 	m_Shape.setPosition(_posX, _posY);
+
+	Start();
 }
 
 void Spawner::Start()
@@ -40,46 +42,16 @@ void Spawner::Update()
 			if (m_SpawnTimer->getElapsedTime().asSeconds() >= 5)
 			{
 				m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
-				m_Slimeptr->SetPlayer(m_Player);
-				m_Slimes.push_back(*m_Slimeptr);
+				m_Slimes.push_front(*m_Slimeptr);
+				m_Slimes.front().SetPlayer(m_Player);
+				m_Slimes.front().Start();
 				m_Slimeptr = nullptr;
 				std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
 				m_SpawnTimer->restart();
 			}
 		}
 
-		for (Slime& slime : m_Slimes)
-		{
-			// Slime Dies
-			if (slime.GetHealth() <= 0.0f && m_Player != nullptr)
-			{
-				slime.m_MARKASDESTORY = true;
-
-				slime.LoosePlayer();
-
-				//m_bClose = true;
-			}
-			// Slime Spawns When Player Dead
-			else if (!slime.bHasPlayer() && m_Player != nullptr)
-			{
-				slime.SetPlayer(m_Player);
-			}
-
-			// Update
-			slime.Update();
-
-			//
-			// Cleanup
-			std::list<Slime>::iterator sit;
-			for (sit = m_Slimes.begin(); sit != m_Slimes.end(); sit++)
-			{
-				if (sit->m_MARKASDESTORY)
-				{
-					//m_AudioManager->PlaySlimeDeath();
-					m_Slimes.erase(sit);
-				}
-			}
-		}
+		
 		break;
 	}
 		
@@ -88,6 +60,73 @@ void Spawner::Update()
 		break;
 	}
 		
+	}
+
+	for (Slime& slime : m_Slimes)
+	{
+		// Slime Dies
+		if (slime.GetHealth() <= 0.0f && m_Player != nullptr)
+		{
+			slime.m_MARKASDESTORY = true;
+
+			slime.LoosePlayer();
+
+			//m_bClose = true;
+		}
+		// Slime Spawns When Player Dead
+		else if (!slime.bHasPlayer() && m_Player != nullptr)
+		{
+			slime.SetPlayer(m_Player);
+		}
+
+		// Update
+		slime.Update();
+
+		std::list<Slime>::iterator sit;
+		for (sit = m_Slimes.begin(); sit != m_Slimes.end(); sit++)
+		{
+			if (sit->m_MARKASDESTORY)
+			{
+				// Distance Based Sound
+				float Mag1 = sqrt(((sit->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (sit->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((sit->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (sit->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+				if (Mag1 <= 1920 * 1.8f && Mag1 <= 520 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(30);
+				}
+				else if (Mag1 <= 1920 * 1.8f && Mag1 <= 720 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(25);
+				}
+				else if (Mag1 <= 1920 * 1.8f && Mag1 <= 920 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(20);
+				}
+				else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1120 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(15);
+				}
+				else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1320 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(10);
+				}
+				else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1520 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(5);
+				}
+				else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1720 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(3);
+				}
+				else if (Mag1 <= 1920 * 1.8f)
+				{
+					m_AudioManager->PlaySlimeDeath(1);
+				}
+
+				// Delete
+				sit->m_MARKASDESTORY = false;
+				m_Slimes.erase(sit);
+			}
+		}
 	}
 }
 
