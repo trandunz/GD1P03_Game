@@ -6,6 +6,7 @@
 #include <box2d/box2d.h>
 #include <iostream>
 #include "CTextureMaster.h"
+#include "Player.h"
 
 class CEnemy
 {
@@ -41,6 +42,7 @@ public:
 
 protected:
 	// Essentials
+	CAudioManager* m_AudioManager;
 	sf::RenderWindow* m_RenderWindow;
 	CTextureMaster* m_TextureMaster;
 	b2World* m_World;

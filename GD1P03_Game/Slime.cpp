@@ -1,8 +1,9 @@
 #include "Slime.h"
 
-Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY)
+Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager)
 {
 	m_RenderWindow = _renderWindow;
+	m_AudioManager = &_audioManager;
 	m_Texture = new sf::Texture();
 
 	srand(time(NULL));
@@ -87,6 +88,8 @@ Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _
 
 Slime::~Slime()
 {
+	m_TextureMaster = nullptr;
+
 	delete m_DamageTimer;
 	m_DamageTimer = nullptr;
 
@@ -515,6 +518,44 @@ void Slime::TakeDamage(float _damage, bool _projectile)
 		
 		m_Health -= _damage;
 		m_DamageTimer->restart();
+
+		if (m_Player != nullptr)
+		{
+			// Distance Based Sound
+			float Mag1 = sqrt(((m_Shape.getPosition().x - m_Player->GetShape().getPosition().x) * (m_Shape.getPosition().x - m_Player->GetShape().getPosition().x)) + ((m_Shape.getPosition().y - m_Player->GetShape().getPosition().y) * (m_Shape.getPosition().y - m_Player->GetShape().getPosition().y)));
+			if (Mag1 <= 1920 * 1.8f && Mag1 <= 520 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(30);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 720 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(25);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 920 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(20);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1120 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(15);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1320 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(10);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1520 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(5);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1720 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(3);
+			}
+			else if (Mag1 <= 1920 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDamage(1);
+			}
+		}
 	}
 }
 

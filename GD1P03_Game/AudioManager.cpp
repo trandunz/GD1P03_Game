@@ -13,8 +13,13 @@ CAudioManager::CAudioManager()
 	m_PlayerHurt2.loadFromFile("Sounds/PlayerHit2.wav");
 	m_PlayerHurt3.loadFromFile("Sounds/PlayerHit3.wav");
 
+	m_SlimeHurt1.loadFromFile("Sounds/SlimeHit.wav");
+	m_SlimeHurt2.loadFromFile("Sounds/SlimeHit2.wav");
+
 	m_DeathBuffer.loadFromFile("Sounds/Death.wav");
 	m_SlimeDeathBuffer.loadFromFile("Sounds/SlimeDeath.wav");
+
+	m_BowBuffer.loadFromFile("Sounds/Bow.wav");
 
 	MineSoundBuffers[0] = m_MineBuffer1;
 	MineSoundBuffers[1] = m_MineBuffer2;
@@ -24,6 +29,9 @@ CAudioManager::CAudioManager()
 	PlayerHurtBuffers[0] = m_PlayerHurt1;
 	PlayerHurtBuffers[1] = m_PlayerHurt2;
 	PlayerHurtBuffers[2] = m_PlayerHurt3;
+
+	SlimeHurtBuffers[0] = m_SlimeHurt1;
+	SlimeHurtBuffers[1] = m_SlimeHurt2;
 }
 
 CAudioManager::~CAudioManager()
@@ -76,14 +84,16 @@ void CAudioManager::PlayGroundMine()
 
 void CAudioManager::PlayPlayerDamage()
 {
-	m_PlayerDamageSound.setBuffer(PlayerHurtBuffers[rand() % 2]);
+	m_PlayerDamageSound.setBuffer(PlayerHurtBuffers[rand() % 3]);
 	m_PlayerDamageSound.setVolume(25.0f);
 	m_PlayerDamageSound.play();
 }
 
-void CAudioManager::PlaySlimeDamage()
+void CAudioManager::PlaySlimeDamage(int _volume)
 {
-
+	m_SlimeDamageSound.setBuffer(SlimeHurtBuffers[1]);
+	m_SlimeDamageSound.setVolume(_volume);
+	m_SlimeDamageSound.play();
 }
 
 void CAudioManager::PlaySlimeDeath(int _volume)
@@ -106,4 +116,11 @@ void CAudioManager::PlayMusic()
 	m_Music.setLoop(true);
 	m_Music.setVolume(10.0f);
 	m_Music.play();
+}
+
+void CAudioManager::PlayBowShot()
+{
+	m_BowShotSound.setBuffer(m_BowBuffer);
+	m_BowShotSound.setVolume(30.0f);
+	m_BowShotSound.play();
 }

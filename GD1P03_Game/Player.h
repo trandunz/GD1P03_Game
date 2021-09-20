@@ -13,7 +13,7 @@
 #include "CFurnace.h"
 #include "CProjectile.h"
 #include "Bow.h"
-
+#include "CParticleSystem.h"
 
 class CPlayer
 {
@@ -110,6 +110,8 @@ public:
 	b2FixtureDef m_FixtureDef;
 
 	CAudioManager* m_AudioManager;
+
+	CParticleSystem* m_TestParticles;
 private:
 	// Mouse
 	sf::Vector2f m_MousePos;
@@ -160,6 +162,8 @@ private:
 	std::list<CProjectile> m_Projectiles;
 
 	sf::Clock m_AttackTimer;
+
+	sf::Clock m_ParticleTimer;
 
 };
 #endif

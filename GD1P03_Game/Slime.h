@@ -3,7 +3,6 @@
 #define _SLIME_H__
 
 #include "Enemy.h"
-#include "Player.h"
 class Slime : public CEnemy
 {
 public:
@@ -17,7 +16,7 @@ public:
 		BOSS
 	};
 
-	Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY);
+	Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager);
 	virtual ~Slime();
 
 	virtual void Start();
@@ -35,16 +34,16 @@ public:
 
 	void TakeDamage(float _damage, bool _projectile = false);
 
+	SLIMETYPE m_SlimeType = SLIMETYPE::GREEN;
 private:
 	bool m_bIsBoss = false;
 
-	SLIMETYPE m_SlimeType = SLIMETYPE::GREEN;
+
 
 	CPlayer* m_Player;
 
 	bool m_bCanFallDamage = true;
 
 	sf::Clock* m_DamageTimer;
-
 };
 #endif

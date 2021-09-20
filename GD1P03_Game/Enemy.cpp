@@ -7,6 +7,7 @@ CEnemy::CEnemy()
 	m_World = nullptr;
 	m_RenderWindow = nullptr;
 	m_TextureMaster = nullptr;
+	m_AudioManager = nullptr;
 }
 
 CEnemy::~CEnemy()
@@ -18,6 +19,7 @@ CEnemy::~CEnemy()
 	m_World = nullptr;
 	m_RenderWindow = nullptr;
 	m_TextureMaster = nullptr;
+	m_AudioManager = nullptr;
 }
 
 void CEnemy::Start()

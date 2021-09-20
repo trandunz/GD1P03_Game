@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <list>
+#include "CParticleSystem.h"
 #include "Slime.h"
 #include "Zombie.h"
 
@@ -52,7 +53,11 @@ private:
 
 	sf::Clock* m_SpawnTimer;
 
-	Slime* m_Slimeptr = {};
-	Zombie* m_Zombieptr = {};
+	Slime* m_Slimeptr;
+	Zombie* m_Zombieptr;
+
+	sf::Clock m_DeathParticleTimer;
+
+	CParticleSystem* m_DeathParticles;
 };
 #endif

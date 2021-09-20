@@ -25,8 +25,10 @@ public:
 	void PlayPlayerDamage();
 	void PlayPlayerDeath();
 
-	void PlaySlimeDamage();
+	void PlaySlimeDamage(int _volume = 10);
 	void PlaySlimeDeath(int _volume = 10);
+
+	void PlayBowShot();
 
 	sf::SoundBuffer m_Buffer;
 	sf::Sound m_ActiveSound;
@@ -36,6 +38,8 @@ public:
 
 	sf::Sound m_SlimeDeathSound;
 	sf::Sound m_SlimeDamageSound;
+
+	sf::Sound m_BowShotSound;
 
 	sf::Music m_Music;
 
@@ -55,6 +59,8 @@ private:
 
 	sf::SoundBuffer m_DeathBuffer;
 	sf::SoundBuffer m_SlimeDeathBuffer;
+
+	sf::SoundBuffer m_BowBuffer;
 
 	sf::SoundBuffer MineSoundBuffers[4]; 
 	sf::SoundBuffer PlayerHurtBuffers[3];

@@ -3,6 +3,7 @@
 CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, CAudioManager* _audioManager, CTextureMaster* _textureMaster)
 {
 	// Init
+	m_TestParticles = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
 	m_AudioManager = _audioManager;
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
@@ -60,6 +61,8 @@ CPlayer::~CPlayer()
 	m_InventoryMap.clear();
 	m_Projectiles.clear();
 
+	delete m_TestParticles;
+	m_TestParticles = nullptr;
 	m_Furnace = nullptr;
 	m_Chest = nullptr;
 	m_Door = nullptr;
@@ -101,6 +104,8 @@ void CPlayer::Start()
 	m_Bow = new Bow();
 	AddItemToInventory(m_Bow, (int)m_InventoryMap.size());
 	m_Bow = nullptr;
+
+	m_TestParticles->Start();
 }
 
 void CPlayer::Update(sf::Vector2f _mousePos)
@@ -234,6 +239,19 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	{
 		projectile.Update();
 	}
+
+	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
+	while (pit != m_Projectiles.end())
+	{
+		if (pit->m_bMARKASDESTROY)
+		{
+			pit = m_Projectiles.erase(pit);
+		}
+		pit++;
+	}
+
+	sf::Time elapsedTime = m_ParticleTimer.getElapsedTime();
+	m_TestParticles->Update(elapsedTime);
 }
 
 void CPlayer::Render()
@@ -254,6 +272,8 @@ void CPlayer::Render()
 	}
 
 	m_RenderWindow->draw(m_Shape);
+
+	m_RenderWindow->draw(*m_TestParticles);
 }
 
 void CPlayer::Movement()
@@ -511,6 +531,30 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		}
 
 	}
+	else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && m_bCanPlace)
+	{
+		// Item
+		if (m_Pickaxe != nullptr)
+		{
+			// Break Block
+			if (!bMouseNotOver(m_Chunk, _mousePositionSprite))
+			{
+				Mine(m_Chunk, _mousePositionSprite);
+			}
+			else if (!bMouseNotOver(m_Doors, _mousePositionSprite))
+			{
+				Mine(m_Doors, _mousePositionSprite);
+			}
+			else if (!bMouseNotOver(m_Chests, _mousePositionSprite))
+			{
+				Mine(m_Chests, _mousePositionSprite);
+			}
+			else if (!bMouseNotOver(m_Furnaces, _mousePositionSprite))
+			{
+				Mine(m_Furnaces, _mousePositionSprite);
+			}
+		}
+	}
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && Mag < m_InteractionRange * 100 && m_bCanPlace)
 	{
 		//std::cout << "Mouse Right" << std::endl;
@@ -577,21 +621,12 @@ void CPlayer::Attack()
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && m_AttackTimer.getElapsedTime().asSeconds() >= m_AttackSpeed)
 	{
+		m_AudioManager->PlayBowShot();
 		m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos);
 		
 		m_Projectiles.push_back(*m_Projectile);
 		m_Projectile = nullptr;
 		m_AttackTimer.restart();
-	}
-
-	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
-	while (pit != m_Projectiles.end())
-	{
-		if (pit->m_bMARKASDESTROY)
-		{
-			m_Projectiles.erase(pit);
-		}
-		pit++;
 	}
 }
 
@@ -883,7 +918,7 @@ void CPlayer::RemoveItemFromInventory(int _position)
 			m_InventoryStackValues[_position]--;
 
 			it->second.m_PositionInInventory = -1;
-			m_InventoryMap.erase(it);
+			it = m_InventoryMap.erase(it);
 
 			return;
 		}
@@ -929,9 +964,16 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 					if (it->m_BlockStrength <= m_Pickaxe->m_PickaxePower * 5)
 					{
 						it->m_BlockStrength -= 1 * m_Pickaxe->m_PickaxePower;
+
+						m_ParticleTimer.restart();
+						m_TestParticles->SetEmitter(_mousePositionSprite.getPosition());
 					}
 
-					if (it->m_BlockStrength <= 0)
+					if (it->m_BlockStrength > 0)
+					{
+						
+					}
+					else if (it->m_BlockStrength <= 0)
 					{
 						if (it->m_Type == CBlock::BLOCKTYPE::DOOR)
 						{
@@ -953,11 +995,14 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 							m_Block = new CBlock(it->m_Texture, it->m_Type);
 							AddItemToInventory(m_Block);
 						}
-						m_Chunk.erase(it);
+						it = m_Chunk.erase(it);
 						m_Block = nullptr;
 						m_Door = nullptr;
 					}
+					
+
 					m_MineTimer->restart();
+
 					m_AudioManager->PlayGroundMine();
 					break;
 				}
@@ -1158,5 +1203,3 @@ b2World* CPlayer::GetWorld()
 {
 	return m_World;
 }
-
-

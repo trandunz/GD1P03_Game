@@ -8,12 +8,8 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 	m_Shape.setTexture(*m_Texture, true);
 	CreateBody(_startPosX, _startPosY, b2_dynamicBody, true);
 
-	float m = (_mousPos.y - m_Shape.getPosition().y) / (_mousPos.x - m_Shape.getPosition().x);
 	float d = _mousPos.x - m_Shape.getPosition().x;
 	float dy = _mousPos.y - m_Shape.getPosition().y;
-	float X = sqrt(d / ((m * m) + 1));
-
-	std::cout << "d: " << d << " dy: " << dy << std::endl;
 
 	m_Body->SetLinearVelocity(b2Vec2(d  / 25 / m_Weight, dy / 25 / m_Weight));
 }
