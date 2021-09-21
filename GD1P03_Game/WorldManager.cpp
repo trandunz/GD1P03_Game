@@ -115,6 +115,19 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
         {
             m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
         }
+
+        // Distance To Player
+        float Mag = sqrt(((m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y)));
+    
+        if (Mag < 200 && m_Player->m_bInventoryOpen)
+        {
+            m_GUI->m_bCanSmelt = true;
+            break;
+        }
+        else
+        {
+            m_GUI->m_bCanSmelt = false;
+        }
     }
 }
 
@@ -414,7 +427,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % i <= 1000)
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COALORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -422,7 +435,8 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % i <= 800)
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRONORE
+                        );
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -452,7 +466,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % i <= 1000)
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COALORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -460,7 +474,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % i <= 800)
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRONORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -604,7 +618,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % i <= 1000 && (j == 9400 || j == 10000))
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COALORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -612,7 +626,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % i <= 800 && (j == 9400 || j == 10000))
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRONORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -634,7 +648,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                     {
                         if (rand() % 64 == 0)
                         {
-                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COALORE);
                             //m_Block->SetSize(100, 100);
                             m_Chunk.push_back(*m_Block);
                             m_Block->m_ArrayIndex = i;
@@ -644,7 +658,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                         {
                             if (rand() % 16 == 0)
                             {
-                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRONORE);
                                 //m_Block->SetSize(100, 100);
                                 m_Chunk.push_back(*m_Block);
                                 m_Block->m_ArrayIndex = i;
@@ -665,7 +679,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
 
                             if (rand() % 45 == 0)
                             {
-                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMOND);
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMONDORE);
                                 //m_Block->SetSize(100, 100);
                                 m_Chunk.push_back(*m_Block);
                                 m_Block->m_ArrayIndex = i;
@@ -674,7 +688,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
                             }
                             else if (rand() % 28 == 0)
                             {
-                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLD);
+                                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLDORE);
                                 //m_Block->SetSize(100, 100);
                                 m_Chunk.push_back(*m_Block);
                                 m_Block->m_ArrayIndex = i;
@@ -839,7 +853,7 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
             {
                 if (rand() % 64 == 0)
                 {
-                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COAL);
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::COALORE);
                     //m_Block->SetSize(100, 100);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = i;
@@ -849,7 +863,7 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
                 {
                     if (rand() % 16 == 0)
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRON);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::IRONORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -870,7 +884,7 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
 
                     if (rand() % 45 == 0)
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMOND);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::DIAMONDORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;
@@ -879,7 +893,7 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % 28 == 0)
                     {
-                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLD);
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, i, j, false, CBlock::BLOCKTYPE::GOLDORE);
                         //m_Block->SetSize(100, 100);
                         m_Chunk.push_back(*m_Block);
                         m_Block->m_ArrayIndex = i;

@@ -32,12 +32,23 @@ public:
 		BLOCK,
 		LEAVES,
 		FURNACE,
-		IRON,
-		GOLD,
-		DIAMOND,
-		COAL,
+		IRONORE,
+		GOLDORE,
+		DIAMONDORE,
+		COALORE,
 		OBSIDIAN,
 		BOW,
+		IRONINGOT,
+		GOLDINGOT,
+		DIAMOND,
+	};
+
+	enum class PICKAXETYPE
+	{
+		BASIC,
+		IRON,
+		GOLD,
+		DIAMOND
 	};
 
 	CBlock();
@@ -87,6 +98,8 @@ public:
 	bool m_bHasBeenSpotted = false;
 
 	bool m_bCanCraft = false;
+
+	PICKAXETYPE m_PickType = PICKAXETYPE::BASIC;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 

@@ -1,6 +1,6 @@
 #include "Pickaxe.h"
 
-CPickaxe::CPickaxe()
+CPickaxe::CPickaxe(PICKAXETYPE _pickType)
 {
 	m_Scale = 50.0f;
 	m_Body = nullptr;
@@ -9,7 +9,38 @@ CPickaxe::CPickaxe()
 	m_Sprite->setColor(sf::Color::White);
 	m_Texture = nullptr;
 	m_Texture = new sf::Texture();
-	m_Texture->loadFromFile("Images/PickAxeRight.png");
+
+	m_PickType = _pickType;
+
+	switch (_pickType)
+	{
+	case CPickaxe::PICKAXETYPE::BASIC:
+	{
+		m_Texture->loadFromFile("Images/PickAxeRight.png");
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::IRON:
+	{
+		m_Texture->loadFromFile("Images/IronPickAxeRight.png");
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::GOLD:
+	{
+		m_Texture->loadFromFile("Images/GoldPickAxeRight.png");
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::DIAMOND:
+	{
+		m_Texture->loadFromFile("Images/DiamondPickAxeRight.png");
+		break;
+	}
+	default:
+	{
+		m_Texture->loadFromFile("Images/PickAxeRight.png");
+		break;
+	}
+	}
+
 	m_Sprite->setTexture(*m_Texture, true);
 	m_Sprite->setScale(0.2f, 0.2f);
 	m_Sprite->setOrigin(m_Sprite->getGlobalBounds().width / 2, m_Sprite->getGlobalBounds().height / 2);
@@ -19,17 +50,73 @@ CPickaxe::CPickaxe()
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2 , m_Shape.getGlobalBounds().height / 2);
 }
 
-CPickaxe::CPickaxe(sf::RenderWindow* _renderWindow, const float& _scale, float _posX, float _posY)
+CPickaxe::CPickaxe(sf::RenderWindow* _renderWindow, const float& _scale, float _posX, float _posY, PICKAXETYPE _pickType)
 {
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
+	m_PickType = _pickType;
 
 	m_Sprite = new sf::Sprite();
 	m_Sprite->setColor(sf::Color::White);
-	m_LeftTex.loadFromFile("Images/PickAxeLeft.png");
-	m_RightTex.loadFromFile("Images/PickAxeRight.png");
-	m_Texture = new sf::Texture();
-	m_Texture->loadFromFile("Images/PickAxeRight.png");
+
+	switch (m_PickType)
+	{
+	case CPickaxe::PICKAXETYPE::BASIC:
+	{
+		m_LeftTex.loadFromFile("Images/PickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/PickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/PickAxeRight.png");
+
+		m_PickaxePower = 1.0f;
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::IRON:
+	{
+		m_LeftTex.loadFromFile("Images/IronPickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/IronPickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/IronPickAxeRight.png");
+
+		m_PickaxePower = 1.2f;
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::GOLD:
+	{
+		m_LeftTex.loadFromFile("Images/GoldPickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/GoldPickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/GoldPickAxeRight.png");
+
+		m_PickaxePower = 1.4f;
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::DIAMOND:
+	{
+		m_LeftTex.loadFromFile("Images/DiamondPickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/DiamondPickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/DiamondPickAxeRight.png");
+
+		m_PickaxePower = 1.6f;
+		break;
+	}
+	default:
+	{
+		m_LeftTex.loadFromFile("Images/PickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/PickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/PickAxeRight.png");
+
+		m_PickaxePower = 1.0f;
+		break;
+	}
+	}
 	
 	m_Sprite->setTexture(*m_Texture, true);
 	m_Sprite->setOrigin(m_Sprite->getGlobalBounds().width / 2, (m_Sprite->getGlobalBounds().height / 2));

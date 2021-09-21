@@ -32,5 +32,8 @@ public:
 	sf::Texture* m_Furnace;
 	sf::Texture* m_DoorLeft;
 	sf::Texture* m_Bow;
+	sf::Texture* m_IronIngot;
+	sf::Texture* m_GoldIngot;
+	sf::Texture* m_DiamondIngot;
 };
 

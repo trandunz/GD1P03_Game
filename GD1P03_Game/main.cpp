@@ -17,7 +17,7 @@ void InitUI();
 
 void CenterViewsToSprite(sf::Sprite _object);
 
-void Test_AddDirtToInv();
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type);
 bool PickupItemOnGround();
 
 void InitShaders();
@@ -74,6 +74,8 @@ std::list<Spawner> m_SlimeSpawners;
 sf::Shader m_CoreShader;
 sf::Shader m_SurfaceShader;
 sf::Shader m_ShaderMiniMap;
+
+Bow* m_Bow;
 
 /// <summary>
 /// 
@@ -137,6 +139,7 @@ int main()
 	m_Player = nullptr;
 	m_RenderWindow = nullptr;
 	m_Block = nullptr;
+	m_Bow = nullptr;
 
 	//
 	std::cout << "Return Main" << std::endl;
@@ -202,7 +205,7 @@ void Start()
 	m_bClose = false;
 
 	// Already Has A Pickaxe Somehow?
-	m_GUI->InitHotBarScrolling(m_Event, m_Player);
+	m_GUI->InitHotBarScrolling(m_Player);
 
 	// Render
 	Render();
@@ -259,6 +262,50 @@ void Update()
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 					{
 						m_Player->ToggleInventoryUI();
+					}
+
+					// NUMPAD INVENTORYCONTROL
+					// Numpad9 = BOW			// Numpad3 = DIAMOND 		// Numpad6 = DIAMOND ORE
+					// Numpad1 = IRON INGOT		// Numpad4 = IRON ORE		// Numpad7 = WOOD
+					// Numpad2 = GOLD INGOT		// Numpad5 = GOLD ORE		// Numpad8 = STONE
+					if (true)
+					{
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::IRONINGOT);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDINGOT);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMOND);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::IRONORE);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDORE);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMONDORE);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::WOOD);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::STONE);
+					}
+					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9))
+					{
+						Test_AddItemToInv(CBlock::BLOCKTYPE::BOW);
+					}
 					}
 				}
 			}
@@ -356,8 +403,8 @@ void Update()
 						spawner.SetPlayer(m_Player);
 					}
 
-					// Already Has A Pickaxe Somehow?
-					m_GUI->InitHotBarScrolling(m_Event, m_Player);
+					// Already Has A Pickaxe Selected
+					m_GUI->InitHotBarScrolling(m_Player);
 				}
 			}
 			
@@ -453,12 +500,167 @@ void CenterViewsToSprite(sf::Sprite _object)
 	m_RenderWindow->setView(m_WorldView);
 }
 
-void Test_AddDirtToInv()
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 {
-	m_Pickaxe = new CPickaxe();
-	m_Pickaxe->m_Type = CBlock::BLOCKTYPE::PICKAXE;
-	m_Player->AddItemToInventory(m_Pickaxe, 5);
-	m_Pickaxe = nullptr;
+	switch (_type)
+	{
+	case CBlock::BLOCKTYPE::PICKAXE:
+	{
+		m_Block = new CPickaxe();
+		m_Pickaxe->m_Type = CBlock::BLOCKTYPE::PICKAXE;
+		m_Pickaxe->m_PickType = CBlock::PICKAXETYPE::DIAMOND;
+		m_Player->AddItemToInventory(m_Pickaxe, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DOOR:
+	{
+		m_Door = new CDoor();
+		m_Player->AddItemToInventory(m_Door, false);
+		m_Door = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::CHEST:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIRT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::STONE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WOOD:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Wood, CBlock::BLOCKTYPE::WOOD);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PLANKS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::SAND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::MOSSYBRICK:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GRASS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Grass, CBlock::BLOCKTYPE::GRASS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::LEAVES:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::FURNACE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronOre, CBlock::BLOCKTYPE::IRONORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMONDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondOre, CBlock::BLOCKTYPE::DIAMONDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::COALORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::OBSIDIAN:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::BOW:
+	{
+		m_Bow = new Bow();
+		m_Player->AddItemToInventory(m_Bow, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMOND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	default:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	}
 }
 
 bool PickupItemOnGround()

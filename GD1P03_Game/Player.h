@@ -63,7 +63,7 @@ public:
 	int	GetPositionInInventory(CBlock::BLOCKTYPE _type);
 	int IsItemInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount);
 
-	void AddItemToInventory(CBlock* _block, int _position);
+	void AddItemToInventory(CBlock* _block, int _position, bool _canStack = true);
 	void AddItemToInventory(CBlock* _block, bool _canStack = true);
 	void RemoveItemFromInventory(int _position);
 
@@ -112,6 +112,8 @@ public:
 	CAudioManager* m_AudioManager;
 
 	CParticleSystem* m_TestParticles;
+
+	bool m_bInventoryOpen = false;
 private:
 	// Mouse
 	sf::Vector2f m_MousePos;
@@ -128,7 +130,7 @@ private:
 	float m_AttackSpeed = 0.6f;
 
 	bool m_bCanPlace = true;
-	bool m_bInventoryOpen = false;
+	
 	bool m_bCanMove = true;
 	bool m_bCanJump = false;
 	bool m_bCanFallDamage = true;

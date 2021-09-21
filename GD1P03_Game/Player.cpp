@@ -94,18 +94,32 @@ CPlayer::~CPlayer()
 
 void CPlayer::Start()
 {
+	int i = 0;
+	//
+	// ofstream
+	// x Pos
+	std::ofstream out_file;
+
+	out_file.open("Output/FirstEmptyInventorySlot.txt");
+	if (out_file.is_open())
+	{
+		out_file.clear();
+		out_file << 0 << std::endl;
+		out_file.close();
+	}
+	else
+	{
+		std::cout << "OutPut File Not Open!" << std::endl;
+	}
+
 	m_AnimationTimer = new sf::Clock();
 	m_MineTimer = new sf::Clock();
 	m_DamageTimer = new sf::Clock();
 	m_DamageIndicatorTimer = new sf::Clock();
 
 	m_Pickaxe = new CPickaxe();
-	AddItemToInventory(m_Pickaxe, (int)m_InventoryMap.size());
+	AddItemToInventory(m_Pickaxe);
 	m_Pickaxe = nullptr;
-
-	m_Bow = new Bow();
-	AddItemToInventory(m_Bow, (int)m_InventoryMap.size());
-	m_Bow = nullptr;
 
 	m_TestParticles->Start();
 }
@@ -145,7 +159,7 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
 		{
 			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, iit->second.m_PickType);
 			iit->second.m_bIsItemAndSelected = false;
 		}
 		// Player Selects Bow
@@ -515,6 +529,18 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::BOW)
 			{
 			}
+			// Iron Ingot
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::IRONINGOT)
+			{
+			}
+			// Gold Ingot
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::IRONINGOT)
+			{
+			}
+			// Diamond Ingot
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::DIAMOND)
+			{
+			}
 			//Chest
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::CHEST)
 			{
@@ -791,7 +817,7 @@ void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 			std::string line;
 			std::ifstream myfile("Output/FirstEmptyInventorySlot.txt");
 			myfile.is_open();
-			int firstEmpty;
+			int firstEmpty = 0;
 			myfile >> firstEmpty;
 
 			_block->GetShape().setScale(0.4f, 0.4f);
@@ -845,15 +871,29 @@ void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 	_block = nullptr;
 }
 
-void CPlayer::AddItemToInventory(CBlock* _block, int _position)
+void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 {
-	if (IsBlockInInventory(_block))
+	if (_canStack)
 	{
+		if (IsBlockInInventory(_block))
+		{
+		}
+		else
+		{
+			_block->GetShape().setScale(0.4f, 0.4f);
+			_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+			m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
+			m_InventorySize++;
+			// increase number of that type
+			m_InventoryStackValues[_position]++;
+			_block->m_PositionInInventory = _position;
+			m_InventoryMap.insert_or_assign(_position, *_block);
+			//std::cout << "Added Item To Inventory - ";
+			std::cout << _position << std::endl;
+		}
 	}
 	else
 	{
-
-
 		_block->GetShape().setScale(0.4f, 0.4f);
 		_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
 		m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
@@ -864,9 +904,8 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position)
 		m_InventoryMap.insert_or_assign(_position, *_block);
 		//std::cout << "Added Item To Inventory - ";
 		std::cout << _position << std::endl;
-
-
 	}
+	
 
 	_block = nullptr;
 }
@@ -917,6 +956,11 @@ void CPlayer::RemoveItemFromInventory(int _position)
 	{
 		if (it->first == _position)
 		{
+			if (it->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
+			{
+				m_Pickaxe = nullptr;
+			}
+
 			m_InventoryStackValues[_position]--;
 
 			it->second.m_PositionInInventory = -1;

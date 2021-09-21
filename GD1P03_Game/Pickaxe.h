@@ -6,8 +6,9 @@
 class CPickaxe : public CBlock
 {
 public:
-	CPickaxe();
-	CPickaxe(sf::RenderWindow* _renderWindow, const float& _scale, float _posX, float _posY);
+
+	CPickaxe(PICKAXETYPE _pickType = PICKAXETYPE::BASIC);
+	CPickaxe(sf::RenderWindow* _renderWindow, const float& _scale, float _posX, float _posY, PICKAXETYPE _pickType = PICKAXETYPE::BASIC);
 	virtual ~CPickaxe();
 
 	void FlipSprite(sf::Vector2f _playerPosition, sf::Sprite& _sprite, sf::Texture* _playerLeft, sf::Texture* _playerRight);
@@ -18,7 +19,7 @@ public:
 
 	bool m_bOpen = false;
 
-	float m_PickaxePower = 1.2f;
+	float m_PickaxePower = 1.0f;
 
 	sf::Sprite* m_Sprite;
 private:

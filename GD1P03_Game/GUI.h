@@ -46,7 +46,7 @@ public:
 	void InitMousePosSprite(CTextureMaster* _textureMaster);
 
 	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
-	void InitHotBarScrolling(sf::Event& _event, CPlayer* _player);
+	void InitHotBarScrolling(CPlayer* _player);
 	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player, int _iterator);
 	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator);
 	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
@@ -71,6 +71,8 @@ public:
 	sf::Sprite m_MousePointer;
 
 	unsigned int m_CurrentSeed = 0;
+
+	bool m_bCanSmelt;
 
 private:
 	sf::Font m_Font;
@@ -99,6 +101,8 @@ private:
 	sf::Clock* m_FirstEmpySlotTimer;
 
 	CBlock* m_TempBlock;
+
+
 
 
 };

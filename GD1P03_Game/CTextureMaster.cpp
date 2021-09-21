@@ -52,6 +52,12 @@ CTextureMaster::CTextureMaster()
 	m_DoorLeft->loadFromFile("Images/DoorOpenLeft.png");
 	m_Bow = new sf::Texture();
 	m_Bow->loadFromFile("Images/BowLeft.png");
+	m_IronIngot = new sf::Texture();
+	m_IronIngot->loadFromFile("Images/IronIngot.png");
+	m_GoldIngot = new sf::Texture();
+	m_GoldIngot->loadFromFile("Images/GoldIngot.png");
+	m_DiamondIngot = new sf::Texture();
+	m_DiamondIngot->loadFromFile("Images/DiamondIngot.png");
 
 	// Set Smooth
 	m_Dirt->setSmooth(true);
@@ -77,6 +83,9 @@ CTextureMaster::CTextureMaster()
 	m_Furnace->setSmooth(true);
 	m_DoorLeft->setSmooth(true);
 	m_Bow->setSmooth(true);
+	m_IronIngot->setSmooth(true);
+	m_GoldIngot->setSmooth(true);
+	m_DiamondIngot->setSmooth(true);
 }
 
 CTextureMaster::~CTextureMaster()
@@ -105,6 +114,12 @@ CTextureMaster::~CTextureMaster()
 	delete m_GoldOre;
 	delete m_DiamondOre;
 	delete m_Bow;
+	delete m_IronIngot;
+	delete m_GoldIngot;
+	delete m_DiamondIngot;
+	m_DiamondIngot = nullptr;
+	m_GoldIngot = nullptr;
+	m_IronIngot = nullptr;
 	m_Bow = nullptr;
 	m_DoorLeft = nullptr;
 	m_Furnace = nullptr;

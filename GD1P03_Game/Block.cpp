@@ -122,22 +122,22 @@ void CBlock::Start()
 		m_BlockStrength = 100;
 		break;
 	}
-	case CBlock::BLOCKTYPE::IRON:
+	case CBlock::BLOCKTYPE::IRONORE:
 	{
 		m_BlockStrength = 5;
 		break;
 	}
-	case CBlock::BLOCKTYPE::COAL:
+	case CBlock::BLOCKTYPE::COALORE:
 	{
 		m_BlockStrength = 5;
 		break;
 	}
-	case CBlock::BLOCKTYPE::GOLD:
+	case CBlock::BLOCKTYPE::GOLDORE:
 	{
 		m_BlockStrength = 6;
 		break;
 	}
-	case CBlock::BLOCKTYPE::DIAMOND:
+	case CBlock::BLOCKTYPE::DIAMONDORE:
 	{
 		m_BlockStrength = 6;
 		break;
