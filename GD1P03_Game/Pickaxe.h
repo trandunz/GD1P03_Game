@@ -7,7 +7,7 @@ class CPickaxe : public CBlock
 {
 public:
 	CPickaxe();
-	CPickaxe(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY);
+	CPickaxe(sf::RenderWindow* _renderWindow, const float& _scale, float _posX, float _posY);
 	virtual ~CPickaxe();
 
 	void FlipSprite(sf::Vector2f _playerPosition, sf::Sprite& _sprite, sf::Texture* _playerLeft, sf::Texture* _playerRight);

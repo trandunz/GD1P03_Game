@@ -30,6 +30,9 @@ public:
 
 	void PlayBowShot();
 
+
+
+private:
 	sf::SoundBuffer m_Buffer;
 	sf::Sound m_ActiveSound;
 
@@ -43,8 +46,6 @@ public:
 
 	sf::Music m_Music;
 
-private:
-	
 	sf::SoundBuffer m_MineBuffer1;
 	sf::SoundBuffer m_MineBuffer2;
 	sf::SoundBuffer m_MineBuffer3;

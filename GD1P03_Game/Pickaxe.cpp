@@ -5,7 +5,6 @@ CPickaxe::CPickaxe()
 	m_Scale = 50.0f;
 	m_Body = nullptr;
 	CBlock::m_Type = BLOCKTYPE::PICKAXE;
-	m_Type = BLOCKTYPE::PICKAXE;
 	m_Sprite = new sf::Sprite();
 	m_Sprite->setColor(sf::Color::White);
 	m_Texture = nullptr;
@@ -20,12 +19,10 @@ CPickaxe::CPickaxe()
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2 , m_Shape.getGlobalBounds().height / 2);
 }
 
-CPickaxe::CPickaxe(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY)
+CPickaxe::CPickaxe(sf::RenderWindow* _renderWindow, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
-	m_World = &_world;
-	m_Texture = nullptr;
 
 	m_Sprite = new sf::Sprite();
 	m_Sprite->setColor(sf::Color::White);

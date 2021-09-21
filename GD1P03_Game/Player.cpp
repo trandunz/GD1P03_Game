@@ -49,14 +49,16 @@ CPlayer::~CPlayer()
 	if (m_Pickaxe != nullptr)
 	{
 		delete m_Pickaxe;
-		m_Pickaxe = nullptr;
+		
 	}
+	m_Pickaxe = nullptr;
 
 	if (m_Bow != nullptr)
 	{
 		delete m_Bow;
-		m_Bow = nullptr;
+		
 	}
+	m_Bow = nullptr;
 
 	m_InventoryMap.clear();
 	m_Projectiles.clear();
@@ -143,7 +145,7 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
 		{
 			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
 			iit->second.m_bIsItemAndSelected = false;
 		}
 		// Player Selects Bow
@@ -498,7 +500,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		{
 		}
 		// Left Mouse Clicked And In Empty Space
-		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite))
+		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite))
 		{
 			// Place Door
 			if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::DOOR)

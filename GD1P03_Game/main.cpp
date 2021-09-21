@@ -177,13 +177,13 @@ void Start()
 
 	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->ToggleSpawning();
-	m_SlimeSpawner->SetSpawnCount(5);
+	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
 	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->ToggleSpawning();
-	m_SlimeSpawner->SetSpawnCount(5);
+	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 

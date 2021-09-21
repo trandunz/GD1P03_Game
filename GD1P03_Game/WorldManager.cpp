@@ -277,7 +277,35 @@ void CWorldManager::CreateSkyChunk()
                 sf::RectangleShape sky = sf::RectangleShape();
                 if (j > 1450)
                 {
-                    sky.setFillColor(sf::Color::Black);
+                    sky.setFillColor(sf::Color(40, 40, 40, 255));
+                }
+                else if (j > 1475)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 2)));
+                }
+                else if (j > 1500)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 3)));
+                }
+                else if (j > 1625)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 4)));
+                }
+                else if (j > 1650)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 5)));
+                }
+                else if (j > 1675)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 6)));
+                }
+                else if (j > 1700)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 7)));
+                }
+                else if (j > 1725)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 0));
                 }
                 else
                 {
@@ -301,7 +329,35 @@ void CWorldManager::CreateSkyChunk()
                 sf::RectangleShape sky = sf::RectangleShape();
                 if (j > 1450)
                 {
-                    sky.setFillColor(sf::Color::Black);
+                    sky.setFillColor(sf::Color(40, 40, 40, 255));
+                }
+                else if (j > 1475)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 2)));
+                }
+                else if (j > 1500)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 3)));
+                }
+                else if (j > 1625)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 4)));
+                }
+                else if (j > 1650)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 5)));
+                }
+                else if (j > 1675)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 6)));
+                }
+                else if (j > 1700)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 7)));
+                }
+                else if (j > 1725)
+                {
+                    sky.setFillColor(sf::Color(40, 40, 40, 0));
                 }
                 else
                 {
