@@ -22,6 +22,10 @@ bool PickupItemOnGround();
 
 void InitShaders();
 
+
+void InitGameOver();
+void GameOverScreen();
+
 // Mouse
 sf::Vector2f MousePos;
 
@@ -66,7 +70,7 @@ CPickaxe* m_Pickaxe;
 
 CTextureMaster* m_TextureMaster;
 
-sf::Clock DeathTimer;
+sf::Clock m_DeathTimer;
 
 Spawner* m_SlimeSpawner;
 std::list<Spawner> m_SlimeSpawners;
@@ -76,6 +80,12 @@ sf::Shader m_SurfaceShader;
 sf::Shader m_ShaderMiniMap;
 
 Bow* m_Bow;
+
+// Gameover screen variables
+float m_PlayerRespawnTime = 6;
+sf::Clock m_FadeTimer;
+sf::RectangleShape m_FadeScreen;
+sf::Text m_GameOverText;
 
 /// <summary>
 /// 
@@ -153,6 +163,7 @@ int main()
 void Start()
 {
 	InitShaders();
+	InitGameOver();
 
 	m_TextureMaster = new CTextureMaster();
 	m_Event = sf::Event();
@@ -331,8 +342,11 @@ void Update()
 			// General On Press Mouse
 			if (m_Event.type == sf::Event::MouseButtonPressed)
 			{
-				// b2World Step & MousePosBox Position
-				m_WorldManager->Update(m_Event, MousePos);
+				if (m_WorldManager != nullptr)
+				{
+					// b2World Step & MousePosBox Position
+					m_WorldManager->Update(m_Event, MousePos);
+				}
 			}
 		}
 
@@ -360,13 +374,10 @@ void Update()
 				// Reset Players SFML Sprite To Box2D Body
 				m_Player->ResetSpritePos();
 
-				// b2World Step & MousePosBox Position
-				m_WorldManager->Update(m_Event, MousePos);
-
 				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
 				{
 					m_AudioManager->PlayPlayerDeath();
-					DeathTimer.restart();
+					m_DeathTimer.restart();
 					delete m_Player;
 					m_Player = nullptr;
 
@@ -375,39 +386,57 @@ void Update()
 						spawner.LoosePlayer();
 					}
 					m_WorldManager->InitPointer(nullptr);
-					//m_bClose = true;
-				}
 
-				if (m_WorldManager != nullptr)
-				{
-					// World Step
-					m_World.Step(1 / 60.0f, 60, 60);
- 
-					//
-					// Main Render
-					//
-					Render();
+					m_FadeScreen.setPosition(m_WorldView.getCenter());
+					m_GameOverText.setPosition(m_WorldView.getCenter());
+					m_FadeTimer.restart();
 				}
 			}
 			else if (m_Player == nullptr)
 			{
-				if (DeathTimer.getElapsedTime().asSeconds() >= 3)
+				GameOverScreen();
+
+				if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime)
 				{
 					// Player
 					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
 					m_Player->Start();
+
+					// Already Has A Pickaxe Selected
+					m_GUI->InitHotBarScrolling(m_Player);
+
+					m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World,m_GUI, &m_CoreShader, &m_SurfaceShader);
+					m_WorldManager->Start(m_TextureMaster);
 					m_WorldManager->InitPointer(m_Player);
 
 					for (Spawner& spawner : m_SlimeSpawners)
 					{
 						spawner.SetPlayer(m_Player);
 					}
-
-					// Already Has A Pickaxe Selected
-					m_GUI->InitHotBarScrolling(m_Player);
+				}
+				else if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime - 0.1f)
+				{
+					if (m_WorldManager != nullptr)
+					{
+						delete m_WorldManager;
+					}
+					m_WorldManager = nullptr;
 				}
 			}
-			
+
+			if (m_WorldManager != nullptr)
+			{
+				// MousePosBox Position
+				m_WorldManager->Update(m_Event, MousePos);
+
+				// World Step
+				m_World.Step(1 / 60.0f, 60, 60);
+			}
+
+			//
+			// Main Render
+			//
+			Render();
 		}
 	}
 }
@@ -423,18 +452,24 @@ void Render()
 	// Sky	
 	m_RenderWindow->setView(m_WorldView);
 
-	m_WorldManager->CreateSkyChunk();
+	if (m_WorldManager != nullptr)
+	{
+		m_WorldManager->CreateSkyChunk();
 
-	m_WorldManager->Render();
+		m_WorldManager->Render();
+	}
 
-	// Player
-	if (m_Player != nullptr)
+	if (m_SlimeSpawners.size() > 0)
 	{
 		for (Spawner& spawner : m_SlimeSpawners)
 		{
 			spawner.Render();
 		}
+	}
 
+	// Player
+	if (m_Player != nullptr)
+	{
 		m_Player->Render();
 
 		// UI
@@ -450,6 +485,9 @@ void Render()
 		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView);
 	}
 
+	m_RenderWindow->draw(m_FadeScreen);
+	m_RenderWindow->draw(m_GameOverText);
+
 	/////////////////////////////////////
 	m_RenderWindow->display();
 	m_RenderWindow->setView(m_WorldView);
@@ -463,10 +501,6 @@ void InitWorldView()
 	m_WorldView = sf::View(sf::Vector2f(0.0f,0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
 	m_WorldView.zoom(3.0f);
 	m_RenderWindow->setView(m_WorldView);
-
-	sf::View m_BoardView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(640, 640));
-	m_BoardView.setCenter(320, 320);
-	m_RenderWindow->setView(m_BoardView);
 }
 
 /// <summary>
@@ -481,8 +515,6 @@ void InitUI()
 	m_GUI->InitHealthUI(m_Player);
 	m_GUI->InitCraftingUI(m_TextureMaster);
 	m_GUI->InitInventoryUI(m_Player, m_RenderWindow, m_TextureMaster);
-	
-	
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
@@ -719,6 +751,37 @@ void InitShaders()
 		std::cout << "Black Shader Failed To Load!" << std::endl;
 	}
 	
+}
+
+void GameOverScreen()
+{
+	float elapsedtime = m_FadeTimer.getElapsedTime().asSeconds() / m_PlayerRespawnTime;
+
+	if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime)
+	{
+		m_FadeScreen.setFillColor(sf::Color::Transparent);
+		m_GameOverText.setFillColor(sf::Color::Transparent);
+
+	}
+	else
+	{
+		m_FadeScreen.setFillColor(sf::Color(0, 0, 0, elapsedtime * 255));
+		m_GameOverText.setFillColor(sf::Color(255, 0, 0, elapsedtime * 255));
+	}
+}
+
+void InitGameOver()
+{
+	m_Font.loadFromFile("Fonts/ANDYB.TTF");
+	m_FadeScreen.setSize(sf::Vector2f(30000, 30000));
+	m_FadeScreen.setOrigin(sf::Vector2f(15000, 15000));
+	m_FadeScreen.setFillColor(sf::Color::Transparent);
+	m_GameOverText.setCharacterSize(1000);
+	m_GameOverText.setString("Game Over");
+	m_GameOverText.setFont(m_Font);
+	m_GameOverText.setOrigin(m_GameOverText.getGlobalBounds().width / 2, m_GameOverText.getGlobalBounds().height / 2);
+	m_GameOverText.setFillColor(sf::Color::Transparent);
+	m_GameOverText.setOutlineColor(sf::Color::Transparent);
 }
 
 

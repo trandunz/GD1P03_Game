@@ -572,9 +572,24 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
-				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen())
+				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC)
 				{
 					std::cout << "Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON)
+				{
+					std::cout << "Iron Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD)
+				{
+					std::cout << "Gold Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
+				{
+					std::cout << "Diamond Pickaxe Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen())
@@ -604,9 +619,24 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
-				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen())
+				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC)
 				{
 					std::cout << "Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON)
+				{
+					std::cout << "Iron Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD)
+				{
+					std::cout << "Gold Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
+				{
+					std::cout << "Diamond Pickaxe Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen())
@@ -1056,7 +1086,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			}
 			if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
 			{
-				if (!item.m_bCanCraft && m_bCanSmelt)
+				if (!item.m_bCanCraft)
 				{
 					item.m_bCanCraft = true;
 				}
@@ -1082,7 +1112,6 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 					item.m_bCanCraft = false;
 				}
 			}
-
 		}
 		
 		for (CBlock& item : m_CraftList)
@@ -1127,7 +1156,8 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				}
 				else if (item.m_Type == CBlock::BLOCKTYPE::PLANKS)
 				{
-					for (int i = 0; i < 4; i++)
+					// Add 2 Planks
+					for (int i = 0; i < 2; i++)
 					{
 						m_TempBlock = new CBlock(item.m_Texture, item.m_Type);
 						_player->AddItemToInventory(m_TempBlock);
@@ -1221,11 +1251,11 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				else if (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
 				{
 				// Remove Current Pickaxe
-				int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
-				_player->RemoveItemFromInventory(tempPos);
+				//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+				//_player->RemoveItemFromInventory(tempPos);
 
 				CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::IRON);
-				_player->AddItemToInventory(temp, tempPos, false);
+				_player->AddItemToInventory(temp, false);
 
 				// Player Is Holding Pixkaxe During Swap
 				InitHotBarScrolling(_player);
@@ -1261,11 +1291,11 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				else if (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
 				{
 				// Remove Current Pickaxe
-				int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
-				_player->RemoveItemFromInventory(tempPos);
+				//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+				//_player->RemoveItemFromInventory(tempPos);
 
 				CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
-				_player->AddItemToInventory(temp, tempPos, false);
+				_player->AddItemToInventory(temp, false);
 
 				// Player Is Holding Pixkaxe During Swap
 				InitHotBarScrolling(_player);
@@ -1302,11 +1332,11 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				else if (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
 				{
 				// Remove Current Pickaxe
-				int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
-				_player->RemoveItemFromInventory(tempPos);
+				//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+				//_player->RemoveItemFromInventory(tempPos);
 
 				CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
-				_player->AddItemToInventory(temp, tempPos, false);
+				_player->AddItemToInventory(temp, false);
 
 				// Player Is Holding Pixkaxe During Swap
 				InitHotBarScrolling(_player);

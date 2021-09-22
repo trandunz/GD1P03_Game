@@ -155,11 +155,32 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	// Items
 	for (std::map<int, CBlock>::iterator iit = m_InventoryMap.begin(); iit != m_InventoryMap.end(); iit++)
 	{
-		// Player Selects Pickaxe
-		if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
+		// Player Selects Basic Pickaxe
+		if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC)
 		{
 			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, iit->second.m_PickType);
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::BASIC);
+			iit->second.m_bIsItemAndSelected = false;
+		}
+		// Player Selects Iron Pickaxe
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON)
+		{
+			std::cout << "New Pickaxe Created!" << std::endl;
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::IRON);
+			iit->second.m_bIsItemAndSelected = false;
+		}
+		// Player Selects Gold Pickaxe
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD)
+		{
+			std::cout << "New GOLD Pickaxe Created!" << std::endl;
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::GOLD);
+			iit->second.m_bIsItemAndSelected = false;
+		}
+		// Player Selects Diamond Pickaxe
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
+		{
+			std::cout << "New Pickaxe Created!" << std::endl;
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::DIAMOND);
 			iit->second.m_bIsItemAndSelected = false;
 		}
 		// Player Selects Bow
@@ -169,8 +190,26 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 			m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
 			iit->second.m_bIsItemAndSelected = false;
 		}
-		// Player Unselects PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE))
+		// Player Unselects Basic PickAxe
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		{
+		delete m_Pickaxe;
+		m_Pickaxe = nullptr;
+		}
+		// Player Unselects Iron PickAxe
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC))
+		{
+		delete m_Pickaxe;
+		m_Pickaxe = nullptr;
+		}
+		// Player Unselects Gold PickAxe
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC))
+		{
+			delete m_Pickaxe;
+			m_Pickaxe = nullptr;
+		}
+		// Player Unselects Diamond PickAxe
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
@@ -181,8 +220,26 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 			delete m_Bow;
 			m_Bow = nullptr;
 		}
-		// Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE))
+		// Basic Pickaxe Moves Slots Wealst Out
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		{
+			delete m_Pickaxe;
+			m_Pickaxe = nullptr;
+		}
+		// Iron Pickaxe Moves Slots Wealst Out
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		{
+			delete m_Pickaxe;
+			m_Pickaxe = nullptr;
+		}
+		// Gold Pickaxe Moves Slots Wealst Out
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		{
+			delete m_Pickaxe;
+			m_Pickaxe = nullptr;
+		}
+		// Diamond Pickaxe Moves Slots Wealst Out
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
@@ -222,19 +279,19 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 			}
 
 			// Fall Damage
-			if (worldManifold.normal.y > 0 && m_bCanFallDamage)
+			if (impactVelocity.y <= 140.7f && impactVelocity.y >= 80.7f)
 			{
-				if (impactVelocity.y <= -20.7f)
-				{
-					TakeDamage(-impactVelocity.y);
-				}
-				else if (impactVelocity.y <= -15.87f)
-				{
-					TakeDamage(-impactVelocity.y + impactVelocity.y / 4);
-				}
-
-				m_bCanFallDamage = false;
+				//std::cout << impactVelocity.y << std::endl;
+				TakeDamage(impactVelocity.y / 2);
 			}
+			else if (impactVelocity.y > 140.7f)
+			{
+				//std::cout << impactVelocity.y << std::endl;
+				TakeDamage(impactVelocity.y * 2);
+			}
+
+			
+
 		}
 		else if (vel1.y < -2.0f || vel1.y > 2.0f)
 		{
@@ -1187,7 +1244,7 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
 	m_BodyDef.type = _type;
 	m_BodyDef.enabled = true;
-	m_BodyDef.linearDamping = 0.2f;
+	m_BodyDef.linearDamping = 2.0f;
 	m_BodyDef.angularDamping = 0.0f;
 	m_BodyDef.fixedRotation = true;
 	m_BodyDef.allowSleep = false;
@@ -1195,15 +1252,23 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_BodyDef.bullet = false;
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
-	m_b2pShape.SetAsBox((100 / 4) / m_Scale, (190 / 2) / m_Scale);
+	b2Vec2 vertices[8];
+	vertices[0].Set(-50 / m_Scale, -97 / m_Scale);
+	vertices[1].Set(-47 / m_Scale, -100 / m_Scale);
+	vertices[2].Set(50 / m_Scale, -97 / m_Scale);
+	vertices[3].Set(47 / m_Scale, -100 / m_Scale);
+	vertices[4].Set(50 / m_Scale, 97 / m_Scale);
+	vertices[5].Set(47 / m_Scale, 100 / m_Scale);
+	vertices[6].Set(-50 / m_Scale, 97 / m_Scale);
+	vertices[7].Set(-47 / m_Scale, 100 / m_Scale);
 
-	m_FixtureDef.density = 1.9f;
+	m_b2pShape.Set(vertices, 8);
+
+	m_FixtureDef.density = 0.8f;
 	m_FixtureDef.shape = &m_b2pShape;
-	m_FixtureDef.friction = 0.9f;
-	m_FixtureDef.restitution = 0.2f;
+	m_FixtureDef.friction = 0.5f;
+	m_FixtureDef.restitution = 0.01f;
 	m_FixtureDef.filter.categoryBits = 0x0002;
-	
-
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	// Set SFML Shape Transform To Box 2D Body Transform

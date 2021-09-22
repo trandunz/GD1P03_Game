@@ -75,6 +75,11 @@ public:
 	void DestroyBody();
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 
+	float GetHeight(float x) 
+	{
+		return 0;//1 - cosf( x * 0.1f );
+	}
+
 	b2Body* m_Body;
 	b2BodyDef m_BodyDef;
 	b2PolygonShape m_b2pShape;

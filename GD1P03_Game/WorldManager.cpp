@@ -50,7 +50,6 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
     CreateSurfaceLayerPart2(_textureMaster);
     CreateWorldBoundary(_textureMaster);
 
-
     //
     // Reading From File??
     //
@@ -66,8 +65,6 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
             it->m_
         }
     }*/
-
-    
 }
 
 void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
@@ -201,6 +198,11 @@ void CWorldManager::Render()
     }
     else
     {
+        for (sf::RectangleShape& skyblock : m_SkyChunk)
+        {
+            m_RenderWindow->draw(skyblock);
+        }
+
         // Draw All Blocks
         std::list<CBlock>::iterator it;
         // Blocks

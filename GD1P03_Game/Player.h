@@ -122,7 +122,7 @@ private:
 
 	// Player
 	b2Vec2 m_Velocity;
-	const int m_MoveSpeed = 50;
+	const int m_MoveSpeed = 40;
 	int m_MaxHP = 100;
 	int m_HPRegenRate_s = 1;
 	int m_Health = 100;
