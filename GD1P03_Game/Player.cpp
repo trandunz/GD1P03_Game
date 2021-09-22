@@ -1253,14 +1253,14 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
 	b2Vec2 vertices[8];
-	vertices[0].Set(-50 / m_Scale, -97 / m_Scale);
-	vertices[1].Set(-47 / m_Scale, -100 / m_Scale);
-	vertices[2].Set(50 / m_Scale, -97 / m_Scale);
-	vertices[3].Set(47 / m_Scale, -100 / m_Scale);
-	vertices[4].Set(50 / m_Scale, 97 / m_Scale);
-	vertices[5].Set(47 / m_Scale, 100 / m_Scale);
-	vertices[6].Set(-50 / m_Scale, 97 / m_Scale);
-	vertices[7].Set(-47 / m_Scale, 100 / m_Scale);
+	vertices[0].Set(-45 / m_Scale, -85 / m_Scale);
+	vertices[1].Set(-40 / m_Scale, -90 / m_Scale);
+	vertices[2].Set(45 / m_Scale, -85 / m_Scale);
+	vertices[3].Set(40 / m_Scale, -90 / m_Scale);
+	vertices[4].Set(45 / m_Scale, 85 / m_Scale);
+	vertices[5].Set(40 / m_Scale, 90 / m_Scale);
+	vertices[6].Set(-45 / m_Scale, 85 / m_Scale);
+	vertices[7].Set(-40 / m_Scale, 90 / m_Scale);
 
 	m_b2pShape.Set(vertices, 8);
 

@@ -82,7 +82,7 @@ sf::Shader m_ShaderMiniMap;
 Bow* m_Bow;
 
 // Gameover screen variables
-float m_PlayerRespawnTime = 6;
+float m_PlayerRespawnTime = 5;
 sf::Clock m_FadeTimer;
 sf::RectangleShape m_FadeScreen;
 sf::Text m_GameOverText;
@@ -763,10 +763,16 @@ void GameOverScreen()
 		m_GameOverText.setFillColor(sf::Color::Transparent);
 
 	}
+	else if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime / 1.5)
+	{
+		m_FadeScreen.setFillColor(sf::Color(0, 0, 0, 255));
+		m_GameOverText.setFillColor(sf::Color(255, 0, 0, 255));
+
+	}
 	else
 	{
-		m_FadeScreen.setFillColor(sf::Color(0, 0, 0, elapsedtime * 255));
-		m_GameOverText.setFillColor(sf::Color(255, 0, 0, elapsedtime * 255));
+		m_FadeScreen.setFillColor(sf::Color(0, 0, 0, elapsedtime * 255 * 1.5));
+		m_GameOverText.setFillColor(sf::Color(255, 0, 0, elapsedtime * 255 * 1.5));
 	}
 }
 
@@ -776,8 +782,8 @@ void InitGameOver()
 	m_FadeScreen.setSize(sf::Vector2f(30000, 30000));
 	m_FadeScreen.setOrigin(sf::Vector2f(15000, 15000));
 	m_FadeScreen.setFillColor(sf::Color::Transparent);
-	m_GameOverText.setCharacterSize(1000);
-	m_GameOverText.setString("Game Over");
+	m_GameOverText.setCharacterSize(400);
+	m_GameOverText.setString("You Died");
 	m_GameOverText.setFont(m_Font);
 	m_GameOverText.setOrigin(m_GameOverText.getGlobalBounds().width / 2, m_GameOverText.getGlobalBounds().height / 2);
 	m_GameOverText.setFillColor(sf::Color::Transparent);

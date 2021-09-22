@@ -137,15 +137,15 @@ void CWorldManager::Render()
     m_WorldBackGround.setPosition(m_RenderWindow->getView().getCenter());
     m_RenderWindow->draw(m_WorldBackGround);
 
+    for (sf::RectangleShape& skyblock : m_SkyChunk)
+    {
+        m_RenderWindow->draw(skyblock);
+    }
+
     if (m_Player != nullptr)
     {
         m_Shader->setUniform("hasTexture", true);
         m_Shader->setUniform("lightPos", m_Player->GetShape().getPosition());
-
-        for (sf::RectangleShape& skyblock : m_SkyChunk)
-        {
-            m_RenderWindow->draw(skyblock);
-        }
 
         // Draw All Blocks
         std::list<CBlock>::iterator it;
@@ -198,10 +198,6 @@ void CWorldManager::Render()
     }
     else
     {
-        for (sf::RectangleShape& skyblock : m_SkyChunk)
-        {
-            m_RenderWindow->draw(skyblock);
-        }
 
         // Draw All Blocks
         std::list<CBlock>::iterator it;
