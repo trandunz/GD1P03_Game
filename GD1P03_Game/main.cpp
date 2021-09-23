@@ -78,6 +78,7 @@ std::list<Spawner> m_SlimeSpawners;
 sf::Shader m_CoreShader;
 sf::Shader m_SurfaceShader;
 sf::Shader m_ShaderMiniMap;
+sf::Shader m_TourchShader;
 
 Bow* m_Bow;
 
@@ -180,7 +181,7 @@ void Start()
 	m_Player->Start();
 
 	// Map
-	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader);
+	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
 	m_WorldManager->Start(m_TextureMaster);
 
 	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
@@ -461,7 +462,7 @@ void Render()
 
 	if (m_WorldManager != nullptr)
 	{
-		m_WorldManager->CreateSkyChunk();
+		m_WorldManager->CreateSkyChunk(m_TextureMaster);
 
 		m_WorldManager->Render();
 	}
@@ -506,7 +507,7 @@ void Render()
 void InitWorldView()
 {
 	m_WorldView = sf::View(sf::Vector2f(0.0f,0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
-	m_WorldView.zoom(3.0f);
+	m_WorldView.zoom(2.5f);
 	m_RenderWindow->setView(m_WorldView);
 }
 
@@ -756,6 +757,11 @@ void InitShaders()
 	if (!m_ShaderMiniMap.loadFromFile("Shaders/vertex_shader_UI.vert", "Shaders/fragment_shader_UI.frag"))
 	{
 		std::cout << "Black Shader Failed To Load!" << std::endl;
+	}
+
+	if (!m_TourchShader.loadFromFile("Shaders/vertex_shader_Tourch.vert", "Shaders/fragment_shader_Tourch.frag"))
+	{
+		std::cout << "Tourch Shader Failed To Load!" << std::endl;
 	}
 	
 }

@@ -135,7 +135,7 @@ sf::Text GUI::InitHealthUI(CPlayer* _player)
 	return m_HealthText;
 }
 
-void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI)
+void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::Sprite>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI)
 {
 	_shaderUI->setUniform("hasTexture", true);
 	_shaderUI->setUniform("lightPos", sf::Vector2f(0, 0));
@@ -1522,52 +1522,52 @@ bool GUI::bIsCraftingSpaceEmpty(int _position)
 	return true;
 }
 
-void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView)
+void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView, sf::Shader* _defaultShader)
 {
 	if (_player->bInventoryOpen())
 	{
 		for (int i = 0; i < m_InventorySlotMap.size(); i++)
 		{
-			_renderWindow->draw(m_InventorySlotMap[i]);
-			_renderWindow->draw(_player->m_InventoryMap[i].GetShape());
-			_renderWindow->draw(m_InventoryItemStackCounters[i]);
+			_renderWindow->draw(m_InventorySlotMap[i], _defaultShader);
+			_renderWindow->draw(_player->m_InventoryMap[i].GetShape(), _defaultShader);
+			_renderWindow->draw(m_InventoryItemStackCounters[i], _defaultShader);
 		}
 
 		for (int i = 0; i < m_CraftingSlots.size(); i++)
 		{
-			_renderWindow->draw(m_CraftingSlots[i]);
+			_renderWindow->draw(m_CraftingSlots[i], _defaultShader);
 		}
 
 		for (int i = 0; i < m_CraftList.size(); i++)
 		{
-			_renderWindow->draw(m_CraftList[i].GetShape());
+			_renderWindow->draw(m_CraftList[i].GetShape(), _defaultShader);
 		}
 
 		// Render Moving Item On Top Always
 		if (bPlayerIsMovingAnItem(_player))
 		{
-			_renderWindow->draw(_player->m_InventoryMap[bGetPositionOfMovingItem(_player)].GetShape());
-			_renderWindow->draw(m_InventoryItemStackCounters[bGetPositionOfMovingItem(_player)]);
+			_renderWindow->draw(_player->m_InventoryMap[bGetPositionOfMovingItem(_player)].GetShape(), _defaultShader);
+			_renderWindow->draw(m_InventoryItemStackCounters[bGetPositionOfMovingItem(_player)], _defaultShader);
 		}
 	}
 	else
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			_renderWindow->draw(m_InventorySlotMap[i]);
-			_renderWindow->draw(_player->m_InventoryMap[i].GetShape());
-			_renderWindow->draw(m_InventoryItemStackCounters[i]);
+			_renderWindow->draw(m_InventorySlotMap[i], _defaultShader);
+			_renderWindow->draw(_player->m_InventoryMap[i].GetShape(), _defaultShader);
+			_renderWindow->draw(m_InventoryItemStackCounters[i], _defaultShader);
 		}
 	}
 
 	if (_player->bInventoryOpen())
 	{
-		_renderWindow->draw(m_MousePointer);
+		_renderWindow->draw(m_MousePointer, _defaultShader);
 	}
 	else
 	{
 		_renderWindow->setView(_worldView);
-		_renderWindow->draw(m_MousePos);
+		_renderWindow->draw(m_MousePos, _defaultShader);
 		_renderWindow->setView(_uiView);
 	}
 }

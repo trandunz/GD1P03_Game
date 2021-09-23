@@ -181,8 +181,10 @@
     <None Include="Shaders\fragment_shader _UI.frag" />
     <None Include="Shaders\fragment_shader.frag" />
     <None Include="Shaders\fragment_shader_surface.frag" />
+    <None Include="Shaders\fragment_shader_tourch.frag" />
     <None Include="Shaders\vertex_shader.vert" />
     <None Include="Shaders\vertex_shader_surface.vert" />
+    <None Include="Shaders\vertex_shader_tourch.vert" />
     <None Include="Shaders\vertex_shader_UI.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

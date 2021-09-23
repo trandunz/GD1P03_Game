@@ -25,17 +25,19 @@ namespace Utils
 class CWorldManager
 {
 public:
-	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader = NULL, sf::Shader* _surfaceShader = NULL);
+	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader = NULL, sf::Shader* _surfaceShader = NULL, sf::Shader* _tourchShader = NULL);
 	~CWorldManager();
 
 	void Start(CTextureMaster* _textureMaster);
 	void Update(sf::Event& _event, sf::Vector2f _mousePos);
-	void Render();
+	void Render(sf::Shader* _defaultShader = NULL);
 
-	void CreateSkyChunk();
+	void CreateSkyChunk(CTextureMaster* _textureMaster);
 	void CreateSurfaceLayerPart1(CTextureMaster* _textureMaster);
 	void CreateSurfaceLayerPart2(CTextureMaster* _textureMaster);
 	void CreateWorldBoundary(CTextureMaster* _textureMaster);
+
+	bool bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it);
 
 	void UpdateWorldTexture(sf::View& _view);
 
@@ -51,11 +53,12 @@ public:
 	std::list<CChest> m_Chests = {};
 	std::list<CFurnace> m_Furnaces = {};
 	std::list<CDoor> m_Doors = {};
-	std::list<sf::RectangleShape> m_SkyChunk = {};
+	std::list<sf::Sprite> m_SkyChunk = {};
 
 private:
 	sf::Shader* m_Shader;
 	sf::Shader* m_SurfaceShader;
+	sf::Shader* m_TourchShader;
 
 	sf::RenderWindow* m_RenderWindow;
 	CPlayer* m_Player;
@@ -65,7 +68,8 @@ private:
 	// Temp Block Pointer (Used To Create New Blocks During World Generation)
 	CBlock* m_Block;
 
-	sf::Sprite m_WorldBackGround;
+	sf::Sprite m_BGPlainsSurface;
+	sf::Sprite m_BGPlainsUnderGr;
 
 	b2WorldManifold m_WorldManifold;
 

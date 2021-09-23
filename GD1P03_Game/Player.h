@@ -23,7 +23,7 @@ public:
 
 	void Start();
 	void Update(sf::Vector2f _mousePos);
-	void Render();
+	void Render(sf::Shader* _defaultShader = NULL);
 
 	void Movement();
 	void Movement(sf::Event& _event);

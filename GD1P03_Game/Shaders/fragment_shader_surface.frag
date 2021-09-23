@@ -14,7 +14,7 @@ void main()
 	
 	//Calculate the vector from light to pixel
 	vec2 lightToFrag = lightPos - vert_pos.xy;
-	lightToFrag.y = lightToFrag.y / 1.7;
+	lightToFrag.y = lightToFrag.y / 2.1;
 	lightToFrag.x = 0; // Ignore X For Sun Like Effect
 
 	//Length of the vector (distance)

@@ -1,14 +1,15 @@
 #include "WorldManager.h"
 
-CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader, sf::Shader* _surfaceShader)
+CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader, sf::Shader* _surfaceShader, sf::Shader* _tourchShader)
 {
-    m_Shader = _shader;
     m_RenderWindow = _renderWindow;
     m_Player = _player;
     m_World = &_world;
     m_GUI = _gui;
     m_Block = nullptr;
+    m_Shader = _shader;
     m_SurfaceShader = _surfaceShader;
+    m_TourchShader = _tourchShader;
 
     _gui->m_CurrentSeed = time(NULL);
     //_gui->m_CurrentSeed = 1631416783;
@@ -27,6 +28,7 @@ CWorldManager::~CWorldManager()
     m_Doors.clear();
     m_Furnaces.clear();
 
+    m_TourchShader = nullptr;
     m_SurfaceShader = nullptr;
     m_Shader = nullptr;
     m_Block = nullptr;
@@ -38,14 +40,24 @@ CWorldManager::~CWorldManager()
 
 void CWorldManager::Start(CTextureMaster* _textureMaster)
 {
-    // World BackGround
-    m_WorldBackGround = sf::Sprite();
-    m_WorldBackGround.setTexture(*_textureMaster->m_Sky, true);
-    m_WorldBackGround.setOrigin(m_WorldBackGround.getGlobalBounds().width / 2, m_WorldBackGround.getGlobalBounds().height / 2);
-    m_WorldBackGround.setScale(4.7, 4.7);
+    // World BackGround (Surface)
+    m_BGPlainsSurface = sf::Sprite();
+    m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
+    m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
+    m_BGPlainsSurface.setScale(4.7, 4.7);
+    m_BGPlainsSurface.setColor(sf::Color::White);
+
+    // (Under Ground)
+    m_BGPlainsUnderGr = sf::Sprite();
+    m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundPlains, true);
+    m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 40000, 40000));
+    m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
+    m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
+    m_BGPlainsUnderGr.setPosition(0,0);
+    
 
     // World
-    CreateSkyChunk();
+    CreateSkyChunk(_textureMaster);
     CreateSurfaceLayerPart1(_textureMaster);
     CreateSurfaceLayerPart2(_textureMaster);
     CreateWorldBoundary(_textureMaster);
@@ -69,7 +81,8 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
 
 void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
 {
-    for (sf::RectangleShape& sky : m_SkyChunk)
+
+    for (sf::Sprite& sky : m_SkyChunk)
     {
         if (sky.getGlobalBounds().contains(_mousePos))
         {
@@ -114,8 +127,16 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
         }
 
         // Distance To Player
-        float Mag = sqrt(((m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y)));
-    
+        float Mag = 0;
+        if (m_Player != nullptr)
+        {
+            Mag = sqrt(((m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y)));
+        }
+        else
+        {
+            Mag = 200;
+        }
+        
         if (Mag < 200 && m_Player->m_bInventoryOpen)
         {
             m_GUI->m_bCanSmelt = true;
@@ -128,61 +149,105 @@ void CWorldManager::Update(sf::Event& _event, sf::Vector2f _mousePos)
     }
 }
 
-void CWorldManager::Render()
+void CWorldManager::Render(sf::Shader* _defaultShader)
 {
+    // World BackGround
+    m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
+    if (m_Player != nullptr)
+    {
+        if (m_Player->GetShape().getPosition().y > 1500 && m_Player->GetShape().getPosition().y < 1550)
+        {
+            m_BGPlainsSurface.setColor(sf::Color(255,255,255,255));
+            m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 0));
+        }
+        else if (m_Player->GetShape().getPosition().y > 1550 && m_Player->GetShape().getPosition().y < 1600)
+        {
+            m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 200));
+            m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50,50));
+        }
+        else if (m_Player->GetShape().getPosition().y > 1600 && m_Player->GetShape().getPosition().y < 1650)
+        {
+            m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 150));
+            m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 100));
+        }
+        else if (m_Player->GetShape().getPosition().y > 1650 && m_Player->GetShape().getPosition().y < 1700)
+        {
+            m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 100));
+            m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 150));
+        }
+        else if (m_Player->GetShape().getPosition().y > 1700 && m_Player->GetShape().getPosition().y< 1750)
+        {
+            m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 50));
+            m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 200));
+        }
+        else if (m_Player->GetShape().getPosition().y > 1750)
+        {
+            m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 0));
+            m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 255));
+        }
+    }
+    m_RenderWindow->draw(m_BGPlainsSurface);
+    m_RenderWindow->draw(m_BGPlainsUnderGr);
+
+    // Surface Shader
     m_SurfaceShader->setUniform("hasTexture", true);
     m_SurfaceShader->setUniform("lightPos", sf::Vector2f(0, -500));
 
-    // World BackGround
-    m_WorldBackGround.setPosition(m_RenderWindow->getView().getCenter());
-    m_RenderWindow->draw(m_WorldBackGround);
-
-    for (sf::RectangleShape& skyblock : m_SkyChunk)
-    {
-        m_RenderWindow->draw(skyblock);
-    }
-
     if (m_Player != nullptr)
     {
+        // Player Light
         m_Shader->setUniform("hasTexture", true);
         m_Shader->setUniform("lightPos", m_Player->GetShape().getPosition());
 
-        // Draw All Blocks
+        // Block It
         std::list<CBlock>::iterator it;
-        // Blocks
+        // Draw Blocks In Range (With Player Shader)
         for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
         {
             float Mag1 = sqrt(((it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
-            if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y > 1300)
+            if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y >= 1300)
             {
-                m_RenderWindow->draw(it->GetShape(), m_Shader);
+
+                if (bIsBlockInRangeOfLightSource(it))
+                {
+                    
+                    m_RenderWindow->draw(it->GetShape(), m_TourchShader);
+                }
+                else
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_Shader);
+                }
             }
-            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1300 && it->GetShape().getPosition().y >= 400)
+            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1450 && it->GetShape().getPosition().y >= 400)
             {
-                if (Mag1 < 190 && m_Player->GetShape().getPosition().y > 1250)
+                if (m_Player->GetShape().getPosition().y >= 1200)
                 {
                     m_RenderWindow->draw(it->GetShape(), m_Shader);
                 }
                 else
                 {
-                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                    if (bIsBlockInRangeOfLightSource(it) && it->GetShape().getPosition().y >= 1300)
+                    {
+                        m_RenderWindow->draw(it->GetShape(), m_TourchShader);
+                    }
+                    else
+                    {
+                        m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                    }
                 }
                 
             }
-            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y < 400)
+            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y < 400 && it->GetShape().getPosition().y > -400)
             {
-                if (Mag1 < 190 && m_Player->GetShape().getPosition().y > 1250)
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_Shader);
-                }
-                else
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
-                }
-                
+                m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+            }
+            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= -400)
+            {
+                m_RenderWindow->draw(it->GetShape(), _defaultShader);
             }
         }
 
+        // Doors E.t.c
         for (CDoor& door : m_Doors)
         {
             door.Render();
@@ -198,10 +263,9 @@ void CWorldManager::Render()
     }
     else
     {
-
-        // Draw All Blocks
+        // Block It
         std::list<CBlock>::iterator it;
-        // Blocks
+        // Blocks In Range
         for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
         {
             float Mag1 = 0;
@@ -211,7 +275,7 @@ void CWorldManager::Render()
             }
             else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1300 && it->GetShape().getPosition().y >= 400)
             {
-                if (Mag1 < 190 && m_RenderWindow->getView().getCenter().y > 1250)
+                if (m_RenderWindow->getView().getCenter().y > 1250)
                 {
                     m_RenderWindow->draw(it->GetShape(), m_Shader);
                 }
@@ -221,38 +285,35 @@ void CWorldManager::Render()
                 }
                 
             }
-            else if (Mag1 < 1920 * 1.8f && m_RenderWindow->getView().getCenter().y < 400)
+            else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y < 400 && it->GetShape().getPosition().y > -400)
             {
-                if (Mag1 < 190 && it->GetShape().getPosition().y > 1250)
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_Shader);
-                }
-                else
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
-                }
-                
+                m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+            }
+            else if (Mag1 < 1920 * 1.8f)
+            {
+                m_RenderWindow->draw(it->GetShape(), _defaultShader);
             }
         }
 
+        // Doors E.t.c
         for (CDoor& door : m_Doors)
         {
-            door.Render(m_Shader);
+            door.Render();
         }
         for (CChest& chest : m_Chests)
         {
-            chest.Render(m_Shader);
+            chest.Render();
         }
         for (CFurnace& furnace : m_Furnaces)
         {
-            furnace.Render(m_Shader);
+            furnace.Render();
         }
     }
 
     
 }
 
-void CWorldManager::CreateSkyChunk()
+void CWorldManager::CreateSkyChunk(CTextureMaster* _textureMaster)
 {
     sf::Vector2f playerPos;
     if (m_Player != nullptr)
@@ -265,144 +326,146 @@ void CWorldManager::CreateSkyChunk()
     }
     
     m_SkyChunk.clear();
-    for (int i = 0; i > -20000; i -= 100)
+
+    if (m_Player != nullptr)
     {
-        for (int j = 0; j > -20000; j -= 100)
+        for (int i = 0; i > -20000; i -= 100)
         {
-            float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
-            if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
+            for (int j = 0; j > -20000; j -= 100)
             {
-                sf::RectangleShape sky = sf::RectangleShape();
-                sky.setFillColor(sf::Color::Transparent);
-                sky.setSize(sf::Vector2f(100, 100));
-                sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-                sky.setPosition(sf::Vector2f(i + 10, j));
-                m_SkyChunk.push_front(sky);
+                float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+                if (Mag2 < m_RenderWindow->getSize().x * 1.5)
+                {
+                    sf::Sprite sky = sf::Sprite();
+                    sky.setColor(sf::Color::Transparent);
+                    sky.setTexture(*_textureMaster->m_Stone);
+                    sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+                    sky.setPosition(sf::Vector2f(i + 10, j));
+                    m_SkyChunk.push_front(sky);
+                }
+            }
+            for (int j = 0; j < 20000; j += 100)
+            {
+                float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+                if (Mag2 < m_RenderWindow->getSize().x * 1.5)
+                {
+                    sf::Sprite sky = sf::Sprite();
+                    if (j > 1450)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255));
+                    }
+                    else if (j > 1475)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 2)));
+                    }
+                    else if (j > 1500)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 3)));
+                    }
+                    else if (j > 1625)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 4)));
+                    }
+                    else if (j > 1650)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 5)));
+                    }
+                    else if (j > 1675)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 6)));
+                    }
+                    else if (j > 1700)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 7)));
+                    }
+                    else if (j > 1725)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 0));
+                    }
+                    else
+                    {
+                        sky.setColor(sf::Color::Transparent);
+                    }
+                    sky.setTexture(*_textureMaster->m_Stone);
+                    sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+                    sky.setPosition(sf::Vector2f(i + 10, j));
+                    m_SkyChunk.push_front(sky);
+                }
             }
         }
-        for (int j = 0; j <  20000; j += 100)
+
+        for (int i = 0; i < 20000; i += 100)
         {
-            float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
-            if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
+            for (int j = 0; j > -20000; j -= 100)
             {
-                sf::RectangleShape sky = sf::RectangleShape();
-                if (j > 1450)
+                float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+                if (Mag2 < m_RenderWindow->getSize().x * 1.5)
                 {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255));
+                    sf::Sprite sky = sf::Sprite();
+                    sky.setColor(sf::Color::Transparent);
+                    sky.setTexture(*_textureMaster->m_Stone);
+                    sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+                    sky.setPosition(sf::Vector2f(i + 10, j));
+                    m_SkyChunk.push_front(sky);
                 }
-                else if (j > 1475)
+            }
+            for (int j = 0; j < 20000; j += 100)
+            {
+                float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
+                if (Mag2 < m_RenderWindow->getSize().x * 1.5)
                 {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 2)));
+                    sf::Sprite sky = sf::Sprite();
+                    if (j > 1450)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255));
+                    }
+                    else if (j > 1475)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 2)));
+                    }
+                    else if (j > 1500)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 3)));
+                    }
+                    else if (j > 1625)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 4)));
+                    }
+                    else if (j > 1650)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 5)));
+                    }
+                    else if (j > 1675)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 6)));
+                    }
+                    else if (j > 1700)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 255 - (31.875f * 7)));
+                    }
+                    else if (j > 1725)
+                    {
+                        sky.setColor(sf::Color(40, 40, 40, 0));
+                    }
+                    else
+                    {
+                        sky.setColor(sf::Color::Transparent);
+                    }
+                    sky.setTexture(*_textureMaster->m_Stone);
+                    sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
+                    sky.setPosition(sf::Vector2f(i + 10, j));
+                    m_SkyChunk.push_front(sky);
                 }
-                else if (j > 1500)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 3)));
-                }
-                else if (j > 1625)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 4)));
-                }
-                else if (j > 1650)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 5)));
-                }
-                else if (j > 1675)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 6)));
-                }
-                else if (j > 1700)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 7)));
-                }
-                else if (j > 1725)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 0));
-                }
-                else
-                {
-                    sky.setFillColor(sf::Color::Transparent);
-                }
-                sky.setSize(sf::Vector2f(100, 100));
-                sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-                sky.setPosition(sf::Vector2f(i + 10, j));
-                m_SkyChunk.push_front(sky);
             }
         }
     }
-
-    for (int i = 0; i < 20000; i += 100)
-    {
-        for (int j = 0; j < 20000; j += 100)
-        {
-            float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
-            if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
-            {
-                sf::RectangleShape sky = sf::RectangleShape();
-                if (j > 1450)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255));
-                }
-                else if (j > 1475)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 2)));
-                }
-                else if (j > 1500)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 3)));
-                }
-                else if (j > 1625)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 4)));
-                }
-                else if (j > 1650)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 5)));
-                }
-                else if (j > 1675)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 6)));
-                }
-                else if (j > 1700)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 255 - (31.875f * 7)));
-                }
-                else if (j > 1725)
-                {
-                    sky.setFillColor(sf::Color(40, 40, 40, 0));
-                }
-                else
-                {
-                    sky.setFillColor(sf::Color::Transparent);
-                }
-                sky.setSize(sf::Vector2f(100, 100));
-                sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-                sky.setPosition(sf::Vector2f(i + 10, j));
-                m_SkyChunk.push_front(sky);
-                m_RenderWindow->draw(m_SkyChunk.front());
-            }
-        }
-        for (int j = 0; j > -20000; j -= 100)
-        {
-            float Mag2 = sqrt(((sf::Vector2f(i, j).x - playerPos.x) * (sf::Vector2f(i, j).x - playerPos.x)) + ((sf::Vector2f(i, j).y - playerPos.y) * (sf::Vector2f(i, j).y - playerPos.y)));
-            if (Mag2 < m_RenderWindow->getSize().x * 1.80f)
-            {
-                sf::RectangleShape sky = sf::RectangleShape();
-                sky.setFillColor(sf::Color::Transparent);
-                sky.setSize(sf::Vector2f(100, 100));
-                sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
-                sky.setPosition(sf::Vector2f(i + 10, j));
-                m_SkyChunk.push_front(sky);
-                m_RenderWindow->draw(m_SkyChunk.front());
-            }
-
-        }
-    }
+    
 }
 
 void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
 {
     GlobalMutex.lock();
-    for (int i = 10; i < 21400 / 1.9f; i += 100)
+    for (int i = 10; i < 31400 / 1.9f; i += 100)
     {
         // Gap Edges Right
         if (i > 4800 && i < 5000)
@@ -721,7 +784,7 @@ void CWorldManager::CreateSurfaceLayerPart1(CTextureMaster* _textureMaster)
 void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
 {
     GlobalMutex.lock();
-    for (int i = -90; i > -21400 / 1.9f; i -= 100)
+    for (int i = -90; i > -31400 / 1.9f; i -= 100)
     {
         // Trees
         if (rand() % 5 == 0)
@@ -925,7 +988,7 @@ void CWorldManager::CreateSurfaceLayerPart2(CTextureMaster* _textureMaster)
 void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
 {
     GlobalMutex.lock();
-    for (int i = -90; i > -21100 / 1.9f; i -= 100)
+    for (int i = -90; i > -31100 / 1.9f; i -= 100)
     {
         // Grass
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, -6000, false, CBlock::BLOCKTYPE::OBSIDIAN);
@@ -934,7 +997,7 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
         m_Chunk.push_back(*m_Block);
         m_Block = nullptr;
     }
-    for (int i = -90; i > -21100 / 1.9f; i -= 100)
+    for (int i = -90; i > -31100 / 1.9f; i -= 100)
     {
         // Grass
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, 11300, false, CBlock::BLOCKTYPE::OBSIDIAN);
@@ -947,14 +1010,14 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
     {
 
         // Grass
-        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, -21190 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, -31390 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
 
         //m_Block->SetSize(100, 100);
         m_Chunk.push_back(*m_Block);
         m_Block = nullptr;
     }
 
-    for (int i = 10; i < 21400 / 1.9f; i += 100)
+    for (int i = 10; i < 31400 / 1.9f; i += 100)
     {
         // Grass
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, -6000, false, CBlock::BLOCKTYPE::OBSIDIAN);
@@ -964,7 +1027,7 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
         m_Block->m_ArrayIndex = i;
         m_Block = nullptr;
     }
-    for (int i = 10; i < 21400 / 1.9f; i += 100)
+    for (int i = 10; i < 31400 / 1.9f; i += 100)
     {
         // Grass
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, 11300, false, CBlock::BLOCKTYPE::OBSIDIAN);
@@ -977,7 +1040,7 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
     for (int j = 500 - 6500; j < 21400 / 1.9f; j += 100)
     {
         // Grass
-        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +21190 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +31410 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
 
         //m_Block->SetSize(100, 100);
         m_Chunk.push_back(*m_Block);
@@ -1013,6 +1076,12 @@ void CWorldManager::UpdateWorldTexture(sf::View& _view)
         }
     }
 
+    for (sf::Sprite& sky : m_SkyChunk)
+    {
+        m_WorldTexture.draw(sky);
+    }
+    
+
 
     // Update RendTexture
     m_WorldTexture.display();
@@ -1045,6 +1114,30 @@ bool CWorldManager::CleanUpSky()
         m_SkyChunk.pop_front();
     }
     return true;
+}
+
+bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it)
+{
+    for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
+    {
+        float Mag1 = 0;
+        Mag1 = sqrt(((_it->GetShape().getPosition().x - fit->GetShape().getPosition().x) * (_it->GetShape().getPosition().x - fit->GetShape().getPosition().x)) + ((_it->GetShape().getPosition().y - fit->GetShape().getPosition().y) * (_it->GetShape().getPosition().y - fit->GetShape().getPosition().y)));
+        
+        if (Mag1 < 600)
+        {
+            // Surface Shader
+            if (m_TourchShader != nullptr) 
+            {
+                m_TourchShader->setUniform("hasTexture", true);
+                m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
+
+                return true;
+            }
+
+        }
+    }
+
+    return false;
 }
 
 void CWorldManager::InitPointer(CPlayer* _player)

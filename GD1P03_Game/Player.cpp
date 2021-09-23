@@ -327,7 +327,7 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	m_TestParticles->Update(elapsedTime);
 }
 
-void CPlayer::Render()
+void CPlayer::Render(sf::Shader* _defaultShader)
 {
 	// Player Has PickAxe?
 	if (m_Pickaxe != nullptr)

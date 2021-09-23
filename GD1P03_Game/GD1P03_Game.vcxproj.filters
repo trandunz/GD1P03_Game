@@ -142,5 +142,11 @@
     <None Include="Shaders\vertex_shader_UI.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Shaders\fragment_shader_tourch.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\vertex_shader_tourch.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -35,5 +35,6 @@ public:
 	sf::Texture* m_IronIngot;
 	sf::Texture* m_GoldIngot;
 	sf::Texture* m_DiamondIngot;
+	sf::Texture* m_UnderGroundPlains;
 };
 

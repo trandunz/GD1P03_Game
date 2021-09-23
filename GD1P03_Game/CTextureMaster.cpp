@@ -24,6 +24,7 @@ CTextureMaster::CTextureMaster()
 	m_Planks->loadFromFile("Images/Planks.png");
 	m_Stone = new sf::Texture();
 	m_Stone->loadFromFile("Images/Stone.png");
+	m_Stone->setRepeated(true);
 	m_Wood = new sf::Texture();
 	m_Wood->loadFromFile("Images/Wood.png");
 	m_Sand = new sf::Texture();
@@ -58,6 +59,9 @@ CTextureMaster::CTextureMaster()
 	m_GoldIngot->loadFromFile("Images/GoldIngot.png");
 	m_DiamondIngot = new sf::Texture();
 	m_DiamondIngot->loadFromFile("Images/DiamondIngot.png");
+	m_UnderGroundPlains = new sf::Texture();
+	m_UnderGroundPlains->loadFromFile("Images/UnderGroundPlains.png");
+	m_UnderGroundPlains->setRepeated(true);
 
 	// Set Smooth
 	m_Dirt->setSmooth(true);
@@ -90,6 +94,7 @@ CTextureMaster::CTextureMaster()
 
 CTextureMaster::~CTextureMaster()
 {
+	delete m_UnderGroundPlains;
 	delete m_DoorLeft;
 	delete m_Furnace;
 	delete m_Planks;
@@ -117,6 +122,7 @@ CTextureMaster::~CTextureMaster()
 	delete m_IronIngot;
 	delete m_GoldIngot;
 	delete m_DiamondIngot;
+	m_UnderGroundPlains = nullptr;
 	m_DiamondIngot = nullptr;
 	m_GoldIngot = nullptr;
 	m_IronIngot = nullptr;

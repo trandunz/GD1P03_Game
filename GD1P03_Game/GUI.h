@@ -30,7 +30,7 @@ public:
 
 	void HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster);
 	sf::Text InitHealthUI(CPlayer* _player);
-	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderBlack);
+	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::Sprite>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderBlack);
 	void InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
 	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster);
 	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
@@ -38,7 +38,7 @@ public:
 	void InitCraftingUI(CTextureMaster* _textureMaster);
 	bool bIsCraftingSpaceEmpty(int _position);
 
-	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView);
+	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView, sf::Shader* _defaultShader = NULL);
 
 	std::string ToString(int32 integer);
 
