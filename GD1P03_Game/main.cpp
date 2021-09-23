@@ -270,7 +270,7 @@ void Update()
 				{
 					m_Player->Movement(m_Event);
 
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
 					{
 						m_Player->ToggleInventoryUI();
 					}
@@ -347,6 +347,13 @@ void Update()
 					// b2World Step & MousePosBox Position
 					m_WorldManager->Update(m_Event, MousePos);
 				}
+			}
+
+			if (m_Player != nullptr)
+			{
+				m_GUI->ClickedItemInInventory(m_Event, m_Player);
+
+				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
 			}
 		}
 

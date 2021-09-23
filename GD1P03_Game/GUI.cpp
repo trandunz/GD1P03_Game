@@ -238,21 +238,20 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 	sf::Vector2f MousePos = _renderWindow->mapPixelToCoords((sf::Mouse::getPosition(*_renderWindow)), _uiView);
 
+
 	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 70);
 
-		LetGoOfItemInInventory(_renderWindow, _uiView, _worldView, _event, _player, i);
-
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (bPlayerIsMovingAnItem(_player))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
+			HoldItemInInventory(_player);
 		}
 		else
 		{
@@ -281,15 +280,13 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 10) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 135);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
 
-		LetGoOfItemInInventory(_renderWindow, _uiView, _worldView, _event, _player, i);
-
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (bPlayerIsMovingAnItem(_player))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
+			HoldItemInInventory(_player);
 		}
 		else
 		{
@@ -315,15 +312,13 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 20) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 200);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
 
-		LetGoOfItemInInventory(_renderWindow, _uiView, _worldView, _event, _player, i);
-
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (bPlayerIsMovingAnItem(_player))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
+			HoldItemInInventory(_player);
 		}
 		else
 		{
@@ -349,15 +344,13 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 30) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265);
 		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
 
-		LetGoOfItemInInventory(_renderWindow, _uiView, _worldView, _event, _player, i);
-
 		m_MousePointer.setPosition(MousePos);
 
 		//ClickedItemInInventory(_event, _player, i);
-		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		if (bPlayerIsMovingAnItem(_player))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
+			HoldItemInInventory(_player);
 		}
 		else
 		{
@@ -381,13 +374,12 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		
 		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + ((i - 40) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65);
 
-		LetGoOfItemInInventory(_renderWindow,_uiView,_worldView,_event,_player,i);
-
 		m_MousePointer.setPosition(MousePos);
-		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
+		//ClickedItemInInventory(_event, _player, i);
+		if (bPlayerIsMovingAnItem(_player))
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
-			_player->m_InventoryMap[i].SetPosition(MousePos.x - 11, MousePos.y - 11);
+			HoldItemInInventory(_player);
 		}
 		else
 		{
@@ -407,6 +399,7 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 	}
 
 	m_InventorySlotMap[_player->m_CurrentItemIndex].setTexture(*_textureMaster->m_CIITexture);
+
 
 }
 
@@ -668,71 +661,118 @@ void GUI::InitHotBarScrolling(CPlayer* _player)
 	}
 }
 
-void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player, int _iterator)
+void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player)
 {
-
+	// Set View As Function Called Is In Polled Update
 	_renderWindow->setView(_uiView);
-	if (m_MousePointer.getGlobalBounds().intersects(_player->m_InventoryMap[_iterator].GetShape().getGlobalBounds()) && _player->bInventoryOpen())
+
+	for (int j = 0; j < m_InventorySlotMap.size(); j++)
 	{
-		for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); sit++)
+		if (bPlayerIsMovingAnItem(_player, j) && _player->bInventoryOpen())
 		{
-			if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); ++sit)
 			{
-				_player->m_InventoryMap[_iterator].m_bIsMovingItemInInv = false;
-				_player->m_InventoryMap[sit->first];
-				_player->m_InventoryStackValues[sit->first];
-				std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(_iterator);
-				std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(_iterator);
-
-				//std::cout << cit->first << "th ITEM" << std::endl;
-				//std::cout << sit->first << "th SPACE" << std::endl;
-
-				if (sit->first != cit->first)
+				if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()) && _event.type == sf::Event::MouseButtonReleased)
 				{
-					
-					std::cout << "Mouse Released!" << std::endl;
-					_player->m_InventoryMap[_iterator].m_PositionInInventory = sit->first;
-					std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
-					std::swap(_player->m_InventoryMap[sit->first], cit->second);
-					_player->m_InventoryMap[_iterator].m_PositionInInventory = _iterator;
+					_player->m_InventoryMap[sit->first];
+					_player->m_InventoryStackValues[sit->first];
+					std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(j);
+					std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(j);
 
-					vit = _player->m_InventoryStackValues.end();
-					sit = m_InventorySlotMap.end();
-
-					// Moved Item Into Currently Selected Slot?
-					for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
+					if (sit->first != cit->first)
 					{
-						if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+						_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
+						_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
+						std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+						std::swap(_player->m_InventoryMap[sit->first], cit->second);
+
+						// Moved Item Into Currently Selected Slot?
+						for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 						{
-							std::cout << "Pickaxe Selected!" << std::endl;
-							iit->second.m_bIsItemAndSelected = true;
+							if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+							{
+								std::cout << "Pickaxe Selected!" << std::endl;
+								iit->second.m_bIsItemAndSelected = true;
+								iit->second.m_bIsMovingItemInInv = false;
+								break;
+							}
+							else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+							{
+								std::cout << "Bow Selected!" << std::endl;
+								iit->second.m_bIsItemAndSelected = true;
+								iit->second.m_bIsMovingItemInInv = false;
+								break;
+							}
 						}
-						else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+
+						// Debug
+						std::cout << "Mouse Released On Selected Item!" << std::endl;
+
+						// Saves My Sanity
+						for (int i = 0; i < 50; i++)
 						{
-							std::cout << "Bow Selected!" << std::endl;
-							iit->second.m_bIsItemAndSelected = true;
+							_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
 						}
+						break;
+					}
+					else if (sit->first == cit->first)
+					{
+
+					}
+
+					// Debug
+					std::cout << "Mouse Released!" << std::endl;
+
+					// Saves My Sanity
+					for (int i = 0; i < 50; i++)
+					{
+						_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
 					}
 				}
-				else if (sit->first == cit->first)
+				else if (_event.type == sf::Event::MouseButtonReleased)
 				{
-					
+					// Saves My Sanity
+					for (int i = 0; i < 50; i++)
+					{
+						_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
+					}
 				}
 			}
 		}
 	}
-
+	
+	_renderWindow->setView(_worldView);
+	// Set View As Function Is Called In Polled Update
 }
 
-void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator)
+void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player)
 {
-	if (_player->bInventoryOpen() && _event.type == sf::Event::MouseButtonPressed && _player->m_InventoryMap[_iterator].GetShape().getGlobalBounds().intersects(m_MousePointer.getGlobalBounds()) && _player->bInventoryOpen())
+	for (int i = 0; i < _player->m_InventoryMap.size(); i++)
 	{
-		if (!_player->m_InventoryMap[_iterator].m_bIsMovingItemInInv)
+		if (!bPlayerIsMovingAnItem(_player) && _player->m_bInventoryOpen && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			_player->m_InventoryMap[_iterator].m_bIsMovingItemInInv = true;
+			std::cout << "Clicked Item In Inventory!" << std::endl;
+			_player->m_InventoryMap[i].m_bIsMovingItemInInv = true;
 		}
 	}
+}
+
+void GUI::HoldItemInInventory(CPlayer* _player)
+{
+	for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+	{
+		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && bPlayerIsMovingAnItem(_player, i))
+		{
+			_player->m_InventoryMap[i].GetShape().setPosition(m_MousePointer.getPosition());
+			m_InventoryItemStackCounters[i].setPosition(_player->m_InventoryMap[i].GetShape().getPosition().x - 8, _player->m_InventoryMap[i].GetShape().getPosition().y + 18);
+		}
+		else if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && !bPlayerIsMovingAnItem(_player, i))
+		{
+			_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+			m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		}
+	}
+	
 }
 
 void GUI::DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event)
@@ -744,17 +784,14 @@ void GUI::DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event)
 			std::cout << "Droped Item" << std::endl;
 			if (_player->m_InventoryStackValues[i] == 0)
 			{
-				break;
 			}
 			else if (_player->m_InventoryStackValues[i] <= 1)
 			{
 				_player->RemoveItemFromInventory(i);
-				break;
 			}
 			else
 			{
 				_player->m_InventoryStackValues[i]--;
-				break;
 			}
 			break;
 		}
@@ -776,19 +813,21 @@ bool GUI::MousePointerOverSlot()
 
 void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster, sf::View& _uiView)
 {
-	if (m_FirstEmpySlotTimer->getElapsedTime().asSeconds() >= 0.02f)
+	if (m_FirstEmpySlotTimer->getElapsedTime().asSeconds() >= 0.01f)
 	{
 		FindFirstEmptyInventorySlot(_player);
 		m_FirstEmpySlotTimer->restart();
 	}
 	if (_player->bInventoryOpen())
 	{
-		// Row 1
+		// Positions
 		for (int i = 0; i < 11; i++)
 		{
 			_renderWindow->mapCoordsToPixel(m_CraftingSlots[i].getPosition(), _uiView);
 			m_CraftingSlots[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65 + ((1) * 65));
 		}
+
+		// Color / Alpha
 		for (CBlock& item : m_CraftList)
 		{
 			if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DOOR)
@@ -970,6 +1009,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 
 		}
 
+		// Setting Can Craft
 		for (CBlock& item : m_CraftList)
 		{
 			if (_player->IsItemInventory(CBlock::BLOCKTYPE::WOOD, true) > 0 && item.m_Type == CBlock::BLOCKTYPE::PLANKS)
@@ -1114,11 +1154,14 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			}
 		}
 		
+		// Removing And Adding Items
 		for (CBlock& item : m_CraftList)
 		{
 			if (item.GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()) && item.m_bCanCraft && sf::Mouse::isButtonPressed(sf::Mouse::Left) && m_CraftTimer->getElapsedTime().asSeconds() >= 0.2f)
 			{
-				if (item.m_Type == CBlock::BLOCKTYPE::DOOR)
+				switch (item.m_Type)
+				{
+				case CBlock::BLOCKTYPE::DOOR:
 				{
 					m_TempBlock = new CBlock(_textureMaster->m_DoorLeft, CBlock::BLOCKTYPE::DOOR);
 					_player->AddItemToInventory(m_TempBlock, false);
@@ -1135,8 +1178,9 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
 						}
 					}
+					break;
 				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::FURNACE)
+				case CBlock::BLOCKTYPE::FURNACE:
 				{
 					m_TempBlock = new CBlock(item.m_Texture, item.m_Type);
 					_player->AddItemToInventory(m_TempBlock);
@@ -1153,8 +1197,9 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)]--;
 						}
 					}
+					break;
 				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::PLANKS)
+				case CBlock::BLOCKTYPE::PLANKS:
 				{
 					// Add 2 Planks
 					for (int i = 0; i < 2; i++)
@@ -1175,8 +1220,9 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::WOOD)]--;
 						}
 					}
+					break;
 				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::CHEST)
+				case CBlock::BLOCKTYPE::CHEST:
 				{
 					m_TempBlock = new CBlock(item.m_Texture, item.m_Type);
 					_player->AddItemToInventory(m_TempBlock);
@@ -1193,8 +1239,9 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
 						}
 					}
+					break;
 				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::IRONINGOT)
+				case CBlock::BLOCKTYPE::IRONINGOT:
 				{
 					m_TempBlock = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
 					_player->AddItemToInventory(m_TempBlock);
@@ -1211,8 +1258,9 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONORE)]--;
 						}
 					}
+					break;
 				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT)
+				case CBlock::BLOCKTYPE::GOLDINGOT:
 				{
 					m_TempBlock = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
 					_player->AddItemToInventory(m_TempBlock);
@@ -1229,146 +1277,169 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDORE)]--;
 						}
 					}
+					break;
 				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::DIAMOND)
+				case CBlock::BLOCKTYPE::DIAMOND:
 				{
-				m_TempBlock = new CBlock(_textureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
-				_player->AddItemToInventory(m_TempBlock);
+					m_TempBlock = new CBlock(_textureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+					_player->AddItemToInventory(m_TempBlock);
 
-				// Remove 1 Diamond Ore
-				for (int i = 0; i < 1; i++)
-				{
-					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMONDORE)] <= 1)
+					// Remove 1 Diamond Ore
+					for (int i = 0; i < 1; i++)
 					{
-						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMONDORE));
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMONDORE)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMONDORE));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMONDORE)]--;
+						}
 					}
-					else
-					{
-						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMONDORE)]--;
-					}
+					break;
 				}
-				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
+				case CBlock::BLOCKTYPE::PICKAXE:
 				{
-				// Remove Current Pickaxe
-				//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
-				//_player->RemoveItemFromInventory(tempPos);
-
-				CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::IRON);
-				_player->AddItemToInventory(temp, false);
-
-				// Player Is Holding Pixkaxe During Swap
-				InitHotBarScrolling(_player);
-
-				// Remove 3 Iron Ingots
-				for (int i = 0; i < 3; i++)
-				{
-					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)] <= 1)
+					switch (item.m_PickType)
 					{
-						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT));
-					}
-					else
+					case CBlock::PICKAXETYPE::IRON:
 					{
-						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)]--;
+						// Remove Current Pickaxe
+						//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+						//_player->RemoveItemFromInventory(tempPos);
+
+						CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::IRON);
+						_player->AddItemToInventory(temp, false);
+
+						// Player Is Holding Pixkaxe During Swap
+						InitHotBarScrolling(_player);
+
+						// Remove 3 Iron Ingots
+						for (int i = 0; i < 3; i++)
+						{
+							if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)] <= 1)
+							{
+								_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT));
+							}
+							else
+							{
+								_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)]--;
+							}
+						}
+
+						// Remove 2 Planks
+						for (int i = 0; i < 2; i++)
+						{
+							if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+							{
+								_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+							}
+							else
+							{
+								_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+							}
+						}
+
+						temp = nullptr;
+						break;
 					}
+					case CBlock::PICKAXETYPE::GOLD:
+					{
+						// Remove Current Pickaxe
+						//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+						//_player->RemoveItemFromInventory(tempPos);
+
+						CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
+						_player->AddItemToInventory(temp, false);
+
+						// Player Is Holding Pixkaxe During Swap
+						InitHotBarScrolling(_player);
+
+						// Remove 3 Gold Ingots
+						for (int i = 0; i < 3; i++)
+						{
+							if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDINGOT)] <= 1)
+							{
+								_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDINGOT));
+							}
+							else
+							{
+								_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDINGOT)]--;
+							}
+						}
+
+						// Remove 2 Planks
+						for (int i = 0; i < 2; i++)
+						{
+							if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+							{
+								_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+							}
+							else
+							{
+								_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+							}
+						}
+
+
+						temp = nullptr;
+						break;
+					}
+					case CBlock::PICKAXETYPE::DIAMOND:
+					{
+						// Remove Current Pickaxe
+						//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+						//_player->RemoveItemFromInventory(tempPos);
+
+						CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
+						_player->AddItemToInventory(temp, false);
+
+						// Player Is Holding Pixkaxe During Swap
+						InitHotBarScrolling(_player);
+
+						// Remove 3 Diamond
+						for (int i = 0; i < 3; i++)
+						{
+							if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMOND)] <= 1)
+							{
+								_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMOND));
+							}
+							else
+							{
+								_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMOND)]--;
+							}
+						}
+
+						// Remove 2 Planks
+						for (int i = 0; i < 2; i++)
+						{
+							if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+							{
+								_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+							}
+							else
+							{
+								_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+							}
+						}
+
+
+						temp = nullptr;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+					}
+
+					// Exit Pickaxe Case
+					break;
 				}
-
-				// Remove 2 Planks
-				for (int i = 0; i < 2; i++)
+				default:
 				{
-					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
-					{
-						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
-					}
-					else
-					{
-						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
-					}
+					break;
 				}
-
-				temp = nullptr;
-				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
-				{
-				// Remove Current Pickaxe
-				//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
-				//_player->RemoveItemFromInventory(tempPos);
-
-				CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
-				_player->AddItemToInventory(temp, false);
-
-				// Player Is Holding Pixkaxe During Swap
-				InitHotBarScrolling(_player);
-
-				// Remove 3 Gold Ingots
-				for (int i = 0; i < 3; i++)
-				{
-					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDINGOT)] <= 1)
-					{
-						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDINGOT));
-					}
-					else
-					{
-						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDINGOT)]--;
-					}
-				}
-
-				// Remove 2 Planks
-				for (int i = 0; i < 2; i++)
-				{
-					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
-					{
-						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
-					}
-					else
-					{
-						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
-					}
-				}
-
-
-				temp = nullptr;
-				}
-				else if (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
-				{
-				// Remove Current Pickaxe
-				//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
-				//_player->RemoveItemFromInventory(tempPos);
-
-				CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
-				_player->AddItemToInventory(temp, false);
-
-				// Player Is Holding Pixkaxe During Swap
-				InitHotBarScrolling(_player);
-
-				// Remove 3 Diamond
-				for (int i = 0; i < 3; i++)
-				{
-					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMOND)] <= 1)
-					{
-						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMOND));
-					}
-					else
-					{
-						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::DIAMOND)]--;
-					}
-				}
-
-				// Remove 2 Planks
-				for (int i = 0; i < 2; i++)
-				{
-					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
-					{
-						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
-					}
-					else
-					{
-						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
-					}
-				}
-
-
-				temp = nullptr;
 				}
 
 				m_TempBlock = nullptr;
@@ -1471,6 +1542,13 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _w
 		{
 			_renderWindow->draw(m_CraftList[i].GetShape());
 		}
+
+		// Render Moving Item On Top Always
+		if (bPlayerIsMovingAnItem(_player))
+		{
+			_renderWindow->draw(_player->m_InventoryMap[bGetPositionOfMovingItem(_player)].GetShape());
+			_renderWindow->draw(m_InventoryItemStackCounters[bGetPositionOfMovingItem(_player)]);
+		}
 	}
 	else
 	{
@@ -1546,3 +1624,49 @@ int GUI::FindFirstEmptyInventorySlot(CPlayer* _player)
 	//
 	return i;
 }
+
+bool GUI::bPlayerIsMovingAnItem(CPlayer* _player)
+{
+	int i = 0;
+	for (i = 0; i < _player->m_InventoryMap.size(); i++)
+	{
+		if (_player->m_InventoryMap[i].m_bIsMovingItemInInv)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GUI::bPlayerIsMovingAnItem(CPlayer* _player, int _iterator)
+{
+	if (_player->m_InventoryMap[_iterator].m_bIsMovingItemInInv)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	
+}
+
+int GUI::bGetPositionOfMovingItem(CPlayer* _player)
+{
+	if (bPlayerIsMovingAnItem(_player))
+	{
+		int i = 0;
+		for (i = 0; i < _player->m_InventoryMap.size(); i++)
+		{
+			if (_player->m_InventoryMap[i].m_bIsMovingItemInInv)
+			{
+				return i;
+			}
+		}
+	}
+	else
+	{
+		return -1;
+	}
+}
+

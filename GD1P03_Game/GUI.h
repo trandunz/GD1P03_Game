@@ -47,10 +47,15 @@ public:
 
 	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
 	void InitHotBarScrolling(CPlayer* _player);
-	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player, int _iterator);
-	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player, int _iterator);
+	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player);
+	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player);
+	void HoldItemInInventory(CPlayer* _player);
 	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
 	bool MousePointerOverSlot();
+
+	bool bPlayerIsMovingAnItem(CPlayer* _player);
+	bool bPlayerIsMovingAnItem(CPlayer* _player, int _iterator);
+	int bGetPositionOfMovingItem(CPlayer* _player);
 
 	int FindFirstEmptyInventorySlot(CPlayer* _player);
 
