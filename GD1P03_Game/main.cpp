@@ -99,18 +99,16 @@ int main()
 	{
 		// Render Window Settings
 		sf::ContextSettings m_Settings;
-		m_Settings.antialiasingLevel = 8;
+		m_Settings.antialiasingLevel = 2;
 
-		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetsrary", sf::Style::Default, m_Settings);
-		m_RenderWindow->setFramerateLimit(144);
-		//m_RenderWindow->setVerticalSyncEnabled(true);
+		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetary", sf::Style::Default, m_Settings);
+		m_RenderWindow->setVerticalSyncEnabled(true);
 		m_RenderWindow->setKeyRepeatEnabled(false);
 
 		// Window Icon
 		sf::Image icon;
 		icon.loadFromFile("Images/Chest.png");
 		m_RenderWindow->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
 	}
 	
 	//
@@ -184,19 +182,19 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 9900, 9700, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
-	m_SlimeSpawner->ToggleSpawning();
-	m_SlimeSpawner->SetSpawnCount(20);
-	m_SlimeSpawners.push_back(*m_SlimeSpawner);
-	m_SlimeSpawner = nullptr;
-
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 5400,-4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16400,-3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -5400, -4000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -16400, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner->ToggleSpawning();
+	m_SlimeSpawner->SetSpawnCount(2);
+	m_SlimeSpawners.push_back(*m_SlimeSpawner);
+	m_SlimeSpawner = nullptr;
+
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
@@ -218,9 +216,6 @@ void Start()
 
 	// Already Has A Pickaxe Somehow?
 	m_GUI->InitHotBarScrolling(m_Player);
-
-	// Render
-	Render();
 }
 
 /// <summary>
@@ -247,7 +242,10 @@ void Update()
 			{
 				if (m_Player != nullptr)
 				{
-					m_Player->bCanMove(false);
+					if (!m_Player->m_bInventoryOpen)
+					{
+						m_Player->ToggleInventoryUI();
+					}
 				}
 			}
 
@@ -343,10 +341,20 @@ void Update()
 			// General On Press Mouse
 			if (m_Event.type == sf::Event::MouseButtonPressed)
 			{
-				if (m_WorldManager != nullptr)
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right))
 				{
-					// b2World Step & MousePosBox Position
-					m_WorldManager->Update(m_Event, MousePos);
+					if (m_GUI != nullptr && m_SlimeSpawners.size() > 0)
+					{
+						for (std::list<Spawner>::iterator spit = m_SlimeSpawners.begin(); spit != m_SlimeSpawners.end(); spit++)
+						{
+							if (spit->m_Shape.getGlobalBounds().contains(MousePos))
+							{
+								spit->ToggleSpawning();
+								break;
+							}
+						}
+					}
 				}
 			}
 
@@ -369,7 +377,7 @@ void Update()
 			}
 
 			// Player Exists
-			if (m_Player != nullptr)
+			if (m_Player != nullptr && m_WorldManager != nullptr && m_GUI != nullptr)
 			{
 				// Centre View To Player
 				CenterViewsToSprite(m_Player->GetShape());
@@ -379,25 +387,23 @@ void Update()
 				m_Player->Update(MousePos);
 				m_Player->Movement();
 
-				// Reset Players SFML Sprite To Box2D Body
-				m_Player->ResetSpritePos();
-
 				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
 				{
 					m_AudioManager->PlayPlayerDeath();
-					m_DeathTimer.restart();
 					delete m_Player;
+					
 					m_Player = nullptr;
-
+					m_WorldManager->InitPointer(m_Player);
 					for (Spawner& spawner : m_SlimeSpawners)
 					{
 						spawner.LoosePlayer();
 					}
-					m_WorldManager->InitPointer(nullptr);
+					
 
 					m_FadeScreen.setPosition(m_WorldView.getCenter());
 					m_GameOverText.setPosition(m_WorldView.getCenter());
 					m_FadeTimer.restart();
+					m_DeathTimer.restart();
 				}
 			}
 			else if (m_Player == nullptr)
@@ -410,32 +416,27 @@ void Update()
 					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
 					m_Player->Start();
 
+					m_WorldManager->InitPointer(m_Player);
+
 					// Already Has A Pickaxe Selected
 					m_GUI->InitHotBarScrolling(m_Player);
 
-					m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World,m_GUI, &m_CoreShader, &m_SurfaceShader);
-					m_WorldManager->Start(m_TextureMaster);
-					m_WorldManager->InitPointer(m_Player);
+					//m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World,m_GUI, &m_CoreShader, &m_SurfaceShader);
+					//m_WorldManager->Start(m_TextureMaster);
 
 					for (Spawner& spawner : m_SlimeSpawners)
 					{
 						spawner.SetPlayer(m_Player);
 					}
-				}
-				else if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime - 0.1f)
-				{
-					if (m_WorldManager != nullptr)
-					{
-						delete m_WorldManager;
-					}
-					m_WorldManager = nullptr;
+
+					
 				}
 			}
 
 			if (m_WorldManager != nullptr)
 			{
 				// MousePosBox Position
-				m_WorldManager->Update(m_Event, MousePos);
+				m_WorldManager->Update(MousePos);
 
 				// World Step
 				m_World.Step(1 / 60.0f, 60, 60);
@@ -463,7 +464,6 @@ void Render()
 	if (m_WorldManager != nullptr)
 	{
 		m_WorldManager->CreateSkyChunk(m_TextureMaster);
-
 		m_WorldManager->Render();
 	}
 
@@ -476,7 +476,7 @@ void Render()
 	}
 
 	// Player
-	if (m_Player != nullptr)
+	if (m_Player != nullptr && m_WorldManager != nullptr)
 	{
 		m_Player->Render();
 
@@ -485,7 +485,7 @@ void Render()
 		/////////////////////////////////////
 
 		m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
-		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, &m_SurfaceShader, &m_ShaderMiniMap);
+		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, &m_SurfaceShader);
 
 		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
 		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster);

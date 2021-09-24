@@ -151,6 +151,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="Pickaxe.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Slime.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="Door.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="GUI.h" />
+    <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Pickaxe.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Slime.h" />

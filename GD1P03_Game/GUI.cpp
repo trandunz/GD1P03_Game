@@ -135,10 +135,8 @@ sf::Text GUI::InitHealthUI(CPlayer* _player)
 	return m_HealthText;
 }
 
-void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::Sprite>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI)
+void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI)
 {
-	_shaderUI->setUniform("hasTexture", true);
-	_shaderUI->setUniform("lightPos", sf::Vector2f(0, 0));
 
 	// Assigning Render Texture View and Zooming
 	sf::View MiniMapView = sf::View(_player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
@@ -146,29 +144,22 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	m_miniMap->setView(MiniMapView);
 
 	m_MiniMapWorldBackGround.setPosition(_renderWindow->getView().getCenter());
-	m_miniMap->draw(m_MiniMapWorldBackGround);
+	m_miniMap->draw(m_MiniMapWorldBackGround, _shaderUI);
 
-	// Draw All Blocks In Radius 4.0f
+	// Draw All Blocks In Radius
 	std::list<CBlock>::iterator it;
+	float Mag1 = 0;
 	// Blocks
 	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
-		float Mag1 = sqrt(((it->GetShape().getPosition().x - _player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - _player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - _player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - _player->GetShape().getPosition().y)));
-		if (Mag1 < 1920 * 2.9f)
+		Mag1 = sqrt(((it->GetShape().getPosition().x - _player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - _player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - _player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - _player->GetShape().getPosition().y)));
+		if (Mag1 < 1920 * 1.8f)
 		{
-			//m_miniMap->draw(it->GetShape());
-			if (it->m_bHasBeenSpotted)
-			{
-				m_miniMap->draw(it->GetShape());
-			}
-			else if (Mag1 > 500)
-			{
-				m_miniMap->draw(it->GetShape());
-			}
-			else if (Mag1 <= 500)
-			{
-				m_miniMap->draw(it->GetShape());
-			}
+			m_miniMap->draw(it->GetShape(), _shaderUI);
+		}
+		else
+		{
+			continue;
 		}
 	}
 
@@ -177,19 +168,19 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	m_MiniMapBG2.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 140, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 160);
 	m_MiniMapBG3.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 140, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 160);
 	m_MiniMapShape.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 140, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 160);
-	_renderWindow->draw(m_MiniMapBG1);
-	_renderWindow->draw(m_MiniMapBG2);
-	_renderWindow->draw(m_MiniMapBG3);
+	_renderWindow->draw(m_MiniMapBG1, _shaderUI);
+	_renderWindow->draw(m_MiniMapBG2, _shaderUI);
+	_renderWindow->draw(m_MiniMapBG3, _shaderUI);
 
 	// Draw Player To RendTexture
-	m_miniMap->draw(_player->m_MapIcon);
+	m_miniMap->draw(_player->m_MapIcon, _shaderUI);
 	
 	// Update RendTexture
 	m_miniMap->display();
 	/*m_MiniMapShape.getTexture()->copyToImage().saveToFile("MINIMAP.png");*/
 	
 	// Draw Shape With Applied RenderText To Main Window
-	_renderWindow->draw(m_MiniMapShape);
+	_renderWindow->draw(m_MiniMapShape, _shaderUI);
 }
 
 void GUI::InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
@@ -257,14 +248,14 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
-			
+			m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
 		}
 		//std::cout << _player->m_InventoryMap[0].GetPosition().x << _player->m_InventoryMap[0].GetPosition().y << std::endl;
 
 		
 		m_InventorySlotMap[i].setTexture(*_textureMaster->m_ItemSpacer);
 
-		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		
 		if (_player->m_InventoryStackValues[i] <= 1)
 		{
 			m_InventoryItemStackCounters[i].setString("");
@@ -292,9 +283,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+			m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
 		}
 
-		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		
 		if (_player->m_InventoryStackValues[i] <= 1)
 		{
 			m_InventoryItemStackCounters[i].setString("");
@@ -324,9 +316,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+			m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
 		}
 
-		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		
 		if (_player->m_InventoryStackValues[i] <= 1)
 		{
 			m_InventoryItemStackCounters[i].setString("");
@@ -356,9 +349,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		{
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
 			_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+			m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
 		}
 
-		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		
 		if (_player->m_InventoryStackValues[i] <= 1)
 		{
 			m_InventoryItemStackCounters[i].setString("");
@@ -385,9 +379,10 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 		{
 			_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
 			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+
+			m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
 		}
 
-		m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
 		if (_player->m_InventoryStackValues[i] <= 1)
 		{
 			m_InventoryItemStackCounters[i].setString("");
@@ -759,7 +754,7 @@ void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player)
 
 void GUI::HoldItemInInventory(CPlayer* _player)
 {
-	for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+	for (int i = 0; i < m_InventorySlotMap.size(); i++)
 	{
 		if (_player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && bPlayerIsMovingAnItem(_player, i))
 		{
@@ -1664,9 +1659,6 @@ int GUI::bGetPositionOfMovingItem(CPlayer* _player)
 			}
 		}
 	}
-	else
-	{
-		return -1;
-	}
+	return -1;
 }
 

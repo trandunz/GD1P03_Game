@@ -21,6 +21,8 @@ CAudioManager::CAudioManager()
 
 	m_BowBuffer.loadFromFile("Sounds/Bow.wav");
 
+	m_KingSlimeSpawnBuffer.loadFromFile("Sounds/SlimeKingSpawn.wav");
+
 	MineSoundBuffers[0] = m_MineBuffer1;
 	MineSoundBuffers[1] = m_MineBuffer2;
 	MineSoundBuffers[2] = m_MineBuffer3;
@@ -123,4 +125,16 @@ void CAudioManager::PlayBowShot()
 	m_BowShotSound.setBuffer(m_BowBuffer);
 	m_BowShotSound.setVolume(30.0f);
 	m_BowShotSound.play();
+}
+
+void CAudioManager::PlayKingSlimeSpawn()
+{
+	m_KingSlimeSpawnSound.setBuffer(m_KingSlimeSpawnBuffer);
+	m_KingSlimeSpawnSound.setVolume(100.0f);
+	m_KingSlimeSpawnSound.setPitch(0.5);
+	m_KingSlimeSpawnSound.play();
+}
+
+void CAudioManager::CheckBackgroundMusic(sf::Vector2f _positionPlayer)
+{
 }

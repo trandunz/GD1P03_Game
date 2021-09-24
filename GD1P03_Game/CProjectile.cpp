@@ -73,6 +73,8 @@ void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _s
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.filter.categoryBits = 0x0002;
 	m_FixtureDef.filter.maskBits = 0x0004;
+	m_FixtureDef.filter.maskBits = 0x0006;
+	m_FixtureDef.filter.groupIndex = -2;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);

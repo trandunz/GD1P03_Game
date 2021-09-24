@@ -30,6 +30,10 @@ public:
 
 	void PlayBowShot();
 
+	void PlayKingSlimeSpawn();
+
+	void CheckBackgroundMusic(sf::Vector2f _positionPlayer);
+
 
 
 private:
@@ -41,6 +45,8 @@ private:
 
 	sf::Sound m_SlimeDeathSound;
 	sf::Sound m_SlimeDamageSound;
+
+	sf::Sound m_KingSlimeSpawnSound;
 
 	sf::Sound m_BowShotSound;
 
@@ -60,6 +66,8 @@ private:
 
 	sf::SoundBuffer m_DeathBuffer;
 	sf::SoundBuffer m_SlimeDeathBuffer;
+
+	sf::SoundBuffer m_KingSlimeSpawnBuffer;
 
 	sf::SoundBuffer m_BowBuffer;
 

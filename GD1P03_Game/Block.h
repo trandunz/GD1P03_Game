@@ -41,6 +41,7 @@ public:
 		IRONINGOT,
 		GOLDINGOT,
 		DIAMOND,
+		CLOUD,
 	};
 
 	enum class PICKAXETYPE

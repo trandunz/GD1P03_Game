@@ -37,6 +37,7 @@ public:
 	int GetCurrentHP();
 	int GetMaxHP();
 	void TakeDamage(float _damage, bool _fallDamage = false);
+	void Heal(float _amount);
 
 	sf::Sprite& GetShape();
 
@@ -114,9 +115,11 @@ public:
 	CParticleSystem* m_TestParticles;
 
 	bool m_bInventoryOpen = false;
-private:
+
 	// Mouse
 	sf::Vector2f m_MousePos;
+private:
+	
 
 	sf::Sprite m_Shape;
 
@@ -166,6 +169,10 @@ private:
 	sf::Clock m_AttackTimer;
 
 	sf::Clock m_ParticleTimer;
+
+	sf::Clock m_HealthRegenTimer;
+	float m_HeathRegenSpeed = 1;
+	float m_HeathRegenAmount = 2;
 
 };
 #endif

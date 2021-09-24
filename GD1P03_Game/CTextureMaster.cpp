@@ -62,6 +62,10 @@ CTextureMaster::CTextureMaster()
 	m_UnderGroundPlains = new sf::Texture();
 	m_UnderGroundPlains->loadFromFile("Images/UnderGroundPlains.png");
 	m_UnderGroundPlains->setRepeated(true);
+	m_Cloud = new sf::Texture();
+	m_Cloud->loadFromFile("Images/Cloud.png");
+	m_CloudDark = new sf::Texture();
+	m_CloudDark->loadFromFile("Images/CloudDark.png");
 
 	// Set Smooth
 	m_Dirt->setSmooth(true);
@@ -122,6 +126,10 @@ CTextureMaster::~CTextureMaster()
 	delete m_IronIngot;
 	delete m_GoldIngot;
 	delete m_DiamondIngot;
+	delete m_Cloud;
+	delete m_CloudDark;
+	m_CloudDark = nullptr;
+	m_Cloud = nullptr;
 	m_UnderGroundPlains = nullptr;
 	m_DiamondIngot = nullptr;
 	m_GoldIngot = nullptr;

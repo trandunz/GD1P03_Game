@@ -212,6 +212,7 @@ void CBlock::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor
 	m_BodyDef.type = _type;
 	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
 	m_BodyDef.allowSleep = true;
+	m_BodyDef.awake = false;
 	m_Body = m_World->CreateBody(&m_BodyDef);
 	m_Body->SetAwake(false);
 
@@ -223,7 +224,8 @@ void CBlock::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor
 	}
 	m_FixtureDef.density = 1.0f;
 	m_FixtureDef.shape = &m_b2pShape;
-	m_FixtureDef.filter.categoryBits = 0x0004;
+	m_FixtureDef.filter.categoryBits = 0x0006;
+	m_FixtureDef.filter.groupIndex = -4;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);

@@ -30,12 +30,13 @@ public:
 
 	std::list<Slime> m_Slimes;
 	std::list<Zombie> m_Zombies;
+
+	sf::Sprite m_Shape;
 private:
 	sf::Shader* m_Shader;
 
 	CAudioManager* m_AudioManager;
 
-	sf::Sprite m_Shape;
 	sf::Texture* m_Texture;
 
 	CEnemy::ENEMYTYPE m_Type;
@@ -59,5 +60,9 @@ private:
 	sf::Clock m_DeathParticleTimer;
 
 	CParticleSystem* m_DeathParticles;
+
+	int m_iBossCount = 0;
+
+	
 };
 #endif

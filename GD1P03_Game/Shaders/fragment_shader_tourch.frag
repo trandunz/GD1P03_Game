@@ -25,7 +25,7 @@ void main()
     // multiply it by the color and lighting
 	if(hasTexture == true)
 	{
-		gl_FragColor = gl_Color * pixel * (clamp(ambient + vec4(1-vecLength * 1.4, 1-vecLength* 1.4, 1-vecLength* 1.4, 1), 0, 1));
+		gl_FragColor += gl_Color * pixel * (clamp(ambient + vec4(1-vecLength * 1.4, 1-vecLength* 1.4, 1-vecLength* 1.4, 1), 0, 1));
 	}
 	else
 	{

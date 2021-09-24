@@ -65,8 +65,41 @@ void Spawner::Update()
 				m_Slimes.front().SetPlayer(m_Player);
 				m_Slimes.front().Start();
 				
+				if (m_Slimes.front().m_bIsBoss)
+				{
+					m_iBossCount++;
+
+					if (m_Player == nullptr)
+					{
+						if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1)
+						{
+							m_Slimes.pop_front();
+							m_iBossCount--;
+						}
+						else
+						{
+							std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+							m_AudioManager->PlayKingSlimeSpawn();
+						}
+					}
+					else
+					{
+						if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1 || m_Player->GetShape().getPosition().y < 1500)
+						{
+							m_Slimes.pop_front();
+							m_iBossCount--;
+						}
+						else
+						{
+							std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+							m_AudioManager->PlayKingSlimeSpawn();
+						}
+					}
+					
+				}
+
 				m_Slimeptr = nullptr;
-				std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
 				m_SpawnTimer->restart();
 			}
 		}
@@ -160,9 +193,29 @@ void Spawner::Update()
 				m_DeathParticles->SetColor(sf::Color(148, 0, 0, 225));
 				break;
 			}
-			case Slime::SLIMETYPE::BOSS:
+			case Slime::SLIMETYPE::BOSSYELLOW:
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 140, 0, 225));
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSPURPLE:
+			{
+				m_DeathParticles->SetColor(sf::Color(48, 0, 148, 225));
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSRED:
+			{
+				m_DeathParticles->SetColor(sf::Color(148, 0, 0, 225));
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSBLUE:
+			{
+				m_DeathParticles->SetColor(sf::Color(0, 70, 148, 225));
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSGREEN:
+			{
+				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
 				break;
 			}
 			case Slime::SLIMETYPE::PURPLE:
@@ -189,6 +242,20 @@ void Spawner::Update()
 			m_DeathParticleTimer.restart();
 			m_DeathParticles->SetEmitter(sit->GetShape().getPosition());
 
+			if (sit->m_bIsBoss)
+			{
+				m_iBossCount--;
+				if (m_Player != nullptr)
+				{
+					// Add 2 Gold To Inventory As Reward
+					for (int i = 0; i < 2; i++)
+					{
+						CBlock* temp = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+						m_Player->AddItemToInventory(temp, true);
+						temp = nullptr;
+					}
+				}
+			}
 			sit = m_Slimes.erase(sit);
 
 			

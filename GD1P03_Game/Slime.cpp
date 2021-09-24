@@ -31,7 +31,23 @@ Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _
 	}
 	else if (rand() % 5 == 4)
 	{
-		m_SlimeType = SLIMETYPE::BOSS;
+		m_SlimeType = SLIMETYPE::BOSSGREEN;
+	}
+	else if (rand() % 5 == 4)
+	{
+		m_SlimeType = SLIMETYPE::BOSSBLUE;
+	}
+	else if (rand() % 5 == 4)
+	{
+		m_SlimeType = SLIMETYPE::BOSSRED;
+	}
+	else if (rand() % 5 == 4)
+	{
+		m_SlimeType = SLIMETYPE::BOSSPURPLE;
+	}
+	else if (rand() % 5 == 4)
+	{
+		m_SlimeType = SLIMETYPE::BOSSYELLOW;
 	}
 	else
 	{
@@ -44,32 +60,66 @@ Slime::Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _
 	case Slime::SLIMETYPE::GREEN:
 	{
 		m_Texture->loadFromFile("Images/Slime.png");
+		
 		break;
 	}
 	case Slime::SLIMETYPE::BLUE:
 	{
 		m_Texture->loadFromFile("Images/BlueSlime.png");
+		m_Health = 80;
 		break;
 	}
 	case Slime::SLIMETYPE::RED:
 	{
 		m_Texture->loadFromFile("Images/RedSlime.png");
+		m_Health = 200;
 		break;
 	}
 	case Slime::SLIMETYPE::PURPLE:
 	{
 		m_Texture->loadFromFile("Images/PurpleSlime.png");
+		m_Health = 80;
 		break;
 	}
 	case Slime::SLIMETYPE::YELLOW:
 	{
 		m_Texture->loadFromFile("Images/YellowSlime.png");
+		m_Health = 150;
 		break;
 	}
-	case Slime::SLIMETYPE::BOSS:
+	case Slime::SLIMETYPE::BOSSGREEN:
 	{
-		m_Texture->loadFromFile("Images/BossSlime.png");
+		m_Texture->loadFromFile("Images/BossSlimeGreen.png");
 		m_bIsBoss = true;
+		m_Health = 1000;
+		break;
+	}
+	case Slime::SLIMETYPE::BOSSBLUE:
+	{
+		m_Texture->loadFromFile("Images/BossSlimeBlue.png");
+		m_bIsBoss = true;
+		m_Health = 800;
+		break;
+	}
+	case Slime::SLIMETYPE::BOSSRED:
+	{
+		m_Texture->loadFromFile("Images/BossSlimeRed.png");
+		m_bIsBoss = true;
+		m_Health = 1400;
+		break;
+	}
+	case Slime::SLIMETYPE::BOSSPURPLE:
+	{
+		m_Texture->loadFromFile("Images/BossSlimePurple.png");
+		m_bIsBoss = true;
+		m_Health = 900;
+		break;
+	}
+	case Slime::SLIMETYPE::BOSSYELLOW:
+	{
+		m_Texture->loadFromFile("Images/BossSlimeYellow.png");
+		m_bIsBoss = true;
+		m_Health = 1200;
 		break;
 	}
 	default:
@@ -231,7 +281,23 @@ void Slime::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 
 	if (m_bIsBoss)
 	{
-		m_b2pShape.SetAsBox((300 / 2) / m_Scale, (300 / 2) / m_Scale);
+		if (m_SlimeType == SLIMETYPE::BOSSBLUE)
+		{
+			m_b2pShape.SetAsBox((250 / 2) / m_Scale, (250 / 2) / m_Scale);
+		}
+		else if (m_SlimeType == SLIMETYPE::BOSSPURPLE)
+		{
+			m_b2pShape.SetAsBox((250 / 2) / m_Scale, (250 / 2) / m_Scale);
+		}
+		else if (m_SlimeType == SLIMETYPE::BOSSRED)
+		{
+			m_b2pShape.SetAsBox((350 / 2) / m_Scale, (350 / 2) / m_Scale);
+		}
+		else
+		{
+			m_b2pShape.SetAsBox((300 / 2) / m_Scale, (300 / 2) / m_Scale);
+		}
+		
 	}
 	else
 	{
@@ -262,6 +328,9 @@ void Slime::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 	m_FixtureDef.friction = 1.0f;
 	m_FixtureDef.restitution = 0.1f;
 	m_FixtureDef.filter.categoryBits = 0x0004;
+	m_FixtureDef.filter.maskBits = 0x0002;
+	m_FixtureDef.filter.maskBits = 0x0006;
+	m_FixtureDef.filter.groupIndex = -1;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -334,7 +403,35 @@ void Slime::Movement()
 				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
 				break;
 			}
-			case Slime::SLIMETYPE::BOSS:
+			case Slime::SLIMETYPE::BOSSGREEN:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 2400, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 2400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSBLUE:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 3400, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 3400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSRED:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 2000, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 2000), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSPURPLE:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 3400, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 3400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSYELLOW:
 			{
 				// Move Left
 				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 2400, 0.0f), true);
@@ -393,11 +490,39 @@ void Slime::Movement()
 				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
 				break;
 			}
-			case Slime::SLIMETYPE::BOSS:
+			case Slime::SLIMETYPE::BOSSGREEN:
 			{
 				// Move Left
 				m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 2400, 0.0f), true);
 				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 2400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSBLUE:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 3400, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 3400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSRED:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 2000, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 2000), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSPURPLE:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 3400, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 3400), true);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSYELLOW:
+			{
+				// Move Left
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 2800, 0.0f), true);
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 2800), true);
 				break;
 			}
 			default:
@@ -483,12 +608,44 @@ void Slime::Attack()
 				}
 				break;
 			}
-			case Slime::SLIMETYPE::BOSS:
+			case Slime::SLIMETYPE::BOSSGREEN:
 			{
 				m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 				m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
 
 				m_Player->TakeDamage(20.0f);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSBLUE:
+			{
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
+				m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
+
+				m_Player->TakeDamage(20.0f);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSRED:
+			{
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
+				m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
+
+				m_Player->TakeDamage(30.0f);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSPURPLE:
+			{
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
+				m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
+
+				m_Player->TakeDamage(25.0f);
+				break;
+			}
+			case Slime::SLIMETYPE::BOSSYELLOW:
+			{
+				m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
+				m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
+
+				m_Player->TakeDamage(25.0f);
 				break;
 			}
 			default:
@@ -513,7 +670,7 @@ void Slime::TakeDamage(float _damage, bool _projectile)
 	{
 		if (_projectile)
 		{
-			std::cout << "Slime Damaged! " << "(" << _damage << ")" << std::endl;
+			//std::cout << "Slime Damaged! " << "(" << _damage << ")" << std::endl;
 		}
 		
 		m_Health -= _damage;

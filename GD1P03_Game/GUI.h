@@ -14,11 +14,10 @@
 #include "Player.h"
 #include "CTextureMaster.h"
 
-
-
 class GUI
 {
 public:
+
 	GUI();
 	~GUI();
 
@@ -30,7 +29,7 @@ public:
 
 	void HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster);
 	sf::Text InitHealthUI(CPlayer* _player);
-	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::Sprite>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderBlack);
+	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI = NULL);
 	void InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
 	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster);
 	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
@@ -80,6 +79,7 @@ public:
 	bool m_bCanSmelt;
 
 private:
+
 	sf::Font m_Font;
 
 	std::string m_HealthString;

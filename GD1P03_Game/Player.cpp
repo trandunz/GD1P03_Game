@@ -120,6 +120,10 @@ void CPlayer::Start()
 	m_Pickaxe = new CPickaxe();
 	AddItemToInventory(m_Pickaxe);
 	m_Pickaxe = nullptr;
+	
+	m_Bow = new Bow();
+	AddItemToInventory(m_Bow, 1, false);
+	m_Bow = nullptr;
 
 	m_TestParticles->Start();
 }
@@ -325,6 +329,13 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 
 	sf::Time elapsedTime = m_ParticleTimer.getElapsedTime();
 	m_TestParticles->Update(elapsedTime);
+
+	// HP Regen
+	if (m_HealthRegenTimer.getElapsedTime().asSeconds() >= m_HeathRegenSpeed && m_DamageTimer->getElapsedTime().asSeconds() >= 3.0f)
+	{
+		Heal(m_HeathRegenAmount);
+		m_HealthRegenTimer.restart();
+	}
 }
 
 void CPlayer::Render(sf::Shader* _defaultShader)
@@ -344,7 +355,7 @@ void CPlayer::Render(sf::Shader* _defaultShader)
 		m_RenderWindow->draw(projectile.m_Shape);
 	}
 
-	m_RenderWindow->draw(m_Shape);
+	m_RenderWindow->draw(m_Shape, _defaultShader);
 
 	m_RenderWindow->draw(*m_TestParticles);
 }
@@ -526,7 +537,7 @@ void CPlayer::Movement(sf::Event& _event)
 		int y = 0;
 
 		// Fly
-		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space && m_bCanJump)
+		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space /*&& m_bCanJump*/)
 		{
 			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -420.0f), true);
 			m_bCanJump = false;
@@ -791,6 +802,21 @@ void CPlayer::bInventoryOpen(bool _bInventoryOpen)
 bool CPlayer::bCanMove()
 {
 	return m_bCanMove;
+}
+
+void CPlayer::Heal(float _amount)
+{
+	for (int i = 0; i < _amount; i++)
+	{
+		if (m_Health > 0 && m_Health < m_MaxHP)
+		{
+			m_Health++;
+		}
+		else
+		{
+			break;
+		}
+	}
 }
 
 void CPlayer::bCanMove(bool _bcanMove)
@@ -1269,6 +1295,9 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_FixtureDef.friction = 0.5f;
 	m_FixtureDef.restitution = 0.01f;
 	m_FixtureDef.filter.categoryBits = 0x0002;
+	m_FixtureDef.filter.groupIndex = -3;
+	m_FixtureDef.filter.maskBits = 0x0006;
+	m_FixtureDef.filter.maskBits = 0x0004;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	// Set SFML Shape Transform To Box 2D Body Transform

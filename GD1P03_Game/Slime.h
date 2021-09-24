@@ -13,7 +13,11 @@ public:
 		RED,
 		PURPLE,
 		YELLOW,
-		BOSS
+		BOSSGREEN,
+		BOSSBLUE,
+		BOSSRED,
+		BOSSPURPLE,
+		BOSSYELLOW,
 	};
 
 	Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager);
@@ -35,8 +39,10 @@ public:
 	void TakeDamage(float _damage, bool _projectile = false);
 
 	SLIMETYPE m_SlimeType = SLIMETYPE::GREEN;
-private:
+
 	bool m_bIsBoss = false;
+private:
+	
 
 
 
