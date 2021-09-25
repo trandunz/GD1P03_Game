@@ -1,6 +1,6 @@
 #include "Spawner.h"
 
-Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader)
+Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, CWorldManager* _worldManager)
 {
 	m_World = &_world;
 	m_RenderWindow = _renderWindow;
@@ -12,6 +12,8 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 	m_Type = _type;
 	m_Shader = _shader;
 	m_AudioManager = _audioManager;
+	m_WorldManager = _worldManager;
+	m_TourchShader = _tourchShader;
 
 	switch (_type)
 	{
@@ -278,7 +280,14 @@ void Spawner::Render()
 	{
 		for (Slime& slime : m_Slimes)
 		{
-			slime.Render(m_Shader);
+			if (m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()))
+			{
+				slime.Render(m_TourchShader);
+			}
+			else
+			{
+				slime.Render(m_Shader);
+			}
 		}
 		break;
 	}
@@ -337,6 +346,7 @@ Spawner::~Spawner()
 	m_SpawnTimer = nullptr;
 	m_AudioManager = nullptr;
 	delete m_Texture;
+	m_TourchShader = nullptr;
 	m_Shader = nullptr;
 	m_Texture = nullptr;
 	m_Player = nullptr;
@@ -345,4 +355,5 @@ Spawner::~Spawner()
 	m_TextureMaster = nullptr;
 	m_Slimeptr = nullptr;
 	m_Zombieptr = nullptr;
+	m_WorldManager = nullptr;
 }

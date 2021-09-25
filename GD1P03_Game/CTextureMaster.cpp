@@ -66,6 +66,8 @@ CTextureMaster::CTextureMaster()
 	m_Cloud->loadFromFile("Images/Cloud.png");
 	m_CloudDark = new sf::Texture();
 	m_CloudDark->loadFromFile("Images/CloudDark.png");
+	m_WorkBench = new sf::Texture();
+	m_WorkBench->loadFromFile("Images/WorkBench.png");
 
 	// Set Smooth
 	m_Dirt->setSmooth(true);
@@ -94,10 +96,12 @@ CTextureMaster::CTextureMaster()
 	m_IronIngot->setSmooth(true);
 	m_GoldIngot->setSmooth(true);
 	m_DiamondIngot->setSmooth(true);
+	m_WorkBench->setSmooth(true);
 }
 
 CTextureMaster::~CTextureMaster()
 {
+	delete m_WorkBench;
 	delete m_UnderGroundPlains;
 	delete m_DoorLeft;
 	delete m_Furnace;

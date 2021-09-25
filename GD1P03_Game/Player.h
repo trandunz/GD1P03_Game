@@ -14,6 +14,7 @@
 #include "CProjectile.h"
 #include "Bow.h"
 #include "CParticleSystem.h"
+#include "CWorkBench.h"
 
 class CPlayer
 {
@@ -28,7 +29,7 @@ public:
 	void Movement();
 	void Movement(sf::Event& _event);
 
-	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite);
+	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches);
 	
 	void Attack();
 
@@ -79,6 +80,7 @@ public:
 	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
 	void PlaceChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
 	void PlaceFurnace(std::list<CFurnace>& m_Chests, sf::Sprite& _mousePositionSprite);
+	void PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
 
 	void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 	void DestroyBody();
@@ -164,6 +166,8 @@ private:
 	CChest* m_Chest;
 
 	CFurnace* m_Furnace;
+
+	CWorkBench* m_WorkBench;
 
 	CProjectile* m_Projectile;
 	std::list<CProjectile> m_Projectiles;

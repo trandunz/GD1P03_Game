@@ -782,7 +782,6 @@ void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<
 										std::cout << chest.m_InventoryStackValues[i] << std::endl;
 									}
 
-
 									_player->RemoveItemFromInventory(i);
 									break;
 								}
@@ -1201,36 +1200,36 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		{
 			item.m_bCanCraft = false;
 		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON && m_bCanWorkBench)
 		{
 			if (!item.m_bCanCraft)
 			{
 				item.m_bCanCraft = true;
 			}
 		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
 		{
 			item.m_bCanCraft = false;
 		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD && m_bCanWorkBench)
 		{
 			if (!item.m_bCanCraft)
 			{
 				item.m_bCanCraft = true;
 			}
 		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
 		{
 			item.m_bCanCraft = false;
 		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_bCanWorkBench)
 		{
 			if (!item.m_bCanCraft)
 			{
 				item.m_bCanCraft = true;
 			}
 		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
 		{
 			item.m_bCanCraft = false;
 		}
@@ -1609,6 +1608,7 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 
 	sf::Vector2f MousePos = _renderWindow->mapPixelToCoords((sf::Mouse::getPosition(*_renderWindow)), _uiView);
 
+	// Row 1
 	for (int i = 0; i < 10; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_ChestSlots[i].getPosition(), _uiView);
@@ -1619,14 +1619,17 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 			_renderWindow->mapCoordsToPixel(chest.m_Inventory[i].GetPosition(), _uiView);
 			chest.m_Inventory[i].SetPosition(m_ChestSlots[i].getPosition().x, m_ChestSlots[i].getPosition().y);
 
-			m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
-			if (chest.m_InventoryStackValues[i] <= 1)
+			if (chest.m_bIsOpen)
 			{
-				m_ChestItemStackCounters[i].setString("");
-			}
-			else
-			{
-				m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
+				if (chest.m_InventoryStackValues[i] <= 1)
+				{
+					m_ChestItemStackCounters[i].setString("");
+				}
+				else
+				{
+					m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				}
 			}
 		}
 
@@ -1634,7 +1637,7 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 
 		
 	}
-
+	// Row 2
 	for (int i = 10; i < 20; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_ChestSlots[i].getPosition(), _uiView);
@@ -1646,13 +1649,17 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 			chest.m_Inventory[i].SetPosition(m_ChestSlots[i].getPosition().x, m_ChestSlots[i].getPosition().y);
 
 			m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
-			if (chest.m_InventoryStackValues[i] <= 1)
+			if (chest.m_bIsOpen)
 			{
-				m_ChestItemStackCounters[i].setString("");
-			}
-			else
-			{
-				m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
+				if (chest.m_InventoryStackValues[i] <= 1)
+				{
+					m_ChestItemStackCounters[i].setString("");
+				}
+				else
+				{
+					m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				}
 			}
 		}
 
@@ -1660,7 +1667,7 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 
 		
 	}
-
+	// Row 3
 	for (int i = 20; i < 30; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_ChestSlots[i].getPosition(), _uiView);
@@ -1672,19 +1679,23 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 			chest.m_Inventory[i].SetPosition(m_ChestSlots[i].getPosition().x, m_ChestSlots[i].getPosition().y);
 
 			m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
-			if (chest.m_InventoryStackValues[i] <= 1)
+			if (chest.m_bIsOpen)
 			{
-				m_ChestItemStackCounters[i].setString("");
-			}
-			else
-			{
-				m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
+				if (chest.m_InventoryStackValues[i] <= 1)
+				{
+					m_ChestItemStackCounters[i].setString("");
+				}
+				else
+				{
+					m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				}
 			}
 		}
 
 		m_ChestSlots[i].setTexture(*_textureMaster->m_ItemSpacer);
 	}
-
+	// Row 4
 	for (int i = 30; i < 40; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_ChestSlots[i].getPosition(), _uiView);
@@ -1696,19 +1707,23 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 			chest.m_Inventory[i].SetPosition(m_ChestSlots[i].getPosition().x, m_ChestSlots[i].getPosition().y);
 
 			m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
-			if (chest.m_InventoryStackValues[i] <= 1)
+			if (chest.m_bIsOpen)
 			{
-				m_ChestItemStackCounters[i].setString("");
-			}
-			else
-			{
-				m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
+				if (chest.m_InventoryStackValues[i] <= 1)
+				{
+					m_ChestItemStackCounters[i].setString("");
+				}
+				else
+				{
+					m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				}
 			}
 		}
 
 		m_ChestSlots[i].setTexture(*_textureMaster->m_ItemSpacer);
 	}
-
+	// Row 5
 	for (int i = 40; i < 50; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_ChestSlots[i].getPosition(), _uiView);
@@ -1720,13 +1735,17 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 			chest.m_Inventory[i].SetPosition(m_ChestSlots[i].getPosition().x, m_ChestSlots[i].getPosition().y);
 
 			m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
-			if (chest.m_InventoryStackValues[i] <= 1)
+			if (chest.m_bIsOpen)
 			{
-				m_ChestItemStackCounters[i].setString("");
-			}
-			else
-			{
-				m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
+				if (chest.m_InventoryStackValues[i] <= 1)
+				{
+					m_ChestItemStackCounters[i].setString("");
+				}
+				else
+				{
+					m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				}
 			}
 		}
 

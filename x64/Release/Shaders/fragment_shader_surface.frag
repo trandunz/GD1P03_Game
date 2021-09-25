@@ -14,7 +14,7 @@ void main()
 	
 	//Calculate the vector from light to pixel
 	vec2 lightToFrag = lightPos - vert_pos.xy;
-	lightToFrag.y = lightToFrag.y / 1.7;
+	lightToFrag.y = lightToFrag.y / 2.1;
 	lightToFrag.x = 0; // Ignore X For Sun Like Effect
 
 	//Length of the vector (distance)
@@ -26,7 +26,7 @@ void main()
     // multiply it by the color and lighting
 	if(hasTexture == true)
 	{
-		gl_FragColor = gl_Color * pixel * (clamp( ambient + vec4(1-vecLength, 1-vecLength, 1-vecLength, 1),0.0, 1));
+		gl_FragColor += gl_Color * pixel * (clamp( ambient + vec4(1-vecLength, 1-vecLength, 1-vecLength, 1),0.0, 1));
 	}
 	else
 	{

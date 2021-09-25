@@ -8,11 +8,12 @@
 #include "CParticleSystem.h"
 #include "Slime.h"
 #include "Zombie.h"
+#include "WorldManager.h"
 
 class Spawner
 {
 public:
-	Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer*_player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader);
+	Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer*_player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, CWorldManager* _worldManager);
 	
 	void Start();
 	void Update();
@@ -34,6 +35,7 @@ public:
 	sf::Sprite m_Shape;
 private:
 	sf::Shader* m_Shader;
+	sf::Shader* m_TourchShader;
 
 	CAudioManager* m_AudioManager;
 
@@ -63,6 +65,6 @@ private:
 
 	int m_iBossCount = 0;
 
-	
+	CWorldManager* m_WorldManager;
 };
 #endif

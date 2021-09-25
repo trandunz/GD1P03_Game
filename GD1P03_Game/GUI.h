@@ -78,6 +78,8 @@ public:
 	unsigned int m_CurrentSeed = 0;
 
 	bool m_bCanSmelt = false;
+
+	bool m_bCanWorkBench = false;
 private:
 
 	sf::Font m_Font;

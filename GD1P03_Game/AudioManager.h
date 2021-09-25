@@ -21,6 +21,7 @@ public:
 	void PlayBlockPlace();
 	void PlayGroundMine();
 	void PlayMusic();
+	void PlayUnderGroundMusic();
 
 	void PlayPlayerDamage();
 	void PlayPlayerDeath();
@@ -34,9 +35,11 @@ public:
 
 	void CheckBackgroundMusic(sf::Vector2f _positionPlayer);
 
-
+	int m_MusicLevel = 1;
 
 private:
+
+
 	sf::SoundBuffer m_Buffer;
 	sf::Sound m_ActiveSound;
 
@@ -51,6 +54,7 @@ private:
 	sf::Sound m_BowShotSound;
 
 	sf::Music m_Music;
+	sf::Music m_UnderGroundMusic;
 
 	sf::SoundBuffer m_MineBuffer1;
 	sf::SoundBuffer m_MineBuffer2;

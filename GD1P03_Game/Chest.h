@@ -20,6 +20,7 @@ public:
 	int GetInventorySize();
 
 	void AddItemToInventory(CBlock* _block, bool _canStack = true);
+	void AddItemToInventory(CBlock* _block, int _position, bool _canStack);
 	bool IsBlockInInventory(CBlock* _block);
 	void RemoveItemFromInventory(int _position);
 

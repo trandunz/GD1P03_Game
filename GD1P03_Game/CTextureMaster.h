@@ -38,5 +38,6 @@ public:
 	sf::Texture* m_UnderGroundPlains;
 	sf::Texture* m_Cloud;
 	sf::Texture* m_CloudDark;
+	sf::Texture* m_WorkBench;
 };
 

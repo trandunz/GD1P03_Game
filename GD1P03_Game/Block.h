@@ -42,6 +42,7 @@ public:
 		GOLDINGOT,
 		DIAMOND,
 		CLOUD,
+		WORKBENCH,
 	};
 
 	enum class PICKAXETYPE

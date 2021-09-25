@@ -63,6 +63,7 @@ CPlayer::~CPlayer()
 	m_InventoryMap.clear();
 	m_Projectiles.clear();
 
+	m_WorkBench = nullptr;
 	delete m_TestParticles;
 	m_TestParticles = nullptr;
 	m_Furnace = nullptr;
@@ -544,7 +545,7 @@ void CPlayer::Movement(sf::Event& _event)
 		int y = 0;
 
 		// Fly
-		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space /*&& m_bCanJump*/)
+		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space && m_bCanJump)
 		{
 			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -420.0f), true);
 			m_bCanJump = false;
@@ -559,7 +560,7 @@ void CPlayer::Movement(sf::Event& _event)
 	}
 }
 
-void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite)
+void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches )
 {
 	float Mag = sqrt(((_mousePositionSprite.getPosition().x - m_Shape.getPosition().x) * (_mousePositionSprite.getPosition().x - m_Shape.getPosition().x)) + ((_mousePositionSprite.getPosition().y - m_Shape.getPosition().y) * (_mousePositionSprite.getPosition().y - m_Shape.getPosition().y)));
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && Mag > 80.0f && m_bCanPlace)
@@ -594,12 +595,16 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				Mine(m_Furnaces, _mousePositionSprite);
 			}
+			else if (!bMouseNotOver(m_WorkBenches, _mousePositionSprite))
+			{
+				Mine(m_WorkBenches, _mousePositionSprite);
+			}
 		}
 		else if (m_Bow != nullptr)
 		{
 		}
 		// Left Mouse Clicked And In Empty Space
-		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite))
+		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite) && bMouseNotOver(m_WorkBenches, _mousePositionSprite))
 		{
 			// Place Door
 			if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::DOOR)
@@ -636,6 +641,11 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				PlaceFurnace(m_Furnaces, _mousePositionSprite);
 			}
+			//Furnace
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::WORKBENCH)
+			{
+				PlaceWorkBench(m_WorkBenches, _mousePositionSprite);
+			}
 			// Place Block
 			else
 			{
@@ -665,6 +675,10 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			else if (!bMouseNotOver(m_Furnaces, _mousePositionSprite))
 			{
 				Mine(m_Furnaces, _mousePositionSprite);
+			}
+			else if (!bMouseNotOver(m_WorkBenches, _mousePositionSprite))
+			{
+				Mine(m_WorkBenches, _mousePositionSprite);
 			}
 		}
 	}
@@ -707,8 +721,11 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 					m_bCanPlace = !m_bInventoryOpen;
 					m_bCanMove = !m_bInventoryOpen;
 					m_MineTimer->restart();
-					break;
 				}
+			}
+			else
+			{
+				chit->m_bIsOpen = false;
 			}
 			chit++;
 		}
@@ -723,6 +740,26 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
 					{
 						std::cout << "Open Furnace" << std::endl;
+						m_bInventoryOpen = true;
+						m_bCanPlace = !m_bInventoryOpen;
+						m_bCanMove = !m_bInventoryOpen;
+						m_MineTimer->restart();
+						return;
+					}
+				}
+			}
+		}
+
+		// WorkBench Opening
+		for (CWorkBench& workbench : m_WorkBenches)
+		{
+			if (workbench.GetShape().getPosition() == _mousePositionSprite.getPosition())
+			{
+				if (!bMouseNotOver(m_WorkBenches, _mousePositionSprite))
+				{
+					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+					{
+						std::cout << "Open WorkBench" << std::endl;
 						m_bInventoryOpen = true;
 						m_bCanPlace = !m_bInventoryOpen;
 						m_bCanMove = !m_bInventoryOpen;
@@ -1147,6 +1184,12 @@ int CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 							AddItemToInventory(m_Block);
 							it = m_Chunk.erase(it);
 						}
+						else if (it->m_Type == CBlock::BLOCKTYPE::WORKBENCH)
+						{
+							m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+							AddItemToInventory(m_Block);
+							it = m_Chunk.erase(it);
+						}
 						else
 						{
 							m_Block = new CBlock(it->m_Texture, it->m_Type);
@@ -1290,6 +1333,34 @@ void CPlayer::PlaceFurnace(std::list<CFurnace>& m_Furnaces, sf::Sprite& _mousePo
 		m_MineTimer->restart();
 	}
 }
+
+void CPlayer::PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+	{
+		// Chest
+		m_WorkBench = new CWorkBench(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
+		m_WorkBench->SetSizeAndPos(_mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, 100, 100);
+		m_WorkBench->m_ArrayIndex = (m_Shape.getPosition().x);
+		m_WorkBenches.push_back(*m_WorkBench);
+		m_WorkBench = nullptr;
+
+		// Decrement Stack Counter / Remove Item From Inventory
+		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+		{
+			RemoveItemFromInventory(m_CurrentItemIndex);
+		}
+		else
+		{
+			m_InventoryStackValues[m_CurrentItemIndex]--;
+		}
+
+		// Audio
+		m_AudioManager->PlayBlockPlace();
+		m_MineTimer->restart();
+	}
+}
+
 
 void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {

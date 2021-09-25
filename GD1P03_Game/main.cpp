@@ -177,7 +177,6 @@ void Start()
 
 	// Music
 	m_AudioManager = new CAudioManager();
-	m_AudioManager->PlayMusic();
 
 	// Player
 	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
@@ -187,19 +186,19 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16400,-3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16400,-3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager);
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -16400, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -16400, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager);
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
 	m_SlimeSpawner = nullptr;
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager);
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
@@ -285,42 +284,46 @@ void Update()
 					// Numpad2 = GOLD INGOT		// Numpad5 = GOLD ORE		// Numpad8 = STONE
 					if (true)
 					{
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::IRONINGOT);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDINGOT);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMOND);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::IRONORE);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDORE);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMONDORE);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::WOOD);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::STONE);
-					}
-					else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9))
-					{
-						Test_AddItemToInv(CBlock::BLOCKTYPE::BOW);
-					}
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::IRONINGOT);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::WORKBENCH);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDINGOT);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMOND);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::IRONORE);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDORE);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMONDORE);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::WOOD);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::STONE);
+						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9))
+						{
+							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW);
+						}
 					}
 				}
 			}
@@ -382,17 +385,48 @@ void Update()
 				spawner.Update();
 			}
 
+			if (m_AudioManager != nullptr)
+			{
+				m_AudioManager->PlayMusic();
+				m_AudioManager->PlayUnderGroundMusic();
+			}
+
 			// Player Exists
 			if (m_Player != nullptr && m_WorldManager != nullptr && m_GUI != nullptr)
 			{
 				// Centre View To Player
 				CenterViewsToSprite(m_Player->GetShape());
 
+				if (m_AudioManager != nullptr)
+				{
+					if (m_Player->GetShape().getPosition().y >= 1000 && m_Player->GetShape().getPosition().y < 1200)
+					{
+						m_AudioManager->m_MusicLevel = 4;
+					}
+					else if (m_Player->GetShape().getPosition().y >= 1200 && m_Player->GetShape().getPosition().y < 1400)
+					{
+						m_AudioManager->m_MusicLevel = 3;
+					}
+					else if (m_Player->GetShape().getPosition().y >= 1400 && m_Player->GetShape().getPosition().y < 1600)
+					{
+						m_AudioManager->m_MusicLevel = 2;
+					}
+					else if (m_Player->GetShape().getPosition().y >= 1600)
+					{
+						m_AudioManager->m_MusicLevel = 1;
+					}
+					else
+					{
+						m_AudioManager->m_MusicLevel = 5;
+					}
+				}
+
 				// Player Update And Movement
-				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos);
+				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, m_WorldManager->m_WorkBenches);
 				m_Player->Update(MousePos);
 				m_Player->Movement();
 
+				// Player Dies
 				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
 				{
 					m_AudioManager->PlayPlayerDeath();
@@ -423,6 +457,8 @@ void Update()
 					m_DeathTimer.restart();
 				}
 			}
+
+			// Players Dead
 			else if (m_Player == nullptr)
 			{
 				GameOverScreen();
@@ -708,6 +744,13 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 	case CBlock::BLOCKTYPE::DIAMOND:
 	{
 		m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WORKBENCH:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 		break;

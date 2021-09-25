@@ -117,6 +117,39 @@ void CChest::AddItemToInventory(CBlock* _block, bool _canStack)
 	
 }
 
+void CChest::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
+{
+	if (_canStack == true)
+	{
+		if (IsBlockInInventory(_block))
+		{
+		}
+		else
+		{
+			_block->GetShape().setScale(0.4f, 0.4f);
+			_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+			m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
+			m_InventorySize++;
+			// increase number of that type
+			m_InventoryStackValues[_position]++;
+			_block->m_PositionInInventory = _position;
+			m_Inventory.insert_or_assign(_position, *_block);
+		}
+	}
+	else
+	{
+		_block->GetShape().setScale(0.4f, 0.4f);
+		_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+		m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
+		m_InventorySize++;
+		// increase number of that type
+		m_InventoryStackValues[_position]++;
+		_block->m_PositionInInventory = _position;
+		m_Inventory.insert_or_assign(_position, *_block);
+	}
+
+}
+
 bool CChest::IsBlockInInventory(CBlock* _block)
 {
 	std::map<int, CBlock>::iterator it;

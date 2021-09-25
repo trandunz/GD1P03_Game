@@ -29,6 +29,7 @@ CWorldManager::~CWorldManager()
     m_Chests.clear();
     m_Doors.clear();
     m_Furnaces.clear();
+    m_WorkBenches.clear();
 
     m_TourchShader = nullptr;
     m_SurfaceShader = nullptr;
@@ -113,8 +114,14 @@ void CWorldManager::Update(sf::Vector2f _mousePos)
             Mag1 = sqrt(((m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y)));
         }
         
-        if (Mag1 < 200)
+        // SETTING CAN WORKBENCH
+        if (Mag1 < 300)
         {
+            if (furnace.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
+            }
+
             m_GUI->m_bCanSmelt = true;
         }
         else
@@ -127,6 +134,47 @@ void CWorldManager::Update(sf::Vector2f _mousePos)
             m_GUI->m_bCanSmelt = false;
         }
         
+    }
+
+    // Mouse Pos To Workbench
+    for (CWorkBench& workbench : m_WorkBenches)
+    {
+        Mag1 = 400;
+
+        if (m_Player != nullptr)
+        {
+            Mag1 = sqrt(((m_Player->GetShape().getPosition().x - workbench.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - workbench.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - workbench.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - workbench.GetShape().getPosition().y)));
+        }
+
+        // SETTING CAN WORKBENCH
+        if (Mag1 < 300)
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanWorkBench = true;
+        }
+        else
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanWorkBench = false;
+        }
+
+    }
+
+    if (m_WorkBenches.size() <= 0)
+    {
+        m_GUI->m_bCanWorkBench = false;
+    }
+    if (m_Furnaces.size() <= 0)
+    {
+        m_GUI->m_bCanSmelt = false;
     }
 }
 
@@ -168,7 +216,6 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
         {
             if (bIsBlockInRangeOfLightSource(it))
             {
-
                 m_RenderWindow->draw(it->GetShape(), m_TourchShader);
             }
             else
@@ -242,6 +289,10 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     for (CFurnace& furnace : m_Furnaces)
     {
         furnace.Render(_defaultShader);
+    }
+    for (CWorkBench& workbench : m_WorkBenches)
+    {
+        workbench.Render(_defaultShader);
     }
 }
 
@@ -522,6 +573,52 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                         }
                     }
 
+                    // Chests
+                    else if(rand() % 9 == 0 && x % 19 == 0)
+                    {
+                        m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
+                        m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            for (int i = 0; i < 1 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 0, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            for (int i = 0; i < 1 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 1, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+                            for (int i = 0; i < 2 + rand() % 8; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 2, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 2 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
+                            for (int i = 0; i < 1; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 3, false);
+                            }
+                            m_Block = nullptr;
+                        }
+                        m_Chests.push_back(*m_Chest);
+                        m_Chest = nullptr;
+                    }
+                    
+
                     // Grass
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Grass, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GRASS);
                     m_Chunk.push_back(*m_Block);
@@ -602,6 +699,42 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                     {
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            for (int i = 0; i < 1 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 0, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            for (int i = 0; i < 1 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 1, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+                            for (int i = 0; i < 2 + rand() % 8; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 2, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 2 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
+                            for (int i = 0; i < 1; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 3, false);
+                            }
+                            m_Block = nullptr;
+                        }
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
@@ -614,6 +747,42 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                     {
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            for (int i = 0; i < 1 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 0, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            for (int i = 0; i < 1 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 1, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+                            for (int i = 0; i < 2 + rand() % 8; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 2, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 2 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
+                            for (int i = 0; i < 1; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 3, false);
+                            }
+                            m_Block = nullptr;
+                        }
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
@@ -641,6 +810,30 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
         {
             // Surface Shader
             if (m_TourchShader != nullptr) 
+            {
+                m_TourchShader->setUniform("hasTexture", true);
+                m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
+{
+    float Mag1 = 0;
+
+    for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
+    {
+        Mag1 = sqrt(((_shape.getPosition().x - fit->GetShape().getPosition().x) * (_shape.getPosition().x - fit->GetShape().getPosition().x)) + ((_shape.getPosition().y - fit->GetShape().getPosition().y) * (_shape.getPosition().y - fit->GetShape().getPosition().y)));
+
+        if (Mag1 < 600)
+        {
+            // Surface Shader
+            if (m_TourchShader != nullptr)
             {
                 m_TourchShader->setUniform("hasTexture", true);
                 m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
@@ -729,32 +922,32 @@ void CWorldManager::WorldBackGroundColourGradient()
         m_BGPlainsSurface.setPosition(m_Player->GetShape().getPosition());
 
         // Colour
-        if (m_Player->GetShape().getPosition().y > 1500 && m_Player->GetShape().getPosition().y < 1550)
+        if (m_Player->GetShape().getPosition().y > 1200 && m_Player->GetShape().getPosition().y < 1250)
         {
             m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 255));
             m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 0));
         }
-        else if (m_Player->GetShape().getPosition().y > 1550 && m_Player->GetShape().getPosition().y < 1600)
+        else if (m_Player->GetShape().getPosition().y > 1250 && m_Player->GetShape().getPosition().y < 1300)
         {
             m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 200));
             m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 50));
         }
-        else if (m_Player->GetShape().getPosition().y > 1600 && m_Player->GetShape().getPosition().y < 1650)
+        else if (m_Player->GetShape().getPosition().y > 1300 && m_Player->GetShape().getPosition().y < 1350)
         {
             m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 150));
             m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 100));
         }
-        else if (m_Player->GetShape().getPosition().y > 1650 && m_Player->GetShape().getPosition().y < 1700)
+        else if (m_Player->GetShape().getPosition().y > 1350 && m_Player->GetShape().getPosition().y < 1400)
         {
             m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 100));
             m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 150));
         }
-        else if (m_Player->GetShape().getPosition().y > 1700 && m_Player->GetShape().getPosition().y < 1750)
+        else if (m_Player->GetShape().getPosition().y > 1400 && m_Player->GetShape().getPosition().y < 1450)
         {
             m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 50));
             m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 200));
         }
-        else if (m_Player->GetShape().getPosition().y > 1750)
+        else if (m_Player->GetShape().getPosition().y > 1450)
         {
             m_BGPlainsSurface.setColor(sf::Color(255, 255, 255, 0));
             m_BGPlainsUnderGr.setColor(sf::Color(50, 50, 50, 255));
