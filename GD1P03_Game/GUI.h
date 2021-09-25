@@ -31,13 +31,14 @@ public:
 	sf::Text InitHealthUI(CPlayer* _player);
 	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI = NULL);
 	void InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
-	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster);
+	void InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests);
 	void InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
 	void CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster, sf::View& _uiView);
 	void InitCraftingUI(CTextureMaster* _textureMaster);
 	bool bIsCraftingSpaceEmpty(int _position);
-
-	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView, sf::Shader* _defaultShader = NULL);
+	void ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests);
+	void InitChestUI(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
+	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView, std::list<CChest>& _chests, sf::Shader* _defaultShader = NULL);
 
 	std::string ToString(int32 integer);
 
@@ -47,8 +48,8 @@ public:
 	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
 	void InitHotBarScrolling(CPlayer* _player);
 	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player);
-	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player);
-	void HoldItemInInventory(CPlayer* _player);
+	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<CChest>& _chests);
+	void HoldItemInInventory(CPlayer* _player, std::list<CChest>& _chests);
 	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
 	bool MousePointerOverSlot();
 
@@ -57,9 +58,8 @@ public:
 	int bGetPositionOfMovingItem(CPlayer* _player);
 
 	int FindFirstEmptyInventorySlot(CPlayer* _player);
-
-	
-	
+	int FindLastEmptyInventorySlot(CPlayer* _player);
+	int FindFirstEmptyChestSlot(std::list<CChest>& _chests);
 
 	//Sprites
 	sf::Sprite m_MousePos;
@@ -69,6 +69,7 @@ public:
 
 	std::map<int, sf::Sprite> m_InventorySlotMap;
 	std::map<int, sf::Sprite> m_CraftingSlots;
+	std::map<int, sf::Sprite> m_ChestSlots;
 	std::vector<CBlock> m_CraftList;
 
 	// Mouse Pointer
@@ -76,8 +77,7 @@ public:
 
 	unsigned int m_CurrentSeed = 0;
 
-	bool m_bCanSmelt;
-
+	bool m_bCanSmelt = false;
 private:
 
 	sf::Font m_Font;
@@ -93,6 +93,7 @@ private:
 	sf::Sprite m_MiniMapWorldBackGround;
 
 	std::map<int, sf::Text> m_InventoryItemStackCounters;
+	std::map<int, sf::Text> m_ChestItemStackCounters;
 
 	// Heart Containers
 	sf::Sprite heart1;
@@ -104,6 +105,7 @@ private:
 	sf::Clock m_DrawTimer;
 	sf::Clock* m_CraftTimer;
 	sf::Clock* m_FirstEmpySlotTimer;
+	sf::Clock m_FirstEmpyChestSlotTimer;
 
 	CBlock* m_TempBlock;
 

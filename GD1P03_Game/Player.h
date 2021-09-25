@@ -68,12 +68,12 @@ public:
 	void AddItemToInventory(CBlock* _block, bool _canStack = true);
 	void RemoveItemFromInventory(int _position);
 
-	void ToggleInventoryUI();
+	void ToggleInventoryUI(std::list<CChest>& _chests);
 
 	bool SelectedItemIsEmpty();
 
 	template <typename T>
-	void Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
+	int Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
 
 	void PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
 	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
@@ -115,6 +115,8 @@ public:
 	CParticleSystem* m_TestParticles;
 
 	bool m_bInventoryOpen = false;
+	bool m_bPlayerIsInChest = false;
+
 
 	// Mouse
 	sf::Vector2f m_MousePos;

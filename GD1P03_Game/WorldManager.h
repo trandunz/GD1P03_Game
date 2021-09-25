@@ -1,7 +1,11 @@
 #pragma once
 #ifndef _WORLDMANAGER_H__
 #define _WORLDMANAGER_H__
+#define _NOISEWIDTH_ 366
+#define _NOISEHEIGHT_ 113
+#define _PI_ 3.141592653589793
 
+// Non-Local Includes
 #include <stdio.h>      /* printf, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
@@ -10,11 +14,10 @@
 #include <algorithm>
 #include <cmath>
 
+// Local Includes
 #include "Player.h"
 #include "GUI.h"
 #include "Zombie.h"
-
-
 
 namespace Utils
 {
@@ -26,6 +29,7 @@ namespace Utils
 class CWorldManager
 {
 public:
+	// Functions
 	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader = NULL, sf::Shader* _surfaceShader = NULL, sf::Shader* _tourchShader = NULL);
 	~CWorldManager();
 
@@ -36,12 +40,9 @@ public:
 	void CreateSkyChunk(CTextureMaster* _textureMaster);
     void CreateNoiseWorld(CTextureMaster* _textureMaster);
 	void CreateWorldBoundary(CTextureMaster* _textureMaster);
-
 	void CreateClouds(CTextureMaster* _textureMaster);
 
 	bool bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it);
-
-	void UpdateWorldTexture(sf::View& _view);
 
 	bool CleanUpBlocks();
 	bool CleanUpSky();
@@ -51,104 +52,55 @@ public:
 	void OutPutWorldToFiles();
 	void OutPutWorldToFiles(std::string _xPositions, std::string _yPositions);
 
+	void InputWorldFromFiles();
+
+	void WorldBackGroundColourGradient();
+	void DrawBackGround(sf::Shader* _defaultShader = NULL);
+	
+	// Variables
 	std::list<CBlock> m_Chunk = {};
 	std::list<CChest> m_Chests = {};
 	std::list<CFurnace> m_Furnaces = {};
+	//std::list<CWorkBench> m_Furnaces = {};
 	std::list<CDoor> m_Doors = {};
 	std::list<sf::RectangleShape> m_SkyChunk = {};
 
 private:
+	// Variables
 	sf::Shader* m_Shader;
 	sf::Shader* m_SurfaceShader;
 	sf::Shader* m_TourchShader;
 
 	sf::RenderWindow* m_RenderWindow;
+	b2WorldManifold m_WorldManifold;
 	CPlayer* m_Player;
 	b2World* m_World;
 	GUI* m_GUI;
 
-	// Temp Block Pointer (Used To Create New Blocks During World Generation)
-	CBlock* m_Block;
-
-	CChest* m_Chest;
-
 	sf::Sprite m_BGPlainsSurface;
 	sf::Sprite m_BGPlainsUnderGr;
 
-	b2WorldManifold m_WorldManifold;
-
-	// Blocks / Tiles
-	sf::RenderTexture m_WorldTexture;
-	sf::RectangleShape m_WorldSprite;
+	// Temp Pointers (Used To Create New Blocks)
+	CBlock* m_Block;
+	CChest* m_Chest;
 
 	// Threads
-	sf::Mutex GlobalMutex;
+	sf::Mutex m_GlobalMutex;
 
-    /**/
-    // Noise
-    //
-//#define noiseWidth 166
-//#define noiseHeight 113
-#define noiseWidth 366
-#define noiseHeight 113
+	// Noise
+	double m_Noise[_NOISEHEIGHT_][_NOISEWIDTH_] = {}; // Noise Array (0-1)
 
-	//xPeriod and yPeriod together define the angle of the lines
-  //xPeriod and yPeriod both 0 ==> it becomes a normal clouds or turbulence pattern
-	double xPeriod = 1; //defines repetition of marble lines in x direction
-	double yPeriod = 2; //defines repetition of marble lines in y direction
-	//turbPower = 0 ==> it becomes a normal sine pattern
-	double turbPower = 2.0; //makes twists
-	double turbSize = 32.0; //initial size of the turbulence
+	double m_XPeriod = 1; // Defines Repetition Of Marble Lines In x
+	double m_YPeriod = 2; // Defines Repetition Of Marble Lines In y
+	double m_TurbPower = 2.0; // Makes Twists (turbPower = 0 : SinWave)
+	double m_TurbSize = 32.0; // Initial Size Of Turbulence
 
-	double noise[noiseHeight][noiseWidth]; // Noise Array (0-1)
+	// Functions
+	void GenerateNoise();
 
-	void generateNoise()
-	{
-		for (int y = 0; y < noiseHeight; y++)
-			for (int x = 0; x < noiseWidth; x++)
-			{
-				noise[y][x] = (rand() % 32768) / 32768.0; // Random 0-1
-			}
-	}
-	double smoothNoise(double x, double y)
-	{
-		//Get Fractional Part of x and y
-		double fractX = x - int(x);
-		double fractY = y - int(y);
-
-		//wrap around
-		int x1 = (int(x) + noiseWidth) % noiseWidth;
-		int y1 = (int(y) + noiseHeight) % noiseHeight;
-
-		//neighbor values
-		int x2 = (x1 + noiseWidth - 1) % noiseWidth;
-		int y2 = (y1 + noiseHeight - 1) % noiseHeight;
-
-		//smooth the noise with bilinear interpolation
-		double value = 0.0;
-		value += fractX * fractY * noise[y1][x1];
-		value += (1 - fractX) * fractY * noise[y1][x2];
-		value += fractX * (1 - fractY) * noise[y2][x1];
-		value += (1 - fractX) * (1 - fractY) * noise[y2][x2];
-
-		return value;
-	}
-	double turbulence(double x, double y, double size)
-	{
-		double value = 0.0, initialSize = size;
-
-		while (size >= 1)
-		{
-			value += smoothNoise(x / size, y / size) * size;
-			size /= 2.0;
-		}
-
-		return(128.0 * value / initialSize);
-	}
-    //
-    // Noise
-    /**/
-
+	double SmoothNoise(double x, double y);
+	
+	double Turbulence(double x, double y, double size);
 };
 #endif
 

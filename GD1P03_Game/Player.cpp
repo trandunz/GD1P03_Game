@@ -94,22 +94,16 @@ CPlayer::~CPlayer()
 
 void CPlayer::Start()
 {
-	int i = 0;
-	//
-	// ofstream
-	// x Pos
-	std::ofstream out_file;
-
-	out_file.open("Output/FirstEmptyInventorySlot.txt");
-	if (out_file.is_open())
+	for (int i = 0; i < 50; i++)
 	{
-		out_file.clear();
-		out_file << 0 << std::endl;
-		out_file.close();
+		std::cout << i << std::endl;
+		m_InventoryStackValues[i];
 	}
-	else
+
+	for (int i = 0; i < 50; i++)
 	{
-		std::cout << "OutPut File Not Open!" << std::endl;
+		std::cout << i << std::endl;
+		m_InventoryMap[i];
 	}
 
 	m_AnimationTimer = new sf::Clock();
@@ -117,13 +111,26 @@ void CPlayer::Start()
 	m_DamageTimer = new sf::Clock();
 	m_DamageIndicatorTimer = new sf::Clock();
 
-	m_Pickaxe = new CPickaxe();
-	AddItemToInventory(m_Pickaxe);
-	m_Pickaxe = nullptr;
-	
-	m_Bow = new Bow();
-	AddItemToInventory(m_Bow, 1, false);
-	m_Bow = nullptr;
+	for (int i = 0; i < 50; i++)
+	{
+		if (m_InventoryStackValues[i] == 0)
+		{
+			m_Pickaxe = new CPickaxe();
+			AddItemToInventory(m_Pickaxe, i);
+			m_Pickaxe = nullptr;
+			break;
+		}
+	}
+	for (int i = 0; i < 50; i++)
+	{
+		if (m_InventoryStackValues[i] == 0)
+		{
+			m_Bow = new Bow();
+			AddItemToInventory(m_Bow, i, false);
+			m_Bow = nullptr;
+			break;
+		}
+	}
 
 	m_TestParticles->Start();
 }
@@ -571,7 +578,17 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			}
 			else if (!bMouseNotOver(m_Chests, _mousePositionSprite))
 			{
-				Mine(m_Chests, _mousePositionSprite);
+				for (CChest& chest : m_Chests)
+				{
+					if (_mousePositionSprite.getPosition() == chest.GetPosition())
+					{
+						if (chest.GetInventorySize() <= 0)
+						{
+							Mine(m_Chests, _mousePositionSprite);
+							break;
+						}
+					}
+				}
 			}
 			else if (!bMouseNotOver(m_Furnaces, _mousePositionSprite))
 			{
@@ -602,7 +619,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 			}
 			// Gold Ingot
-			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::IRONINGOT)
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::GOLDINGOT)
 			{
 			}
 			// Diamond Ingot
@@ -667,36 +684,41 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 						std::cout << "Open Door" << std::endl;
 						doors.OCDoor(m_Shape.getPosition());
 						m_MineTimer->restart();
-						return;
+						break;
 					}
 				}
 			}
 		}
 		// Chest Opening
-		for (CChest& chest : m_Chests)
+
+		std::list<CChest>::iterator chit = m_Chests.begin();
+		float MagToPlayer = 1000;
+		while (chit != m_Chests.end())
 		{
-			if (chest.GetShape().getPosition() == _mousePositionSprite.getPosition())
+			MagToPlayer = sqrt(((chit->GetShape().getPosition().x - m_Shape.getPosition().x)* (chit->GetShape().getPosition().x - m_Shape.getPosition().x)) + ((chit->GetShape().getPosition().y - m_Shape.getPosition().y) * (chit->GetShape().getPosition().y - m_Shape.getPosition().y)));
+			if (MagToPlayer < 200)
 			{
-				if (bMouseNotOver(m_Chunk, _mousePositionSprite) && !bMouseNotOver(m_Chests, _mousePositionSprite))
+				if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
 				{
-					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
-					{
-						std::cout << "Open Chest" << std::endl;
-						m_bInventoryOpen = true;
-						m_bCanPlace = !m_bInventoryOpen;
-						m_bCanMove = !m_bInventoryOpen;
-						m_MineTimer->restart();
-						return;
-					}
+					std::cout << "Open Chest" << std::endl;
+					m_bInventoryOpen = true;
+					m_bPlayerIsInChest = true;
+					chit->m_bIsOpen = true;
+					m_bCanPlace = !m_bInventoryOpen;
+					m_bCanMove = !m_bInventoryOpen;
+					m_MineTimer->restart();
+					break;
 				}
 			}
+			chit++;
 		}
+
 		// Furnace Opening
 		for (CFurnace& furnace : m_Furnaces)
 		{
 			if (furnace.GetShape().getPosition() == _mousePositionSprite.getPosition())
 			{
-				if (bMouseNotOver(m_Chunk, _mousePositionSprite) && !bMouseNotOver(m_Furnaces, _mousePositionSprite))
+				if (!bMouseNotOver(m_Furnaces, _mousePositionSprite))
 				{
 					if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
 					{
@@ -876,8 +898,6 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 		{
 			// increase number of that type
 			m_InventoryStackValues[it->first]++;
-			delete _block;
-			_block = nullptr;
 			return true;
 		}
 	}
@@ -886,7 +906,6 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 
 void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 {
-
 	if (_canStack == true)
 	{
 		if (IsBlockInInventory(_block))
@@ -950,8 +969,6 @@ void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 
 		myfile.close();
 	}
-
-	_block = nullptr;
 }
 
 void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
@@ -972,7 +989,7 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 			_block->m_PositionInInventory = _position;
 			m_InventoryMap.insert_or_assign(_position, *_block);
 			//std::cout << "Added Item To Inventory - ";
-			std::cout << _position << std::endl;
+			//std::cout << _position << std::endl;
 		}
 	}
 	else
@@ -989,8 +1006,6 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 		std::cout << _position << std::endl;
 	}
 	
-
-	_block = nullptr;
 }
 
 bool CPlayer::IsItemInventory(CBlock::BLOCKTYPE _type)
@@ -1020,7 +1035,7 @@ int CPlayer::GetPositionInInventory(CBlock::BLOCKTYPE _type)
 int CPlayer::IsItemInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount)
 {
 	int tempCount = 0;
-	for (int i = 0; i < m_InventoryMap.size(); i++)
+	for (int i = 0; i < m_InventoryStackValues.size(); i++)
 	{
 		if (m_InventoryMap[i].m_Type == _type)
 		{
@@ -1044,9 +1059,10 @@ void CPlayer::RemoveItemFromInventory(int _position)
 				m_Pickaxe = nullptr;
 			}
 
-			m_InventoryStackValues[_position]--;
-
-			it->second.m_PositionInInventory = -1;
+			while (m_InventoryStackValues[_position] > 0)
+			{
+				m_InventoryStackValues[_position]--;
+			}
 			it = m_InventoryMap.erase(it);
 
 			return;
@@ -1055,11 +1071,20 @@ void CPlayer::RemoveItemFromInventory(int _position)
 	}
 }
 
-void CPlayer::ToggleInventoryUI()
+void CPlayer::ToggleInventoryUI(std::list<CChest>& _chests)
 {
 	m_bInventoryOpen = !m_bInventoryOpen;
 	m_bCanMove = !m_bInventoryOpen;
 	m_bCanPlace = !m_bInventoryOpen;
+
+	if (m_bInventoryOpen == false)
+	{
+		for (CChest& chest : _chests)
+		{
+			chest.m_bIsOpen = false;
+		}
+		m_bPlayerIsInChest = false;
+	}
 }
 
 bool CPlayer::SelectedItemIsEmpty()
@@ -1079,7 +1104,7 @@ bool CPlayer::SelectedItemIsEmpty()
 }
 
 template <typename T>
-void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
+int CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 {
 	typename std::list<T>::iterator it;
 	for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
@@ -1108,23 +1133,26 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 						{
 							m_Door = new CDoor();
 							AddItemToInventory(m_Door, false);
+							it = m_Chunk.erase(it);
 						}
 						else if (it->m_Type == CBlock::BLOCKTYPE::CHEST)
 						{
 							m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
 							AddItemToInventory(m_Block);
+							it = m_Chunk.erase(it);
 						}
 						else if (it->m_Type == CBlock::BLOCKTYPE::FURNACE)
 						{
 							m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
 							AddItemToInventory(m_Block);
+							it = m_Chunk.erase(it);
 						}
 						else
 						{
 							m_Block = new CBlock(it->m_Texture, it->m_Type);
 							AddItemToInventory(m_Block);
+							it = m_Chunk.erase(it);
 						}
-						it = m_Chunk.erase(it);
 						m_Block = nullptr;
 						m_Door = nullptr;
 					}
@@ -1243,8 +1271,8 @@ void CPlayer::PlaceFurnace(std::list<CFurnace>& m_Furnaces, sf::Sprite& _mousePo
 		// Chest
 		m_Furnace = new CFurnace(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
 		m_Furnace->SetSizeAndPos(_mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, 100, 100);
-		m_Furnaces.push_back(*m_Furnace);
 		m_Furnace->m_ArrayIndex = (m_Shape.getPosition().x);
+		m_Furnaces.push_back(*m_Furnace);
 		m_Furnace = nullptr;
 
 		// Decrement Stack Counter / Remove Item From Inventory

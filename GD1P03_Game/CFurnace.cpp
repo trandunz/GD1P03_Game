@@ -20,7 +20,6 @@ CFurnace::CFurnace(sf::RenderWindow* _renderWindow, b2World& _world, const float
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
-	CBlock::m_Type = BLOCKTYPE::FURNACE;
 	m_Type = BLOCKTYPE::FURNACE;
 
 	m_BlockStrength = 5;

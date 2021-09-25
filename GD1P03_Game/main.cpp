@@ -63,6 +63,9 @@ CAudioManager* m_AudioManager;
 CBlock* m_Block;
 
 // Block Pointer If Needed To Make Stuff
+CChest* m_Chest;
+
+// Block Pointer If Needed To Make Stuff
 CDoor* m_Door;
 
 // Block Pointer If Needed To Make Stuff
@@ -71,6 +74,7 @@ CPickaxe* m_Pickaxe;
 CTextureMaster* m_TextureMaster;
 
 sf::Clock m_DeathTimer;
+sf::Clock m_InventoryClickTimer;
 
 Spawner* m_SlimeSpawner;
 std::list<Spawner> m_SlimeSpawners;
@@ -138,6 +142,7 @@ int main()
 	delete m_RenderWindow;
 	delete m_WorldManager;
 	delete m_AudioManager;
+	m_Chest = nullptr;
 	m_AudioManager = nullptr;
 	m_SlimeSpawner = nullptr;
 	m_TextureMaster = nullptr;
@@ -244,7 +249,7 @@ void Update()
 				{
 					if (!m_Player->m_bInventoryOpen)
 					{
-						m_Player->ToggleInventoryUI();
+						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
 					}
 				}
 			}
@@ -271,7 +276,7 @@ void Update()
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
 					{
-						m_Player->ToggleInventoryUI();
+						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
 					}
 
 					// NUMPAD INVENTORYCONTROL
@@ -356,14 +361,15 @@ void Update()
 						}
 					}
 				}
-			}
 
+				m_GUI->ClickedItemInInventory(m_Event, m_Player, m_WorldManager->m_Chests);
+				
+			}
 			if (m_Player != nullptr)
 			{
-				m_GUI->ClickedItemInInventory(m_Event, m_Player);
-
 				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
 			}
+			
 		}
 
 		//
@@ -390,8 +396,19 @@ void Update()
 				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
 				{
 					m_AudioManager->PlayPlayerDeath();
+
+					// Drop Chest
+					if (true)
+					{
+						m_Chest = new CChest(m_RenderWindow, m_World, Utils::m_Scale, m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
+						
+						m_Chest->m_Inventory = m_Player->m_InventoryMap;
+						m_Chest->m_InventoryStackValues = m_Player->m_InventoryStackValues;
+						m_WorldManager->m_Chests.push_back(*m_Chest);
+						m_Chest = nullptr;
+					}
+
 					delete m_Player;
-					
 					m_Player = nullptr;
 					m_WorldManager->InitPointer(m_Player);
 					for (Spawner& spawner : m_SlimeSpawners)
@@ -488,9 +505,10 @@ void Render()
 		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, &m_SurfaceShader);
 
 		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
-		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster);
-		
-		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView);
+		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
+		m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
+
+		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, m_WorldManager->m_Chests);
 	}
 
 	m_RenderWindow->draw(m_FadeScreen);
@@ -523,6 +541,7 @@ void InitUI()
 	m_GUI->InitHealthUI(m_Player);
 	m_GUI->InitCraftingUI(m_TextureMaster);
 	m_GUI->InitInventoryUI(m_Player, m_RenderWindow, m_TextureMaster);
+	m_GUI->InitChestUI(m_RenderWindow,m_TextureMaster);
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
