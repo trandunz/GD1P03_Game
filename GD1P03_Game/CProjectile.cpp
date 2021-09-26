@@ -1,10 +1,29 @@
 #include "CProjectile.h"
 
-CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos)
+CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, PROJECTILETYPE _type)
 {
 	m_World = &_world;
 	m_Texture = new sf::Texture();
-	m_Texture->loadFromFile("Images/Arrow.png");
+	m_Type = _type;
+	switch (m_Type)
+	{
+	case CProjectile::PROJECTILETYPE::ARROW:
+		m_Texture->loadFromFile("Images/Arrow.png");
+		break;
+	case CProjectile::PROJECTILETYPE::FIREARROW:
+		m_Texture->loadFromFile("Images/FireArrow.png");
+		break;
+	case CProjectile::PROJECTILETYPE::CURSEDARROW:
+		m_Texture->loadFromFile("Images/CursedArrow.png");
+		break;
+	case CProjectile::PROJECTILETYPE::POISONARROW:
+		m_Texture->loadFromFile("Images/PoisonArrow.png");
+		break;
+	default:
+		m_Texture->loadFromFile("Images/Arrow.png");
+		break;
+	}
+	
 	m_Shape.setTexture(*m_Texture, true);
 	CreateBody(_startPosX, _startPosY, b2_dynamicBody, true);
 
@@ -17,7 +36,6 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 CProjectile::~CProjectile()
 {
 	DestroyBody();
-
 	delete m_Texture;
 	m_Texture = nullptr;
 	m_World = nullptr;
@@ -60,7 +78,7 @@ void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _s
 	m_BodyDef.position = b2Vec2(_posX / 50.0f, (_posY / 50.0f));
 	m_BodyDef.bullet = true;
 	m_BodyDef.gravityScale = 4;
-
+	//
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
 	m_b2pShape.SetAsBox((30 / 2) / 50.0f, (10 / 2) / 50.0f);

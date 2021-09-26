@@ -43,6 +43,12 @@ public:
 		DIAMOND,
 		CLOUD,
 		WORKBENCH,
+		PURPLEINGOT,
+		GOLDENINGOT,
+		ANVIL,
+		TOURCH,
+		PURPLEORE,
+		GOLDENORE,
 	};
 
 	enum class PICKAXETYPE
@@ -50,7 +56,22 @@ public:
 		BASIC,
 		IRON,
 		GOLD,
-		DIAMOND
+		DIAMOND,
+		OBSIDIAN,
+		PURPLE,
+		GOLDEN
+	};
+
+	enum class BOWTYPE
+	{
+		DEFAULT,
+		OBSIDIAN,
+		ICE,
+		BLOOD,
+		IRON,
+		GOLDEN,
+		PURPLE,
+		GREEN,
 	};
 
 	CBlock();
@@ -107,6 +128,7 @@ public:
 	bool m_bCanCraft = false;
 
 	PICKAXETYPE m_PickType = PICKAXETYPE::BASIC;
+	BOWTYPE m_BowType = BOWTYPE::DEFAULT;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 

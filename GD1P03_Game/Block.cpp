@@ -139,10 +139,25 @@ void CBlock::Start()
 	}
 	case CBlock::BLOCKTYPE::DIAMONDORE:
 	{
-		m_BlockStrength = 6;
+		m_BlockStrength = 7;
 		break;
 	}
-		
+	case CBlock::BLOCKTYPE::PURPLEORE:
+	{
+		m_BlockStrength = 8;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENORE:
+	{
+		m_BlockStrength = 9;
+		break;
+	}
+	case CBlock::BLOCKTYPE::CLOUD:
+	{
+		m_BlockStrength = 1;
+		break;
+	}
+
 	default:
 	{
 		m_BlockStrength = 3;

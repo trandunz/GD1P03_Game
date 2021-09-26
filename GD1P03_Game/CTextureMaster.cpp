@@ -69,6 +69,20 @@ CTextureMaster::CTextureMaster()
 	m_WorkBench = new sf::Texture();
 	m_WorkBench->loadFromFile("Images/WorkBench.png");
 
+	m_PurpleIngot = new sf::Texture();
+	m_PurpleIngot->loadFromFile("Images/PurpleIngot.png");
+	m_GoldenIngot = new sf::Texture();
+	m_GoldenIngot->loadFromFile("Images/GoldenIngot.png");
+	m_Anvil = new sf::Texture();
+	m_Anvil->loadFromFile("Images/Anvil.png");
+	m_Tourch = new sf::Texture();
+	m_Tourch->loadFromFile("Images/Tourch.png");
+
+	m_PurpleOre = new sf::Texture();
+	m_PurpleOre->loadFromFile("Images/PurpleOre.png");
+	m_GoldenOre = new sf::Texture();
+	m_GoldenOre->loadFromFile("Images/GoldenOre.png");
+
 	// Set Smooth
 	m_Dirt->setSmooth(true);
 	m_Grass->setSmooth(true);
@@ -132,6 +146,18 @@ CTextureMaster::~CTextureMaster()
 	delete m_DiamondIngot;
 	delete m_Cloud;
 	delete m_CloudDark;
+	delete m_PurpleIngot;
+	delete m_GoldenIngot;
+	delete m_Anvil;
+	delete m_Tourch;
+	delete m_GoldenOre;
+	delete m_PurpleOre;
+	m_GoldenOre = nullptr;
+	m_PurpleOre = nullptr;
+	m_PurpleIngot = nullptr;
+	m_GoldenIngot = nullptr;
+	m_Anvil = nullptr;
+	m_Tourch = nullptr;
 	m_CloudDark = nullptr;
 	m_Cloud = nullptr;
 	m_UnderGroundPlains = nullptr;

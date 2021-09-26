@@ -142,7 +142,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 
 	// Assigning Render Texture View and Zooming
 	sf::View MiniMapView = sf::View(_player->GetShape().getPosition(), sf::Vector2f(200.0f, 200.0f));
-	MiniMapView.zoom(25);
+	MiniMapView.zoom(15);
 	m_miniMap->setView(MiniMapView);
 
 	m_MiniMapWorldBackGround.setPosition(_renderWindow->getView().getCenter());
@@ -151,11 +151,15 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	// Draw All Blocks In Radius
 	std::list<CBlock>::iterator it;
 	float Mag1 = 0;
+	float x = 0;
+	float y = 0;
 	// Blocks
 	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
-		Mag1 = sqrt(((it->GetShape().getPosition().x - _player->GetShape().getPosition().x) * (it->GetShape().getPosition().x - _player->GetShape().getPosition().x)) + ((it->GetShape().getPosition().y - _player->GetShape().getPosition().y) * (it->GetShape().getPosition().y - _player->GetShape().getPosition().y)));
-		if (Mag1 < 1920 * 1.8f)
+		x = it->GetShape().getPosition().x - _player->GetShape().getPosition().x;
+		y = it->GetShape().getPosition().y - _player->GetShape().getPosition().y;
+		Mag1 = sqrt((x * x) + (y * y));
+		if (Mag1 < 1920 * 1.1f)
 		{
 			m_miniMap->draw(it->GetShape(), _shaderUI);
 		}
@@ -593,9 +597,24 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 					std::cout << "Diamond Pickaxe Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen())
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE)
+				{
+					std::cout << "purple Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
+				{
+					std::cout << "gOLDEN Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT)
 				{
 					std::cout << "Bow Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::IRON)
+				{
+					std::cout << "Iron Bow Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
 				}
 			}
@@ -640,7 +659,22 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 					std::cout << "Diamond Pickaxe Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen())
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE)
+				{
+					std::cout << "PURPLE Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
+				{
+					std::cout << "GOLDEN Pickaxe Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT)
+				{
+					std::cout << "Bow Selected!" << std::endl;
+					iit->second.m_bIsItemAndSelected = true;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::IRON)
 				{
 					std::cout << "Bow Selected!" << std::endl;
 					iit->second.m_bIsItemAndSelected = true;
@@ -932,7 +966,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		m_FirstEmpySlotTimer->restart();
 	}
 	// Positions
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < 18; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_CraftingSlots[i].getPosition(), _uiView);
 		m_CraftingSlots[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65 + ((1) * 65));
@@ -941,25 +975,9 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 	// Color / Alpha
 	for (CBlock& item : m_CraftList)
 	{
-		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DOOR)
-		{
-			item.SetPosition(m_CraftingSlots[0].getPosition().x + 4.5f, m_CraftingSlots[0].getPosition().y - 3.5f);
-			sf::Color tempcolor;
-			tempcolor = item.GetShape().getColor();
-			tempcolor.a = 255;
-			item.GetShape().setColor(tempcolor);
-		}
-		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DOOR)
-		{
-			item.SetPosition(m_CraftingSlots[0].getPosition().x + 4.5f, m_CraftingSlots[0].getPosition().y - 3.5f);
-			sf::Color tempcolor;
-			tempcolor = item.GetShape().getColor();
-			tempcolor.a = 70;
-			item.GetShape().setColor(tempcolor);
-		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PLANKS)
 		{
-			item.SetPosition(m_CraftingSlots[1].getPosition().x, m_CraftingSlots[1].getPosition().y);
+			item.SetPosition(m_CraftingSlots[0].getPosition().x, m_CraftingSlots[0].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -967,7 +985,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PLANKS)
 		{
-			item.SetPosition(m_CraftingSlots[1].getPosition().x, m_CraftingSlots[1].getPosition().y);
+			item.SetPosition(m_CraftingSlots[0].getPosition().x, m_CraftingSlots[0].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -975,7 +993,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::CHEST)
 		{
-			item.SetPosition(m_CraftingSlots[2].getPosition().x, m_CraftingSlots[2].getPosition().y);
+			item.SetPosition(m_CraftingSlots[1].getPosition().x, m_CraftingSlots[1].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -983,7 +1001,71 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::CHEST)
 		{
-			item.SetPosition(m_CraftingSlots[2].getPosition().x, m_CraftingSlots[2].getPosition().y);
+			item.SetPosition(m_CraftingSlots[1].getPosition().x, m_CraftingSlots[1].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DOOR)
+		{
+			item.SetPosition(m_CraftingSlots[2].getPosition().x + 4.5f, m_CraftingSlots[2].getPosition().y - 3.5f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DOOR)
+		{
+			item.SetPosition(m_CraftingSlots[2].getPosition().x + 4.5f, m_CraftingSlots[2].getPosition().y - 3.5f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT)
+		{
+			item.SetPosition(m_CraftingSlots[3].getPosition().x, m_CraftingSlots[3].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT)
+		{
+			item.SetPosition(m_CraftingSlots[3].getPosition().x, m_CraftingSlots[3].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON)
+		{
+			item.SetPosition(m_CraftingSlots[4].getPosition().x, m_CraftingSlots[4].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON)
+		{
+			item.SetPosition(m_CraftingSlots[4].getPosition().x, m_CraftingSlots[4].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::TOURCH)
+		{
+			item.SetPosition(m_CraftingSlots[5].getPosition().x, m_CraftingSlots[5].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::TOURCH)
+		{
+			item.SetPosition(m_CraftingSlots[5].getPosition().x, m_CraftingSlots[5].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -991,7 +1073,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::FURNACE)
 		{
-			item.SetPosition(m_CraftingSlots[3].getPosition().x, m_CraftingSlots[3].getPosition().y);
+			item.SetPosition(m_CraftingSlots[6].getPosition().x, m_CraftingSlots[6].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -999,23 +1081,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::FURNACE)
 		{
-			item.SetPosition(m_CraftingSlots[3].getPosition().x, m_CraftingSlots[3].getPosition().y);
-			sf::Color tempcolor;
-			tempcolor = item.GetShape().getColor();
-			tempcolor.a = 70;
-			item.GetShape().setColor(tempcolor);
-		}
-		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW)
-		{
-			item.SetPosition(m_CraftingSlots[4].getPosition().x, m_CraftingSlots[4].getPosition().y);
-			sf::Color tempcolor;
-			tempcolor = item.GetShape().getColor();
-			tempcolor.a = 255;
-			item.GetShape().setColor(tempcolor);
-		}
-		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW)
-		{
-			item.SetPosition(m_CraftingSlots[4].getPosition().x, m_CraftingSlots[4].getPosition().y);
+			item.SetPosition(m_CraftingSlots[6].getPosition().x, m_CraftingSlots[6].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -1023,7 +1089,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::IRONINGOT)
 		{
-			item.SetPosition(m_CraftingSlots[5].getPosition().x, m_CraftingSlots[5].getPosition().y);
+			item.SetPosition(m_CraftingSlots[7].getPosition().x, m_CraftingSlots[7].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1031,7 +1097,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::IRONINGOT)
 		{
-			item.SetPosition(m_CraftingSlots[5].getPosition().x, m_CraftingSlots[5].getPosition().y);
+			item.SetPosition(m_CraftingSlots[7].getPosition().x, m_CraftingSlots[7].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -1039,7 +1105,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT)
 		{
-			item.SetPosition(m_CraftingSlots[6].getPosition().x, m_CraftingSlots[6].getPosition().y);
+			item.SetPosition(m_CraftingSlots[8].getPosition().x, m_CraftingSlots[8].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1047,7 +1113,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT)
 		{
-			item.SetPosition(m_CraftingSlots[6].getPosition().x, m_CraftingSlots[6].getPosition().y);
+			item.SetPosition(m_CraftingSlots[8].getPosition().x, m_CraftingSlots[8].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -1055,7 +1121,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DIAMOND)
 		{
-			item.SetPosition(m_CraftingSlots[7].getPosition().x, m_CraftingSlots[7].getPosition().y);
+			item.SetPosition(m_CraftingSlots[9].getPosition().x, m_CraftingSlots[9].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1063,7 +1129,55 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DIAMOND)
 		{
-			item.SetPosition(m_CraftingSlots[7].getPosition().x, m_CraftingSlots[7].getPosition().y);
+			item.SetPosition(m_CraftingSlots[9].getPosition().x, m_CraftingSlots[9].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT)
+		{
+			item.SetPosition(m_CraftingSlots[10].getPosition().x, m_CraftingSlots[10].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT)
+		{
+			item.SetPosition(m_CraftingSlots[10].getPosition().x, m_CraftingSlots[10].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT)
+		{
+			item.SetPosition(m_CraftingSlots[11].getPosition().x, m_CraftingSlots[11].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT)
+		{
+			item.SetPosition(m_CraftingSlots[11].getPosition().x, m_CraftingSlots[11].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::ANVIL)
+		{
+			item.SetPosition(m_CraftingSlots[12].getPosition().x, m_CraftingSlots[12].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::ANVIL)
+		{
+			item.SetPosition(m_CraftingSlots[12].getPosition().x, m_CraftingSlots[12].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -1071,7 +1185,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
 		{
-			item.SetPosition(m_CraftingSlots[8].getPosition().x, m_CraftingSlots[8].getPosition().y);
+			item.SetPosition(m_CraftingSlots[13].getPosition().x, m_CraftingSlots[13].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1079,7 +1193,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
 		{
-			item.SetPosition(m_CraftingSlots[8].getPosition().x, m_CraftingSlots[8].getPosition().y);
+			item.SetPosition(m_CraftingSlots[13].getPosition().x, m_CraftingSlots[13].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -1087,7 +1201,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
 		{
-			item.SetPosition(m_CraftingSlots[9].getPosition().x, m_CraftingSlots[9].getPosition().y);
+			item.SetPosition(m_CraftingSlots[14].getPosition().x, m_CraftingSlots[14].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1095,7 +1209,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
 		{
-			item.SetPosition(m_CraftingSlots[9].getPosition().x, m_CraftingSlots[9].getPosition().y);
+			item.SetPosition(m_CraftingSlots[14].getPosition().x, m_CraftingSlots[14].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -1103,7 +1217,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
 		{
-			item.SetPosition(m_CraftingSlots[10].getPosition().x, m_CraftingSlots[10].getPosition().y);
+			item.SetPosition(m_CraftingSlots[15].getPosition().x, m_CraftingSlots[15].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1111,13 +1225,44 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
 		{
-			item.SetPosition(m_CraftingSlots[10].getPosition().x, m_CraftingSlots[10].getPosition().y);
+			item.SetPosition(m_CraftingSlots[15].getPosition().x, m_CraftingSlots[15].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
-
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE)
+		{
+			item.SetPosition(m_CraftingSlots[16].getPosition().x, m_CraftingSlots[16].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE)
+		{
+			item.SetPosition(m_CraftingSlots[16].getPosition().x, m_CraftingSlots[16].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
+		{
+			item.SetPosition(m_CraftingSlots[17].getPosition().x, m_CraftingSlots[17].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
+		{
+			item.SetPosition(m_CraftingSlots[17].getPosition().x, m_CraftingSlots[17].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
 	}
 
 	// Setting Can Craft
@@ -1233,6 +1378,95 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		{
 			item.m_bCanCraft = false;
 		}
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEORE, true) >= 3 && item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT && m_bCanSmelt)
+		{
+			if (m_bCanSmelt)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEORE, true) < 3 && item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT) || (item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT && !m_bCanSmelt))
+		{
+			item.m_bCanCraft = false;
+		}
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENORE, true) >= 3 && item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT && m_bCanSmelt)
+		{
+			if (m_bCanSmelt)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENORE, true) < 3 && item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT) || (item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT && !m_bCanSmelt))
+		{
+			item.m_bCanCraft = false;
+		}
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 6 && item.m_Type == CBlock::BLOCKTYPE::ANVIL && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 6) && item.m_Type == CBlock::BLOCKTYPE::ANVIL) || (item.m_Type == CBlock::BLOCKTYPE::ANVIL && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) > 0 && _player->IsItemInventory(CBlock::BLOCKTYPE::COALORE, true) > 0) && item.m_Type == CBlock::BLOCKTYPE::TOURCH)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) <= 0 || _player->IsItemInventory(CBlock::BLOCKTYPE::COALORE, true) <= 0) && item.m_Type == CBlock::BLOCKTYPE::TOURCH)
+		{
+			item.m_bCanCraft = false;
+		}
+		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) >= 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) < 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT) || (item.m_Type == CBlock::BLOCKTYPE::BOW && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) >= 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) < 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON) || (item.m_Type == CBlock::BLOCKTYPE::BOW && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+
 	}
 
 	// Removing And Adding Items
@@ -1379,6 +1613,94 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				}
 				break;
 			}
+			case CBlock::BLOCKTYPE::PURPLEINGOT:
+			{
+				m_TempBlock = new CBlock(_textureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
+				_player->AddItemToInventory(m_TempBlock);
+
+				// Remove 3 Purple Ore
+				for (int i = 0; i < 3; i++)
+				{
+					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PURPLEORE)] <= 1)
+					{
+						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PURPLEORE));
+					}
+					else
+					{
+						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PURPLEORE)]--;
+					}
+				}
+				break;
+			}
+			case CBlock::BLOCKTYPE::GOLDENINGOT:
+			{
+				m_TempBlock = new CBlock(_textureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+				_player->AddItemToInventory(m_TempBlock);
+
+				// Remove 3 Purple Ore
+				for (int i = 0; i < 3; i++)
+				{
+					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDENORE)] <= 1)
+					{
+						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDENORE));
+					}
+					else
+					{
+						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDENORE)]--;
+					}
+				}
+				break;
+			}
+			case CBlock::BLOCKTYPE::ANVIL:
+			{
+				m_TempBlock = new CBlock(_textureMaster->m_Anvil, CBlock::BLOCKTYPE::ANVIL);
+				_player->AddItemToInventory(m_TempBlock);
+
+				// Remove 6 IRON INGOT
+				for (int i = 0; i < 6; i++)
+				{
+					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)] <= 1)
+					{
+						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT));
+					}
+					else
+					{
+						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)]--;
+					}
+				}
+				break;
+			}
+			case CBlock::BLOCKTYPE::TOURCH:
+			{
+				m_TempBlock = new CBlock(_textureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
+				_player->AddItemToInventory(m_TempBlock);
+
+				// Remove 1 COAL
+				for (int i = 0; i < 1; i++)
+				{
+					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::COALORE)] <= 1)
+					{
+						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::COALORE));
+					}
+					else
+					{
+						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::COALORE)]--;
+					}
+				}
+				// Remove 1 PLANKS
+				for (int i = 0; i < 1; i++)
+				{
+					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+					{
+						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+					}
+					else
+					{
+						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+					}
+				}
+				break;
+			}
 			case CBlock::BLOCKTYPE::PICKAXE:
 			{
 				switch (item.m_PickType)
@@ -1508,6 +1830,90 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 					temp = nullptr;
 					break;
 				}
+				case CBlock::PICKAXETYPE::PURPLE:
+				{
+					// Remove Current Pickaxe
+					//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+					//_player->RemoveItemFromInventory(tempPos);
+
+					CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::PURPLE);
+					_player->AddItemToInventory(temp, false);
+
+					// Player Is Holding Pixkaxe During Swap
+					InitHotBarScrolling(_player);
+
+					// Remove 3 Diamond
+					for (int i = 0; i < 3; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PURPLEINGOT)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PURPLEINGOT));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PURPLEINGOT)]--;
+						}
+					}
+
+					// Remove 2 Planks
+					for (int i = 0; i < 2; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+
+
+					temp = nullptr;
+					break;
+				}
+				case CBlock::PICKAXETYPE::GOLDEN:
+				{
+					// Remove Current Pickaxe
+					//int tempPos = _player->GetPositionInInventory(CBlock::BLOCKTYPE::PICKAXE);
+					//_player->RemoveItemFromInventory(tempPos);
+
+					CPickaxe* temp = new CPickaxe(CBlock::PICKAXETYPE::GOLDEN);
+					_player->AddItemToInventory(temp, false);
+
+					// Player Is Holding Pixkaxe During Swap
+					InitHotBarScrolling(_player);
+
+					// Remove 3 Diamond
+					for (int i = 0; i < 3; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDENINGOT)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDENINGOT));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::GOLDENINGOT)]--;
+						}
+					}
+
+					// Remove 2 Planks
+					for (int i = 0; i < 2; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+
+
+					temp = nullptr;
+					break;
+				}
 				default:
 				{
 					break;
@@ -1515,6 +1921,75 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				}
 
 				// Exit Pickaxe Case
+				break;
+			}
+			case CBlock::BLOCKTYPE::BOW:
+			{
+				switch (item.m_BowType)
+				{
+				case CBlock::BOWTYPE::IRON:
+				{
+					Bow* tempbow = new Bow(CBlock::BOWTYPE::IRON);
+					_player->AddItemToInventory(tempbow, false);
+					tempbow = nullptr;
+
+					// Remove 3 Iron
+					for (int i = 0; i < 3; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)]--;
+						}
+					}
+					// Remove 5 LEAVES
+					for (int i = 0; i < 5; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)]--;
+						}
+					}
+					break;
+				}
+				default:
+					Bow* tempbow = new Bow(CBlock::BOWTYPE::DEFAULT);
+					_player->AddItemToInventory(tempbow, false);
+					tempbow = nullptr;
+
+					// Remove 3 Planks
+					for (int i = 0; i < 3; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+					// Remove 5 LEAVES
+					for (int i = 0; i < 5; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)]--;
+						}
+					}
+					break;
+				}
 				break;
 			}
 			default:
@@ -1534,7 +2009,7 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	sf::Color color = sf::Color();
 
 	// Row 1
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < 18; i++)
 	{
 		std::cout << "Create Crafting Space" << std::endl;
 
@@ -1553,30 +2028,51 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	std::cout << "Size of slots: " << m_CraftingSlots.size() << std::endl;
 
 	// Init Craft List
-	CBlock* Recipe = new CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
-	m_CraftList.push_back(*Recipe);
-	CBlock* Recipe2 = new CBlock(_textureMaster->m_DoorLeft, CBlock::BLOCKTYPE::DOOR);
-	Recipe2->GetShape().setScale(0.23f, 0.23f);
+	CBlock* Recipe1 = new CBlock(_textureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+	m_CraftList.push_back(*Recipe1);
+	CBlock* Recipe2 = new CBlock(_textureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
 	m_CraftList.push_back(*Recipe2);
-	CBlock* Recipe3 = new CBlock(_textureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+	CBlock* Recipe3 = new CBlock(_textureMaster->m_DoorLeft, CBlock::BLOCKTYPE::DOOR);
+	Recipe3->GetShape().setScale(0.23f, 0.23f);
 	m_CraftList.push_back(*Recipe3);
-	CBlock* Recipe4 = new CBlock(_textureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
+	Bow* Recipe4 = new Bow(CBlock::BOWTYPE::DEFAULT);
+	Recipe4->GetShape().setScale(0.43f, 0.43f);
+	Recipe4->GetShape().setOrigin(Recipe4->GetShape().getGlobalBounds().width / 2, Recipe4->GetShape().getGlobalBounds().height / 2);
 	m_CraftList.push_back(*Recipe4);
-	CBlock* Recipe5 = new CBlock(_textureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+	Bow* Recipe5 = new Bow(CBlock::BOWTYPE::IRON);
+	Recipe5->GetShape().setScale(0.43f, 0.43f);
+	Recipe5->GetShape().setOrigin(Recipe5->GetShape().getGlobalBounds().width / 2, Recipe5->GetShape().getGlobalBounds().height / 2);
 	m_CraftList.push_back(*Recipe5);
-	CBlock* Recipe6 = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+	CBlock* Recipe6 = new CBlock(_textureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
 	m_CraftList.push_back(*Recipe6);
-	CBlock* Recipe7 = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+	CBlock* Recipe7 = new CBlock(_textureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
 	m_CraftList.push_back(*Recipe7);
-	CBlock* Recipe8 = new CBlock(_textureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+	CBlock* Recipe8 = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
 	m_CraftList.push_back(*Recipe8);
-	CPickaxe* Recipe9 = new CPickaxe(CPickaxe::PICKAXETYPE::IRON);
+	CBlock* Recipe9 = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
 	m_CraftList.push_back(*Recipe9);
-	CPickaxe* Recipe10 = new CPickaxe(CPickaxe::PICKAXETYPE::GOLD);
+	CBlock* Recipe10 = new CBlock(_textureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
 	m_CraftList.push_back(*Recipe10);
-	CPickaxe* Recipe11 = new CPickaxe(CPickaxe::PICKAXETYPE::DIAMOND);
+	CBlock* Recipe11 = new CBlock(_textureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
 	m_CraftList.push_back(*Recipe11);
-	Recipe = nullptr;
+	CBlock* Recipe12 = new CBlock(_textureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+	m_CraftList.push_back(*Recipe12);
+	CBlock* Recipe13 = new CBlock(_textureMaster->m_Anvil, CBlock::BLOCKTYPE::ANVIL);
+	m_CraftList.push_back(*Recipe13);
+	/*CBlock* Recipe14 = new CBlock(_textureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+	m_CraftList.push_back(*Recipe14);*/
+	CPickaxe* Recipe14 = new CPickaxe(CPickaxe::PICKAXETYPE::IRON);
+	m_CraftList.push_back(*Recipe14);
+	CPickaxe* Recipe15 = new CPickaxe(CPickaxe::PICKAXETYPE::GOLD);
+	m_CraftList.push_back(*Recipe15);
+	CPickaxe* Recipe16 = new CPickaxe(CPickaxe::PICKAXETYPE::DIAMOND);
+	m_CraftList.push_back(*Recipe16);
+	CPickaxe* Recipe17 = new CPickaxe(CPickaxe::PICKAXETYPE::PURPLE);
+	m_CraftList.push_back(*Recipe17);
+	CPickaxe* Recipe18 = new CPickaxe(CPickaxe::PICKAXETYPE::GOLDEN);
+	m_CraftList.push_back(*Recipe18);
+
+	Recipe1 = nullptr;
 	Recipe2 = nullptr;
 	Recipe3 = nullptr;
 	Recipe4 = nullptr;
@@ -1587,6 +2083,13 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	Recipe9 = nullptr;
 	Recipe10 = nullptr;
 	Recipe11 = nullptr;
+	Recipe12 = nullptr;
+	Recipe13 = nullptr;
+	Recipe14 = nullptr;
+	Recipe15 = nullptr;
+	Recipe16 = nullptr;
+	Recipe17 = nullptr;
+	Recipe18 = nullptr;
 }
 
 bool GUI::bIsCraftingSpaceEmpty(int _position)

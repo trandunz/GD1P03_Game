@@ -198,7 +198,21 @@ void Slime::Update()
 
 			if (a->GetBody()->GetFixtureList()->IsSensor() || b->GetBody()->GetFixtureList()->IsSensor())
 			{
-				TakeDamage(50.0f, true);
+				int damage = 0;
+				if (a->GetBody()->GetFixtureList()->IsSensor())
+				{
+					b2BodyUserData userdata = static_cast<b2BodyUserData>(a->GetBody()->GetUserData());
+					damage = userdata.pointer;
+					std::cout << "Damage: " << damage << std::endl;
+				}
+				else
+				{
+					b2BodyUserData userdata = static_cast<b2BodyUserData>(b->GetBody()->GetUserData());
+					damage = userdata.pointer;
+					std::cout << "Damage: " << damage << std::endl;
+				}
+				 
+				TakeDamage(damage, true);
 			}
 		}
 

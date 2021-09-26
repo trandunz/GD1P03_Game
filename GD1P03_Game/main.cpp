@@ -286,7 +286,7 @@ void Update()
 					{
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::IRONINGOT);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::PURPLEINGOT);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1))
 						{
@@ -294,11 +294,11 @@ void Update()
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDINGOT);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDENINGOT);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMOND);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::COALORE);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
 						{
@@ -706,6 +706,20 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 		m_Block = nullptr;
 		break;
 	}
+	case CBlock::BLOCKTYPE::PURPLEORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleOre, CBlock::BLOCKTYPE::PURPLEORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenOre, CBlock::BLOCKTYPE::GOLDENORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
 	case CBlock::BLOCKTYPE::COALORE:
 	{
 		m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
@@ -722,7 +736,7 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 	}
 	case CBlock::BLOCKTYPE::BOW:
 	{
-		m_Bow = new Bow();
+		m_Bow = new Bow(CBlock::BOWTYPE::DEFAULT);
 		m_Player->AddItemToInventory(m_Bow, false);
 		m_Bow = nullptr;
 		break;
@@ -744,6 +758,20 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 	case CBlock::BLOCKTYPE::DIAMOND:
 	{
 		m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PURPLEINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 		break;

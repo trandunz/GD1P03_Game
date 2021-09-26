@@ -21,6 +21,8 @@ CAudioManager::CAudioManager()
 
 	m_BowBuffer.loadFromFile("Sounds/Bow.wav");
 
+	m_PickupSoundBuffer.loadFromFile("Sounds/PickupItem.wav");
+
 	m_KingSlimeSpawnBuffer.loadFromFile("Sounds/SlimeKingSpawn.wav");
 
 	MineSoundBuffers[0] = m_MineBuffer1;
@@ -110,6 +112,13 @@ void CAudioManager::PlayPlayerDeath()
 	m_PlayerDeathSound.setBuffer(m_DeathBuffer);
 	m_PlayerDeathSound.setVolume(25.0f);
 	m_PlayerDeathSound.play();
+}
+
+void CAudioManager::PlayPickupSound()
+{
+	m_PickupSound.setBuffer(m_PickupSoundBuffer);
+	m_PickupSound.setVolume(10.0f);
+	m_PickupSound.play();
 }
 
 void CAudioManager::PlayMusic()

@@ -39,5 +39,11 @@ public:
 	sf::Texture* m_Cloud;
 	sf::Texture* m_CloudDark;
 	sf::Texture* m_WorkBench;
+	sf::Texture* m_PurpleIngot;
+	sf::Texture* m_GoldenIngot;
+	sf::Texture* m_Anvil;
+	sf::Texture* m_Tourch;
+	sf::Texture* m_GoldenOre;
+	sf::Texture* m_PurpleOre;
 };
 

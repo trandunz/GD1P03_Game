@@ -26,6 +26,8 @@ public:
 	void PlayPlayerDamage();
 	void PlayPlayerDeath();
 
+	void PlayPickupSound();
+
 	void PlaySlimeDamage(int _volume = 10);
 	void PlaySlimeDeath(int _volume = 10);
 
@@ -55,6 +57,9 @@ private:
 
 	sf::Music m_Music;
 	sf::Music m_UnderGroundMusic;
+
+	sf::Sound m_PickupSound;
+	sf::SoundBuffer m_PickupSoundBuffer;;
 
 	sf::SoundBuffer m_MineBuffer1;
 	sf::SoundBuffer m_MineBuffer2;

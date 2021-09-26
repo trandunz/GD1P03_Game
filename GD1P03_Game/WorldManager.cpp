@@ -207,10 +207,15 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
 
     // Block Iterator
     std::list<CBlock>::iterator it;
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
     // Draw Blocks In Range (With Shaders : Player, Tourch, Surface)
     for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
     {
-        float Mag1 = sqrt(((it->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x) * (it->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x)) + ((it->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y) * (it->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y)));
+        x = it->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = it->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
 
         if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y >= 1300)
         {
@@ -245,18 +250,18 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
                 {
                     m_RenderWindow->draw(it->GetShape(), m_Shader);
                 }
-                else
+                else if (Mag1 < 1920 * 1.8f)
                 {
                     m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
                 }
             }
             else
             {
-                if (bIsBlockInRangeOfLightSource(it) && it->GetShape().getPosition().y >= 1300)
+                if (bIsBlockInRangeOfLightSource(it) && it->GetShape().getPosition().y >= 1300 && Mag1 < 1920 * 1.8f)
                 {
                     m_RenderWindow->draw(it->GetShape(), m_TourchShader);
                 }
-                else
+                else if (Mag1 < 1920 * 1.8f)
                 {
                     m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
                 }
@@ -280,15 +285,36 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     // Doors, Chests, Funaces
     for (CDoor& door : m_Doors)
     {
-        door.Render(_defaultShader);
+        x = door.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = door.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
+
+        if (Mag1 < 1920 * 1.8f)
+        {
+            door.Render(_defaultShader);
+        }
     }
     for (CChest& chest : m_Chests)
     {
-        chest.Render(_defaultShader);
+        x = chest.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = chest.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
+
+        if (Mag1 < 1920 * 1.8f)
+        {
+            chest.Render(_defaultShader);
+        }
     }
     for (CFurnace& furnace : m_Furnaces)
     {
-        furnace.Render(_defaultShader);
+        x = furnace.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = furnace.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
+
+        if (Mag1 < 1920 * 1.8f)
+        {
+            furnace.Render(_defaultShader);
+        }
     }
     for (CWorkBench& workbench : m_WorkBenches)
     {
@@ -391,18 +417,42 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            else if (sineValue > 75 && sineValue <= 80 && y > 50)
+            else if (sineValue > 75 && sineValue <= 80 && y > 6)
             {
                 // Gold
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 50 && sineValue <= 55 && y > 70)
+            {
+                // Diamond
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIAMONDORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 50 && sineValue <= 55 && y > 80)
+            {
+                // Diamond
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            else if (sineValue > 70 && sineValue <= 75 && y > 80)
+            else if (sineValue > 40 && sineValue <= 45 && y > 90)
             {
                 // Diamond
-                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIAMONDORE);
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_PurpleOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::PURPLEORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 30 && sineValue <= 35 && y > 95)
+            {
+                // Diamond
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldenOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDENORE);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
@@ -580,7 +630,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
                         if (rand() % 1 == 0)
                         {
-                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
                             for (int i = 0; i < 1 + rand() % 4; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 0, true);
@@ -602,15 +652,6 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                             for (int i = 0; i < 2 + rand() % 8; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 2, true);
-                            }
-                            m_Block = nullptr;
-                        }
-                        if (rand() % 2 == 0)
-                        {
-                            m_Block = new CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
-                            for (int i = 0; i < 1; i++)
-                            {
-                                m_Chest->AddItemToInventory(m_Block, 3, false);
                             }
                             m_Block = nullptr;
                         }
@@ -701,7 +742,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
                         if (rand() % 1 == 0)
                         {
-                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
                             for (int i = 0; i < 1 + rand() % 4; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 0, true);
@@ -749,7 +790,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
                         if (rand() % 1 == 0)
                         {
-                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
                             for (int i = 0; i < 1 + rand() % 4; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 0, true);

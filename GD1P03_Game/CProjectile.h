@@ -6,8 +6,15 @@
 class CProjectile
 {
 public:
+	enum class PROJECTILETYPE
+	{
+		ARROW,
+		FIREARROW,
+		CURSEDARROW,
+		POISONARROW
+	};
 
-	CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos);
+	CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, PROJECTILETYPE _type = PROJECTILETYPE::ARROW);
 	~CProjectile();
 
 	void Update();
@@ -20,11 +27,13 @@ public:
 
 	float m_Weight = 0.8f;
 
+	PROJECTILETYPE m_Type = PROJECTILETYPE::ARROW;
+
 	sf::Sprite m_Shape;
 private:
+
 	sf::Texture* m_Texture;
 	b2World* m_World;
-	
 
 	// Box2d
 	b2BodyDef m_BodyDef;

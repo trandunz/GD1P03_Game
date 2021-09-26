@@ -5,9 +5,11 @@
 #include "Block.h"
 class Bow : public CBlock
 {
+
 public:
-	Bow();
-	Bow(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY);
+
+	Bow(BOWTYPE _bowType);
+	Bow(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY, BOWTYPE _bowtype);
 	virtual ~Bow();
 
 	void FlipSprite(sf::Vector2f _playerPosition, sf::Sprite& _sprite, sf::Texture* _playerLeft, sf::Texture* _playerRight);

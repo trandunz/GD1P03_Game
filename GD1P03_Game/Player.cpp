@@ -126,9 +126,13 @@ void CPlayer::Start()
 	{
 		if (m_InventoryStackValues[i] == 0)
 		{
-			m_Bow = new Bow();
-			AddItemToInventory(m_Bow, i, false);
-			m_Bow = nullptr;
+			for (int j = 0; j < 3; j++)
+			{
+				m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+			}
+			
 			break;
 		}
 	}
@@ -195,72 +199,129 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::DIAMOND);
 			iit->second.m_bIsItemAndSelected = false;
 		}
+		// Player Selects pURPLE Pickaxe
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE)
+		{
+			std::cout << "New Pickaxe Created!" << std::endl;
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::PURPLE);
+			iit->second.m_bIsItemAndSelected = false;
+		}
+		// Player Selects GOLDEN Pickaxe
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
+		{
+			std::cout << "New Pickaxe Created!" << std::endl;
+			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::GOLDEN);
+			iit->second.m_bIsItemAndSelected = false;
+		}
 		// Player Selects Bow
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::BOW)
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT)
 		{
 			std::cout << "New Bow Created!" << std::endl;
-			m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y);
+			m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::BOWTYPE::DEFAULT);
+			iit->second.m_bIsItemAndSelected = false;
+		}
+		// Player Selects Iron Bow
+		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::IRON)
+		{
+			std::cout << "New Iron Bow Created!" << std::endl;
+			m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::BOWTYPE::IRON);
 			iit->second.m_bIsItemAndSelected = false;
 		}
 		// Player Unselects Basic PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
 		{
 		delete m_Pickaxe;
 		m_Pickaxe = nullptr;
 		}
 		// Player Unselects Iron PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
 		{
 		delete m_Pickaxe;
 		m_Pickaxe = nullptr;
 		}
 		// Player Unselects Gold PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
 		}
 		// Player Unselects Diamond PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
+		{
+			delete m_Pickaxe;
+			m_Pickaxe = nullptr;
+		}
+		// Player Unselects Purple PickAxe
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
+		{
+			delete m_Pickaxe;
+			m_Pickaxe = nullptr;
+		}
+		// Player Unselects Golden PickAxe
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
 		}
 		// Player Unselects Bow
-		else if ((m_Bow != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW))
+		else if ((m_Bow != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT && iit->second.m_BowType != CBlock::BOWTYPE::IRON))
+		{
+			delete m_Bow;
+			m_Bow = nullptr;
+		}
+		// Player Unselects Bow
+		else if ((m_Bow != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::IRON && iit->second.m_BowType != CBlock::BOWTYPE::DEFAULT))
 		{
 			delete m_Bow;
 			m_Bow = nullptr;
 		}
 		// Basic Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
 		}
 		// Iron Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
 		}
 		// Gold Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
 		}
 		// Diamond Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON))
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
 		{
 			delete m_Pickaxe;
 			m_Pickaxe = nullptr;
 		}
+		// pURPLE Pickaxe Moves Slots Wealst Out
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
+		{
+		delete m_Pickaxe;
+		m_Pickaxe = nullptr;
+		}
+		// GOLDEN Pickaxe Moves Slots Wealst Out
+		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE))
+		{
+		delete m_Pickaxe;
+		m_Pickaxe = nullptr;
+		}
 		// Bow Moves Slots Wealst Out
-		else if ((m_Bow != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::BOW))
+		else if ((m_Bow != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT && iit->second.m_BowType != CBlock::BOWTYPE::IRON))
 		{
 			delete m_Bow;
 			m_Bow = nullptr;
+		}
+		// Bow Moves Slots Wealst Out
+		else if ((m_Bow != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::IRON && iit->second.m_BowType != CBlock::BOWTYPE::DEFAULT))
+		{
+		delete m_Bow;
+		m_Bow = nullptr;
 		}
 	}
 	
@@ -291,12 +352,12 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 			}
 
 			// Fall Damage
-			if (impactVelocity.y <= 140.7f && impactVelocity.y >= 80.7f)
+			if (impactVelocity.y <= 110.7f && impactVelocity.y >= 70.7f)
 			{
 				//std::cout << impactVelocity.y << std::endl;
-				TakeDamage(impactVelocity.y / 2);
+				TakeDamage(impactVelocity.y);
 			}
-			else if (impactVelocity.y > 140.7f)
+			else if (impactVelocity.y > 110.7f)
 			{
 				//std::cout << impactVelocity.y << std::endl;
 				TakeDamage(impactVelocity.y * 2);
@@ -604,7 +665,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		{
 		}
 		// Left Mouse Clicked And In Empty Space
-		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite) && bMouseNotOver(m_WorkBenches, _mousePositionSprite))
+		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite) && bMouseNotOver(m_WorkBenches, _mousePositionSprite) && _mousePositionSprite.getGlobalBounds().contains(m_MousePos))
 		{
 			// Place Door
 			if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::DOOR)
@@ -629,6 +690,14 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			}
 			// Diamond Ingot
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::DIAMOND)
+			{
+			}
+			// Purple Ingot
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PURPLEINGOT)
+			{
+			}
+			// Golden Ingot
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::GOLDENINGOT)
 			{
 			}
 			//Chest
@@ -947,6 +1016,7 @@ void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 	{
 		if (IsBlockInInventory(_block))
 		{
+			m_AudioManager->PlayPickupSound();
 		}
 		else
 		{
@@ -971,6 +1041,8 @@ void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 			std::cout << firstEmpty << std::endl;
 
 			myfile.close();
+
+			m_AudioManager->PlayPickupSound();
 		}
 	}
 	else
@@ -1005,6 +1077,8 @@ void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 		std::cout << firstEmpty << std::endl;
 
 		myfile.close();
+
+		m_AudioManager->PlayPickupSound();
 	}
 }
 
@@ -1014,6 +1088,7 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 	{
 		if (IsBlockInInventory(_block))
 		{
+			m_AudioManager->PlayPickupSound();
 		}
 		else
 		{
@@ -1027,6 +1102,8 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 			m_InventoryMap.insert_or_assign(_position, *_block);
 			//std::cout << "Added Item To Inventory - ";
 			//std::cout << _position << std::endl;
+
+			m_AudioManager->PlayPickupSound();
 		}
 	}
 	else
@@ -1041,6 +1118,8 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 		m_InventoryMap.insert_or_assign(_position, *_block);
 		//std::cout << "Added Item To Inventory - ";
 		std::cout << _position << std::endl;
+
+		m_AudioManager->PlayPickupSound();
 	}
 	
 }
@@ -1146,7 +1225,7 @@ int CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 	typename std::list<T>::iterator it;
 	for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
 	{
-		if (it->GetShape().getPosition() == _mousePositionSprite.getPosition())
+		if (it->GetShape().getPosition() == _mousePositionSprite.getPosition() && _mousePositionSprite.getGlobalBounds().contains(m_MousePos))
 		{
 			if (!bMouseNotOver(m_Chunk, _mousePositionSprite))
 			{
@@ -1360,7 +1439,6 @@ void CPlayer::PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _
 		m_MineTimer->restart();
 	}
 }
-
 
 void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {

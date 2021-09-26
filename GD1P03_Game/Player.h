@@ -129,12 +129,13 @@ private:
 
 	// Player
 	b2Vec2 m_Velocity;
-	const int m_MoveSpeed = 40;
+	const int m_MoveSpeed = 30;
 	int m_MaxHP = 100;
-	int m_HPRegenRate_s = 1;
 	int m_Health = 100;
+	float m_HeathRegenSpeed = 1;
+	float m_HeathRegenAmount = 1;
 	int m_InteractionRange = 10;
-	float m_AttackSpeed = 0.6f;
+	float m_AttackSpeed = 0.7f;
 
 	bool m_bCanPlace = true;
 	
@@ -177,8 +178,6 @@ private:
 	sf::Clock m_ParticleTimer;
 
 	sf::Clock m_HealthRegenTimer;
-	float m_HeathRegenSpeed = 1;
-	float m_HeathRegenAmount = 2;
 
 };
 #endif

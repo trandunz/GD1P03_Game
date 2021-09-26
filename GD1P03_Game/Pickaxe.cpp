@@ -34,6 +34,21 @@ CPickaxe::CPickaxe(PICKAXETYPE _pickType)
 		m_Texture->loadFromFile("Images/DiamondPickAxeRight.png");
 		break;
 	}
+	case CPickaxe::PICKAXETYPE::OBSIDIAN:
+	{
+		m_Texture->loadFromFile("Images/ObsidianPickAxeRight.png");
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::PURPLE:
+	{
+		m_Texture->loadFromFile("Images/PurplePickAxeRight.png");
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::GOLDEN:
+	{
+		m_Texture->loadFromFile("Images/GoldenPickAxeRight.png");
+		break;
+	}
 	default:
 	{
 		m_Texture->loadFromFile("Images/PickAxeRight.png");
@@ -103,6 +118,39 @@ CPickaxe::CPickaxe(sf::RenderWindow* _renderWindow, const float& _scale, float _
 		m_Texture->loadFromFile("Images/DiamondPickAxeRight.png");
 
 		m_PickaxePower = 1.6f;
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::PURPLE:
+	{
+		m_LeftTex.loadFromFile("Images/PurplePickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/PurplePickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/PurplePickAxeRight.png");
+
+		m_PickaxePower = 1.8f;
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::GOLDEN:
+	{
+		m_LeftTex.loadFromFile("Images/GoldenPickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/GoldenPickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/GoldenPickAxeRight.png");
+
+		m_PickaxePower = 2.0f;
+		break;
+	}
+	case CPickaxe::PICKAXETYPE::OBSIDIAN:
+	{
+		m_LeftTex.loadFromFile("Images/ObsidianPickAxeLeft.png");
+		m_RightTex.loadFromFile("Images/ObsidianPickAxeRight.png");
+
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/ObsidianPickAxeRight.png");
+
+		m_PickaxePower = 2.2f;
 		break;
 	}
 	default:
