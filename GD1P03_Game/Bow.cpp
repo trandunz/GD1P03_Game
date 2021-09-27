@@ -13,7 +13,7 @@ Bow::Bow(BOWTYPE _bowType)
 	m_BowType = _bowType;
 	switch (m_BowType)
 	{
-	case CBlock::BOWTYPE::DEFAULT:
+	case CBlock::BOWTYPE::BASIC:
 		m_Texture->loadFromFile("Images/BowRight.png");
 		break;
 	case CBlock::BOWTYPE::OBSIDIAN:
@@ -66,53 +66,62 @@ Bow::Bow(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, 
 	m_BowType = _bowtype;
 	switch (m_BowType)
 	{
-	case CBlock::BOWTYPE::DEFAULT:
+	case CBlock::BOWTYPE::BASIC:
 		m_LeftTex.loadFromFile("Images/BowLeft.png");
 		m_RightTex.loadFromFile("Images/BowRight.png");
 
 		m_Texture->loadFromFile("Images/BowRight.png");
+		m_BowPower = 1;
 		break;
 	case CBlock::BOWTYPE::OBSIDIAN:
 		m_LeftTex.loadFromFile("Images/ObsidianBowLeft.png");
 		m_RightTex.loadFromFile("Images/ObsidianBowRight.png");
 
 		m_Texture->loadFromFile("Images/ObsidianBowRight.png");
+		m_BowPower = 8;
 		break;
 	case CBlock::BOWTYPE::ICE:
 		m_LeftTex.loadFromFile("Images/IceBowLeft.png");
 		m_RightTex.loadFromFile("Images/IceBowRight.png");
 
 		m_Texture->loadFromFile("Images/IceBowRight.png");
+		m_BowPower = 5;
 		break;
 	case CBlock::BOWTYPE::BLOOD:
 		m_LeftTex.loadFromFile("Images/BloodBowLeft.png");
 		m_RightTex.loadFromFile("Images/BloodBowRight.png");
 
 		m_Texture->loadFromFile("Images/BloodBowRight.png");
+		m_BowPower = 6;
 		break;
 	case CBlock::BOWTYPE::IRON:
 		m_LeftTex.loadFromFile("Images/IronBowLeft.png");
 		m_RightTex.loadFromFile("Images/IronBowRight.png");
 
 		m_Texture->loadFromFile("Images/IronBowRight.png");
+		m_BowPower = 2;
 		break;
 	case CBlock::BOWTYPE::GOLDEN:
 		m_LeftTex.loadFromFile("Images/GoldenBowLeft.png");
 		m_RightTex.loadFromFile("Images/GoldenBowRight.png");
 
 		m_Texture->loadFromFile("Images/GoldenBowRight.png");
+		m_BowPower = 4;
 		break;
 	case CBlock::BOWTYPE::PURPLE:
 		m_LeftTex.loadFromFile("Images/PurpleBowLeft.png");
 		m_RightTex.loadFromFile("Images/PurpleBowRight.png");
 
 		m_Texture->loadFromFile("Images/PurpleBowRight.png");
+		m_BowPower = 3;
 		break;
 	case CBlock::BOWTYPE::GREEN:
 		m_LeftTex.loadFromFile("Images/GreenBowLeft.png");
 		m_RightTex.loadFromFile("Images/GreenBowRight.png");
 
 		m_Texture->loadFromFile("Images/GreenBowRight.png");
+
+		m_BowPower = 7;
 		break;
 	default:
 		m_LeftTex.loadFromFile("Images/BowLeft.png");

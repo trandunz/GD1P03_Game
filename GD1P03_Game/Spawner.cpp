@@ -258,9 +258,8 @@ void Spawner::Update()
 					}
 				}
 			}
-			sit = m_Slimes.erase(sit);
 
-			
+			sit = m_Slimes.erase(sit);
 		}
 	}
 }

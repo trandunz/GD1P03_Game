@@ -239,8 +239,8 @@ void CBlock::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor
 	}
 	m_FixtureDef.density = 1.0f;
 	m_FixtureDef.shape = &m_b2pShape;
-	m_FixtureDef.filter.categoryBits = 0x0006;
-	m_FixtureDef.filter.groupIndex = -4;
+	m_FixtureDef.filter.categoryBits = _WORLD_FILTER_;
+	m_FixtureDef.filter.groupIndex = -_WORLD_GROUPINDEX_;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);

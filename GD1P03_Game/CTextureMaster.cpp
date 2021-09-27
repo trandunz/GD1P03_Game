@@ -83,6 +83,15 @@ CTextureMaster::CTextureMaster()
 	m_GoldenOre = new sf::Texture();
 	m_GoldenOre->loadFromFile("Images/GoldenOre.png");
 
+	m_Arrow = new sf::Texture();
+	m_Arrow->loadFromFile("Images/GoldenOre.png");
+	m_FireArrow = new sf::Texture();
+	m_FireArrow->loadFromFile("Images/GoldenOre.png");
+	m_CursedArrow = new sf::Texture();
+	m_CursedArrow->loadFromFile("Images/GoldenOre.png");
+	m_PoisonArrow = new sf::Texture();
+	m_PoisonArrow->loadFromFile("Images/GoldenOre.png");
+
 	// Set Smooth
 	m_Dirt->setSmooth(true);
 	m_Grass->setSmooth(true);
@@ -152,6 +161,10 @@ CTextureMaster::~CTextureMaster()
 	delete m_Tourch;
 	delete m_GoldenOre;
 	delete m_PurpleOre;
+	delete m_Arrow;
+	delete m_FireArrow;
+	delete m_CursedArrow;
+	delete m_PoisonArrow;
 	m_GoldenOre = nullptr;
 	m_PurpleOre = nullptr;
 	m_PurpleIngot = nullptr;

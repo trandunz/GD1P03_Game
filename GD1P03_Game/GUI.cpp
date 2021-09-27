@@ -577,45 +577,159 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
-				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC)
+				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CPickaxe::PICKAXETYPE::BASIC)
 				{
-					std::cout << "Pickaxe Selected!" << std::endl;
+					std::cout << "Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON)
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CPickaxe::PICKAXETYPE::IRON)
 				{
-					std::cout << "Iron Pickaxe Selected!" << std::endl;
+					std::cout << "Iron Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD)
 				{
-					std::cout << "Gold Pickaxe Selected!" << std::endl;
+					std::cout << "Gold Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
 				{
-					std::cout << "Diamond Pickaxe Selected!" << std::endl;
+					std::cout << "Diamond Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE)
 				{
-					std::cout << "purple Pickaxe Selected!" << std::endl;
+					std::cout << "purple Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
 				{
-					std::cout << "gOLDEN Pickaxe Selected!" << std::endl;
+					std::cout << "gOLDEN Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT)
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::BASIC)
 				{
-					std::cout << "Bow Selected!" << std::endl;
+					std::cout << "Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::IRON)
 				{
-					std::cout << "Iron Bow Selected!" << std::endl;
+					std::cout << "Iron Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::PURPLE)
+				{
+					std::cout << "Purple Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::GOLDEN)
+				{
+					std::cout << "Golden Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::GREEN)
+				{
+					std::cout << "Green Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::ICE)
+				{
+					std::cout << "Ice Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::BLOOD)
+				{
+					std::cout << "Blood Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::OBSIDIAN)
+				{
+					std::cout << "Obsidian Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 			}
 		}
@@ -639,45 +753,159 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
-				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC)
+				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CPickaxe::PICKAXETYPE::BASIC)
 				{
-					std::cout << "Pickaxe Selected!" << std::endl;
+					std::cout << "Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON)
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CPickaxe::PICKAXETYPE::IRON)
 				{
-					std::cout << "Iron Pickaxe Selected!" << std::endl;
+					std::cout << "Iron Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD)
 				{
-					std::cout << "Gold Pickaxe Selected!" << std::endl;
+					std::cout << "Gold Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
 				{
-					std::cout << "Diamond Pickaxe Selected!" << std::endl;
+					std::cout << "Diamond Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE)
 				{
-					std::cout << "PURPLE Pickaxe Selected!" << std::endl;
+					std::cout << "purple Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
 				{
-					std::cout << "GOLDEN Pickaxe Selected!" << std::endl;
+					std::cout << "gOLDEN Pickaxe Selected!" << "( gui)" << std::endl;
+					if (_player->GetPickaxe() != nullptr)
+					{
+						delete _player->GetPickaxe();
+						_player->SetPickaxe(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT)
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::BASIC)
 				{
-					std::cout << "Bow Selected!" << std::endl;
+					std::cout << "Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::IRON)
 				{
-					std::cout << "Bow Selected!" << std::endl;
+					std::cout << "Iron Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
 					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::PURPLE)
+				{
+					std::cout << "Purple Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::GOLDEN)
+				{
+					std::cout << "Golden Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::GREEN)
+				{
+					std::cout << "Green Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::ICE)
+				{
+					std::cout << "Ice Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::BLOOD)
+				{
+					std::cout << "Blood Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
+				}
+				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && !_player->bInventoryOpen() && iit->second.m_BowType == CBlock::BOWTYPE::OBSIDIAN)
+				{
+					std::cout << "Obsidian Bow Selected!" << "( gui)" << std::endl;
+					if (_player->GetBow() != nullptr)
+					{
+						delete _player->GetBow();
+						_player->SetBow(nullptr);
+					}
+					iit->second.m_bIsItemAndSelected = true;
+					break;
 				}
 			}
 		}
@@ -798,7 +1026,7 @@ void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<
 		{
 			for (int i = 0; i < _player->m_InventoryMap.size(); i++)
 			{
-				if (_player->m_bInventoryOpen && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				if (_player->m_bInventoryOpen && _player->m_InventoryMap[i].GetShape().getGlobalBounds().contains(m_MousePointer.getPosition()))
 				{
 					for (CChest& chest : _chests)
 					{
@@ -830,9 +1058,9 @@ void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<
 						_player->m_InventoryMap[i].m_bIsMovingItemInInv = true;
 					}
 
-					break;
+					return;
 				}
-				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && _event.type == sf::Event::MouseButtonPressed)
 				{
 					if (_player->m_bPlayerIsInChest)
 					{
@@ -889,15 +1117,12 @@ void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<
 											}
 
 											chest.RemoveItemFromInventory(j);
-											break;
+											return;
 										}
 									}
-									return;
-
 								}
 							}
 						}
-
 					}
 				}
 			}
@@ -966,7 +1191,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		m_FirstEmpySlotTimer->restart();
 	}
 	// Positions
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 23; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_CraftingSlots[i].getPosition(), _uiView);
 		m_CraftingSlots[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65 + ((1) * 65));
@@ -991,6 +1216,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::CHEST)
 		{
 			item.SetPosition(m_CraftingSlots[1].getPosition().x, m_CraftingSlots[1].getPosition().y);
@@ -1007,6 +1233,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DOOR)
 		{
 			item.SetPosition(m_CraftingSlots[2].getPosition().x + 4.5f, m_CraftingSlots[2].getPosition().y - 3.5f);
@@ -1023,7 +1250,8 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
-		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT)
+		
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::BASIC)
 		{
 			item.SetPosition(m_CraftingSlots[3].getPosition().x, m_CraftingSlots[3].getPosition().y);
 			sf::Color tempcolor;
@@ -1031,7 +1259,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 255;
 			item.GetShape().setColor(tempcolor);
 		}
-		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT)
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::BASIC)
 		{
 			item.SetPosition(m_CraftingSlots[3].getPosition().x, m_CraftingSlots[3].getPosition().y);
 			sf::Color tempcolor;
@@ -1039,6 +1267,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON)
 		{
 			item.SetPosition(m_CraftingSlots[4].getPosition().x, m_CraftingSlots[4].getPosition().y);
@@ -1055,6 +1284,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::TOURCH)
 		{
 			item.SetPosition(m_CraftingSlots[5].getPosition().x, m_CraftingSlots[5].getPosition().y);
@@ -1071,6 +1301,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::FURNACE)
 		{
 			item.SetPosition(m_CraftingSlots[6].getPosition().x, m_CraftingSlots[6].getPosition().y);
@@ -1087,6 +1318,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::IRONINGOT)
 		{
 			item.SetPosition(m_CraftingSlots[7].getPosition().x, m_CraftingSlots[7].getPosition().y);
@@ -1103,6 +1335,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT)
 		{
 			item.SetPosition(m_CraftingSlots[8].getPosition().x, m_CraftingSlots[8].getPosition().y);
@@ -1119,6 +1352,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::DIAMOND)
 		{
 			item.SetPosition(m_CraftingSlots[9].getPosition().x, m_CraftingSlots[9].getPosition().y);
@@ -1135,6 +1369,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT)
 		{
 			item.SetPosition(m_CraftingSlots[10].getPosition().x, m_CraftingSlots[10].getPosition().y);
@@ -1151,6 +1386,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT)
 		{
 			item.SetPosition(m_CraftingSlots[11].getPosition().x, m_CraftingSlots[11].getPosition().y);
@@ -1167,6 +1403,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::ANVIL)
 		{
 			item.SetPosition(m_CraftingSlots[12].getPosition().x, m_CraftingSlots[12].getPosition().y);
@@ -1183,9 +1420,27 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
-		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
+
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::WORKBENCH)
 		{
 			item.SetPosition(m_CraftingSlots[13].getPosition().x, m_CraftingSlots[13].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::WORKBENCH)
+		{
+			item.SetPosition(m_CraftingSlots[13].getPosition().x, m_CraftingSlots[13].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
+		{
+			item.SetPosition(m_CraftingSlots[14].getPosition().x, m_CraftingSlots[14].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1193,15 +1448,16 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON)
 		{
-			item.SetPosition(m_CraftingSlots[13].getPosition().x, m_CraftingSlots[13].getPosition().y);
+			item.SetPosition(m_CraftingSlots[14].getPosition().x, m_CraftingSlots[14].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
 		{
-			item.SetPosition(m_CraftingSlots[14].getPosition().x, m_CraftingSlots[14].getPosition().y);
+			item.SetPosition(m_CraftingSlots[15].getPosition().x, m_CraftingSlots[15].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1209,15 +1465,16 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD)
 		{
-			item.SetPosition(m_CraftingSlots[14].getPosition().x, m_CraftingSlots[14].getPosition().y);
+			item.SetPosition(m_CraftingSlots[15].getPosition().x, m_CraftingSlots[15].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
 		{
-			item.SetPosition(m_CraftingSlots[15].getPosition().x, m_CraftingSlots[15].getPosition().y);
+			item.SetPosition(m_CraftingSlots[16].getPosition().x, m_CraftingSlots[16].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1225,15 +1482,16 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
 		{
-			item.SetPosition(m_CraftingSlots[15].getPosition().x, m_CraftingSlots[15].getPosition().y);
+			item.SetPosition(m_CraftingSlots[16].getPosition().x, m_CraftingSlots[16].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE)
 		{
-			item.SetPosition(m_CraftingSlots[16].getPosition().x, m_CraftingSlots[16].getPosition().y);
+			item.SetPosition(m_CraftingSlots[17].getPosition().x, m_CraftingSlots[17].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1241,15 +1499,16 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE)
 		{
-			item.SetPosition(m_CraftingSlots[16].getPosition().x, m_CraftingSlots[16].getPosition().y);
+			item.SetPosition(m_CraftingSlots[17].getPosition().x, m_CraftingSlots[17].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
+		
 		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
 		{
-			item.SetPosition(m_CraftingSlots[17].getPosition().x, m_CraftingSlots[17].getPosition().y);
+			item.SetPosition(m_CraftingSlots[18].getPosition().x, m_CraftingSlots[18].getPosition().y);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 255;
@@ -1257,7 +1516,75 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		}
 		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
 		{
-			item.SetPosition(m_CraftingSlots[17].getPosition().x, m_CraftingSlots[17].getPosition().y);
+			item.SetPosition(m_CraftingSlots[18].getPosition().x, m_CraftingSlots[18].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::ARROW)
+		{
+			item.SetPosition(m_CraftingSlots[19].getPosition().x, m_CraftingSlots[19].getPosition().y + 6.0f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::ARROW)
+		{
+			item.SetPosition(m_CraftingSlots[19].getPosition().x, m_CraftingSlots[19].getPosition().y + 6.0f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::FIREARROW)
+		{
+			item.SetPosition(m_CraftingSlots[20].getPosition().x, m_CraftingSlots[20].getPosition().y + 6.0f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::FIREARROW)
+		{
+			item.SetPosition(m_CraftingSlots[20].getPosition().x, m_CraftingSlots[20].getPosition().y + 6.0f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::POISONARROW)
+		{
+			item.SetPosition(m_CraftingSlots[21].getPosition().x, m_CraftingSlots[21].getPosition().y + 6.0f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::POISONARROW)
+		{
+			item.SetPosition(m_CraftingSlots[21].getPosition().x, m_CraftingSlots[21].getPosition().y + 6.0f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+		
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::CURSEDARROW)
+		{
+			item.SetPosition(m_CraftingSlots[22].getPosition().x, m_CraftingSlots[22].getPosition().y + 6.0f);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && item.m_ProjectileType == CBlock::PROJECTILETYPE::CURSEDARROW)
+		{
+			item.SetPosition(m_CraftingSlots[22].getPosition().x, m_CraftingSlots[22].getPosition().y + 6.0f);
 			sf::Color tempcolor;
 			tempcolor = item.GetShape().getColor();
 			tempcolor.a = 70;
@@ -1268,205 +1595,392 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 	// Setting Can Craft
 	for (CBlock& item : m_CraftList)
 	{
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::WOOD, true) > 0 && item.m_Type == CBlock::BLOCKTYPE::PLANKS)
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::WOOD, true) > 0 &&
+			 item.m_Type == CBlock::BLOCKTYPE::PLANKS)
 		{
 			if (!item.m_bCanCraft)
 			{
 				item.m_bCanCraft = true;
 			}
 		}
-		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::WOOD, true) <= 0 && item.m_Type == CBlock::BLOCKTYPE::PLANKS)
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 6 && item.m_Type == CBlock::BLOCKTYPE::DOOR)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 6 && item.m_Type == CBlock::BLOCKTYPE::DOOR)
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) >= 9 && item.m_Type == CBlock::BLOCKTYPE::FURNACE)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) < 9 && item.m_Type == CBlock::BLOCKTYPE::FURNACE)
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 9 && item.m_Type == CBlock::BLOCKTYPE::CHEST)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 9 && item.m_Type == CBlock::BLOCKTYPE::CHEST)
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONORE, true) >= 3 && item.m_Type == CBlock::BLOCKTYPE::IRONINGOT && m_bCanSmelt)
-		{
-			if (m_bCanSmelt)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONORE, true) < 3 && item.m_Type == CBlock::BLOCKTYPE::IRONINGOT) || (item.m_Type == CBlock::BLOCKTYPE::IRONINGOT && !m_bCanSmelt))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDORE, true) >= 3 && item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT && m_bCanSmelt)
-		{
-			if (m_bCanSmelt)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDORE, true) < 3 && item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT) || (item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT && !m_bCanSmelt))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMONDORE, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::DIAMOND)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMONDORE, true) < 2 && item.m_Type == CBlock::BLOCKTYPE::DIAMOND))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::IRON) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLD) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::DIAMOND) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::PURPLE) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && item.m_Type == CBlock::BLOCKTYPE::PICKAXE && item.m_PickType == CBlock::PICKAXETYPE::GOLDEN) || (item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEORE, true) >= 3 && item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT && m_bCanSmelt)
-		{
-			if (m_bCanSmelt)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEORE, true) < 3 && item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT) || (item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT && !m_bCanSmelt))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENORE, true) >= 3 && item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT && m_bCanSmelt)
-		{
-			if (m_bCanSmelt)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENORE, true) < 3 && item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT) || (item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT && !m_bCanSmelt))
-		{
-			item.m_bCanCraft = false;
-		}
-		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 6 && item.m_Type == CBlock::BLOCKTYPE::ANVIL && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 6) && item.m_Type == CBlock::BLOCKTYPE::ANVIL) || (item.m_Type == CBlock::BLOCKTYPE::ANVIL && !m_bCanWorkBench))
-		{
-			item.m_bCanCraft = false;
-		}
-		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) > 0 && _player->IsItemInventory(CBlock::BLOCKTYPE::COALORE, true) > 0) && item.m_Type == CBlock::BLOCKTYPE::TOURCH)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) <= 0 || _player->IsItemInventory(CBlock::BLOCKTYPE::COALORE, true) <= 0) && item.m_Type == CBlock::BLOCKTYPE::TOURCH)
-		{
-			item.m_bCanCraft = false;
-		}
-		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) >= 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) < 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::DEFAULT) || (item.m_Type == CBlock::BLOCKTYPE::BOW && !m_bCanWorkBench))
-		{
-			item.m_bCanCraft = false;
-		}
-		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 3 && _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) >= 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON && m_bCanWorkBench)
-		{
-			if (!item.m_bCanCraft)
-			{
-				item.m_bCanCraft = true;
-			}
-		}
-		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 3 || _player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) < 5) && item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON) || (item.m_Type == CBlock::BLOCKTYPE::BOW && !m_bCanWorkBench))
+		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::WOOD, true) <= 0 && 
+			item.m_Type == CBlock::BLOCKTYPE::PLANKS)
 		{
 			item.m_bCanCraft = false;
 		}
 
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 6 && 
+			item.m_Type == CBlock::BLOCKTYPE::DOOR)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 6 && 
+			item.m_Type == CBlock::BLOCKTYPE::DOOR)
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) >= 9 && 
+			item.m_Type == CBlock::BLOCKTYPE::FURNACE)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) < 9 && 
+			item.m_Type == CBlock::BLOCKTYPE::FURNACE)
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 9 && 
+			item.m_Type == CBlock::BLOCKTYPE::CHEST)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 9 && 
+			item.m_Type == CBlock::BLOCKTYPE::CHEST)
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONORE, true) >= 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::IRONINGOT && m_bCanSmelt)
+		{
+			if (m_bCanSmelt)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONORE, true) < 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::IRONINGOT) || 
+			(item.m_Type == CBlock::BLOCKTYPE::IRONINGOT && !m_bCanSmelt))
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDORE, true) >= 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT && m_bCanSmelt)
+		{
+			if (m_bCanSmelt)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDORE, true) < 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT) || 
+			(item.m_Type == CBlock::BLOCKTYPE::GOLDINGOT && !m_bCanSmelt))
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMONDORE, true) >= 2 && 
+			item.m_Type == CBlock::BLOCKTYPE::DIAMOND)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMONDORE, true) < 2 && 
+			item.m_Type == CBlock::BLOCKTYPE::DIAMOND))
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 3 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::IRON && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 3 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::IRON) || 
+			(item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) >= 3 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::GOLD && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDINGOT, true) < 3 ||
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::GOLD) || 
+			(item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) >= 3 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::DIAMOND, true) < 3 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::DIAMOND) || 
+			(item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEINGOT, true) >= 3 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::PURPLE && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEINGOT, true) < 3 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::PURPLE) || 
+			(item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENINGOT, true) >= 3 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 2 && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::GOLDEN && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENINGOT, true) < 3 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 2) && 
+			item.m_Type == CBlock::BLOCKTYPE::PICKAXE && 
+			item.m_PickType == CBlock::PICKAXETYPE::GOLDEN) || 
+			(item.m_Type == CBlock::BLOCKTYPE::PICKAXE && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEORE, true) >= 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT && m_bCanSmelt)
+		{
+			if (m_bCanSmelt)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PURPLEORE, true) < 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT) || 
+			(item.m_Type == CBlock::BLOCKTYPE::PURPLEINGOT && !m_bCanSmelt))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENORE, true) >= 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT && m_bCanSmelt)
+		{
+			if (m_bCanSmelt)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::GOLDENORE, true) < 3 && 
+			item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT) || 
+			(item.m_Type == CBlock::BLOCKTYPE::GOLDENINGOT && !m_bCanSmelt))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 6 && 
+			item.m_Type == CBlock::BLOCKTYPE::ANVIL && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 6) && 
+			item.m_Type == CBlock::BLOCKTYPE::ANVIL) || 
+			(item.m_Type == CBlock::BLOCKTYPE::ANVIL && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 6 &&
+			item.m_Type == CBlock::BLOCKTYPE::WORKBENCH)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 6) &&
+			item.m_Type == CBlock::BLOCKTYPE::WORKBENCH) ||
+			(item.m_Type == CBlock::BLOCKTYPE::WORKBENCH))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::COALORE, true) > 0) && 
+			item.m_Type == CBlock::BLOCKTYPE::TOURCH)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::COALORE, true) <= 0) && 
+			item.m_Type == CBlock::BLOCKTYPE::TOURCH)
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) >= 3 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) >= 5) && 
+			item.m_Type == CBlock::BLOCKTYPE::BOW && 
+			item.m_BowType == CBlock::BOWTYPE::BASIC && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) < 3 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) < 5) && 
+			item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::BASIC) || 
+			(item.m_Type == CBlock::BLOCKTYPE::BOW && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if ((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) >= 3 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) >= 5) && 
+			item.m_Type == CBlock::BLOCKTYPE::BOW && 
+			item.m_BowType == CBlock::BOWTYPE::IRON && m_bCanWorkBench)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (((_player->IsItemInventory(CBlock::BLOCKTYPE::IRONINGOT, true) < 3 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) < 5) && 
+			item.m_Type == CBlock::BLOCKTYPE::BOW && item.m_BowType == CBlock::BOWTYPE::IRON) || 
+			(item.m_Type == CBlock::BLOCKTYPE::BOW && !m_bCanWorkBench))
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) > 0 && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::ARROW)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) <= 0) && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::ARROW)
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) > 0 && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::FIREARROW)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) <= 0) && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::FIREARROW)
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) > 0 && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::CURSEDARROW)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) <= 0) && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::CURSEDARROW)
+		{
+			item.m_bCanCraft = false;
+		}
+		
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) > 0 && 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) > 0 && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::POISONARROW)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if ((_player->IsItemInventory(CBlock::BLOCKTYPE::PLANKS, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::STONE, true) <= 0 || 
+			_player->IsItemInventory(CBlock::BLOCKTYPE::LEAVES, true) <= 0) && 
+			item.m_Type == CBlock::BLOCKTYPE::PROJECTILE && 
+			item.m_ProjectileType == CBlock::PROJECTILETYPE::POISONARROW)
+		{
+			item.m_bCanCraft = false;
+		}
 	}
 
 	// Removing And Adding Items
@@ -1666,6 +2180,25 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 					else
 					{
 						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::IRONINGOT)]--;
+					}
+				}
+				break;
+			}
+			case CBlock::BLOCKTYPE::WORKBENCH:
+			{
+				m_TempBlock = new CBlock(_textureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+				_player->AddItemToInventory(m_TempBlock);
+
+				// Remove 6 PLANKS
+				for (int i = 0; i < 6; i++)
+				{
+					if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+					{
+						_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+					}
+					else
+					{
+						_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
 					}
 				}
 				break;
@@ -1960,7 +2493,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 					break;
 				}
 				default:
-					Bow* tempbow = new Bow(CBlock::BOWTYPE::DEFAULT);
+					Bow* tempbow = new Bow(CBlock::BOWTYPE::BASIC);
 					_player->AddItemToInventory(tempbow, false);
 					tempbow = nullptr;
 
@@ -1992,14 +2525,257 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				}
 				break;
 			}
+			case CBlock::BLOCKTYPE::PROJECTILE:
+			{
+				switch (item.m_ProjectileType)
+				{
+				case CBlock::PROJECTILETYPE::ARROW:
+				{
+					CProjectile* temparrow = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+					for (int i = 0; i < 3; i++)
+					{
+						_player->AddItemToInventory(temparrow, true);
+					}
+					temparrow = nullptr;
+
+					// Remove 1 Planks
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+					// Remove 1 Leaves
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)]--;
+						}
+					}
+					// Remove 1 Stone
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)]--;
+						}
+					}
+					break;
+				}
+				case CBlock::PROJECTILETYPE::FIREARROW:
+				{
+					CProjectile* temparrow = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+					for (int i = 0; i < 3; i++)
+					{
+						_player->AddItemToInventory(temparrow, true);
+					}
+					temparrow = nullptr;
+
+					// Remove 1 Planks
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+					// Remove 1 Leaves
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)]--;
+						}
+					}
+					// Remove 1 Stone
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)]--;
+						}
+					}
+					break;
+				}
+				case CBlock::PROJECTILETYPE::CURSEDARROW:
+				{
+					CProjectile* temparrow = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+					for (int i = 0; i < 3; i++)
+					{
+						_player->AddItemToInventory(temparrow, true);
+					}
+					temparrow = nullptr;
+
+					// Remove 1 Planks
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+					// Remove 1 Leaves
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)]--;
+						}
+					}
+					// Remove 1 Stone
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)]--;
+						}
+					}
+					break;
+				}
+				case CBlock::PROJECTILETYPE::POISONARROW:
+				{
+					CProjectile* temparrow = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
+					for (int i = 0; i < 3; i++)
+					{
+						_player->AddItemToInventory(temparrow, true);
+					}
+					temparrow = nullptr;
+
+					// Remove 1 Planks
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+					// Remove 1 Leaves
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)]--;
+						}
+					}
+					// Remove 1 Stone
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)]--;
+						}
+					}
+					break;
+				}
+				default:
+				{
+					CProjectile* temparrow = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+					for (int i = 0; i < 3; i++)
+					{
+						_player->AddItemToInventory(temparrow, true);
+					}
+					temparrow = nullptr;
+
+					// Remove 1 Planks
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
+						}
+					}
+					// Remove 1 Leaves
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::LEAVES)]--;
+						}
+					}
+					// Remove 1 Stone
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::STONE)]--;
+						}
+					}
+					break;
+				}
+				break;
+				}
 			default:
 			{
 				break;
 			}
 			}
+			}
 
 			m_TempBlock = nullptr;
 			m_CraftTimer->restart();
+			return;
 		}
 	}
 }
@@ -2009,7 +2785,7 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	sf::Color color = sf::Color();
 
 	// Row 1
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 23; i++)
 	{
 		std::cout << "Create Crafting Space" << std::endl;
 
@@ -2035,7 +2811,7 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	CBlock* Recipe3 = new CBlock(_textureMaster->m_DoorLeft, CBlock::BLOCKTYPE::DOOR);
 	Recipe3->GetShape().setScale(0.23f, 0.23f);
 	m_CraftList.push_back(*Recipe3);
-	Bow* Recipe4 = new Bow(CBlock::BOWTYPE::DEFAULT);
+	Bow* Recipe4 = new Bow(CBlock::BOWTYPE::BASIC);
 	Recipe4->GetShape().setScale(0.43f, 0.43f);
 	Recipe4->GetShape().setOrigin(Recipe4->GetShape().getGlobalBounds().width / 2, Recipe4->GetShape().getGlobalBounds().height / 2);
 	m_CraftList.push_back(*Recipe4);
@@ -2059,18 +2835,27 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	m_CraftList.push_back(*Recipe12);
 	CBlock* Recipe13 = new CBlock(_textureMaster->m_Anvil, CBlock::BLOCKTYPE::ANVIL);
 	m_CraftList.push_back(*Recipe13);
-	/*CBlock* Recipe14 = new CBlock(_textureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
-	m_CraftList.push_back(*Recipe14);*/
-	CPickaxe* Recipe14 = new CPickaxe(CPickaxe::PICKAXETYPE::IRON);
+	CBlock* Recipe14 = new CBlock(_textureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
 	m_CraftList.push_back(*Recipe14);
-	CPickaxe* Recipe15 = new CPickaxe(CPickaxe::PICKAXETYPE::GOLD);
+	CPickaxe* Recipe15 = new CPickaxe(CPickaxe::PICKAXETYPE::IRON);
 	m_CraftList.push_back(*Recipe15);
-	CPickaxe* Recipe16 = new CPickaxe(CPickaxe::PICKAXETYPE::DIAMOND);
+	CPickaxe* Recipe16 = new CPickaxe(CPickaxe::PICKAXETYPE::GOLD);
 	m_CraftList.push_back(*Recipe16);
-	CPickaxe* Recipe17 = new CPickaxe(CPickaxe::PICKAXETYPE::PURPLE);
+	CPickaxe* Recipe17 = new CPickaxe(CPickaxe::PICKAXETYPE::DIAMOND);
 	m_CraftList.push_back(*Recipe17);
-	CPickaxe* Recipe18 = new CPickaxe(CPickaxe::PICKAXETYPE::GOLDEN);
+	CPickaxe* Recipe18 = new CPickaxe(CPickaxe::PICKAXETYPE::PURPLE);
 	m_CraftList.push_back(*Recipe18);
+	CPickaxe* Recipe19 = new CPickaxe(CPickaxe::PICKAXETYPE::GOLDEN);
+	m_CraftList.push_back(*Recipe19);
+
+	CProjectile* Recipe20 = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+	m_CraftList.push_back(*Recipe20);
+	CProjectile* Recipe21 = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+	m_CraftList.push_back(*Recipe21);
+	CProjectile* Recipe22 = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+	m_CraftList.push_back(*Recipe22);
+	CProjectile* Recipe23 = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
+	m_CraftList.push_back(*Recipe23);
 
 	Recipe1 = nullptr;
 	Recipe2 = nullptr;
@@ -2090,6 +2875,11 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	Recipe16 = nullptr;
 	Recipe17 = nullptr;
 	Recipe18 = nullptr;
+	Recipe19 = nullptr;
+	Recipe20 = nullptr;
+	Recipe21 = nullptr;
+	Recipe22 = nullptr;
+	Recipe23 = nullptr;
 }
 
 bool GUI::bIsCraftingSpaceEmpty(int _position)

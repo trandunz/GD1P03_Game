@@ -1,6 +1,15 @@
 #pragma once
-#ifndef _Block_H__
-#define _Block_H__
+#ifndef _BLOCK_H__
+#define _BLOCK_H__
+
+#define _PLAYER_FILTER_ 0x0002;
+#define _ENEMY_FILTER_ 0x0004;
+#define _WORLD_FILTER_ 0x0006;
+
+#define _PLAYER_GROUPINDEX_ 1;
+#define _PROJECTILE_GROUPINDEX_ 2;
+#define _ENEMY_GROUPINDEX_ 3;
+#define _WORLD_GROUPINDEX_ 4;
 
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
@@ -20,40 +29,41 @@ public:
 	enum class BLOCKTYPE
 	{
 		PICKAXE = 0,
-		DOOR,
-		CHEST,
-		DIRT,
-		STONE,
-		WOOD,
-		PLANKS,
-		SAND,
-		MOSSYBRICK,
-		GRASS,
-		BLOCK,
-		LEAVES,
-		FURNACE,
-		IRONORE,
-		GOLDORE,
-		DIAMONDORE,
-		COALORE,
-		OBSIDIAN,
-		BOW,
-		IRONINGOT,
-		GOLDINGOT,
-		DIAMOND,
-		CLOUD,
-		WORKBENCH,
-		PURPLEINGOT,
-		GOLDENINGOT,
-		ANVIL,
-		TOURCH,
-		PURPLEORE,
-		GOLDENORE,
+		DOOR = 1,
+		CHEST = 2,
+		DIRT = 3,
+		STONE = 4,
+		WOOD = 5,
+		PLANKS = 6,
+		SAND = 7,
+		MOSSYBRICK = 8,
+		GRASS = 9,
+		BLOCK = 10,
+		LEAVES = 11,
+		FURNACE = 12,
+		IRONORE = 13,
+		GOLDORE = 14,
+		DIAMONDORE = 15,
+		COALORE = 16,
+		OBSIDIAN = 17,
+		BOW = 18,
+		IRONINGOT = 19,
+		GOLDINGOT = 20,
+		DIAMOND = 21,
+		CLOUD = 22,
+		WORKBENCH = 23,
+		PURPLEINGOT = 24,
+		GOLDENINGOT = 25,
+		ANVIL = 26,
+		TOURCH = 27,
+		PURPLEORE = 28,
+		GOLDENORE = 29,
+		PROJECTILE = 30
 	};
 
 	enum class PICKAXETYPE
 	{
-		BASIC,
+		BASIC = 0,
 		IRON,
 		GOLD,
 		DIAMOND,
@@ -64,14 +74,22 @@ public:
 
 	enum class BOWTYPE
 	{
-		DEFAULT,
+		BASIC = 0,
 		OBSIDIAN,
 		ICE,
 		BLOOD,
 		IRON,
 		GOLDEN,
 		PURPLE,
-		GREEN,
+		GREEN
+	};
+
+	enum class PROJECTILETYPE
+	{
+		ARROW,
+		FIREARROW,
+		CURSEDARROW,
+		POISONARROW
 	};
 
 	CBlock();
@@ -95,7 +113,7 @@ public:
 		return m_Body;
 	}
 
-	void DestroyBody();
+	virtual void DestroyBody();
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 
 	float GetHeight(float x) 
@@ -128,7 +146,8 @@ public:
 	bool m_bCanCraft = false;
 
 	PICKAXETYPE m_PickType = PICKAXETYPE::BASIC;
-	BOWTYPE m_BowType = BOWTYPE::DEFAULT;
+	BOWTYPE m_BowType = BOWTYPE::BASIC;
+	PROJECTILETYPE m_ProjectileType;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 

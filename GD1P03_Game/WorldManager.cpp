@@ -13,7 +13,7 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_Chest = nullptr;
 
     // Set World Seed (Change Time To A Value For Custom)
-    _gui->m_CurrentSeed = time(NULL);
+    _gui->m_CurrentSeed = _CURRENT_TIME_;
     srand(_gui->m_CurrentSeed);
 
     // Debug
@@ -60,6 +60,7 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
 
     // World
     CreateSkyChunk(_textureMaster);
+    //InputWorldFromFiles(_textureMaster);
     CreateWorldBoundary(_textureMaster);
     CreateNoiseWorld(_textureMaster);
     CreateClouds(_textureMaster);
@@ -400,7 +401,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
 
     for (int y = 0; y < _NOISEHEIGHT_; y++)
     {
-        for (int x = -366; x < _NOISEWIDTH_; x++)
+        for (int x = -_NOISEWIDTH_; x < _NOISEWIDTH_; x++)
         {
             double xyValue = x * m_XPeriod / _NOISEWIDTH_ + y * m_YPeriod / _NOISEHEIGHT_ + m_TurbPower * Turbulence(x, y, m_TurbSize) / 256.0;
             double sineValue = 256 * fabs(sin(xyValue * _PI_));
@@ -461,7 +462,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
             {
                 if (y > 12 || y > 11 || y > 10)
                 {
-                    if (rand() % 10 == 0 && y < 30)
+                    if (_DIRT_RARITY_SURFACE_)
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
@@ -469,7 +470,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
-                    else if (rand() % 15 == 0 && y < 50 && y >= 30)
+                    else if (_DIRT_RARITY_UNDERGOUND_)
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
@@ -479,7 +480,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                     }
                     else if (rand() % 30 == 0 && y < 80 && y >= 50)
                     {
-                        if (rand() % 2 == 0)
+                        if (_MOSSYBRICK_RARITY_UNDERGOUND_)
                         {
                             // MossyBrick
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
@@ -499,7 +500,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                     }
                     else
                     {
-                        if (rand() % 30 == 0)
+                        if (_MOSSYBRICK_RARITY_SURFACE_)
                         {
                             // Mossy Brick
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
@@ -520,7 +521,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                 else if (y == 0)
                 {
                     // Trees
-                    if (rand() % 6 <= 3 && x % 6 == 0)
+                    if (_TREE_RARITY_)
                     {
                         // Trunk
                         if (true)
@@ -624,7 +625,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                     }
 
                     // Chests
-                    else if(rand() % 9 == 0 && x % 19 == 0)
+                    else if(_CHEST_RARITY_)
                     {
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
@@ -658,7 +659,6 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
-                    
 
                     // Grass
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Grass, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GRASS);
@@ -668,7 +668,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                 }
                 else
                 {
-                    if (rand() % 2 == 0 && y > 4)
+                    if (_STONE_RARITY_)
                     {
                         // Stone
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONE);
@@ -717,8 +717,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
 
     GenerateNoise();
 
-    // Starts at : y  = -4200
-    for (int y = -42; y < _NOISEHEIGHT_; y++)
+    for (int y = -_WORLDSTART_HEIGHT_; y < _NOISEHEIGHT_; y++)
     {
         for (int x = -_NOISEWIDTH_; x < _NOISEWIDTH_; x++)
         {
@@ -736,10 +735,12 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                     m_Block = nullptr;
 
                     // Chests
-                    if (rand() % 3 == 0 && x % 19 == 0 && y == -42)
+                    if (_CHEST_RARITY_CLOUDS_)
                     {
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+
+                        // ITEM RARITIES
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
@@ -776,6 +777,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Block = nullptr;
                         }
+
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
@@ -784,10 +786,12 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                 else if (L < 209 + 3)
                 {
                     // Chests
-                    if (rand() % 3 == 0 && x % 19 == 0 && y == -42)
+                    if (_CHEST_RARITY_CLOUDS_)
                     {
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+
+                        // ITEM RARITIES
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
@@ -824,6 +828,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Block = nullptr;
                         }
+
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
@@ -1016,19 +1021,63 @@ void CWorldManager::WorldBackGroundColourGradient()
     }
 }
 
-void CWorldManager::InputWorldFromFiles()
+void CWorldManager::InputWorldFromFiles(CTextureMaster* _textureMaster)
 {
+    m_GlobalMutex.lock();
+
     //
     // Reading From File??
     //
-    std::string line;
-    std::ifstream myfile("example.txt");
-    if (myfile.is_open())
+    std::ifstream xoutputs("Output/output_x.txt");
+    int* xPositions = new int[15000]{};
+    if (xoutputs.is_open())
     {
-        std::getline(myfile, line);
-
-        std::list<CBlock>::iterator it = m_Chunk.begin();
+        for (int i = 0; i < 5000; i++)
+        {
+            xoutputs >> xPositions[i];
+        }
+        for (int i = 5000; i < 10000; i++)
+        {
+            xoutputs >> xPositions[i];
+        }
+        for (int i = 10000; i < 15000; i++)
+        {
+            xoutputs >> xPositions[i];
+        }
+        xoutputs.close();
     }
+
+    std::ifstream youtputs("Output/output_y.txt");
+    int* yPositions = new int[15000]{};
+    if (youtputs.is_open())
+    {
+        for (int i = 0; i < 5000; i++)
+        {
+            youtputs >> yPositions[i];
+        }
+        for (int i = 5000; i < 10000; i++)
+        {
+            youtputs >> yPositions[i];
+        }
+        for (int i = 10000; i < 15000; i++)
+        {
+            youtputs >> yPositions[i];
+        }
+        youtputs.close();
+    }
+
+    for (int i = 0; i < 15000; i++)
+    {
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, 50.0f, xPositions[i], yPositions[i], false, CBlock::BLOCKTYPE::DIRT);
+        m_Chunk.push_back(*m_Block);
+        m_Block = nullptr;
+
+        m_LoadTimer.restart();
+    }
+    
+    std::cout << m_Chunk.size();
+    
+    m_GlobalMutex.unlock();
 }
 
 void CWorldManager::DrawBackGround(sf::Shader* _defaultShader)

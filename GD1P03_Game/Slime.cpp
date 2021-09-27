@@ -198,21 +198,20 @@ void Slime::Update()
 
 			if (a->GetBody()->GetFixtureList()->IsSensor() || b->GetBody()->GetFixtureList()->IsSensor())
 			{
-				int damage = 0;
-				if (a->GetBody()->GetFixtureList()->IsSensor())
+				int* damage = nullptr;
+				if (a->GetBody()->GetFixtureList()->IsSensor() && a->GetBody()->GetUserData().pointer)
 				{
-					b2BodyUserData userdata = static_cast<b2BodyUserData>(a->GetBody()->GetUserData());
-					damage = userdata.pointer;
-					std::cout << "Damage: " << damage << std::endl;
+					int* damage = (int*) a->GetBody()->GetUserData().pointer;
+					TakeDamage(*damage, true);
+					std::cout << "Damage: " << *damage << std::endl;
 				}
-				else
+				else if (b->GetBody()->GetUserData().pointer)
 				{
-					b2BodyUserData userdata = static_cast<b2BodyUserData>(b->GetBody()->GetUserData());
-					damage = userdata.pointer;
-					std::cout << "Damage: " << damage << std::endl;
+					int* damage = (int*)b->GetBody()->GetUserData().pointer;
+					TakeDamage(*damage, true);
+					std::cout << "Damage: " << *damage << std::endl;
 				}
-				 
-				TakeDamage(damage, true);
+				damage = nullptr;
 			}
 		}
 
@@ -341,10 +340,10 @@ void Slime::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 1.0f;
 	m_FixtureDef.restitution = 0.1f;
-	m_FixtureDef.filter.categoryBits = 0x0004;
-	m_FixtureDef.filter.maskBits = 0x0002;
-	m_FixtureDef.filter.maskBits = 0x0006;
-	m_FixtureDef.filter.groupIndex = -1;
+	m_FixtureDef.filter.categoryBits = _ENEMY_FILTER_;
+	m_FixtureDef.filter.maskBits = _PLAYER_FILTER_;
+	m_FixtureDef.filter.maskBits = _WORLD_FILTER_;
+	m_FixtureDef.filter.groupIndex = -_ENEMY_GROUPINDEX_;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -567,7 +566,7 @@ void Slime::Attack()
 			{
 			case Slime::SLIMETYPE::GREEN:
 			{
-				if (DistanceToPlayer <= 150)
+				if (DistanceToPlayer <= 130)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -578,12 +577,10 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::BLUE:
 			{
-				if (DistanceToPlayer <= 130)
+				if (DistanceToPlayer <= 110)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
-
-					
 
 					m_Player->TakeDamage(10.0f);
 				}
@@ -591,7 +588,7 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::RED:
 			{
-				if (DistanceToPlayer <= 170)
+				if (DistanceToPlayer <= 150)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -602,7 +599,7 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::PURPLE:
 			{
-				if (DistanceToPlayer <= 130)
+				if (DistanceToPlayer <= 110)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -613,7 +610,7 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::YELLOW:
 			{
-				if (DistanceToPlayer <= 150)
+				if (DistanceToPlayer <= 130)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -664,7 +661,7 @@ void Slime::Attack()
 			}
 			default:
 			{
-				if (DistanceToPlayer <= 150)
+				if (DistanceToPlayer <= 130)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);

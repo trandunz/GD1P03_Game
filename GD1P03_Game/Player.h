@@ -2,6 +2,15 @@
 #ifndef _PLAYER_H__
 #define _PLAYER_H__
 
+#define _PLAYER_FILTER_ 0x0002;
+#define _ENEMY_FILTER_ 0x0004;
+#define _WORLD_FILTER_ 0x0006;
+
+#define _PLAYER_GROUPINDEX_ 1;
+#define _PROJECTILE_GROUPINDEX_ 2;
+#define _ENEMY_GROUPINDEX_ 3;
+#define _WORLD_GROUPINDEX_ 4;
+
 #include <vector>
 #include <fstream>
 
@@ -33,7 +42,15 @@ public:
 	
 	void Attack();
 
+	void InitInventory();
+
 	b2Body* GetBody();
+
+	CPickaxe* GetPickaxe();
+	void SetPickaxe(CPickaxe* _pickaxe);
+
+	Bow* GetBow();
+	void SetBow(Bow* _bow);
 
 	int GetCurrentHP();
 	int GetMaxHP();
@@ -88,6 +105,9 @@ public:
 	void Lst_MoveToFront(std::list<CBlock>& list, std::list<CBlock>::iterator element);
 	void Lst_MoveToFront(std::list<CDoor>& list, std::list<CDoor>::iterator element);
 	void Lst_MoveToFront(std::list<CChest>& list, std::list<CChest>::iterator element);
+
+	void OutPutInventoryToFile();
+	void InputInventoryToFile();
 
 	b2World* GetWorld();
 

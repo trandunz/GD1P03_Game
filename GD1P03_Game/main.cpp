@@ -18,6 +18,8 @@ void InitUI();
 void CenterViewsToSprite(sf::Sprite _object);
 
 void Test_AddItemToInv(CBlock::BLOCKTYPE _type);
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::BOWTYPE _bowType);
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::PROJECTILETYPE _ProjectileType);
 bool PickupItemOnGround();
 
 void InitShaders();
@@ -239,6 +241,7 @@ void Update()
 			// Regained Focus
 			if (m_Event.type == sf::Event::GainedFocus)
 			{
+				break;
 			}
 
 			// Click Out Of Window
@@ -251,11 +254,17 @@ void Update()
 						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
 					}
 				}
+				break;
 			}
 
 			// Exit
 			if (m_Event.type == sf::Event::Closed)
 			{
+				if (m_Player != nullptr)
+				{
+					m_Player->OutPutInventoryToFile();
+				}
+
 				m_RenderWindow->close();
 				m_bClose = true;
 				break;
@@ -264,6 +273,7 @@ void Update()
 			// Resize
 			if (m_Event.type == sf::Event::Resized)
 			{
+				break;
 			}
 
 			// General Key Pressed
@@ -314,17 +324,19 @@ void Update()
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::WOOD);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::PROJECTILE, CBlock::PROJECTILETYPE::CURSEDARROW);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::STONE);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::GREEN);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::OBSIDIAN);
 						}
 					}
+
+					break;
 				}
 			}
 
@@ -334,6 +346,7 @@ void Update()
 				if (m_Player != nullptr)
 				{
 					m_GUI->HotBarScrolling(m_Event, m_Player);
+					break;
 				}
 			}
 			
@@ -343,14 +356,14 @@ void Update()
 				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
 				{
 					m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
+					break;
 				}
 			}
 
 			// General On Press Mouse
 			if (m_Event.type == sf::Event::MouseButtonPressed)
 			{
-
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Mouse::isButtonPressed(sf::Mouse::Right))
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 				{
 					if (m_GUI != nullptr && m_SlimeSpawners.size() > 0)
 					{
@@ -366,13 +379,16 @@ void Update()
 				}
 
 				m_GUI->ClickedItemInInventory(m_Event, m_Player, m_WorldManager->m_Chests);
-				
+
+				break;
 			}
+
 			if (m_Player != nullptr)
 			{
 				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
 			}
-			
+
+			break;
 		}
 
 		//
@@ -736,7 +752,7 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 	}
 	case CBlock::BLOCKTYPE::BOW:
 	{
-		m_Bow = new Bow(CBlock::BOWTYPE::DEFAULT);
+		m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
 		m_Player->AddItemToInventory(m_Bow, false);
 		m_Bow = nullptr;
 		break;
@@ -781,6 +797,477 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 		m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
+		break;
+	}
+	default:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	}
+}
+
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::BOWTYPE _bowType)
+{
+	switch (_type)
+	{
+	case CBlock::BLOCKTYPE::PICKAXE:
+	{
+		m_Block = new CPickaxe();
+		m_Pickaxe->m_Type = CBlock::BLOCKTYPE::PICKAXE;
+		m_Pickaxe->m_PickType = CBlock::PICKAXETYPE::DIAMOND;
+		m_Player->AddItemToInventory(m_Pickaxe, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DOOR:
+	{
+		m_Door = new CDoor();
+		m_Player->AddItemToInventory(m_Door, false);
+		m_Door = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::CHEST:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIRT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::STONE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WOOD:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Wood, CBlock::BLOCKTYPE::WOOD);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PLANKS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::SAND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::MOSSYBRICK:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GRASS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Grass, CBlock::BLOCKTYPE::GRASS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::LEAVES:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::FURNACE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronOre, CBlock::BLOCKTYPE::IRONORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMONDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondOre, CBlock::BLOCKTYPE::DIAMONDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PURPLEORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleOre, CBlock::BLOCKTYPE::PURPLEORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenOre, CBlock::BLOCKTYPE::GOLDENORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::COALORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::OBSIDIAN:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::BOW:
+	{
+		switch (_bowType)
+		{
+		case CBlock::BOWTYPE::BASIC:
+			m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::OBSIDIAN:
+			m_Bow = new Bow(CBlock::BOWTYPE::OBSIDIAN);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::ICE:
+			m_Bow = new Bow(CBlock::BOWTYPE::ICE);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::BLOOD:
+			m_Bow = new Bow(CBlock::BOWTYPE::BLOOD);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::IRON:
+			m_Bow = new Bow(CBlock::BOWTYPE::IRON);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::GOLDEN:
+			m_Bow = new Bow(CBlock::BOWTYPE::GOLDEN);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::PURPLE:
+			m_Bow = new Bow(CBlock::BOWTYPE::PURPLE);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::GREEN:
+			m_Bow = new Bow(CBlock::BOWTYPE::GREEN);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		default:
+			m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		}
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMOND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PURPLEINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WORKBENCH:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	default:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	}
+}
+
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::PROJECTILETYPE _ProjectileType)
+{
+	switch (_type)
+	{
+	case CBlock::BLOCKTYPE::PICKAXE:
+	{
+		m_Block = new CPickaxe();
+		m_Pickaxe->m_Type = CBlock::BLOCKTYPE::PICKAXE;
+		m_Pickaxe->m_PickType = CBlock::PICKAXETYPE::DIAMOND;
+		m_Player->AddItemToInventory(m_Pickaxe, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DOOR:
+	{
+		m_Door = new CDoor();
+		m_Player->AddItemToInventory(m_Door, false);
+		m_Door = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::CHEST:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIRT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::STONE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WOOD:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Wood, CBlock::BLOCKTYPE::WOOD);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PLANKS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::SAND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::MOSSYBRICK:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GRASS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Grass, CBlock::BLOCKTYPE::GRASS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::LEAVES:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::FURNACE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronOre, CBlock::BLOCKTYPE::IRONORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMONDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondOre, CBlock::BLOCKTYPE::DIAMONDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PURPLEORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleOre, CBlock::BLOCKTYPE::PURPLEORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenOre, CBlock::BLOCKTYPE::GOLDENORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::COALORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::OBSIDIAN:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::BOW:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+		m_Player->AddItemToInventory(m_Bow, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMOND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PURPLEINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WORKBENCH:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PROJECTILE:
+	{
+		CProjectile* temp = nullptr;
+		switch (_ProjectileType)
+		{
+		case CBlock::PROJECTILETYPE::ARROW:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+			m_Player->AddItemToInventory(temp);
+			break;
+		case CBlock::PROJECTILETYPE::FIREARROW:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+			m_Player->AddItemToInventory(temp);
+			break;
+		case CBlock::PROJECTILETYPE::CURSEDARROW:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+			m_Player->AddItemToInventory(temp);
+			break;
+		case CBlock::PROJECTILETYPE::POISONARROW:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
+			m_Player->AddItemToInventory(temp);
+			break;
+		default:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+			m_Player->AddItemToInventory(temp);
+			break;
+		}
+
+		temp = nullptr;
 		break;
 	}
 	default:

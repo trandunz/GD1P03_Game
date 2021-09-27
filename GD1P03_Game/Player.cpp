@@ -25,6 +25,8 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	{
 		std::cout << "Loaded Player Left Texture." << std::endl;
 	}
+
+	// Sprite
 	m_Shape = sf::Sprite();
 	m_Shape.setTexture(*m_PlayerRightTex, true);
 	m_Shape.setTextureRect(sf::IntRect(0, 0, 100, 200));
@@ -44,42 +46,29 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 
 CPlayer::~CPlayer()
 {
+	m_InventoryMap.clear();
+	m_Projectiles.clear();
+
 	DestroyBody();
 
 	if (m_Pickaxe != nullptr)
 	{
 		delete m_Pickaxe;
-		
 	}
-	m_Pickaxe = nullptr;
-
 	if (m_Bow != nullptr)
 	{
 		delete m_Bow;
-		
 	}
-	m_Bow = nullptr;
-
-	m_InventoryMap.clear();
-	m_Projectiles.clear();
-
-	m_WorkBench = nullptr;
-	delete m_TestParticles;
-	m_TestParticles = nullptr;
-	m_Furnace = nullptr;
-	m_Chest = nullptr;
-	m_Door = nullptr;
 	delete m_MapIconTexRight;
-	m_MapIconTexRight = nullptr;
 	delete m_MapIconTex;
-	m_MapIconTex = nullptr;
 	delete m_PlayerRightTex;
-	m_PlayerRightTex = nullptr;
+	delete m_TestParticles;
 	delete m_PlayerLeftTex;
 	delete m_AnimationTimer;
 	delete m_MineTimer;
 	delete m_DamageTimer;
 	delete m_DamageIndicatorTimer;
+
 	m_DamageIndicatorTimer = nullptr;
 	m_DamageTimer = nullptr;
 	m_MineTimer = nullptr;
@@ -91,70 +80,75 @@ CPlayer::~CPlayer()
 	m_RenderWindow = nullptr;
 	m_AudioManager = nullptr;
 	m_TextureMaster = nullptr;
+	m_Bow = nullptr;
+	m_WorkBench = nullptr;
+	m_Pickaxe = nullptr;
+	m_TestParticles = nullptr;
+	m_Furnace = nullptr;
+	m_Chest = nullptr;
+	m_Door = nullptr;
+	m_MapIconTexRight = nullptr;
+	m_MapIconTex = nullptr;
+	m_PlayerRightTex = nullptr;
 }
 
 void CPlayer::Start()
 {
-	for (int i = 0; i < 50; i++)
-	{
-		std::cout << i << std::endl;
-		m_InventoryStackValues[i];
-	}
-
-	for (int i = 0; i < 50; i++)
-	{
-		std::cout << i << std::endl;
-		m_InventoryMap[i];
-	}
-
 	m_AnimationTimer = new sf::Clock();
 	m_MineTimer = new sf::Clock();
 	m_DamageTimer = new sf::Clock();
 	m_DamageIndicatorTimer = new sf::Clock();
 
-	for (int i = 0; i < 50; i++)
-	{
-		if (m_InventoryStackValues[i] == 0)
-		{
-			m_Pickaxe = new CPickaxe();
-			AddItemToInventory(m_Pickaxe, i);
-			m_Pickaxe = nullptr;
-			break;
-		}
-	}
-	for (int i = 0; i < 50; i++)
-	{
-		if (m_InventoryStackValues[i] == 0)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
-			}
-			
-			break;
-		}
-	}
+	InitInventory();
 
+	//// Starting Items
+	//for (int i = 0; i < 50; i++)
+	//{
+	//	if (m_InventoryStackValues[i] == 0)
+	//	{
+	//		m_Pickaxe = new CPickaxe();
+	//		AddItemToInventory(m_Pickaxe, i);
+	//		m_Pickaxe = nullptr;
+	//		break;
+	//	}
+	//}
+	//for (int i = 0; i < 50; i++)
+	//{
+	//	if (m_InventoryStackValues[i] == 0)
+	//	{
+	//		for (int j = 0; j < 3; j++)
+	//		{
+	//			m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+	//			AddItemToInventory(m_Block, i, true);
+	//			m_Block = nullptr;
+	//		}
+	//		break;
+	//	}
+	//}
+
+	InputInventoryToFile();
+
+	// Particle System Start / Init
 	m_TestParticles->Start();
 }
 
 void CPlayer::Update(sf::Vector2f _mousePos)
 {
-	// Player Is Red From Damage
+	// Player Is Red From Damage ? Reset Colour
 	if (m_DamageIndicatorTimer->getElapsedTime().asSeconds() >= 0.2f && m_Shape.getColor() == sf::Color(100, 0, 0, 255))
 	{
 		m_Shape.setColor(sf::Color::White);
 		m_DamageIndicatorTimer->restart();
 	}
 
+	// MousePos (sf::Vector2f)
 	m_MousePos = _mousePos;
 
 	// Set SFML Shape Transform To Box 2D Body Transform
 	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 
+	// Set Map Icon Position
 	m_MapIcon.setPosition(m_Shape.getPosition());
 
 	// Player Has Pickaxe ? Orient Sprite
@@ -168,204 +162,93 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		m_Bow->FlipSprite(m_Shape.getPosition(), m_Shape, m_PlayerLeftTex, m_PlayerRightTex);
 	}
 
-	// Items
-	for (std::map<int, CBlock>::iterator iit = m_InventoryMap.begin(); iit != m_InventoryMap.end(); iit++)
+	// Holdable Items (Pickaxe, Bow e.t.c)
+	std::map<int, CBlock>::iterator cit;
+	for (cit = m_InventoryMap.begin(); cit != m_InventoryMap.end(); cit++)
 	{
-		// Player Selects Basic Pickaxe
-		if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC)
+		if (cit->second.m_bIsItemAndSelected == true)
 		{
-			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::BASIC);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Selects Iron Pickaxe
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON)
-		{
-			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::IRON);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Selects Gold Pickaxe
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD)
-		{
-			std::cout << "New GOLD Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::GOLD);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Selects Diamond Pickaxe
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND)
-		{
-			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::DIAMOND);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Selects pURPLE Pickaxe
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE)
-		{
-			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::PURPLE);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Selects GOLDEN Pickaxe
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN)
-		{
-			std::cout << "New Pickaxe Created!" << std::endl;
-			m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::PICKAXETYPE::GOLDEN);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Selects Bow
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT)
-		{
-			std::cout << "New Bow Created!" << std::endl;
-			m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::BOWTYPE::DEFAULT);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Selects Iron Bow
-		else if (iit->second.m_bIsItemAndSelected == true && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::IRON)
-		{
-			std::cout << "New Iron Bow Created!" << std::endl;
-			m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, CBlock::BOWTYPE::IRON);
-			iit->second.m_bIsItemAndSelected = false;
-		}
-		// Player Unselects Basic PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-		delete m_Pickaxe;
-		m_Pickaxe = nullptr;
-		}
-		// Player Unselects Iron PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-		delete m_Pickaxe;
-		m_Pickaxe = nullptr;
-		}
-		// Player Unselects Gold PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// Player Unselects Diamond PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// Player Unselects Purple PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// Player Unselects Golden PickAxe
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// Player Unselects Bow
-		else if ((m_Bow != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT && iit->second.m_BowType != CBlock::BOWTYPE::IRON))
-		{
-			delete m_Bow;
-			m_Bow = nullptr;
-		}
-		// Player Unselects Bow
-		else if ((m_Bow != nullptr && m_CurrentItemIndex != iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::IRON && iit->second.m_BowType != CBlock::BOWTYPE::DEFAULT))
-		{
-			delete m_Bow;
-			m_Bow = nullptr;
-		}
-		// Basic Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// Iron Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// Gold Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// Diamond Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::DIAMOND && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-			delete m_Pickaxe;
-			m_Pickaxe = nullptr;
-		}
-		// pURPLE Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::PURPLE && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLDEN))
-		{
-		delete m_Pickaxe;
-		m_Pickaxe = nullptr;
-		}
-		// GOLDEN Pickaxe Moves Slots Wealst Out
-		else if ((m_Pickaxe != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::PICKAXE && iit->second.m_PickType == CBlock::PICKAXETYPE::GOLDEN && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::GOLD && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::BASIC && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::IRON && m_Pickaxe->m_PickType != CBlock::PICKAXETYPE::PURPLE))
-		{
-		delete m_Pickaxe;
-		m_Pickaxe = nullptr;
-		}
-		// Bow Moves Slots Wealst Out
-		else if ((m_Bow != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::DEFAULT && iit->second.m_BowType != CBlock::BOWTYPE::IRON))
-		{
-			delete m_Bow;
-			m_Bow = nullptr;
-		}
-		// Bow Moves Slots Wealst Out
-		else if ((m_Bow != nullptr && m_CurrentItemIndex == iit->first && iit->second.m_Type != CBlock::BLOCKTYPE::BOW && iit->second.m_BowType == CBlock::BOWTYPE::IRON && iit->second.m_BowType != CBlock::BOWTYPE::DEFAULT))
-		{
-		delete m_Bow;
-		m_Bow = nullptr;
+			if (m_Pickaxe == nullptr && cit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
+			{
+				std::cout << "New Pickaxe Created!" << std::endl;
+				m_Pickaxe = new CPickaxe(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, cit->second.m_PickType);
+				cit->second.m_bIsItemAndSelected = false;
+			}
+			else if (m_Bow == nullptr && cit->second.m_Type == CBlock::BLOCKTYPE::BOW)
+			{
+				std::cout << "New Bow Created!" << std::endl;
+				m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale,m_Shape.getPosition().x, m_Shape.getPosition().y, cit->second.m_BowType);
+				cit->second.m_bIsItemAndSelected = false;
+			}
+
+			// Outer For
+			break;
 		}
 	}
+
+	if (m_InventoryMap[m_CurrentItemIndex].m_Type != CBlock::BLOCKTYPE::PICKAXE && m_Pickaxe != nullptr)
+	{
+		delete m_Pickaxe;
+		m_Pickaxe = nullptr;
+	}
+	else if (m_InventoryMap[m_CurrentItemIndex].m_Type != CBlock::BLOCKTYPE::BOW && m_Bow != nullptr)
+	{
+		delete m_Bow;
+		m_Bow = nullptr;
+	}
 	
+	// Collision Constacts
 	b2Contact* contact;
 	for (contact = m_World->GetContactList(); contact; contact = contact->GetNext())
 	{
-		b2Fixture* a = contact->GetFixtureA();
-		b2Fixture* b = contact->GetFixtureB();
+		// b2WorldManifold (positions of collision e.t.c)
 		b2WorldManifold worldManifold;
 		contact->GetWorldManifold(&worldManifold);
 
+		// Grab Fixtures Of All Collisions
+		b2Fixture* a = contact->GetFixtureA();
+		b2Fixture* b = contact->GetFixtureB();
+
+		// Get Lenear Velocity For All Bodies And Player
 		b2Vec2 vel1 = m_Body->GetLinearVelocityFromWorldPoint(m_Body->GetPosition());
 		b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+
+		// Calculate Impact Velocity
 		b2Vec2 impactVelocity = vel1 - vel2;
+		
+		// Cast sf::Vector2f to b2Vec2 For Sprite Position
 		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 		
 		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
 		{
-			// Can Jump?
+			// Velocity.y > 0 ? bCanJump = true
 			if ((vel1.y <= 1.0f && vel1.y >= -1.0f))
 			{
 				m_bCanJump = true;
 			}
-			// Can Take Fall Damage?
-			else if ((vel1.y > 0.0f))
+			// Velocity.y > 0 ? bCanJump = true
+			if ((vel1.y > 3.0f && vel1.y <= -3.0f))
 			{
 				m_bCanFallDamage = true;
 			}
+			else
+			{
+				m_bCanFallDamage = false;
+			}
 
 			// Fall Damage
-			if (impactVelocity.y <= 110.7f && impactVelocity.y >= 70.7f)
+			if (impactVelocity.y <= 110.7f && impactVelocity.y >= 70.7f && m_bCanFallDamage)
 			{
 				//std::cout << impactVelocity.y << std::endl;
 				TakeDamage(impactVelocity.y);
 			}
-			else if (impactVelocity.y > 110.7f)
+			else if (impactVelocity.y > 110.7f && m_bCanFallDamage)
 			{
 				//std::cout << impactVelocity.y << std::endl;
-				TakeDamage(impactVelocity.y * 2);
+				TakeDamage(impactVelocity.y * 1.5);
 			}
-
-			
-
 		}
+		// Velocity.y == 0 ? bCanJump = false
 		else if (vel1.y < -2.0f || vel1.y > 2.0f)
 		{
 			m_bCanJump = false;
@@ -376,16 +259,19 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	}
 	contact = nullptr;
 
+	// Player Has Bow Out ? Attack()
 	if (m_Bow != nullptr)
 	{
 		Attack();
 	}
 
+	// Update All Projectiles
 	for (CProjectile& projectile : m_Projectiles)
 	{
 		projectile.Update();
 	}
 
+	// Delete All Collided Projectiles
 	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
 	while (pit != m_Projectiles.end())
 	{
@@ -396,6 +282,7 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		pit++;
 	}
 
+	// Update Particle System (Mine Particles)
 	sf::Time elapsedTime = m_ParticleTimer.getElapsedTime();
 	m_TestParticles->Update(elapsedTime);
 
@@ -409,28 +296,33 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 
 void CPlayer::Render(sf::Shader* _defaultShader)
 {
-	// Player Has PickAxe?
+	// Player Has PickAxe ? Render()
 	if (m_Pickaxe != nullptr)
 	{
 		m_Pickaxe->Render();
 	}
-	else if (m_Bow != nullptr)
+	// Player Has Bow ? Render()
+	if (m_Bow != nullptr)
 	{
 		m_Bow->Render();
 	}
 
+	// Draw All Projectiles
 	for (CProjectile& projectile : m_Projectiles)
 	{
-		m_RenderWindow->draw(projectile.m_Shape);
+		m_RenderWindow->draw(projectile.GetShape(), _defaultShader);
 	}
 
+	// Player Sprite
 	m_RenderWindow->draw(m_Shape, _defaultShader);
 
+	// Draw All Particles (Mining)
 	m_RenderWindow->draw(*m_TestParticles);
 }
 
 void CPlayer::Movement()
 {
+	// Cast sf::Vector2f to b2Vec2 For Sprite Position
 	b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 
 	// Input
@@ -455,17 +347,20 @@ void CPlayer::Movement()
 			x = 1;
 		}
 
+		// Set Velocity (b2Vec2)
 		m_Velocity = b2Vec2(x, y);
 
+		// Apply Velocity Through Impulse
 		m_Body->ApplyLinearImpulseToCenter(m_MoveSpeed / 2 * m_Velocity, true);
 
+		// Normalization (Using Opposing Impluse)
 		float Mag = sqrt((m_Body->GetLinearVelocityFromWorldPoint(worldposition).x * m_Body->GetLinearVelocityFromWorldPoint(worldposition).x));
 		if (Mag > m_MoveSpeed)
 		{
 			m_Body->ApplyLinearImpulseToCenter(-1 * m_MoveSpeed * b2Vec2(m_Velocity.x, 0.0f), true);
 		}
 
-		// Animation & Input Right
+		// Input Right ? Animation
 		if (m_Velocity.x > 0.1f)
 		{
 			if (m_Shape.getTexture() != m_PlayerRightTex)
@@ -486,7 +381,7 @@ void CPlayer::Movement()
 				m_AnimationTimer->restart();
 			}
 		}
-		// Animation & Input Left
+		// Input Left ? Animation
 		else if (m_Velocity.x < -0.1f)
 		{
 			if (m_Shape.getTexture() != m_PlayerLeftTex)
@@ -508,10 +403,10 @@ void CPlayer::Movement()
 				m_AnimationTimer->restart();
 			}
 		}
-		// No Input Animation And Audio
+		// Input  ? NA : Animation && Sound
 		else if (m_Velocity.x == 0.0f)
 		{
-			// Animation & No Input & Movement Right
+			// Input Right ? NA : Animation
 			if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x > 15.0f)
 			{
 				if (m_AudioManager != nullptr)
@@ -539,7 +434,7 @@ void CPlayer::Movement()
 					m_AnimationTimer->restart();
 				}
 			}
-			// Animation & No Input & Movement Left
+			// Input Left ? NA : Animation
 			else if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x < -15.0f)
 			{
 				if (m_AudioManager != nullptr)
@@ -566,14 +461,14 @@ void CPlayer::Movement()
 					m_AnimationTimer->restart();
 				}
 			}
-			// No Input & No Movement (Sprite State)
+			// Input ? NA : Default Animation State
 			else
 			{
 				m_Shape.setTextureRect(sf::IntRect(0, 0, 100, 200));
 			}
 		}
 
-		// Input Audio Right
+		// Input Right ? Audio
 		if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x > 15.0f)
 		{
 			if (m_AudioManager != nullptr)
@@ -581,7 +476,7 @@ void CPlayer::Movement()
 				m_AudioManager->PlayRunning();
 			}
 		}
-		// Input Audio Left
+		// Input Left ? Audio
 		else if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x < -15.0f)
 		{
 			if (m_AudioManager != nullptr)
@@ -590,6 +485,7 @@ void CPlayer::Movement()
 			}
 		}
 
+		// Debug
 		//std::cout << m_Shape.getPosition().x << std::endl;
 		//std::cout << m_Shape.getPosition().y << std::endl;
 	}
@@ -597,6 +493,7 @@ void CPlayer::Movement()
 
 void CPlayer::Movement(sf::Event& _event)
 {
+	// Cast sf::Vector2f to b2Vec2 For Sprite Position
 	b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 
 	// Input
@@ -605,15 +502,8 @@ void CPlayer::Movement(sf::Event& _event)
 		int x = 0;
 		int y = 0;
 
-		// Fly
-		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::Space && m_bCanJump)
-		{
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -420.0f), true);
-			m_bCanJump = false;
-		}
-
-		// Jump
-		if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Key::W && m_bCanJump)
+		// Jump (Space)
+		if (_event.type == sf::Event::KeyPressed && (_event.key.code == sf::Keyboard::Key::Space || _event.key.code == sf::Keyboard::Key::W ) && m_bCanJump)
 		{
 			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -420.0f), true);
 			m_bCanJump = false;
@@ -623,6 +513,7 @@ void CPlayer::Movement(sf::Event& _event)
 
 void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches )
 {
+	// Mag From Mouse To Player
 	float Mag = sqrt(((_mousePositionSprite.getPosition().x - m_Shape.getPosition().x) * (_mousePositionSprite.getPosition().x - m_Shape.getPosition().x)) + ((_mousePositionSprite.getPosition().y - m_Shape.getPosition().y) * (_mousePositionSprite.getPosition().y - m_Shape.getPosition().y)));
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && Mag > 80.0f && m_bCanPlace)
 	{
@@ -698,6 +589,10 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			}
 			// Golden Ingot
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::GOLDENINGOT)
+			{
+			}
+			// ARROWS Ingot
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
 			{
 			}
 			//Chest
@@ -845,18 +740,91 @@ void CPlayer::Attack()
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && m_AttackTimer.getElapsedTime().asSeconds() >= m_AttackSpeed)
 	{
-		m_AudioManager->PlayBowShot();
-		m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos);
-		
-		m_Projectiles.push_back(*m_Projectile);
+		for (int i = 0; i < m_InventoryMap.size(); i++)
+		{
+			if (m_InventoryMap[i].m_Type == CBlock::BLOCKTYPE::PROJECTILE && m_InventoryStackValues[i] > 0)
+			{
+				m_AudioManager->PlayBowShot();
+				switch (m_InventoryMap[i].m_ProjectileType)
+				{
+				case CBlock::PROJECTILETYPE::ARROW:
+				{
+					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::ARROW, m_Bow);
+					break;
+				}
+				case CBlock::PROJECTILETYPE::FIREARROW:
+				{
+					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos,	CBlock::PROJECTILETYPE::FIREARROW, m_Bow);
+					break;
+				}
+				case CBlock::PROJECTILETYPE::CURSEDARROW:
+				{
+					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::CURSEDARROW, m_Bow);
+					break;
+				}
+				case CBlock::PROJECTILETYPE::POISONARROW:
+				{
+					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::POISONARROW, m_Bow);
+					break;
+				}
+				default:
+					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::ARROW, m_Bow);
+					break;
+				}
+				m_Projectiles.push_back(*m_Projectile);
+
+				if (m_InventoryStackValues[i] <= 1)
+				{
+					RemoveItemFromInventory(i);
+				}
+				else
+				{
+					m_InventoryStackValues[i]--;
+				}
+				break;
+			}
+		}
 		m_Projectile = nullptr;
 		m_AttackTimer.restart();
+	}
+}
+
+void CPlayer::InitInventory()
+{
+	// Init Inventory
+	for (int i = 0; i < 50; i++)
+	{
+		m_InventoryStackValues[i];
+	}
+	for (int i = 0; i < 50; i++)
+	{
+		m_InventoryMap[i];
 	}
 }
 
 b2Body* CPlayer::GetBody()
 {
 	return m_Body;
+}
+
+CPickaxe* CPlayer::GetPickaxe()
+{
+	return m_Pickaxe;
+}
+
+void CPlayer::SetPickaxe(CPickaxe* _pickaxe)
+{
+	m_Pickaxe = _pickaxe;
+}
+
+Bow* CPlayer::GetBow()
+{
+	return m_Bow;
+}
+
+void CPlayer::SetBow(Bow* _bow)
+{
+	m_Bow = _bow;
 }
 
 int CPlayer::GetCurrentHP()
@@ -1000,7 +968,7 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 	std::map<int, CBlock>::iterator it;
 	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
 	{
-		if (it->second.m_Type == _block->m_Type)
+		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType)
 		{
 			// increase number of that type
 			m_InventoryStackValues[it->first]++;
@@ -1172,7 +1140,19 @@ void CPlayer::RemoveItemFromInventory(int _position)
 		{
 			if (it->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
 			{
+				if (m_Pickaxe != nullptr)
+				{
+					delete m_Pickaxe;
+				}
 				m_Pickaxe = nullptr;
+			}
+			if (it->second.m_Type == CBlock::BLOCKTYPE::BOW)
+			{
+				if (m_Bow != nullptr)
+				{
+					delete m_Bow;
+				}
+				m_Bow = nullptr;
 			}
 
 			while (m_InventoryStackValues[_position] > 0)
@@ -1471,10 +1451,10 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 0.5f;
 	m_FixtureDef.restitution = 0.01f;
-	m_FixtureDef.filter.categoryBits = 0x0002;
-	m_FixtureDef.filter.groupIndex = -3;
-	m_FixtureDef.filter.maskBits = 0x0006;
-	m_FixtureDef.filter.maskBits = 0x0004;
+	m_FixtureDef.filter.categoryBits = _PLAYER_FILTER_;
+	m_FixtureDef.filter.groupIndex = -_PLAYER_GROUPINDEX_;
+	m_FixtureDef.filter.maskBits = _ENEMY_FILTER_;
+	m_FixtureDef.filter.maskBits = _WORLD_FILTER_;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	// Set SFML Shape Transform To Box 2D Body Transform
@@ -1514,6 +1494,490 @@ void CPlayer::Lst_MoveToFront(std::list<CChest>& list, std::list<CChest>::iterat
 	{
 		list.splice(list.begin(), list, element, std::next(element));
 	}
+}
+
+void CPlayer::OutPutInventoryToFile()
+{
+	// OFstream
+	std::ofstream out_file;
+
+	//
+	// output_inventory_types
+	out_file.open("Output/output_inventory_types.txt");
+	out_file.clear();
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << (int) m_InventoryMap[i].m_Type << std::endl;
+	}
+	out_file.close();
+
+	//
+	// output_inventory_types
+	out_file.open("Output/output_inventory_pickaxetypes.txt");
+	out_file.clear();
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << (int)m_InventoryMap[i].m_PickType << std::endl;
+	}
+	out_file.close();
+
+	//
+	// output_inventory_stackvalues
+	out_file.open("Output/output_inventory_stackvalues.txt");
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << m_InventoryStackValues[i] << std::endl;
+	}
+	out_file.close();
+
+	//
+	// output_inventory_types
+	out_file.open("Output/output_inventory_bowtypes.txt");
+	out_file.clear();
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << (int)m_InventoryMap[i].m_BowType << std::endl;
+	}
+
+	out_file.close();
+
+	//
+	// output_inventory_types
+	out_file.open("Output/output_inventory_projtypes.txt");
+	out_file.clear();
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << (int)m_InventoryMap[i].m_ProjectileType << std::endl;
+	}
+
+	out_file.close();
+}
+
+void CPlayer::InputInventoryToFile()
+{
+	//
+	// Reading From File??
+	//
+	std::ifstream xoutputs("Output/output_inventory_types.txt");
+	int types[50] = {};
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> types[i];
+		}
+		xoutputs.close();
+	}
+
+	xoutputs.open("Output/output_inventory_stackvalues.txt");
+	int stackvalues[50] = {};
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> stackvalues[i];
+		}
+		xoutputs.close();
+	}
+
+	xoutputs.open("Output/output_inventory_bowtypes.txt");
+	int bowtypes[50] = {};
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> bowtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	xoutputs.open("Output/output_inventory_pickaxetypes.txt");
+	int picktypes[50] = {};
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> picktypes[i];
+		}
+		xoutputs.close();
+	}
+
+	xoutputs.open("Output/output_inventory_projtypes.txt");
+	int projtypes[50] = {};
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> projtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	for (int i = 0; i < 50; i++)
+	{
+		if (stackvalues[i] != 0)
+		{
+			switch (types[i])
+			{
+			case 0:
+			{
+				switch (picktypes[i])
+				{
+				case 0:
+				{
+					m_Pickaxe = new CPickaxe();
+					AddItemToInventory(m_Pickaxe, i, false);
+					m_Pickaxe = nullptr;
+					break;
+				}
+				case 1:
+				{
+					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::IRON);
+					AddItemToInventory(m_Pickaxe, i, false);
+					m_Pickaxe = nullptr;
+					break;
+				}
+				case 2:
+				{
+					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
+					AddItemToInventory(m_Pickaxe, i, false);
+					m_Pickaxe = nullptr;
+					break;
+				}
+				case 3:
+				{
+					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
+					AddItemToInventory(m_Pickaxe, i, false);
+					m_Pickaxe = nullptr;
+					break;
+				}
+				case 4:
+				{
+					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::OBSIDIAN);
+					AddItemToInventory(m_Pickaxe, i, false);
+					m_Pickaxe = nullptr;
+					break;
+				}
+				case 5:
+				{
+					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::PURPLE);
+					AddItemToInventory(m_Pickaxe, i, false);
+					m_Pickaxe = nullptr;
+					break;
+				}
+				case 6:
+				{
+					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLDEN);
+					AddItemToInventory(m_Pickaxe, i, false);
+					m_Pickaxe = nullptr;
+					break;
+				}
+				default:
+					break;
+				}
+
+				break;
+			}
+			case 1:
+			{
+				m_Door = new CDoor();
+				AddItemToInventory(m_Door, i, false);
+				m_Door = nullptr;
+				break;
+			}
+			case 2:
+			{
+				m_Chest = new CChest();
+				AddItemToInventory(m_Chest, i, true);
+				m_Chest = nullptr;
+				break;
+			}
+			case 3:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 4:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 5:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Wood, CBlock::BLOCKTYPE::WOOD);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 6:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 7:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 8:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 9:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Grass, CBlock::BLOCKTYPE::GRASS);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 11:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 12:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 13:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_IronOre, CBlock::BLOCKTYPE::IRONORE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 14:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 15:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_DiamondOre, CBlock::BLOCKTYPE::DIAMONDORE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 16:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 17:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 18:
+			{
+				// Bow
+				switch (bowtypes[i])
+				{
+				case 0:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				case 1:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::OBSIDIAN);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				case 2:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::ICE);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				case 3:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::BLOOD);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				case 4:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::IRON);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				case 5:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::GOLDEN);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				case 6:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::PURPLE);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				case 7:
+				{
+					m_Bow = new Bow(CBlock::BOWTYPE::GREEN);
+					AddItemToInventory(m_Bow, i, false);
+					m_Bow = nullptr;
+					break;
+				}
+				default:
+					break;
+				}
+
+				break;
+			}
+			case 19:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 20:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 21:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 22:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 23:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 24:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 25:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 26:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Anvil, CBlock::BLOCKTYPE::ANVIL);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 27:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 28:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_PurpleOre, CBlock::BLOCKTYPE::PURPLEORE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 29:
+			{
+				m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENORE);
+				AddItemToInventory(m_Block, i, true);
+				m_Block = nullptr;
+				break;
+			}
+			case 30:
+			{
+				// Projectile
+				switch (projtypes[i])
+				{
+				case 0:
+				{
+					m_Projectile = new CProjectile();
+					AddItemToInventory(m_Projectile, i, true);
+					m_Projectile = nullptr;
+					break;
+				}
+				case 1:
+				{
+					m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+					AddItemToInventory(m_Projectile, i, true);
+					m_Projectile = nullptr;
+					break;
+				}
+				case 2:
+				{
+					m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+					AddItemToInventory(m_Projectile, i, true);
+					m_Projectile = nullptr;
+					break;
+				}
+				case 3:
+				{
+					m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
+					AddItemToInventory(m_Projectile, i, true);
+					m_Projectile = nullptr;
+					break;
+				}
+				default:
+					break;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	}
+
 }
 
 b2World* CPlayer::GetWorld()

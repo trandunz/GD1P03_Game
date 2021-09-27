@@ -1,20 +1,18 @@
 #pragma once
+#ifndef _PROJECTILE_H__
+#define _PROJECTILE_H__
+
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
+#include "Block.h"
+#include "Bow.h"
 
-class CProjectile
+class CProjectile : public CBlock
 {
 public:
-	enum class PROJECTILETYPE
-	{
-		ARROW,
-		FIREARROW,
-		CURSEDARROW,
-		POISONARROW
-	};
-
-	CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, PROJECTILETYPE _type = PROJECTILETYPE::ARROW);
+	CProjectile(CBlock::PROJECTILETYPE _projtype = CBlock::PROJECTILETYPE::ARROW);
+	CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, CBlock::PROJECTILETYPE _projtype = CBlock::PROJECTILETYPE::ARROW, Bow* _activeBow = nullptr);
 	~CProjectile();
 
 	void Update();
@@ -26,20 +24,9 @@ public:
 	bool m_bMARKASDESTROY = false;
 
 	float m_Weight = 0.8f;
-
-	PROJECTILETYPE m_Type = PROJECTILETYPE::ARROW;
-
-	sf::Sprite m_Shape;
 private:
 
-	sf::Texture* m_Texture;
-	b2World* m_World;
-
-	// Box2d
-	b2BodyDef m_BodyDef;
-	b2Body* m_Body;
-	b2PolygonShape m_b2pShape;
-	b2FixtureDef m_FixtureDef;
+	int m_Damage = 25.0f;
 
 };
-
+#endif

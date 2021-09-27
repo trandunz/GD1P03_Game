@@ -1,9 +1,11 @@
 #pragma once
+#ifndef _TEXTUREMASTER_H__
+#define _TEXTUREMASTER_H__
+
 #include <SFML/Graphics.hpp>
 class CTextureMaster
 {
 public:
-
 	CTextureMaster();
 	~CTextureMaster();
 
@@ -45,5 +47,9 @@ public:
 	sf::Texture* m_Tourch;
 	sf::Texture* m_GoldenOre;
 	sf::Texture* m_PurpleOre;
+	sf::Texture* m_Arrow;
+	sf::Texture* m_FireArrow;
+	sf::Texture* m_CursedArrow;
+	sf::Texture* m_PoisonArrow;
 };
-
+#endif

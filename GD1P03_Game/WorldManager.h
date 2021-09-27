@@ -1,9 +1,22 @@
 #pragma once
 #ifndef _WORLDMANAGER_H__
 #define _WORLDMANAGER_H__
+
 #define _NOISEWIDTH_ 366
 #define _NOISEHEIGHT_ 113
 #define _PI_ 3.141592653589793
+
+#define _CURRENT_TIME_ time(NULL)
+#define _WORLDSTART_HEIGHT_ 42
+
+#define _TREE_RARITY_ rand() % 6 <= 3 && x % 6 == 0
+#define _CHEST_RARITY_ rand() % 9 == 0 && x % 19 == 0
+#define _CHEST_RARITY_CLOUDS_ rand() % 3 == 0 && x % 19 == 0 && y == -42
+#define _STONE_RARITY_ rand() % 2 == 0 && y > 4
+#define _DIRT_RARITY_SURFACE_ rand() % 10 == 0 && y < 30
+#define _DIRT_RARITY_UNDERGOUND_ rand() % 15 == 0 && y < 50 && y >= 30
+#define _MOSSYBRICK_RARITY_SURFACE_ rand() % 50 == 0
+#define _MOSSYBRICK_RARITY_UNDERGOUND_ rand() % 2 == 0
 
 // Non-Local Includes
 #include <stdio.h>      /* printf, NULL */
@@ -53,7 +66,7 @@ public:
 	void OutPutWorldToFiles();
 	void OutPutWorldToFiles(std::string _xPositions, std::string _yPositions);
 
-	void InputWorldFromFiles();
+	void InputWorldFromFiles(CTextureMaster* _textureMaster);
 
 	void WorldBackGroundColourGradient();
 	void DrawBackGround(sf::Shader* _defaultShader = NULL);
@@ -87,6 +100,9 @@ private:
 
 	// Threads
 	sf::Mutex m_GlobalMutex;
+
+	sf::Clock m_LoadTimer;
+	bool m_bIsLoading = true;
 
 	// Noise
 	double m_Noise[_NOISEHEIGHT_][_NOISEWIDTH_] = {}; // Noise Array (0-1)

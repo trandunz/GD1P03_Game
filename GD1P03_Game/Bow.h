@@ -18,6 +18,7 @@ public:
 	void Render();
 
 	sf::Sprite* m_Sprite;
+	int m_BowPower = 1.0f;
 private:
 	sf::Texture m_LeftTex;
 	sf::Texture m_RightTex;
