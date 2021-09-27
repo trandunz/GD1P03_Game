@@ -102,16 +102,16 @@ void CPlayer::Start()
 	InitInventory();
 
 	//// Starting Items
-	//for (int i = 0; i < 50; i++)
-	//{
-	//	if (m_InventoryStackValues[i] == 0)
-	//	{
-	//		m_Pickaxe = new CPickaxe();
-	//		AddItemToInventory(m_Pickaxe, i);
-	//		m_Pickaxe = nullptr;
-	//		break;
-	//	}
-	//}
+	/*for (int i = 0; i < 50; i++)
+	{
+		if (m_InventoryStackValues[i] == 0)
+		{
+			m_Pickaxe = new CPickaxe();
+			AddItemToInventory(m_Pickaxe, i);
+			m_Pickaxe = nullptr;
+			break;
+		}
+	}*/
 	//for (int i = 0; i < 50; i++)
 	//{
 	//	if (m_InventoryStackValues[i] == 0)
@@ -1621,355 +1621,474 @@ void CPlayer::InputInventoryToFile()
 			{
 			case 0:
 			{
-				switch (picktypes[i])
+				for (int J = 0; J < stackvalues[i]; J++)
 				{
-				case 0:
-				{
-					m_Pickaxe = new CPickaxe();
-					AddItemToInventory(m_Pickaxe, i, false);
-					m_Pickaxe = nullptr;
-					break;
-				}
-				case 1:
-				{
-					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::IRON);
-					AddItemToInventory(m_Pickaxe, i, false);
-					m_Pickaxe = nullptr;
-					break;
-				}
-				case 2:
-				{
-					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
-					AddItemToInventory(m_Pickaxe, i, false);
-					m_Pickaxe = nullptr;
-					break;
-				}
-				case 3:
-				{
-					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
-					AddItemToInventory(m_Pickaxe, i, false);
-					m_Pickaxe = nullptr;
-					break;
-				}
-				case 4:
-				{
-					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::OBSIDIAN);
-					AddItemToInventory(m_Pickaxe, i, false);
-					m_Pickaxe = nullptr;
-					break;
-				}
-				case 5:
-				{
-					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::PURPLE);
-					AddItemToInventory(m_Pickaxe, i, false);
-					m_Pickaxe = nullptr;
-					break;
-				}
-				case 6:
-				{
-					m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLDEN);
-					AddItemToInventory(m_Pickaxe, i, false);
-					m_Pickaxe = nullptr;
-					break;
-				}
-				default:
-					break;
+					switch (picktypes[i])
+					{
+					case 0:
+					{
+						m_Pickaxe = new CPickaxe();
+						AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+					case 1:
+					{
+						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::IRON);
+						AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+					case 2:
+					{
+						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
+						AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+					case 3:
+					{
+						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
+						AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+					case 4:
+					{
+						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::OBSIDIAN);
+						AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+					case 5:
+					{
+						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::PURPLE);
+						AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+					case 6:
+					{
+						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLDEN);
+						AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+					default:
+						break;
+					}
 				}
 
 				break;
 			}
 			case 1:
 			{
-				m_Door = new CDoor();
-				AddItemToInventory(m_Door, i, false);
-				m_Door = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Door = new CDoor();
+					AddItemToInventory(m_Door, i, false);
+					m_Door = nullptr;
+				}
+				
 				break;
 			}
 			case 2:
 			{
-				m_Chest = new CChest();
-				AddItemToInventory(m_Chest, i, true);
-				m_Chest = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Chest = new CChest();
+					AddItemToInventory(m_Chest, i, true);
+					m_Chest = nullptr;
+				}
+
 				break;
 			}
 			case 3:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 4:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 5:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Wood, CBlock::BLOCKTYPE::WOOD);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Wood, CBlock::BLOCKTYPE::WOOD);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 6:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 7:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 8:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 9:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Grass, CBlock::BLOCKTYPE::GRASS);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Grass, CBlock::BLOCKTYPE::GRASS);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 11:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 12:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 13:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_IronOre, CBlock::BLOCKTYPE::IRONORE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_IronOre, CBlock::BLOCKTYPE::IRONORE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 14:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 15:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_DiamondOre, CBlock::BLOCKTYPE::DIAMONDORE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_DiamondOre, CBlock::BLOCKTYPE::DIAMONDORE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 16:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 17:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 18:
 			{
-				// Bow
-				switch (bowtypes[i])
+				for (int J = 0; J < stackvalues[i]; J++)
 				{
-				case 0:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
+					// Bow
+					switch (bowtypes[i])
+					{
+					case 0:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 1:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::OBSIDIAN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 2:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::ICE);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 3:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::BLOOD);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 4:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::IRON);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 5:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::GOLDEN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 6:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::PURPLE);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 7:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::GREEN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					default:
+						break;
+					}
 				}
-				case 1:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::OBSIDIAN);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
-				}
-				case 2:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::ICE);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
-				}
-				case 3:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::BLOOD);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
-				}
-				case 4:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::IRON);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
-				}
-				case 5:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::GOLDEN);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
-				}
-				case 6:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::PURPLE);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
-				}
-				case 7:
-				{
-					m_Bow = new Bow(CBlock::BOWTYPE::GREEN);
-					AddItemToInventory(m_Bow, i, false);
-					m_Bow = nullptr;
-					break;
-				}
-				default:
-					break;
-				}
+				
 
 				break;
 			}
 			case 19:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 20:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 21:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 22:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 23:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 24:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
-				AddItemToInventory(m_Block, i, true);
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
+					AddItemToInventory(m_Block, i, true);
+				}
+
 				m_Block = nullptr;
 				break;
 			}
 			case 25:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 26:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Anvil, CBlock::BLOCKTYPE::ANVIL);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Anvil, CBlock::BLOCKTYPE::ANVIL);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 27:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 28:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_PurpleOre, CBlock::BLOCKTYPE::PURPLEORE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PurpleOre, CBlock::BLOCKTYPE::PURPLEORE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 29:
 			{
-				m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENORE);
-				AddItemToInventory(m_Block, i, true);
-				m_Block = nullptr;
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENORE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			case 30:
 			{
-				// Projectile
-				switch (projtypes[i])
+				for (int J = 0; J < stackvalues[i]; J++)
 				{
-				case 0:
-				{
-					m_Projectile = new CProjectile();
-					AddItemToInventory(m_Projectile, i, true);
-					m_Projectile = nullptr;
-					break;
+					// Projectile
+					switch (projtypes[i])
+					{
+					case 0:
+					{
+						m_Projectile = new CProjectile();
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
+					case 1:
+					{
+						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
+					case 2:
+					{
+						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
+					case 3:
+					{
+						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
+					default:
+						break;
+					}
 				}
-				case 1:
-				{
-					m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
-					AddItemToInventory(m_Projectile, i, true);
-					m_Projectile = nullptr;
-					break;
-				}
-				case 2:
-				{
-					m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
-					AddItemToInventory(m_Projectile, i, true);
-					m_Projectile = nullptr;
-					break;
-				}
-				case 3:
-				{
-					m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
-					AddItemToInventory(m_Projectile, i, true);
-					m_Projectile = nullptr;
-					break;
-				}
-				default:
-					break;
-				}
+				
 				break;
 			}
 			default:
