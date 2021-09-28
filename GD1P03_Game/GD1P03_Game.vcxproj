@@ -145,6 +145,7 @@
     <ClCompile Include="CFurnace.cpp" />
     <ClCompile Include="Chest.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />
+    <ClCompile Include="CPotion.cpp" />
     <ClCompile Include="CProjectile.cpp" />
     <ClCompile Include="CTextureMaster.cpp" />
     <ClCompile Include="CWorkBench.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="CFurnace.h" />
     <ClInclude Include="Chest.h" />
     <ClInclude Include="CParticleSystem.h" />
+    <ClInclude Include="CPotion.h" />
     <ClInclude Include="CProjectile.h" />
     <ClInclude Include="CTextureMaster.h" />
     <ClInclude Include="CWorkBench.h" />

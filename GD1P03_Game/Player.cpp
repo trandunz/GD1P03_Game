@@ -100,33 +100,23 @@ void CPlayer::Start()
 	m_DamageIndicatorTimer = new sf::Clock();
 
 	InitInventory();
-
-	//// Starting Items
-	/*for (int i = 0; i < 50; i++)
-	{
-		if (m_InventoryStackValues[i] == 0)
-		{
-			m_Pickaxe = new CPickaxe();
-			AddItemToInventory(m_Pickaxe, i);
-			m_Pickaxe = nullptr;
-			break;
-		}
-	}*/
-	//for (int i = 0; i < 50; i++)
-	//{
-	//	if (m_InventoryStackValues[i] == 0)
-	//	{
-	//		for (int j = 0; j < 3; j++)
-	//		{
-	//			m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
-	//			AddItemToInventory(m_Block, i, true);
-	//			m_Block = nullptr;
-	//		}
-	//		break;
-	//	}
-	//}
-
 	InputInventoryToFile();
+
+	if (!IsItemInventory(CBlock::BLOCKTYPE::PICKAXE))
+	{
+		//Starting Items
+		for (int i = 0; i < 50; i++)
+		{
+			if (m_InventoryStackValues[i] == 0)
+			{
+				m_Pickaxe = new CPickaxe();
+				AddItemToInventory(m_Pickaxe, i);
+				m_Pickaxe = nullptr;
+				break;
+			}
+		}
+	}
+	
 
 	// Particle System Start / Init
 	m_TestParticles->Start();
@@ -571,6 +561,61 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::BOW)
 			{
 			}
+			// Potions
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::POTION)
+			{
+				switch (m_InventoryMap[m_CurrentItemIndex].m_PotionType)
+				{
+				case CBlock::POTIONTYPE::HPSMALL:
+				{
+					if (m_HPPotionTimer.getElapsedTime().asSeconds() >= 10.0f)
+					{
+						Heal(50.0f);
+
+						// Decrement Stack Counter / Remove Item From Inventory
+						if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+						{
+							RemoveItemFromInventory(m_CurrentItemIndex);
+						}
+						else
+						{
+							m_InventoryStackValues[m_CurrentItemIndex]--;
+						}
+
+						m_AudioManager->PlayPotionDrink();
+
+						m_HPPotionTimer.restart();
+					}
+
+					break;
+				}
+				case CBlock::POTIONTYPE::HPLARGE:
+				{
+					if (m_HPPotionTimer.getElapsedTime().asSeconds() >= 10.0f)
+					{
+						Heal(100.0f);
+
+						// Decrement Stack Counter / Remove Item From Inventory
+						if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+						{
+							RemoveItemFromInventory(m_CurrentItemIndex);
+						}
+						else
+						{
+							m_InventoryStackValues[m_CurrentItemIndex]--;
+						}
+
+						m_AudioManager->PlayPotionDrink();
+
+						m_HPPotionTimer.restart();
+					}
+
+					break;
+				}
+				default:
+					break;
+				}
+			}
 			// Iron Ingot
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::IRONINGOT)
 			{
@@ -968,7 +1013,7 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 	std::map<int, CBlock>::iterator it;
 	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
 	{
-		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType)
+		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType && it->second.m_PotionType == _block->m_PotionType)
 		{
 			// increase number of that type
 			m_InventoryStackValues[it->first]++;
@@ -1551,6 +1596,17 @@ void CPlayer::OutPutInventoryToFile()
 	}
 
 	out_file.close();
+
+	//
+	// output_inventory_types
+	out_file.open("Output/output_inventory_potiontypes.txt");
+	out_file.clear();
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << (int)m_InventoryMap[i].m_PotionType << std::endl;
+	}
+
+	out_file.close();
 }
 
 void CPlayer::InputInventoryToFile()
@@ -1609,6 +1665,17 @@ void CPlayer::InputInventoryToFile()
 		for (int i = 0; i < 50; i++)
 		{
 			xoutputs >> projtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	xoutputs.open("Output/output_inventory_potiontypes.txt");
+	int potiontypes[50] = {};
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> potiontypes[i];
 		}
 		xoutputs.close();
 	}
@@ -2089,6 +2156,56 @@ void CPlayer::InputInventoryToFile()
 					}
 				}
 				
+				break;
+			}
+			case 31:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					// Projectile
+					switch (potiontypes[i])
+					{
+					case 0:
+					{
+						CPotion* potion= new CPotion(CBlock::POTIONTYPE::HPSMALL);
+						AddItemToInventory(potion, i, true);
+						potion = nullptr;
+						break;
+					}
+					case 1:
+					{
+						CPotion* potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+						AddItemToInventory(potion, i, true);
+						potion = nullptr;
+						break;
+					}
+					default:
+						break;
+					}
+				}
+
+				break;
+			}
+			case 32:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_GlassBeaker, CBlock::BLOCKTYPE::EMPTYBEAKER);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 33:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
 				break;
 			}
 			default:

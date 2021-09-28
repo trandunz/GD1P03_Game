@@ -20,6 +20,8 @@ void CenterViewsToSprite(sf::Sprite _object);
 void Test_AddItemToInv(CBlock::BLOCKTYPE _type);
 void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::BOWTYPE _bowType);
 void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::PROJECTILETYPE _ProjectileType);
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::POTIONTYPE _potionType);
+void Test_ClearPlayerInventory(bool _giveStarterItems = false);
 bool PickupItemOnGround();
 
 void InitShaders();
@@ -87,6 +89,7 @@ sf::Shader m_ShaderMiniMap;
 sf::Shader m_TourchShader;
 
 Bow* m_Bow;
+CPotion* m_Potion;
 
 // Gameover screen variables
 float m_PlayerRespawnTime = 5;
@@ -144,6 +147,7 @@ int main()
 	delete m_RenderWindow;
 	delete m_WorldManager;
 	delete m_AudioManager;
+	m_Potion = nullptr;
 	m_Chest = nullptr;
 	m_AudioManager = nullptr;
 	m_SlimeSpawner = nullptr;
@@ -294,7 +298,7 @@ void Update()
 					// Numpad2 = GOLD INGOT		// Numpad5 = GOLD ORE		// Numpad8 = STONE
 					if (true)
 					{
-						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
+						/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
 						{
 							Test_AddItemToInv(CBlock::BLOCKTYPE::PURPLEINGOT);
 						}
@@ -312,19 +316,19 @@ void Update()
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::IRONORE);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::REDSLIME);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDORE);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::EMPTYBEAKER);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::DIAMONDORE);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::POTION, CBlock::POTIONTYPE::HPLARGE);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::PROJECTILE, CBlock::PROJECTILETYPE::CURSEDARROW);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::POTION, CBlock::POTIONTYPE::HPSMALL);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
 						{
@@ -333,6 +337,10 @@ void Update()
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9))
 						{
 							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::OBSIDIAN);
+						}*/
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+						{
+							Test_ClearPlayerInventory(true);
 						}
 					}
 
@@ -559,7 +567,7 @@ void Render()
 		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
 		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
 		m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
-
+		m_GUI->StatusEffectUI(m_RenderWindow, m_Player);
 		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, m_WorldManager->m_Chests);
 	}
 
@@ -594,6 +602,7 @@ void InitUI()
 	m_GUI->InitCraftingUI(m_TextureMaster);
 	m_GUI->InitInventoryUI(m_Player, m_RenderWindow, m_TextureMaster);
 	m_GUI->InitChestUI(m_RenderWindow,m_TextureMaster);
+	m_GUI->InitStatusEffectUI(m_Player);
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
@@ -795,6 +804,20 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type)
 	case CBlock::BLOCKTYPE::WORKBENCH:
 	{
 		m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::EMPTYBEAKER:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GlassBeaker, CBlock::BLOCKTYPE::EMPTYBEAKER);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::REDSLIME:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
 		m_Player->AddItemToInventory(m_Block);
 		m_Block = nullptr;
 		break;
@@ -1278,6 +1301,323 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::PROJECTILETYPE _Projecti
 		break;
 	}
 	}
+}
+
+void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::POTIONTYPE _potionType)
+{
+	switch (_type)
+	{
+	case CBlock::BLOCKTYPE::PICKAXE:
+	{
+		m_Block = new CPickaxe();
+		m_Pickaxe->m_Type = CBlock::BLOCKTYPE::PICKAXE;
+		m_Pickaxe->m_PickType = CBlock::PICKAXETYPE::DIAMOND;
+		m_Player->AddItemToInventory(m_Pickaxe, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DOOR:
+	{
+		m_Door = new CDoor();
+		m_Player->AddItemToInventory(m_Door, false);
+		m_Door = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::CHEST:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Chest, CBlock::BLOCKTYPE::CHEST);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIRT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::STONE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WOOD:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Wood, CBlock::BLOCKTYPE::WOOD);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PLANKS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Planks, CBlock::BLOCKTYPE::PLANKS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::SAND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Sand, CBlock::BLOCKTYPE::SAND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::MOSSYBRICK:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_MossyBrick, CBlock::BLOCKTYPE::MOSSYBRICK);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GRASS:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Grass, CBlock::BLOCKTYPE::GRASS);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::LEAVES:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Leaves, CBlock::BLOCKTYPE::LEAVES);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::FURNACE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Furnace, CBlock::BLOCKTYPE::FURNACE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronOre, CBlock::BLOCKTYPE::IRONORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMONDORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondOre, CBlock::BLOCKTYPE::DIAMONDORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PURPLEORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleOre, CBlock::BLOCKTYPE::PURPLEORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenOre, CBlock::BLOCKTYPE::GOLDENORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::COALORE:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Coal, CBlock::BLOCKTYPE::COALORE);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::OBSIDIAN:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Obsidian, CBlock::BLOCKTYPE::OBSIDIAN);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::BOW:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+		m_Player->AddItemToInventory(m_Bow, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::IRONINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIAMOND:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::PURPLEINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_PurpleIngot, CBlock::BLOCKTYPE::PURPLEINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::GOLDENINGOT:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::WORKBENCH:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::EMPTYBEAKER:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_GlassBeaker, CBlock::BLOCKTYPE::EMPTYBEAKER);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::REDSLIME:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	case CBlock::BLOCKTYPE::POTION:
+	{
+		switch (_potionType)
+		{
+		case CBlock::POTIONTYPE::HPSMALL:
+			m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+			m_Player->AddItemToInventory(m_Potion);
+			m_Potion = nullptr;
+			break;
+		case CBlock::POTIONTYPE::HPLARGE:
+			m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+			m_Player->AddItemToInventory(m_Potion);
+			m_Potion = nullptr;
+			break;
+		default:
+			break;
+		}
+		break;
+	}
+	default:
+	{
+		m_Block = new CBlock(m_TextureMaster->m_Dirt, CBlock::BLOCKTYPE::DIRT);
+		m_Player->AddItemToInventory(m_Block);
+		m_Block = nullptr;
+		break;
+	}
+	}
+}
+
+void Test_ClearPlayerInventory(bool _giveStarterItems)
+{
+	if (m_Player != nullptr)
+	{
+		if (m_Player->GetPickaxe() != nullptr)
+		{
+			delete m_Player->GetPickaxe();
+		}
+		m_Player->SetPickaxe(nullptr);
+		if (m_Player->GetBow() != nullptr)
+		{
+			delete m_Player->GetBow();
+		}
+		m_Player->SetBow(nullptr);
+
+		m_Player->m_InventoryMap.clear();
+		m_Player->m_InventoryStackValues.clear();
+
+		for (int i = 0; i < 50; i++)
+		{
+			m_Player->m_InventoryMap[i];
+			m_Player->m_InventoryStackValues[i];
+		}
+
+		if (_giveStarterItems)
+		{
+			if (!m_Player->IsItemInventory(CBlock::BLOCKTYPE::PICKAXE))
+			{
+				//Starting Items
+				for (int i = 0; i < 50; i++)
+				{
+					if (m_Player->m_InventoryStackValues[i] == 0)
+					{
+						m_Pickaxe = new CPickaxe();
+						m_Player->AddItemToInventory(m_Pickaxe, i, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+				}
+			}
+			if (!m_Player->IsItemInventory(CBlock::BLOCKTYPE::BOW))
+			{
+				//Starting Items
+				for (int i = 0; i < 50; i++)
+				{
+					if (m_Player->m_InventoryStackValues[i] == 0)
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+						m_Player->AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+				}
+			}
+			//Starting Items
+			for (int i = 0; i < 50; i++)
+			{
+				if (m_Player->m_InventoryStackValues[i] == 0)
+				{
+					m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+					m_Player->AddItemToInventory(m_Potion, i);
+					m_Potion = nullptr;
+					break;
+				}
+			}
+
+			//Starting Items
+			for (int i = 0; i < 50; i++)
+			{
+				if (m_Player->m_InventoryStackValues[i] == 0)
+				{
+					for (int i = 0; i < 15; i++)
+					{
+						CProjectile* temp = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+						m_Player->AddItemToInventory(temp, i);
+						temp = nullptr;
+					}
+
+					break;
+				}
+			}
+		}
+	}
+
 }
 
 bool PickupItemOnGround()

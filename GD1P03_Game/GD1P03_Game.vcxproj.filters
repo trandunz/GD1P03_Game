@@ -72,6 +72,9 @@
     <ClCompile Include="CWorkBench.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CPotion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CWorkBench.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPotion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

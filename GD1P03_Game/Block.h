@@ -58,7 +58,10 @@ public:
 		TOURCH = 27,
 		PURPLEORE = 28,
 		GOLDENORE = 29,
-		PROJECTILE = 30
+		PROJECTILE = 30,
+		POTION = 31,
+		EMPTYBEAKER = 32,
+		REDSLIME = 33,
 	};
 
 	enum class PICKAXETYPE
@@ -86,10 +89,16 @@ public:
 
 	enum class PROJECTILETYPE
 	{
-		ARROW,
+		ARROW = 0,
 		FIREARROW,
 		CURSEDARROW,
 		POISONARROW
+	};
+
+	enum class POTIONTYPE
+	{
+		HPSMALL = 0,
+		HPLARGE,
 	};
 
 	CBlock();
@@ -147,7 +156,8 @@ public:
 
 	PICKAXETYPE m_PickType = PICKAXETYPE::BASIC;
 	BOWTYPE m_BowType = BOWTYPE::BASIC;
-	PROJECTILETYPE m_ProjectileType;
+	PROJECTILETYPE m_ProjectileType = PROJECTILETYPE::ARROW;
+	POTIONTYPE m_PotionType = POTIONTYPE::HPSMALL;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 

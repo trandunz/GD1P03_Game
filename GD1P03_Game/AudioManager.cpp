@@ -24,6 +24,7 @@ CAudioManager::CAudioManager()
 	m_PickupSoundBuffer.loadFromFile("Sounds/PickupItem.wav");
 
 	m_KingSlimeSpawnBuffer.loadFromFile("Sounds/SlimeKingSpawn.wav");
+	m_PotionDrinkBuffer.loadFromFile("Sounds/PotionDrink.wav");
 
 	MineSoundBuffers[0] = m_MineBuffer1;
 	MineSoundBuffers[1] = m_MineBuffer2;
@@ -200,4 +201,11 @@ void CAudioManager::PlayKingSlimeSpawn()
 
 void CAudioManager::CheckBackgroundMusic(sf::Vector2f _positionPlayer)
 {
+}
+
+void CAudioManager::PlayPotionDrink()
+{
+	m_PotionDrinkSound.setBuffer(m_PotionDrinkBuffer);
+	m_PotionDrinkSound.setVolume(30.0f);
+	m_PotionDrinkSound.play();
 }

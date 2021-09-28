@@ -12,6 +12,7 @@
 #include <cstddef>        // std::size_t
 
 #include "Player.h"
+#include "CPotion.h"
 #include "CTextureMaster.h"
 
 class GUI
@@ -61,6 +62,9 @@ public:
 	int FindLastEmptyInventorySlot(CPlayer* _player);
 	int FindFirstEmptyChestSlot(std::list<CChest>& _chests);
 
+	void StatusEffectUI(sf::RenderWindow* _renderWindow, CPlayer* _player);
+	void InitStatusEffectUI(CPlayer* _player);
+
 	//Sprites
 	sf::Sprite m_MousePos;
 
@@ -86,6 +90,9 @@ private:
 
 	std::string m_HealthString;
 	sf::Text m_HealthText;
+
+	std::string m_StatusString;
+	sf::Text m_StatusText;
 
 	sf::RectangleShape m_MiniMapBG1;
 	sf::RectangleShape m_MiniMapBG2;

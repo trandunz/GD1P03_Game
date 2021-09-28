@@ -37,6 +37,8 @@ public:
 
 	void CheckBackgroundMusic(sf::Vector2f _positionPlayer);
 
+	void PlayPotionDrink();
+
 	int m_MusicLevel = 1;
 
 private:
@@ -59,7 +61,10 @@ private:
 	sf::Music m_UnderGroundMusic;
 
 	sf::Sound m_PickupSound;
-	sf::SoundBuffer m_PickupSoundBuffer;;
+	sf::SoundBuffer m_PickupSoundBuffer;
+
+	sf::Sound m_PotionDrinkSound;
+	sf::SoundBuffer m_PotionDrinkBuffer;
 
 	sf::SoundBuffer m_MineBuffer1;
 	sf::SoundBuffer m_MineBuffer2;

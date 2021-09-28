@@ -92,6 +92,16 @@ CTextureMaster::CTextureMaster()
 	m_PoisonArrow = new sf::Texture();
 	m_PoisonArrow->loadFromFile("Images/GoldenOre.png");
 
+	m_GlassBeaker = new sf::Texture();
+	m_GlassBeaker->loadFromFile("Images/GlassBeaker.png");
+	m_RedSlime = new sf::Texture();
+	m_RedSlime->loadFromFile("Images/RedSlime_Item.png");
+
+	m_HPSmall = new sf::Texture();
+	m_HPSmall->loadFromFile("Images/HPSmall.png");
+	m_HPLarge = new sf::Texture();
+	m_HPLarge->loadFromFile("Images/HPLarge.png");
+
 	// Set Smooth
 	m_Dirt->setSmooth(true);
 	m_Grass->setSmooth(true);
@@ -165,6 +175,14 @@ CTextureMaster::~CTextureMaster()
 	delete m_FireArrow;
 	delete m_CursedArrow;
 	delete m_PoisonArrow;
+	delete m_GlassBeaker;
+	delete m_RedSlime;
+	delete m_HPSmall;
+	delete m_HPLarge;
+	m_HPSmall = nullptr;
+	m_HPLarge = nullptr;
+	m_GlassBeaker = nullptr;
+	m_RedSlime = nullptr;
 	m_GoldenOre = nullptr;
 	m_PurpleOre = nullptr;
 	m_PurpleIngot = nullptr;

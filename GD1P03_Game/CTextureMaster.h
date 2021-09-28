@@ -51,5 +51,9 @@ public:
 	sf::Texture* m_FireArrow;
 	sf::Texture* m_CursedArrow;
 	sf::Texture* m_PoisonArrow;
+	sf::Texture* m_GlassBeaker;
+	sf::Texture* m_RedSlime;
+	sf::Texture* m_HPSmall;
+	sf::Texture* m_HPLarge;
 };
 #endif

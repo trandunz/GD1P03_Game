@@ -656,6 +656,33 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                             }
                             m_Block = nullptr;
                         }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+                            for (int i = 0; i < 2 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 3, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        if (rand() % 2 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+                            for (int i = 0; i < 2 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 4, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 2 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 5, true);
+                            }
+                            m_Block = nullptr;
+                        }
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
@@ -777,6 +804,33 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Block = nullptr;
                         }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+                            for (int i = 0; i < 2 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 3, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        if (rand() % 2 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+                            for (int i = 0; i < 2 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 4, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 2 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 5, true);
+                            }
+                            m_Block = nullptr;
+                        }
 
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
@@ -825,6 +879,33 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             for (int i = 0; i < 1; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 3, false);
+                            }
+                            m_Block = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+                            for (int i = 0; i < 2 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 3, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        if (rand() % 2 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+                            for (int i = 0; i < 2 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 4, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 2 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 5, true);
                             }
                             m_Block = nullptr;
                         }

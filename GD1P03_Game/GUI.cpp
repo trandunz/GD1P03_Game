@@ -1191,7 +1191,7 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		m_FirstEmpySlotTimer->restart();
 	}
 	// Positions
-	for (int i = 0; i < 23; i++)
+	for (int i = 0; i < 25; i++)
 	{
 		_renderWindow->mapCoordsToPixel(m_CraftingSlots[i].getPosition(), _uiView);
 		m_CraftingSlots[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 60 + (i * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65 + ((1) * 65));
@@ -1590,7 +1590,42 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 			tempcolor.a = 70;
 			item.GetShape().setColor(tempcolor);
 		}
-	}
+		
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::POTION && item.m_PotionType == CBlock::POTIONTYPE::HPSMALL)
+		{
+			item.SetPosition(m_CraftingSlots[23].getPosition().x, m_CraftingSlots[23].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::POTION && item.m_PotionType == CBlock::POTIONTYPE::HPSMALL)
+		{
+			item.SetPosition(m_CraftingSlots[23].getPosition().x, m_CraftingSlots[23].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+
+		if (item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::POTION && item.m_PotionType == CBlock::POTIONTYPE::HPLARGE)
+		{
+			item.SetPosition(m_CraftingSlots[24].getPosition().x, m_CraftingSlots[24].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 255;
+			item.GetShape().setColor(tempcolor);
+		}
+		else if (!item.m_bCanCraft && item.m_Type == CBlock::BLOCKTYPE::POTION && item.m_PotionType == CBlock::POTIONTYPE::HPLARGE)
+		{
+			item.SetPosition(m_CraftingSlots[24].getPosition().x, m_CraftingSlots[24].getPosition().y);
+			sf::Color tempcolor;
+			tempcolor = item.GetShape().getColor();
+			tempcolor.a = 70;
+			item.GetShape().setColor(tempcolor);
+		}
+
+}
 
 	// Setting Can Craft
 	for (CBlock& item : m_CraftList)
@@ -1981,6 +2016,43 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 		{
 			item.m_bCanCraft = false;
 		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::EMPTYBEAKER, true) > 0 &&
+			_player->IsItemInventory(CBlock::BLOCKTYPE::REDSLIME, true) > 0 &&
+			item.m_Type == CBlock::BLOCKTYPE::POTION &&
+			item.m_PotionType == CBlock::POTIONTYPE::HPSMALL)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::EMPTYBEAKER, true) <= 0 &&
+			_player->IsItemInventory(CBlock::BLOCKTYPE::REDSLIME, true) <= 0 &&
+			item.m_Type == CBlock::BLOCKTYPE::POTION &&
+			item.m_PotionType == CBlock::POTIONTYPE::HPSMALL)
+		{
+			item.m_bCanCraft = false;
+		}
+
+		if (_player->IsItemInventory(CBlock::BLOCKTYPE::EMPTYBEAKER, true) > 0 &&
+			_player->IsItemInventory(CBlock::BLOCKTYPE::REDSLIME, true) > 1 &&
+			item.m_Type == CBlock::BLOCKTYPE::POTION &&
+			item.m_PotionType == CBlock::POTIONTYPE::HPLARGE)
+		{
+			if (!item.m_bCanCraft)
+			{
+				item.m_bCanCraft = true;
+			}
+		}
+		else if (_player->IsItemInventory(CBlock::BLOCKTYPE::EMPTYBEAKER, true) <= 0 &&
+			_player->IsItemInventory(CBlock::BLOCKTYPE::REDSLIME, true) <= 1 &&
+			item.m_Type == CBlock::BLOCKTYPE::POTION &&
+			item.m_PotionType == CBlock::POTIONTYPE::HPLARGE)
+		{
+			item.m_bCanCraft = false;
+		}
+
 	}
 
 	// Removing And Adding Items
@@ -2771,6 +2843,88 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 				break;
 			}
 			}
+			case CBlock::BLOCKTYPE::POTION:
+			{
+				// potion stuff
+				switch (item.m_PotionType)
+				{
+				case CBlock::POTIONTYPE::HPSMALL:
+				{
+					CPotion* tempPotion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+					for (int i = 0; i < 3; i++)
+					{
+						_player->AddItemToInventory(tempPotion, true);
+					}
+					tempPotion = nullptr;
+
+					// Remove 1 Empty Beaker
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::EMPTYBEAKER)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::EMPTYBEAKER));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::EMPTYBEAKER)]--;
+						}
+					}
+					// Remove 1 Red Slime
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::REDSLIME)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::REDSLIME));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::REDSLIME)]--;
+						}
+					}
+
+					break;
+				}
+				case CBlock::POTIONTYPE::HPLARGE:
+				{
+					CPotion* tempPotion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+					for (int i = 0; i < 3; i++)
+					{
+						_player->AddItemToInventory(tempPotion, true);
+					}
+					tempPotion = nullptr;
+
+					// Remove 1 Empty Beaker
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::EMPTYBEAKER)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::EMPTYBEAKER));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::EMPTYBEAKER)]--;
+						}
+					}
+					// Remove 2 Red Slime
+					for (int i = 0; i < 1; i++)
+					{
+						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::REDSLIME)] <= 1)
+						{
+							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::REDSLIME));
+						}
+						else
+						{
+							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::REDSLIME)]--;
+						}
+					}
+
+					break;
+				}
+				default:
+					break;
+				}
+				break;
+			}
 			}
 
 			m_TempBlock = nullptr;
@@ -2785,7 +2939,7 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	sf::Color color = sf::Color();
 
 	// Row 1
-	for (int i = 0; i < 23; i++)
+	for (int i = 0; i < 25; i++)
 	{
 		std::cout << "Create Crafting Space" << std::endl;
 
@@ -2857,6 +3011,11 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	CProjectile* Recipe23 = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
 	m_CraftList.push_back(*Recipe23);
 
+	CPotion* Recipe24 = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+	m_CraftList.push_back(*Recipe24);
+	CPotion* Recipe25 = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+	m_CraftList.push_back(*Recipe25);
+
 	Recipe1 = nullptr;
 	Recipe2 = nullptr;
 	Recipe3 = nullptr;
@@ -2880,6 +3039,8 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	Recipe21 = nullptr;
 	Recipe22 = nullptr;
 	Recipe23 = nullptr;
+	Recipe24 = nullptr;
+	Recipe25 = nullptr;
 }
 
 bool GUI::bIsCraftingSpaceEmpty(int _position)
@@ -3371,6 +3532,36 @@ int GUI::FindFirstEmptyChestSlot(std::list<CChest>& _chests)
 
 	//
 	return i;
+}
+
+void GUI::StatusEffectUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
+{
+	if (10 - _player->m_HPPotionTimer.getElapsedTime().asSeconds() > 0)
+	{
+		m_StatusString = "Potion Cooldown : " + ToString(10 - _player->m_HPPotionTimer.getElapsedTime().asSeconds());
+	}
+	else
+	{
+		m_StatusString = "";
+	}
+	
+	m_StatusText.setString(m_StatusString);
+	m_StatusText.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 100, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 275);
+	_renderWindow->draw(m_StatusText);
+}
+
+void GUI::InitStatusEffectUI(CPlayer* _player)
+{
+	// Health Text
+	m_StatusText = sf::Text();
+	m_StatusString = "Potion Cooldown : " + ToString(_player->m_HPPotionTimer.getElapsedTime().asSeconds());
+	m_StatusText.setString(m_StatusString);
+	m_StatusText.setFont(m_Font);
+	m_StatusText.setFillColor(sf::Color::White);
+	m_StatusText.setOutlineThickness(0.75f);
+	m_StatusText.setOutlineColor(sf::Color::Black);
+	m_StatusText.setOrigin(m_StatusText.getGlobalBounds().width / 2, m_StatusText.getGlobalBounds().height / 2);
+	m_StatusText.setCharacterSize(20);
 }
 
 bool GUI::bPlayerIsMovingAnItem(CPlayer* _player)

@@ -97,6 +97,7 @@ private:
 	// Temp Pointers (Used To Create New Blocks)
 	CBlock* m_Block;
 	CChest* m_Chest;
+	CPotion* m_Potion;
 
 	// Threads
 	sf::Mutex m_GlobalMutex;

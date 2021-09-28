@@ -4,7 +4,7 @@ CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 {
 	m_Scale = 50.0f;
 	m_Body = nullptr;
-	m_Type = BLOCKTYPE::BOW;
+	m_Type = BLOCKTYPE::PROJECTILE;
 	m_Texture = nullptr;
 	m_Texture = new sf::Texture();
 	m_Type = CBlock::BLOCKTYPE::PROJECTILE;

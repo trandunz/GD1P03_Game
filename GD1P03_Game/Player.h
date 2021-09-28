@@ -23,6 +23,7 @@
 #include "CProjectile.h"
 #include "Bow.h"
 #include "CParticleSystem.h"
+#include "CPotion.h"
 #include "CWorkBench.h"
 
 class CPlayer
@@ -142,6 +143,8 @@ public:
 
 	// Mouse
 	sf::Vector2f m_MousePos;
+
+	sf::Clock m_HPPotionTimer;
 private:
 	
 
@@ -191,6 +194,8 @@ private:
 	CWorkBench* m_WorkBench;
 
 	CProjectile* m_Projectile;
+	CPotion* m_Potion = nullptr;
+
 	std::list<CProjectile> m_Projectiles;
 
 	sf::Clock m_AttackTimer;
