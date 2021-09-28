@@ -177,24 +177,6 @@ void Slime::Update()
 
 		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
 		{
-			// Can Take Fall Damage?
-			if ((vel1.y > 0.0f))
-			{
-				m_bCanFallDamage = true;
-			}
-
-			// Fall Damage
-			if (worldManifold.normal.y > 0 && m_bCanFallDamage)
-			{
-				//std::cout << "A Slime Landed" << "( Impact Velocity: " << impactVelocity.y << ")" << std::endl;
-				if (impactVelocity.y <= -40.5f)
-				{
-					//m_AudioManager->PlayPlayerDeath();
-					TakeDamage(-impactVelocity.y);
-				}
-
-				m_bCanFallDamage = false;
-			}
 
 			if (a->GetBody()->GetFixtureList()->IsSensor() || b->GetBody()->GetFixtureList()->IsSensor())
 			{
@@ -566,7 +548,7 @@ void Slime::Attack()
 			{
 			case Slime::SLIMETYPE::GREEN:
 			{
-				if (DistanceToPlayer <= 130)
+				if (DistanceToPlayer <= 140)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -577,7 +559,7 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::BLUE:
 			{
-				if (DistanceToPlayer <= 110)
+				if (DistanceToPlayer <= 130)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -588,7 +570,7 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::RED:
 			{
-				if (DistanceToPlayer <= 150)
+				if (DistanceToPlayer <= 160)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -599,7 +581,7 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::PURPLE:
 			{
-				if (DistanceToPlayer <= 110)
+				if (DistanceToPlayer <= 130)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -610,7 +592,7 @@ void Slime::Attack()
 			}
 			case Slime::SLIMETYPE::YELLOW:
 			{
-				if (DistanceToPlayer <= 130)
+				if (DistanceToPlayer <= 140)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
@@ -661,7 +643,7 @@ void Slime::Attack()
 			}
 			default:
 			{
-				if (DistanceToPlayer <= 130)
+				if (DistanceToPlayer <= 140)
 				{
 					m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, -200), true);
 					m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);

@@ -13,10 +13,10 @@
 class Spawner
 {
 public:
-	Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer*_player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, CWorldManager* _worldManager);
+	Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer*_player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, CWorldManager* _worldManager, bool _sprite = true);
 	
 	void Start();
-	void Update();
+	void Update(CWorldManager* _worldManager);
 	void Render();
 
 	void LoosePlayer();
@@ -26,6 +26,8 @@ public:
 	int GetSpawnCount();
 
 	void ToggleSpawning();
+
+	void KillAllChilderan();
 
 	~Spawner();
 
@@ -46,6 +48,8 @@ private:
 	bool m_bSpawn = false;
 
 	int m_SpawnCount = 0;
+
+	float m_SpawnFrequency = 7.0f;
 
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;

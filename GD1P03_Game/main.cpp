@@ -30,6 +30,8 @@ void InitShaders();
 void InitGameOver();
 void GameOverScreen();
 
+void Test_KillAllEnemies();
+
 // Mouse
 sf::Vector2f MousePos;
 
@@ -192,19 +194,7 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16400,-3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager);
-	m_SlimeSpawner->ToggleSpawning();
-	m_SlimeSpawner->SetSpawnCount(2);
-	m_SlimeSpawners.push_back(*m_SlimeSpawner);
-	m_SlimeSpawner = nullptr;
-
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -16400, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager);
-	m_SlimeSpawner->ToggleSpawning();
-	m_SlimeSpawner->SetSpawnCount(2);
-	m_SlimeSpawners.push_back(*m_SlimeSpawner);
-	m_SlimeSpawner = nullptr;
-
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16400,-3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager, false);
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
@@ -342,6 +332,10 @@ void Update()
 						{
 							Test_ClearPlayerInventory(true);
 						}
+						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+						{
+							Test_KillAllEnemies();
+						}
 					}
 
 					break;
@@ -406,7 +400,7 @@ void Update()
 		{
 			for (Spawner& spawner : m_SlimeSpawners)
 			{
-				spawner.Update();
+				spawner.Update(m_WorldManager);
 			}
 
 			if (m_AudioManager != nullptr)
@@ -473,7 +467,7 @@ void Update()
 					{
 						spawner.LoosePlayer();
 					}
-					
+					Test_KillAllEnemies();
 
 					m_FadeScreen.setPosition(m_WorldView.getCenter());
 					m_GameOverText.setPosition(m_WorldView.getCenter());
@@ -1703,6 +1697,14 @@ void GameOverScreen()
 	{
 		m_FadeScreen.setFillColor(sf::Color(0, 0, 0, elapsedtime * 255 * 1.5));
 		m_GameOverText.setFillColor(sf::Color(255, 0, 0, elapsedtime * 255 * 1.5));
+	}
+}
+
+void Test_KillAllEnemies()
+{
+	for (Spawner& spawner : m_SlimeSpawners)
+	{
+		spawner.KillAllChilderan();
 	}
 }
 

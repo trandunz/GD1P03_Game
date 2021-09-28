@@ -70,6 +70,9 @@ public:
 
 	void WorldBackGroundColourGradient();
 	void DrawBackGround(sf::Shader* _defaultShader = NULL);
+
+	bool IsObjectInBlock(sf::Sprite _shape);
+	bool PositionIsBlock(sf::Vector2f _pos);
 	
 	// Variables
 	std::list<CBlock> m_Chunk = {};
@@ -108,10 +111,10 @@ private:
 	// Noise
 	double m_Noise[_NOISEHEIGHT_][_NOISEWIDTH_] = {}; // Noise Array (0-1)
 
-	double m_XPeriod = 1; // Defines Repetition Of Marble Lines In x
+	double m_XPeriod = 2; // Defines Repetition Of Marble Lines In x
 	double m_YPeriod = 2; // Defines Repetition Of Marble Lines In y
 	double m_TurbPower = 2.0; // Makes Twists (turbPower = 0 : SinWave)
-	double m_TurbSize = 32.0; // Initial Size Of Turbulence
+	double m_TurbSize = 36.0; // Initial Size Of Turbulence
 
 	// Functions
 	void GenerateNoise();

@@ -204,6 +204,7 @@ private:
 
 	sf::Clock m_HealthRegenTimer;
 
+
 };
 #endif
 

@@ -211,6 +211,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     float Mag1 = 0;
     float x = 0;
     float y = 0;
+
     // Draw Blocks In Range (With Shaders : Player, Tourch, Surface)
     for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
     {
@@ -406,11 +407,11 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
             double xyValue = x * m_XPeriod / _NOISEWIDTH_ + y * m_YPeriod / _NOISEHEIGHT_ + m_TurbPower * Turbulence(x, y, m_TurbSize) / 256.0;
             double sineValue = 256 * fabs(sin(xyValue * _PI_));
 
-            if (sineValue <= 50)
+            if (sineValue <= 70)
             {
                 // Caves
             }
-            else if (sineValue > 80 && sineValue <= 85 && y > 10)
+            else if (sineValue > 95 && sineValue <= 100 && y > 10)
             {
                 // Iron
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
@@ -418,15 +419,15 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            else if (sineValue > 75 && sineValue <= 80 && y > 6)
+            else if (sineValue > 82 && sineValue <= 85 && y > 6)
             {
-                // Gold
+                // coal
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            else if (sineValue > 50 && sineValue <= 55 && y > 70)
+            else if (sineValue > 76 && sineValue <= 79 && y > 60)
             {
                 // Diamond
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIAMONDORE);
@@ -434,25 +435,25 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            else if (sineValue > 50 && sineValue <= 55 && y > 80)
+            else if (sineValue > 74 && sineValue <= 76 && y > 40)
             {
-                // Diamond
+                // gold
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            else if (sineValue > 40 && sineValue <= 45 && y > 90)
+            else if (sineValue > 72 && sineValue <= 74 && y > 80)
             {
-                // Diamond
+                // pruple
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_PurpleOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::PURPLEORE);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            else if (sineValue > 30 && sineValue <= 35 && y > 95)
+            else if (sineValue > 70 && sineValue <= 72 && y > 95)
             {
-                // Diamond
+                // red
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldenOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDENORE);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
@@ -1165,6 +1166,31 @@ void CWorldManager::DrawBackGround(sf::Shader* _defaultShader)
 {
     m_RenderWindow->draw(m_BGPlainsSurface, _defaultShader);
     m_RenderWindow->draw(m_BGPlainsUnderGr, _defaultShader);
+}
+
+bool CWorldManager::IsObjectInBlock(sf::Sprite _shape)
+{
+    for (CBlock& block : m_Chunk)
+    {
+        if (block.GetShape().getGlobalBounds().contains(_shape.getPosition()))
+        {
+            return true;
+            break;
+        }
+    }
+    return false;
+}
+
+bool CWorldManager::PositionIsBlock(sf::Vector2f _pos)
+{
+    for (CBlock& block : m_Chunk)
+    {
+        if (block.GetShape().getGlobalBounds().contains(_pos) || block.GetShape().getGlobalBounds().contains(_pos.x + 100 , _pos.y + 100) || block.GetShape().getGlobalBounds().contains(_pos.x - 100, _pos.y + 100) || block.GetShape().getGlobalBounds().contains(_pos.x + 100, _pos.y - 100) || block.GetShape().getGlobalBounds().contains(_pos.x - 100, _pos.y - 100))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void CWorldManager::GenerateNoise()
