@@ -84,13 +84,13 @@ CTextureMaster::CTextureMaster()
 	m_GoldenOre->loadFromFile("Images/GoldenOre.png");
 
 	m_Arrow = new sf::Texture();
-	m_Arrow->loadFromFile("Images/GoldenOre.png");
+	m_Arrow->loadFromFile("Images/Arrow.png");
 	m_FireArrow = new sf::Texture();
-	m_FireArrow->loadFromFile("Images/GoldenOre.png");
+	m_FireArrow->loadFromFile("Images/FireArrow.png");
 	m_CursedArrow = new sf::Texture();
-	m_CursedArrow->loadFromFile("Images/GoldenOre.png");
+	m_CursedArrow->loadFromFile("Images/CursedArrow.png");
 	m_PoisonArrow = new sf::Texture();
-	m_PoisonArrow->loadFromFile("Images/GoldenOre.png");
+	m_PoisonArrow->loadFromFile("Images/PoisonArrow.png");
 
 	m_GlassBeaker = new sf::Texture();
 	m_GlassBeaker->loadFromFile("Images/GlassBeaker.png");

@@ -1568,7 +1568,7 @@ void Test_ClearPlayerInventory(bool _giveStarterItems)
 					if (m_Player->m_InventoryStackValues[i] == 0)
 					{
 						m_Pickaxe = new CPickaxe();
-						m_Player->AddItemToInventory(m_Pickaxe, i, false);
+						m_Player->AddItemToInventory(m_Pickaxe, 0, false);
 						m_Pickaxe = nullptr;
 						break;
 					}
@@ -1582,7 +1582,7 @@ void Test_ClearPlayerInventory(bool _giveStarterItems)
 					if (m_Player->m_InventoryStackValues[i] == 0)
 					{
 						m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
-						m_Player->AddItemToInventory(m_Bow, i, false);
+						m_Player->AddItemToInventory(m_Bow, 1, false);
 						m_Bow = nullptr;
 						break;
 					}
@@ -1594,7 +1594,7 @@ void Test_ClearPlayerInventory(bool _giveStarterItems)
 				if (m_Player->m_InventoryStackValues[i] == 0)
 				{
 					m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
-					m_Player->AddItemToInventory(m_Potion, i);
+					m_Player->AddItemToInventory(m_Potion, 2);
 					m_Potion = nullptr;
 					break;
 				}
@@ -1608,7 +1608,7 @@ void Test_ClearPlayerInventory(bool _giveStarterItems)
 					for (int i = 0; i < 15; i++)
 					{
 						CProjectile* temp = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
-						m_Player->AddItemToInventory(temp, i);
+						m_Player->AddItemToInventory(temp, 3);
 						temp = nullptr;
 					}
 
