@@ -29,6 +29,27 @@ CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 		m_Texture->loadFromFile("Images/CursedArrow.png");
 		m_Damage = 75.0f;
 		break;
+
+	case CBlock::PROJECTILETYPE::IRONBULLET:
+		m_Texture->loadFromFile("Images/IronBullet.png");
+		m_Damage = 100.0f;
+		m_Bullet = true;
+		break;
+	case CBlock::PROJECTILETYPE::GOLDBULLET:
+		m_Texture->loadFromFile("Images/GoldBullet.png");
+		m_Damage = 125.0f;
+		m_Bullet = true;
+		break;
+	case CBlock::PROJECTILETYPE::PURPLEBULLET:
+		m_Texture->loadFromFile("Images/PurpleBullet.png");
+		m_Damage = 150.0f;
+		m_Bullet = true;
+		break;
+	case CBlock::PROJECTILETYPE::GOLDENBULLET:
+		m_Texture->loadFromFile("Images/GoldenBullet.png");
+		m_Damage = 175.0f;
+		m_Bullet = true;
+		break;
 	default:
 		m_Texture->loadFromFile("Images/Arrow.png");
 		m_Damage = 25.0f;
@@ -67,6 +88,27 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 		m_Texture->loadFromFile("Images/CursedArrow.png");
 		m_Damage = 75.0f;
 		break;
+
+	case CBlock::PROJECTILETYPE::IRONBULLET:
+		m_Texture->loadFromFile("Images/IronBullet.png");
+		m_Damage = 100.0f;
+		m_Bullet = true;
+		break;
+	case CBlock::PROJECTILETYPE::GOLDBULLET:
+		m_Texture->loadFromFile("Images/GoldBullet.png");
+		m_Damage = 125.0f;
+		m_Bullet = true;
+		break;
+	case CBlock::PROJECTILETYPE::PURPLEBULLET:
+		m_Texture->loadFromFile("Images/PurpleBullet.png");
+		m_Damage = 150.0f;
+		m_Bullet = true;
+		break;
+	case CBlock::PROJECTILETYPE::GOLDENBULLET:
+		m_Texture->loadFromFile("Images/GoldenBullet.png");
+		m_Damage = 175.0f;
+		m_Bullet = true;
+		break;
 	default:
 		m_Texture->loadFromFile("Images/Arrow.png");
 		m_Damage = 25.0f;
@@ -90,7 +132,10 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 	{
 		float dx = _mousPos.x - m_Shape.getPosition().x;
 		float dy = _mousPos.y - m_Shape.getPosition().y;
-		m_Body->SetLinearVelocity(b2Vec2(dx / 25 / m_Weight, dy / 25 / m_Weight));
+
+		m_Body->SetLinearVelocity(b2Vec2(dx, dy));
+		
+		std::cout << dx << " (:) " << dy << std::endl;
 	}
 }
 
@@ -114,7 +159,18 @@ void CProjectile::Update()
 
 		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
 		{
-			m_bMARKASDESTROY = true;
+			if (a->GetBody() != m_Body && a->GetBody()->GetFixtureList()->IsSensor())
+			{
+
+			}
+			else if (b->GetBody() != m_Body && b->GetBody()->GetFixtureList()->IsSensor())
+			{
+
+			}
+			else
+			{
+				m_bMARKASDESTROY = true;
+			}
 		}
 
 		a = nullptr;
@@ -123,8 +179,12 @@ void CProjectile::Update()
 	contact = nullptr;
 
 	// Rotation
-	float rot = atan2(m_Body->GetLinearVelocity().y, m_Body->GetLinearVelocity().x);
-	m_Body->SetTransform(m_Body->GetPosition(), rot);
+	if (!m_Bullet)
+	{
+		float rot = atan2(m_Body->GetLinearVelocity().y, m_Body->GetLinearVelocity().x);
+		m_Body->SetTransform(m_Body->GetPosition(), rot);
+	}
+
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 	m_Shape.setPosition(m_Body->GetPosition().x * 50.0f, m_Body->GetPosition().y * 50.0f);
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
@@ -148,8 +208,18 @@ void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _s
 	//
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
-	// Shape
-	m_b2pShape.SetAsBox((30 / 2) / 50.0f, (10 / 2) / 50.0f);
+	// Bullet
+	if (m_Bullet)
+	{
+		m_b2pShape.SetAsBox((10 / 2) / 50.0f, (10 / 2) / 50.0f);
+		m_Body->SetGravityScale(0);
+	}
+	// Arrow
+	else
+	{
+		m_b2pShape.SetAsBox((10 / 2) / 50.0f, (10 / 2) / 50.0f);
+	}
+
 
 	// Fixture
 	if (_sensor)

@@ -1185,7 +1185,7 @@ bool CWorldManager::PositionIsBlock(sf::Vector2f _pos)
 {
     for (CBlock& block : m_Chunk)
     {
-        if (block.GetShape().getGlobalBounds().contains(_pos) || block.GetShape().getGlobalBounds().contains(_pos.x + 100 , _pos.y + 100) || block.GetShape().getGlobalBounds().contains(_pos.x - 100, _pos.y + 100) || block.GetShape().getGlobalBounds().contains(_pos.x + 100, _pos.y - 100) || block.GetShape().getGlobalBounds().contains(_pos.x - 100, _pos.y - 100))
+        if (block.GetShape().getGlobalBounds().contains(_pos) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x - 50, _pos.y - 50)) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x + 50, _pos.y + 50)) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x - 50, _pos.y + 50)) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x + 50, _pos.y - 50)))
         {
             return true;
         }

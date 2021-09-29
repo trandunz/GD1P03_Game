@@ -49,7 +49,7 @@ private:
 
 	int m_SpawnCount = 0;
 
-	float m_SpawnFrequency = 7.0f;
+	float m_SpawnFrequency = 4.0f;
 
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;

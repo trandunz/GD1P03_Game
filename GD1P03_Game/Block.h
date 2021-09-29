@@ -62,6 +62,8 @@ public:
 		POTION = 31,
 		EMPTYBEAKER = 32,
 		REDSLIME = 33,
+		SWORD = 34,
+		BROKENSWORD = 35,
 	};
 
 	enum class PICKAXETYPE
@@ -84,7 +86,13 @@ public:
 		IRON,
 		GOLDEN,
 		PURPLE,
-		GREEN
+		GREEN,
+		
+		IRONGUN,
+		GOLDGUN,
+		PURPLEGUN,
+		GOLDENGUN,
+		GREENGUN,
 	};
 
 	enum class PROJECTILETYPE
@@ -92,13 +100,30 @@ public:
 		ARROW = 0,
 		FIREARROW,
 		CURSEDARROW,
-		POISONARROW
+		POISONARROW,
+
+		IRONBULLET,
+		GOLDBULLET,
+		PURPLEBULLET,
+		GOLDENBULLET,
 	};
 
 	enum class POTIONTYPE
 	{
 		HPSMALL = 0,
 		HPLARGE,
+	};
+
+	enum class SWORDTYPE
+	{
+		WOOD = 0,
+		ANCIENT,
+		FLAME,
+		GOD,
+		GOLDEN,
+		GREEN,
+		PURPLE,
+		SLIME,
 	};
 
 	CBlock();
@@ -158,6 +183,7 @@ public:
 	BOWTYPE m_BowType = BOWTYPE::BASIC;
 	PROJECTILETYPE m_ProjectileType = PROJECTILETYPE::ARROW;
 	POTIONTYPE m_PotionType = POTIONTYPE::HPSMALL;
+	SWORDTYPE m_SwordType = SWORDTYPE::WOOD;
 protected:
 	sf::RenderWindow* m_RenderWindow;
 

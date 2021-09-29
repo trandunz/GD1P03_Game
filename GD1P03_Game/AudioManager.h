@@ -39,6 +39,8 @@ public:
 
 	void PlayPotionDrink();
 
+	void PlayGunShot();
+
 	int m_MusicLevel = 1;
 
 private:
@@ -65,6 +67,9 @@ private:
 
 	sf::Sound m_PotionDrinkSound;
 	sf::SoundBuffer m_PotionDrinkBuffer;
+
+	sf::Sound m_GunShotSound;
+	sf::SoundBuffer m_GunShotBuffer;
 
 	sf::SoundBuffer m_MineBuffer1;
 	sf::SoundBuffer m_MineBuffer2;

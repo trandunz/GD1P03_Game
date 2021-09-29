@@ -26,6 +26,8 @@ CAudioManager::CAudioManager()
 	m_KingSlimeSpawnBuffer.loadFromFile("Sounds/SlimeKingSpawn.wav");
 	m_PotionDrinkBuffer.loadFromFile("Sounds/PotionDrink.wav");
 
+	m_GunShotBuffer.loadFromFile("Sounds/GunShot.wav");
+
 	MineSoundBuffers[0] = m_MineBuffer1;
 	MineSoundBuffers[1] = m_MineBuffer2;
 	MineSoundBuffers[2] = m_MineBuffer3;
@@ -208,4 +210,11 @@ void CAudioManager::PlayPotionDrink()
 	m_PotionDrinkSound.setBuffer(m_PotionDrinkBuffer);
 	m_PotionDrinkSound.setVolume(30.0f);
 	m_PotionDrinkSound.play();
+}
+
+void CAudioManager::PlayGunShot()
+{
+	m_GunShotSound.setBuffer(m_GunShotBuffer);
+	m_GunShotSound.setVolume(30.0f);
+	m_GunShotSound.play();
 }

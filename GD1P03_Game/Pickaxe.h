@@ -16,9 +16,6 @@ public:
 	void Update();
 	void Render();
 
-
-	bool m_bOpen = false;
-
 	float m_PickaxePower = 1.0f;
 
 	sf::Sprite* m_Sprite;

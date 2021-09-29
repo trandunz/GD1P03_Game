@@ -28,5 +28,7 @@ private:
 
 	int m_Damage = 25.0f;
 
+	bool m_Bullet = false;
+
 };
 #endif

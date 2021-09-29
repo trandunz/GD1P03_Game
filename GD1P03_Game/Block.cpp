@@ -22,7 +22,8 @@ CBlock::CBlock(sf::Texture* _texture, BLOCKTYPE _type)
 	m_Type = _type;
 	m_Texture = _texture;
 	m_Shape.setTexture(*_texture, true);
-	m_Shape.setScale(0.3f, 0.3f);
+
+	m_Shape.setScale(0.2f, 0.2f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 
 	Start();

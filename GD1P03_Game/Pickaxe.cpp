@@ -61,7 +61,7 @@ CPickaxe::CPickaxe(PICKAXETYPE _pickType)
 	m_Sprite->setOrigin(m_Sprite->getGlobalBounds().width / 2, m_Sprite->getGlobalBounds().height / 2);
 
 	m_Shape.setTexture(*m_Texture, true);
-	m_Shape.setScale(0.3f, 0.3f);
+	m_Shape.setScale(0.2f, 0.2f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2 , m_Shape.getGlobalBounds().height / 2);
 }
 

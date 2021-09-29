@@ -13,6 +13,7 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_Chest = nullptr;
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
+	m_Sword = nullptr;
 
 	// Textures
 	m_PlayerRightTex = new sf::Texture();
@@ -59,6 +60,10 @@ CPlayer::~CPlayer()
 	{
 		delete m_Bow;
 	}
+	if (m_Sword != nullptr)
+	{
+		delete m_Sword;
+	}
 	delete m_MapIconTexRight;
 	delete m_MapIconTex;
 	delete m_PlayerRightTex;
@@ -69,6 +74,7 @@ CPlayer::~CPlayer()
 	delete m_DamageTimer;
 	delete m_DamageIndicatorTimer;
 
+	m_Sword = nullptr;
 	m_DamageIndicatorTimer = nullptr;
 	m_DamageTimer = nullptr;
 	m_MineTimer = nullptr;
@@ -151,6 +157,11 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	{
 		m_Bow->FlipSprite(m_Shape.getPosition(), m_Shape, m_PlayerLeftTex, m_PlayerRightTex);
 	}
+	// Player Has Sword ? Orient Sprite
+	else if (m_Sword != nullptr)
+	{
+		m_Sword->FlipSprite(m_Shape.getPosition(), m_Shape, m_PlayerLeftTex, m_PlayerRightTex);
+	}
 
 	// Holdable Items (Pickaxe, Bow e.t.c)
 	std::map<int, CBlock>::iterator cit;
@@ -170,6 +181,12 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 				m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale,m_Shape.getPosition().x, m_Shape.getPosition().y, cit->second.m_BowType);
 				cit->second.m_bIsItemAndSelected = false;
 			}
+			else if (m_Bow == nullptr && cit->second.m_Type == CBlock::BLOCKTYPE::SWORD)
+			{
+				std::cout << "New Sword Created!" << std::endl;
+				m_Sword = new CSword(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, cit->second.m_SwordType);
+				cit->second.m_bIsItemAndSelected = false;
+			}
 
 			// Outer For
 			break;
@@ -185,6 +202,11 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	{
 		delete m_Bow;
 		m_Bow = nullptr;
+	}
+	else if (m_InventoryMap[m_CurrentItemIndex].m_Type != CBlock::BLOCKTYPE::SWORD && m_Sword != nullptr)
+	{
+		delete m_Sword;
+		m_Sword = nullptr;
 	}
 	
 	// Collision Constacts
@@ -252,7 +274,11 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	// Player Has Bow Out ? Attack()
 	if (m_Bow != nullptr)
 	{
-		Attack();
+		Attack(m_Bow);
+	}
+	else if (m_Sword != nullptr)
+	{
+		Attack(m_Sword);
 	}
 
 	// Update All Projectiles
@@ -295,6 +321,11 @@ void CPlayer::Render(sf::Shader* _defaultShader)
 	if (m_Bow != nullptr)
 	{
 		m_Bow->Render();
+	}
+	// Player Has Sword ? Render()
+	if (m_Sword != nullptr)
+	{
+		m_Sword->Render();
 	}
 
 	// Draw All Projectiles
@@ -545,6 +576,60 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		else if (m_Bow != nullptr)
 		{
 		}
+		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::POTION)
+		{
+			switch (m_InventoryMap[m_CurrentItemIndex].m_PotionType)
+			{
+			case CBlock::POTIONTYPE::HPSMALL:
+			{
+				if (m_HPPotionTimer.getElapsedTime().asSeconds() >= 10.0f)
+				{
+					Heal(50.0f);
+
+					// Decrement Stack Counter / Remove Item From Inventory
+					if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+					{
+						RemoveItemFromInventory(m_CurrentItemIndex);
+					}
+					else
+					{
+						m_InventoryStackValues[m_CurrentItemIndex]--;
+					}
+
+					m_AudioManager->PlayPotionDrink();
+
+					m_HPPotionTimer.restart();
+				}
+
+				break;
+			}
+			case CBlock::POTIONTYPE::HPLARGE:
+			{
+				if (m_HPPotionTimer.getElapsedTime().asSeconds() >= 10.0f)
+				{
+					Heal(100.0f);
+
+					// Decrement Stack Counter / Remove Item From Inventory
+					if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+					{
+						RemoveItemFromInventory(m_CurrentItemIndex);
+					}
+					else
+					{
+						m_InventoryStackValues[m_CurrentItemIndex]--;
+					}
+
+					m_AudioManager->PlayPotionDrink();
+
+					m_HPPotionTimer.restart();
+				}
+
+				break;
+			}
+			default:
+				break;
+			}
+		}
 		// Left Mouse Clicked And In Empty Space
 		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite) && bMouseNotOver(m_WorkBenches, _mousePositionSprite) && _mousePositionSprite.getGlobalBounds().contains(m_MousePos))
 		{
@@ -564,57 +649,6 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			// Potions
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::POTION)
 			{
-				switch (m_InventoryMap[m_CurrentItemIndex].m_PotionType)
-				{
-				case CBlock::POTIONTYPE::HPSMALL:
-				{
-					if (m_HPPotionTimer.getElapsedTime().asSeconds() >= 10.0f)
-					{
-						Heal(50.0f);
-
-						// Decrement Stack Counter / Remove Item From Inventory
-						if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
-						{
-							RemoveItemFromInventory(m_CurrentItemIndex);
-						}
-						else
-						{
-							m_InventoryStackValues[m_CurrentItemIndex]--;
-						}
-
-						m_AudioManager->PlayPotionDrink();
-
-						m_HPPotionTimer.restart();
-					}
-
-					break;
-				}
-				case CBlock::POTIONTYPE::HPLARGE:
-				{
-					if (m_HPPotionTimer.getElapsedTime().asSeconds() >= 10.0f)
-					{
-						Heal(100.0f);
-
-						// Decrement Stack Counter / Remove Item From Inventory
-						if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
-						{
-							RemoveItemFromInventory(m_CurrentItemIndex);
-						}
-						else
-						{
-							m_InventoryStackValues[m_CurrentItemIndex]--;
-						}
-
-						m_AudioManager->PlayPotionDrink();
-
-						m_HPPotionTimer.restart();
-					}
-
-					break;
-				}
-				default:
-					break;
-				}
 			}
 			// Iron Ingot
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::IRONINGOT)
@@ -654,6 +688,18 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::WORKBENCH)
 			{
 				PlaceWorkBench(m_WorkBenches, _mousePositionSprite);
+			}
+			// SWORDS
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::SWORD)
+			{
+			}
+			// BROKEN SWORD
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::BROKENSWORD)
+			{
+			}
+			// EMPTY BEAKER
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::EMPTYBEAKER)
+			{
 			}
 			// Place Block
 			else
@@ -781,56 +827,141 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 	}
 }
 
-void CPlayer::Attack()
+void CPlayer::Attack(CBlock* _item)
 {
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && m_AttackTimer.getElapsedTime().asSeconds() >= m_AttackSpeed)
+	if (_item->m_BowType == CBlock::BOWTYPE::IRONGUN)
 	{
-		for (int i = 0; i < m_InventoryMap.size(); i++)
-		{
-			if (m_InventoryMap[i].m_Type == CBlock::BLOCKTYPE::PROJECTILE && m_InventoryStackValues[i] > 0)
-			{
-				m_AudioManager->PlayBowShot();
-				switch (m_InventoryMap[i].m_ProjectileType)
-				{
-				case CBlock::PROJECTILETYPE::ARROW:
-				{
-					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::ARROW, m_Bow);
-					break;
-				}
-				case CBlock::PROJECTILETYPE::FIREARROW:
-				{
-					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos,	CBlock::PROJECTILETYPE::FIREARROW, m_Bow);
-					break;
-				}
-				case CBlock::PROJECTILETYPE::CURSEDARROW:
-				{
-					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::CURSEDARROW, m_Bow);
-					break;
-				}
-				case CBlock::PROJECTILETYPE::POISONARROW:
-				{
-					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::POISONARROW, m_Bow);
-					break;
-				}
-				default:
-					m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::ARROW, m_Bow);
-					break;
-				}
-				m_Projectiles.push_back(*m_Projectile);
+		m_AttackSpeed = 0.7f;
+	}
+	else if (_item->m_BowType == CBlock::BOWTYPE::GOLDGUN)
+	{
+		m_AttackSpeed = 0.6f;
+	}
+	else if (_item->m_BowType == CBlock::BOWTYPE::PURPLEGUN)
+	{
+		m_AttackSpeed = 0.5f;
+	}
+	else if (_item->m_BowType == CBlock::BOWTYPE::GOLDENGUN)
+	{
+		m_AttackSpeed = 0.4f;
+	}
+	else if (_item->m_BowType == CBlock::BOWTYPE::GREENGUN)
+	{
+		m_AttackSpeed = 0.3f;
+	}
+	else
+	{
+		m_AttackSpeed = 0.8f;
+	}
 
-				if (m_InventoryStackValues[i] <= 1)
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && m_AttackTimer.getElapsedTime().asSeconds() >= m_AttackSpeed && !m_bInventoryOpen)
+	{
+		if (_item->m_Type == CBlock::BLOCKTYPE::BOW)
+		{
+			for (int i = 0; i < m_InventoryMap.size(); i++)
+			{
+				if (m_InventoryMap[i].m_Type == CBlock::BLOCKTYPE::PROJECTILE && m_InventoryStackValues[i] > 0 && _item->m_BowType <= CBlock::BOWTYPE::GREEN && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::GOLDENBULLET && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::PURPLEBULLET && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::GOLDBULLET && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::IRONBULLET)
 				{
-					RemoveItemFromInventory(i);
+					switch (m_InventoryMap[i].m_ProjectileType)
+					{
+					case CBlock::PROJECTILETYPE::ARROW:
+					{
+						m_AudioManager->PlayBowShot();
+						m_Projectile = new CProjectile(*m_World, m_Bow->m_Sprite->getPosition().x, m_Bow->m_Sprite->getPosition().y, m_MousePos, CBlock::PROJECTILETYPE::ARROW, m_Bow);
+						break;
+					}
+					case CBlock::PROJECTILETYPE::FIREARROW:
+					{
+						m_AudioManager->PlayBowShot();
+						m_Projectile = new CProjectile(*m_World, m_Bow->m_Sprite->getPosition().x, m_Bow->m_Sprite->getPosition().y, m_MousePos, CBlock::PROJECTILETYPE::FIREARROW, m_Bow);
+						break;
+					}
+					case CBlock::PROJECTILETYPE::CURSEDARROW:
+					{
+						m_AudioManager->PlayBowShot();
+						m_Projectile = new CProjectile(*m_World, m_Bow->m_Sprite->getPosition().x, m_Bow->m_Sprite->getPosition().y, m_MousePos, CBlock::PROJECTILETYPE::CURSEDARROW, m_Bow);
+						break;
+					}
+					case CBlock::PROJECTILETYPE::POISONARROW:
+					{
+						m_AudioManager->PlayBowShot();
+						m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x, m_Shape.getPosition().y - 50, m_MousePos, CBlock::PROJECTILETYPE::POISONARROW, m_Bow);
+						break;
+					}
+					default:
+						break;
+					}
+
+					if (m_Projectile != nullptr)
+					{
+						m_Projectiles.push_back(*m_Projectile);
+
+						if (m_InventoryStackValues[i] <= 1)
+						{
+							RemoveItemFromInventory(i);
+						}
+						else
+						{
+							m_InventoryStackValues[i]--;
+						}
+					}
+					
+					break;
 				}
-				else
+				else if (m_InventoryMap[i].m_Type == CBlock::BLOCKTYPE::PROJECTILE && m_InventoryStackValues[i] > 0 && _item->m_BowType > CBlock::BOWTYPE::GREEN && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::POISONARROW && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::CURSEDARROW && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::FIREARROW && m_InventoryMap[i].m_ProjectileType != CBlock::PROJECTILETYPE::ARROW)
 				{
-					m_InventoryStackValues[i]--;
+					switch (m_InventoryMap[i].m_ProjectileType)
+					{
+					case CBlock::PROJECTILETYPE::IRONBULLET:
+					{
+						m_AudioManager->PlayGunShot();
+						m_Projectile = new CProjectile(*m_World, m_Bow->m_Sprite->getPosition().x, m_Bow->m_Sprite->getPosition().y, m_MousePos, CBlock::PROJECTILETYPE::IRONBULLET);
+						break;
+					}
+					case CBlock::PROJECTILETYPE::GOLDBULLET:
+					{
+						m_AudioManager->PlayGunShot();
+						m_Projectile = new CProjectile(*m_World, m_Bow->m_Sprite->getPosition().x, m_Bow->m_Sprite->getPosition().y, m_MousePos, CBlock::PROJECTILETYPE::GOLDBULLET);
+						break;
+					}
+					case CBlock::PROJECTILETYPE::PURPLEBULLET:
+					{
+						m_AudioManager->PlayGunShot();
+						m_Projectile = new CProjectile(*m_World, m_Bow->m_Sprite->getPosition().x, m_Bow->m_Sprite->getPosition().y, m_MousePos, CBlock::PROJECTILETYPE::PURPLEBULLET);
+						break;
+					}
+					case CBlock::PROJECTILETYPE::GOLDENBULLET:
+					{
+						m_AudioManager->PlayGunShot();
+						m_Projectile = new CProjectile(*m_World, m_Bow->m_Sprite->getPosition().x, m_Bow->m_Sprite->getPosition().y, m_MousePos, CBlock::PROJECTILETYPE::GOLDENBULLET);
+						break;
+					}
+					default:
+					{
+						break;
+					}
+					}
+					
+					if (m_Projectile != nullptr)
+					{
+						m_Projectiles.push_back(*m_Projectile);
+
+						if (m_InventoryStackValues[i] <= 1)
+						{
+							RemoveItemFromInventory(i);
+						}
+						else
+						{
+							m_InventoryStackValues[i]--;
+						}
+					}
+					break;
 				}
-				break;
+
 			}
+			m_Projectile = nullptr;
+			m_AttackTimer.restart();
 		}
-		m_Projectile = nullptr;
-		m_AttackTimer.restart();
 	}
 }
 
@@ -870,6 +1001,16 @@ Bow* CPlayer::GetBow()
 void CPlayer::SetBow(Bow* _bow)
 {
 	m_Bow = _bow;
+}
+
+CSword* CPlayer::GetSword()
+{
+	return m_Sword;
+}
+
+void CPlayer::SetSword(CSword* _sword)
+{
+	m_Sword = _sword;
 }
 
 int CPlayer::GetCurrentHP()
@@ -1013,7 +1154,7 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 	std::map<int, CBlock>::iterator it;
 	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
 	{
-		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType && it->second.m_PotionType == _block->m_PotionType)
+		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType && it->second.m_PotionType == _block->m_PotionType && it->second.m_SwordType == _block->m_SwordType)
 		{
 			// increase number of that type
 			m_InventoryStackValues[it->first]++;
@@ -1033,29 +1174,33 @@ void CPlayer::AddItemToInventory(CBlock* _block, bool _canStack)
 		}
 		else
 		{
-			//
-			// Reading From File??
-			//
-			std::string line;
-			std::ifstream myfile("Output/FirstEmptyInventorySlot.txt");
-			myfile.is_open();
-			int firstEmpty = 0;
-			myfile >> firstEmpty;
+			if (m_InventorySize < 49)
+			{
+				//
+				// Reading From File??
+				//
+				std::string line;
+				std::ifstream myfile("Output/FirstEmptyInventorySlot.txt");
+				myfile.is_open();
+				int firstEmpty = 0;
+				myfile >> firstEmpty;
 
-			_block->GetShape().setScale(0.4f, 0.4f);
-			_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
-			m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
-			m_InventorySize++;
-			// increase number of that type
-			m_InventoryStackValues[firstEmpty]++;
-			_block->m_PositionInInventory = firstEmpty;
-			m_InventoryMap.insert_or_assign(firstEmpty, *_block);
-			//std::cout << "Added Item To Inventory - ";
-			std::cout << firstEmpty << std::endl;
+				_block->GetShape().setScale(0.4f, 0.4f);
+				_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+				m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
+				m_InventorySize++;
+				// increase number of that type
+				m_InventoryStackValues[firstEmpty]++;
+				_block->m_PositionInInventory = firstEmpty;
+				m_InventoryMap.insert_or_assign(firstEmpty, *_block);
+				//std::cout << "Added Item To Inventory - ";
+				std::cout << firstEmpty << std::endl;
 
-			myfile.close();
+				myfile.close();
 
-			m_AudioManager->PlayPickupSound();
+				m_AudioManager->PlayPickupSound();
+			}
+			
 		}
 	}
 	else
@@ -1105,8 +1250,38 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 		}
 		else
 		{
-			_block->GetShape().setScale(0.4f, 0.4f);
-			_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+			if (m_InventorySize < 49)
+			{
+				_block->GetShape().setScale(0.4f, 0.4f);
+				_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+				m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
+				m_InventorySize++;
+				// increase number of that type
+				m_InventoryStackValues[_position]++;
+				_block->m_PositionInInventory = _position;
+				m_InventoryMap.insert_or_assign(_position, *_block);
+				//std::cout << "Added Item To Inventory - ";
+				//std::cout << _position << std::endl;
+
+				m_AudioManager->PlayPickupSound();
+			}
+		}
+	}
+	else
+	{
+		if (m_InventorySize < 49)
+		{
+			if (_block->m_Type == CBlock::BLOCKTYPE::DOOR)
+			{
+				_block->GetShape().setScale(0.23f, 0.23f);
+				_block->GetShape().setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 - m_Shape.getGlobalBounds().height / 3.75f);
+			}
+			else
+			{
+				_block->GetShape().setScale(0.4f, 0.4f);
+				_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
+			}
+
 			m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
 			m_InventorySize++;
 			// increase number of that type
@@ -1114,25 +1289,10 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 			_block->m_PositionInInventory = _position;
 			m_InventoryMap.insert_or_assign(_position, *_block);
 			//std::cout << "Added Item To Inventory - ";
-			//std::cout << _position << std::endl;
+			std::cout << _position << std::endl;
 
 			m_AudioManager->PlayPickupSound();
 		}
-	}
-	else
-	{
-		_block->GetShape().setScale(0.4f, 0.4f);
-		_block->GetShape().setOrigin(_block->GetShape().getGlobalBounds().width / 2, _block->GetShape().getGlobalBounds().height / 2);
-		m_RenderWindow->mapCoordsToPixel(_block->GetShape().getPosition());
-		m_InventorySize++;
-		// increase number of that type
-		m_InventoryStackValues[_position]++;
-		_block->m_PositionInInventory = _position;
-		m_InventoryMap.insert_or_assign(_position, *_block);
-		//std::cout << "Added Item To Inventory - ";
-		std::cout << _position << std::endl;
-
-		m_AudioManager->PlayPickupSound();
 	}
 	
 }
@@ -1199,11 +1359,20 @@ void CPlayer::RemoveItemFromInventory(int _position)
 				}
 				m_Bow = nullptr;
 			}
+			if (it->second.m_Type == CBlock::BLOCKTYPE::SWORD)
+			{
+				if (m_Sword != nullptr)
+				{
+					delete m_Sword;
+				}
+				m_Sword = nullptr;
+			}
 
 			while (m_InventoryStackValues[_position] > 0)
 			{
 				m_InventoryStackValues[_position]--;
 			}
+			m_InventorySize--;
 			it = m_InventoryMap.erase(it);
 
 			return;
@@ -1588,6 +1757,17 @@ void CPlayer::OutPutInventoryToFile()
 
 	//
 	// output_inventory_types
+	out_file.open("Output/output_inventory_swordtypes.txt");
+	out_file.clear();
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << (int)m_InventoryMap[i].m_SwordType << std::endl;
+	}
+
+	out_file.close();
+
+	//
+	// output_inventory_types
 	out_file.open("Output/output_inventory_projtypes.txt");
 	out_file.clear();
 	for (int i = 0; i < m_InventoryMap.size(); i++)
@@ -1614,8 +1794,16 @@ void CPlayer::InputInventoryToFile()
 	//
 	// Reading From File??
 	//
-	std::ifstream xoutputs("Output/output_inventory_types.txt");
 	int types[50] = {};
+	int stackvalues[50] = {};
+	int bowtypes[50] = {};
+	int swordtypes[50] = {};
+	int picktypes[50] = {};
+	int projtypes[50] = {};
+	int potiontypes[50] = {};
+
+	// Main Types
+	std::ifstream xoutputs("Output/output_inventory_types.txt");
 	if (xoutputs.is_open())
 	{
 		for (int i = 0; i < 50; i++)
@@ -1625,8 +1813,8 @@ void CPlayer::InputInventoryToFile()
 		xoutputs.close();
 	}
 
+	// Stack Values
 	xoutputs.open("Output/output_inventory_stackvalues.txt");
-	int stackvalues[50] = {};
 	if (xoutputs.is_open())
 	{
 		for (int i = 0; i < 50; i++)
@@ -1636,8 +1824,8 @@ void CPlayer::InputInventoryToFile()
 		xoutputs.close();
 	}
 
+	// Bow Types
 	xoutputs.open("Output/output_inventory_bowtypes.txt");
-	int bowtypes[50] = {};
 	if (xoutputs.is_open())
 	{
 		for (int i = 0; i < 50; i++)
@@ -1647,8 +1835,19 @@ void CPlayer::InputInventoryToFile()
 		xoutputs.close();
 	}
 
+	// Sword Types
+	xoutputs.open("Output/output_inventory_swordtypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> swordtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	// Pick Types
 	xoutputs.open("Output/output_inventory_pickaxetypes.txt");
-	int picktypes[50] = {};
 	if (xoutputs.is_open())
 	{
 		for (int i = 0; i < 50; i++)
@@ -1658,8 +1857,8 @@ void CPlayer::InputInventoryToFile()
 		xoutputs.close();
 	}
 
+	// Projectile Types
 	xoutputs.open("Output/output_inventory_projtypes.txt");
-	int projtypes[50] = {};
 	if (xoutputs.is_open())
 	{
 		for (int i = 0; i < 50; i++)
@@ -1669,8 +1868,8 @@ void CPlayer::InputInventoryToFile()
 		xoutputs.close();
 	}
 
+	// PotionTypes
 	xoutputs.open("Output/output_inventory_potiontypes.txt");
-	int potiontypes[50] = {};
 	if (xoutputs.is_open())
 	{
 		for (int i = 0; i < 50; i++)
@@ -1987,6 +2186,41 @@ void CPlayer::InputInventoryToFile()
 						m_Bow = nullptr;
 						break;
 					}
+					case 8:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::IRONGUN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 9:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::GOLDGUN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 10:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::PURPLEGUN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 11:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::GOLDENGUN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
+					case 12:
+					{
+						m_Bow = new Bow(CBlock::BOWTYPE::GREENGUN);
+						AddItemToInventory(m_Bow, i, false);
+						m_Bow = nullptr;
+						break;
+					}
 					default:
 						break;
 					}
@@ -2151,6 +2385,34 @@ void CPlayer::InputInventoryToFile()
 						m_Projectile = nullptr;
 						break;
 					}
+					case 4:
+					{
+						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::IRONBULLET);
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
+					case 5:
+					{
+						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::GOLDBULLET);
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
+					case 6:
+					{
+						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::PURPLEBULLET);
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
+					case 7:
+					{
+						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::GOLDENBULLET);
+						AddItemToInventory(m_Projectile, i, true);
+						m_Projectile = nullptr;
+						break;
+					}
 					default:
 						break;
 					}
@@ -2202,6 +2464,86 @@ void CPlayer::InputInventoryToFile()
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
 					m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 34:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					switch (swordtypes[i])
+					{
+					case 0:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::WOOD);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					case 1:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::ANCIENT);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					case 2:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::FLAME);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					case 3:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::GOD);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					case 4:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::GOLDEN);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					case 5:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::GREEN);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					case 6:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::PURPLE);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					case 7:
+					{
+						m_Sword = new CSword(CBlock::SWORDTYPE::SLIME);
+						AddItemToInventory(m_Sword, i, false);
+						m_Sword = nullptr;
+						break;
+					}
+					default:
+						break;
+					}
+				}
+
+				break;
+			}
+			case 35:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::BROKENSWORD);
 					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}

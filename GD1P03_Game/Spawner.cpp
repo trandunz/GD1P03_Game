@@ -66,85 +66,49 @@ void Spawner::Update(CWorldManager* _worldManager)
 		{
 			if (m_SpawnTimer->getElapsedTime().asSeconds() >= m_SpawnFrequency)
 			{
-				float Mag1 = 0;
-				float x = 0;
-				float y = 0;
+				m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager);
 
-				x = m_RenderWindow->getView().getCenter().x;
-				y = m_RenderWindow->getView().getCenter().y;
-				Mag1 = sqrt((x * x) + (y * y));
-				bool spawned = false;
+				std::cout << "slime spawned" << std::endl;
+				m_Slimes.push_front(*m_Slimeptr);
+				m_Slimes.front().SetPlayer(m_Player);
+				m_Slimes.front().Start();
 
-				for (int i = x - 3000; i < x + 3000; i += 100)
+				if (m_Slimes.front().m_bIsBoss)
 				{
-					for (int j = y - 1000; j < y + 1000; j += 100)
+					m_iBossCount++;
+
+					if (m_Player == nullptr)
 					{
-						if (!_worldManager->PositionIsBlock(sf::Vector2f(i, j)) && (i < x - 2000 || i > x + 2000 || j > y + 1000 || j < y - 1000))
+						if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1)
 						{
-							spawned = true;
-							m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, i, j, *m_AudioManager);
-							std::cout << "slime spawned" << std::endl;
-
-							break;
-						}
-					}
-
-					if (spawned)
-					{
-						break;
-					}
-				}
-
-				if (_worldManager->IsObjectInBlock(m_Slimeptr->GetShape()) && m_Slimeptr != nullptr)
-				{
-					delete m_Slimeptr;
-					m_Slimeptr = nullptr;
-				}
-
-				if (m_Slimeptr != nullptr)
-				{
-					m_Slimes.push_front(*m_Slimeptr);
-					m_Slimes.front().SetPlayer(m_Player);
-					m_Slimes.front().Start();
-
-					if (m_Slimes.front().m_bIsBoss)
-					{
-						m_iBossCount++;
-
-						if (m_Player == nullptr)
-						{
-							if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1)
-							{
-								m_Slimes.pop_front();
-								m_iBossCount--;
-							}
-							else
-							{
-								std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-								m_AudioManager->PlayKingSlimeSpawn();
-							}
+							m_Slimes.pop_front();
+							m_iBossCount--;
 						}
 						else
 						{
-							if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1 || m_Player->GetShape().getPosition().y < 1500)
-							{
-								m_Slimes.pop_front();
-								m_iBossCount--;
-							}
-							else
-							{
-								std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-								m_AudioManager->PlayKingSlimeSpawn();
-							}
+							std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+							m_AudioManager->PlayKingSlimeSpawn();
 						}
-
+					}
+					else
+					{
+						if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1 || m_Player->GetShape().getPosition().y < 1500)
+						{
+							m_Slimes.pop_front();
+							m_iBossCount--;
+						}
+						else
+						{
+							std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+							m_AudioManager->PlayKingSlimeSpawn();
+						}
 					}
 
-					m_Slimeptr = nullptr;
-					//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-					m_SpawnTimer->restart();
 				}
-				
+
+				m_Slimeptr = nullptr;
+				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+				m_SpawnTimer->restart();
 			}
 		}
 		break;
@@ -180,7 +144,7 @@ void Spawner::Update(CWorldManager* _worldManager)
 		{
 			slime.SetPlayer(m_Player);
 		}
-		else if (Mag > 4000)
+		else if (Mag > 3000)
 		{
 			slime.m_MARKASDESTORY = true;
 			slime.LoosePlayer();
@@ -297,6 +261,7 @@ void Spawner::Update(CWorldManager* _worldManager)
 			}
 			m_DeathParticleTimer.restart();
 			m_DeathParticles->SetEmitter(sit->GetShape().getPosition());
+			m_SpawnTimer->restart();
 
 			if (sit->m_bIsBoss)
 			{

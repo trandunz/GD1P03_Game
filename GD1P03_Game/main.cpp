@@ -2,10 +2,7 @@
 #include <iostream>
 
 // Local Includes
-#include "GUI.h"
-#include "WorldManager.h"
-#include "AudioManager.h"
-#include "Spawner.h"
+#include "CDebugWindow.h"
 
 // Forward Declaration
 void Start();
@@ -99,6 +96,9 @@ sf::Clock m_FadeTimer;
 sf::RectangleShape m_FadeScreen;
 sf::Text m_GameOverText;
 
+CDebugWindow* m_DebugWindow = nullptr;
+bool m_DebugInFocus = true;
+
 /// <summary>
 /// 
 /// </summary>
@@ -115,6 +115,8 @@ int main()
 		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetary", sf::Style::Default, m_Settings);
 		m_RenderWindow->setVerticalSyncEnabled(true);
 		m_RenderWindow->setKeyRepeatEnabled(false);
+
+		
 
 		// Window Icon
 		sf::Image icon;
@@ -143,6 +145,7 @@ int main()
 
 	m_SlimeSpawners.clear();
 
+	delete m_DebugWindow;
 	delete m_TextureMaster;
 	delete m_GUI;
 	delete m_Player;
@@ -162,6 +165,7 @@ int main()
 	m_RenderWindow = nullptr;
 	m_Block = nullptr;
 	m_Bow = nullptr;
+	m_DebugWindow = nullptr;
 
 	//
 	std::cout << "Return Main" << std::endl;
@@ -216,17 +220,26 @@ void Start()
 
 	// Already Has A Pickaxe Somehow?
 	m_GUI->InitHotBarScrolling(m_Player);
+
+	m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player);
+	m_DebugWindow->Start();
 }
 
 /// <summary>
 /// 
 /// </summary>
 void Update()
-{
+{ 
 	while (m_RenderWindow->isOpen())
 	{
 		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
-		
+
+		// PopOutMenu Update
+		if (m_DebugWindow != nullptr)
+		{
+			m_DebugWindow->Update();
+		}
+
 		//
 		// Polled Update
 		//
@@ -235,12 +248,14 @@ void Update()
 			// Regained Focus
 			if (m_Event.type == sf::Event::GainedFocus)
 			{
+				m_DebugInFocus = false;
 				break;
 			}
 
 			// Click Out Of Window
 			if (m_Event.type == sf::Event::LostFocus)
 			{
+				m_DebugInFocus = true;
 				if (m_Player != nullptr)
 				{
 					if (!m_Player->m_bInventoryOpen)
@@ -259,6 +274,7 @@ void Update()
 					m_Player->OutPutInventoryToFile();
 				}
 
+				m_DebugWindow->Close();
 				m_RenderWindow->close();
 				m_bClose = true;
 				break;
@@ -286,9 +302,9 @@ void Update()
 					// Numpad9 = BOW			// Numpad3 = DIAMOND 		// Numpad6 = DIAMOND ORE
 					// Numpad1 = IRON INGOT		// Numpad4 = IRON ORE		// Numpad7 = WOOD
 					// Numpad2 = GOLD INGOT		// Numpad5 = GOLD ORE		// Numpad8 = STONE
-					if (true)
+					if (false)
 					{
-						/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
 						{
 							Test_AddItemToInv(CBlock::BLOCKTYPE::PURPLEINGOT);
 						}
@@ -318,16 +334,16 @@ void Update()
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::POTION, CBlock::POTIONTYPE::HPSMALL);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::PROJECTILE, CBlock::PROJECTILETYPE::IRONBULLET);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::GREEN);
+							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::PURPLEGUN);
 						}
 						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9))
 						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::OBSIDIAN);
-						}*/
+							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::GOLDENGUN);
+						}
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
 						{
 							Test_ClearPlayerInventory(true);
@@ -348,7 +364,6 @@ void Update()
 				if (m_Player != nullptr)
 				{
 					m_GUI->HotBarScrolling(m_Event, m_Player);
-					break;
 				}
 			}
 			
@@ -358,7 +373,6 @@ void Update()
 				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
 				{
 					m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
-					break;
 				}
 			}
 
@@ -381,16 +395,11 @@ void Update()
 				}
 
 				m_GUI->ClickedItemInInventory(m_Event, m_Player, m_WorldManager->m_Chests);
-
-				break;
 			}
-
-			if (m_Player != nullptr)
+			else if (m_Player != nullptr && m_Event.type == sf::Event::MouseButtonReleased)
 			{
 				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
 			}
-
-			break;
 		}
 
 		//
@@ -473,6 +482,8 @@ void Update()
 					m_GameOverText.setPosition(m_WorldView.getCenter());
 					m_FadeTimer.restart();
 					m_DeathTimer.restart();
+
+					m_DebugWindow->SetPlayer(nullptr);
 				}
 			}
 
@@ -488,6 +499,7 @@ void Update()
 					m_Player->Start();
 
 					m_WorldManager->InitPointer(m_Player);
+					m_DebugWindow->SetPlayer(m_Player);
 
 					// Already Has A Pickaxe Selected
 					m_GUI->InitHotBarScrolling(m_Player);
@@ -528,6 +540,8 @@ void Render()
 {
 	m_RenderWindow->clear();
 	/////////////////////////////////////
+
+	m_DebugWindow->Render();
 
 	// Sky	
 	m_RenderWindow->setView(m_WorldView);
@@ -1009,10 +1023,33 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::BOWTYPE _bowType)
 			m_Player->AddItemToInventory(m_Bow, false);
 			m_Bow = nullptr;
 			break;
-		default:
-			m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+
+		case CBlock::BOWTYPE::IRONGUN:
+			m_Bow = new Bow(CBlock::BOWTYPE::IRONGUN);
 			m_Player->AddItemToInventory(m_Bow, false);
 			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::GOLDGUN:
+			m_Bow = new Bow(CBlock::BOWTYPE::GOLDGUN);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::PURPLEGUN:
+			m_Bow = new Bow(CBlock::BOWTYPE::PURPLEGUN);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::GOLDENGUN:
+			m_Bow = new Bow(CBlock::BOWTYPE::GOLDENGUN);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		case CBlock::BOWTYPE::GREENGUN:
+			m_Bow = new Bow(CBlock::BOWTYPE::GREENGUN);
+			m_Player->AddItemToInventory(m_Bow, false);
+			m_Bow = nullptr;
+			break;
+		default:
 			break;
 		}
 		break;
@@ -1278,9 +1315,23 @@ void Test_AddItemToInv(CBlock::BLOCKTYPE _type, CBlock::PROJECTILETYPE _Projecti
 			temp = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
 			m_Player->AddItemToInventory(temp);
 			break;
-		default:
-			temp = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+		case CBlock::PROJECTILETYPE::IRONBULLET:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::IRONBULLET);
 			m_Player->AddItemToInventory(temp);
+			break;
+		case CBlock::PROJECTILETYPE::GOLDBULLET:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::GOLDBULLET);
+			m_Player->AddItemToInventory(temp);
+			break;
+		case CBlock::PROJECTILETYPE::PURPLEBULLET:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::PURPLEBULLET);
+			m_Player->AddItemToInventory(temp);
+			break;
+		case CBlock::PROJECTILETYPE::GOLDENBULLET:
+			temp = new CProjectile(CBlock::PROJECTILETYPE::GOLDENBULLET);
+			m_Player->AddItemToInventory(temp);
+			break;
+		default:
 			break;
 		}
 

@@ -25,6 +25,7 @@
 #include "CParticleSystem.h"
 #include "CPotion.h"
 #include "CWorkBench.h"
+#include "CSword.h"
 
 class CPlayer
 {
@@ -41,11 +42,12 @@ public:
 
 	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches);
 	
-	void Attack();
+	void Attack(CBlock* _item);
 
 	void InitInventory();
 
 	b2Body* GetBody();
+	sf::Sprite& GetShape();
 
 	CPickaxe* GetPickaxe();
 	void SetPickaxe(CPickaxe* _pickaxe);
@@ -53,12 +55,14 @@ public:
 	Bow* GetBow();
 	void SetBow(Bow* _bow);
 
+	CSword* GetSword();
+	void SetSword(CSword* _sword);
+
 	int GetCurrentHP();
 	int GetMaxHP();
+
 	void TakeDamage(float _damage, bool _fallDamage = false);
 	void Heal(float _amount);
-
-	sf::Sprite& GetShape();
 
 	void SetCurrentHP(int _amount);
 	void SetMaxHP(int _amount);
@@ -78,8 +82,9 @@ public:
 	bool bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Sprite& _mousePositionSprite);
 	
 	bool IsBlockInInventory(CBlock* _block);
-
 	bool IsItemInventory(CBlock::BLOCKTYPE _type);
+	bool SelectedItemIsEmpty();
+
 	int	GetPositionInInventory(CBlock::BLOCKTYPE _type);
 	int IsItemInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount);
 
@@ -88,8 +93,6 @@ public:
 	void RemoveItemFromInventory(int _position);
 
 	void ToggleInventoryUI(std::list<CChest>& _chests);
-
-	bool SelectedItemIsEmpty();
 
 	template <typename T>
 	int Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
@@ -126,6 +129,7 @@ public:
 
 	CPickaxe* m_Pickaxe;
 	Bow* m_Bow;
+	CSword* m_Sword;
 
 	// Box2d
 	b2BodyDef m_BodyDef;
@@ -145,6 +149,8 @@ public:
 	sf::Vector2f m_MousePos;
 
 	sf::Clock m_HPPotionTimer;
+
+	int m_InventorySize = -1;
 private:
 	
 
@@ -175,7 +181,6 @@ private:
 	sf::Clock* m_DamageTimer;
 	sf::Clock* m_DamageIndicatorTimer;
 	CTextureMaster* m_TextureMaster;
-	int m_InventorySize = -1;
 
 	// Textures
 	sf::Texture* m_MapIconTex;
