@@ -11,6 +11,7 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_TourchShader = _tourchShader;
     m_Block = nullptr;
     m_Chest = nullptr;
+    m_Potion = nullptr;
 
     // Set World Seed (Change Time To A Value For Custom)
     _gui->m_CurrentSeed = _CURRENT_TIME_;
@@ -24,6 +25,7 @@ CWorldManager::~CWorldManager()
 {
     OutPutWorldToFiles();
 
+    m_TestChunk.clear();
     m_Chunk.clear();
     m_SkyChunk.clear();
     m_Chests.clear();
@@ -58,16 +60,19 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
     m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
     m_BGPlainsUnderGr.setPosition(0, 0);
 
+    
     // World
     CreateSkyChunk(_textureMaster);
     //InputWorldFromFiles(_textureMaster);
     CreateWorldBoundary(_textureMaster);
     CreateNoiseWorld(_textureMaster);
     CreateClouds(_textureMaster);
+    CreateDungeon(_textureMaster);
 }
 
-void CWorldManager::Update(sf::Vector2f _mousePos)
+void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster)
 {
+
     // Set Mouse / Block Indicator To Rounded Sky Position
     m_GUI->m_MousePos.setPosition(m_SkyChunk.front().getPosition());
 
@@ -85,6 +90,11 @@ void CWorldManager::Update(sf::Vector2f _mousePos)
                 m_GUI->m_MousePos.setPosition(block.GetPosition());
             }
         }
+    }
+
+    for (CBlock& block : m_TestChunk)
+    {
+        block.Update();
     }
 
     // Mouse Pos To Door
@@ -322,6 +332,11 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     {
         workbench.Render(_defaultShader);
     }
+
+    for (CBlock& block : m_TestChunk)
+    {
+        block.Render();
+    }
 }
 
 void CWorldManager::CreateSkyChunk(CTextureMaster* _textureMaster)
@@ -399,10 +414,9 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
 void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
 {
     GenerateNoise();
-
-    for (int y = 0; y < _NOISEHEIGHT_; y++)
+    for (int y = 0; y < m_GenerateOffsetY; y++)
     {
-        for (int x = -_NOISEWIDTH_; x < _NOISEWIDTH_; x++)
+        for (int x =  -m_GenerateOffsetX; x <  +m_GenerateOffsetX + 70; x++)
         {
             double xyValue = x * m_XPeriod / _NOISEWIDTH_ + y * m_YPeriod / _NOISEHEIGHT_ + m_TurbPower * Turbulence(x, y, m_TurbSize) / 256.0;
             double sineValue = 256 * fabs(sin(xyValue * _PI_));
@@ -626,7 +640,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
                     }
 
                     // Chests
-                    else if(_CHEST_RARITY_)
+                    else if (_CHEST_RARITY_)
                     {
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
@@ -1047,7 +1061,7 @@ void CWorldManager::WorldBackGroundColourGradient()
     if (m_Player != nullptr)
     {
         // Positioning Planes Surface
-        m_BGPlainsSurface.setPosition(m_Player->GetShape().getPosition());
+        m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
 
         // Colour
         if (m_Player->GetShape().getPosition().y > 1200 && m_Player->GetShape().getPosition().y < 1250)
@@ -1191,6 +1205,96 @@ bool CWorldManager::PositionIsBlock(sf::Vector2f _pos)
         }
     }
     return false;
+}
+
+void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster)
+{
+    for (int y = 0; y < m_GenerateOffsetY; y ++)
+    {
+        for (int x = -m_GenerateOffsetX - 70; x < -m_GenerateOffsetX; x++)
+        {
+            if (x < -m_GenerateOffsetX - 50 && x > -m_GenerateOffsetX - 56 && y < 20)
+            {
+                if (y % 5 == 0 && (x == -m_GenerateOffsetX - 51 || x == -m_GenerateOffsetX - 55))
+                {
+                    // Iron
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+            }
+            else if (x < -m_GenerateOffsetX - 16 && x > -m_GenerateOffsetX - 56 && y >= 20 && y < 26)
+            {
+                if (y == 22 && (x == -m_GenerateOffsetX - 55))
+                {
+                    // Iron
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+            }
+            else if (x < -m_GenerateOffsetX - 16 && x > -m_GenerateOffsetX - 22 && y >= 26 && y < 46)
+            {
+                if (y % 5 == 0 && (x == -m_GenerateOffsetX - 17 || x == -m_GenerateOffsetX - 21))
+                {
+                    // Iron
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+            }
+            else if (x < -m_GenerateOffsetX - 16 && x > -m_GenerateOffsetX - 56 && y >= 46 && y < 52)
+            {
+                if (y == 47 && (x == -m_GenerateOffsetX - 55))
+                {
+                    // Iron
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+            }
+            else if (x < -m_GenerateOffsetX - 50 && x > -m_GenerateOffsetX - 56 && y >= 52 && y < 92)
+            {
+                if (y % 5 == 0 && (x == -m_GenerateOffsetX - 51 || x == -m_GenerateOffsetX - 55))
+                {
+                    // Iron
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+            }
+            else if (x < -m_GenerateOffsetX - 46 && x > -m_GenerateOffsetX - 56 && y >= 92 && y < 98)
+            {
+                if (y == 94 && (x == -m_GenerateOffsetX - 55))
+                {
+                    // Iron
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+            }
+            else if (x < -m_GenerateOffsetX - 6 && x >= -m_GenerateOffsetX - 46 && y >= 62 && y < 98)
+            {
+                
+            }
+            else
+            {
+                // Iron
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            
+
+        }
+    }   
 }
 
 void CWorldManager::GenerateNoise()

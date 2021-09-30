@@ -18,6 +18,8 @@
 #define _MOSSYBRICK_RARITY_SURFACE_ rand() % 50 == 0
 #define _MOSSYBRICK_RARITY_UNDERGOUND_ rand() % 2 == 0
 
+// DUNGEON BOSS ROOM LOCATION : 296	 113
+
 // Non-Local Includes
 #include <stdio.h>      /* printf, NULL */
 #include <stdlib.h>     /* srand, rand */
@@ -47,7 +49,7 @@ public:
 	~CWorldManager();
 
 	void Start(CTextureMaster* _textureMaster);
-	void Update(sf::Vector2f _mousePos);
+	void Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster);
 	void Render(sf::Shader* _defaultShader = NULL);
 
 	void CreateSkyChunk(CTextureMaster* _textureMaster);
@@ -73,6 +75,8 @@ public:
 
 	bool IsObjectInBlock(sf::Sprite _shape);
 	bool PositionIsBlock(sf::Vector2f _pos);
+
+	void CreateDungeon(CTextureMaster* _textureMaster);
 	
 	// Variables
 	std::list<CBlock> m_Chunk = {};
@@ -82,6 +86,10 @@ public:
 	std::list<CDoor> m_Doors = {};
 	std::list<sf::RectangleShape> m_SkyChunk = {};
 
+	std::vector<CBlock> m_TestChunk = {};
+
+	int m_GenerateOffsetX = 296;
+	int m_GenerateOffsetY = 113;
 private:
 	// Variables
 	sf::Shader* m_Shader;
@@ -113,7 +121,7 @@ private:
 
 	double m_XPeriod = 2; // Defines Repetition Of Marble Lines In x
 	double m_YPeriod = 2; // Defines Repetition Of Marble Lines In y
-	double m_TurbPower = 2.0; // Makes Twists (turbPower = 0 : SinWave)
+	double m_TurbPower = 1.5; // Makes Twists (turbPower = 0 : SinWave)
 	double m_TurbSize = 36.0; // Initial Size Of Turbulence
 
 	// Functions

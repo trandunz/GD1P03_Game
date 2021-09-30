@@ -198,7 +198,7 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
 	m_WorldManager->Start(m_TextureMaster);
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16400,-3100, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager, false);
+	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -400, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager, true);
 	m_SlimeSpawner->ToggleSpawning();
 	m_SlimeSpawner->SetSpawnCount(2);
 	m_SlimeSpawners.push_back(*m_SlimeSpawner);
@@ -296,62 +296,6 @@ void Update()
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
 					{
 						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
-					}
-
-					// NUMPAD INVENTORYCONTROL
-					// Numpad9 = BOW			// Numpad3 = DIAMOND 		// Numpad6 = DIAMOND ORE
-					// Numpad1 = IRON INGOT		// Numpad4 = IRON ORE		// Numpad7 = WOOD
-					// Numpad2 = GOLD INGOT		// Numpad5 = GOLD ORE		// Numpad8 = STONE
-					if (false)
-					{
-						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::PURPLEINGOT);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad1))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::WORKBENCH);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::GOLDENINGOT);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad3))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::COALORE);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::REDSLIME);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::EMPTYBEAKER);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::POTION, CBlock::POTIONTYPE::HPLARGE);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::PROJECTILE, CBlock::PROJECTILETYPE::IRONBULLET);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::PURPLEGUN);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad9))
-						{
-							Test_AddItemToInv(CBlock::BLOCKTYPE::BOW, CBlock::BOWTYPE::GOLDENGUN);
-						}
-						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
-						{
-							Test_ClearPlayerInventory(true);
-						}
-						else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
-						{
-							Test_KillAllEnemies();
-						}
 					}
 
 					break;
@@ -519,7 +463,7 @@ void Update()
 			if (m_WorldManager != nullptr)
 			{
 				// MousePosBox Position
-				m_WorldManager->Update(MousePos);
+				m_WorldManager->Update(MousePos, m_TextureMaster);
 
 				// World Step
 				m_World.Step(1 / 60.0f, 60, 60);
@@ -623,7 +567,31 @@ void InitUI()
 /// <param name="_object"></param>
 void CenterViewsToSprite(sf::Sprite _object)
 {
-	m_WorldView.setCenter(_object.getPosition());
+	if (_object.getPosition().x < -34200 || _object.getPosition().x > 34200)
+	{
+		if (_object.getPosition().y < -4500 || _object.getPosition().y > 10000)
+		{
+			m_WorldView.setCenter(_object.getPosition().x,m_WorldView.getCenter().y);
+		}
+		else
+		{
+
+			m_WorldView.setCenter(m_WorldView.getCenter().x, _object.getPosition().y);
+		}
+	}
+	else
+	{
+		if (_object.getPosition().y < -4500 || _object.getPosition().y > 10000)
+		{
+			m_WorldView.setCenter(_object.getPosition().x, m_WorldView.getCenter().y);
+		}
+		else
+		{
+
+			m_WorldView.setCenter(_object.getPosition());
+		}
+	}
+
 	m_UIView.setCenter(_object.getPosition());
 	m_RenderWindow->setView(m_WorldView);
 }
