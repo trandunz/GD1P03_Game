@@ -40,7 +40,7 @@ public:
 	void Movement();
 	void Movement(sf::Event& _event);
 
-	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches);
+	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
 	
 	void Attack(CBlock* _item);
 
@@ -102,6 +102,7 @@ public:
 	void PlaceChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
 	void PlaceFurnace(std::list<CFurnace>& m_Chests, sf::Sprite& _mousePositionSprite);
 	void PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
+	void PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePositionSprite);
 
 	void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 	void DestroyBody();
@@ -112,6 +113,9 @@ public:
 
 	void OutPutInventoryToFile();
 	void InputInventoryToFile();
+
+	void ToggleGodMode();
+	bool GetGodMode();
 
 	b2World* GetWorld();
 
@@ -152,8 +156,6 @@ public:
 
 	int m_InventorySize = -1;
 private:
-	
-
 	sf::Sprite m_Shape;
 
 	// Player
@@ -165,6 +167,7 @@ private:
 	float m_HeathRegenAmount = 1;
 	int m_InteractionRange = 10;
 	float m_AttackSpeed = 0.7f;
+	bool m_bGodMode = false;
 
 	bool m_bCanPlace = true;
 	

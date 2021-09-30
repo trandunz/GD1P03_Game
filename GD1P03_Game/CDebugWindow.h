@@ -12,7 +12,7 @@
 class CDebugWindow
 {
 public:
-	CDebugWindow(CTextureMaster* _textureMaster = nullptr, CWorldManager* _worldManager = nullptr, CPlayer* _player = nullptr);
+	CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners);
 	~CDebugWindow();
 
 	void Start();
@@ -20,8 +20,11 @@ public:
 	void Render();
 
 	void SetPlayer(CPlayer* _player);
+	void SetSpawners(std::list<Spawner>* _spawners);
 
 	void CreateItemListButtons();
+	void CreateEnemyControlButtons();
+	void CreatePlayerControlButtons();
 
 	void Close();
 
@@ -29,9 +32,22 @@ public:
 
 	void AddItemToInventory(int _itemIndexValue);
 
+	void ClearPlayerInventory(bool _giveStarterItems = false);
+
+	void KillEnemies();
+	void KillEnemies(CEnemy::ENEMYTYPE _type);
+
+	void KillPlayer();
+
+	void GodMode();
+	void ToggleGodMode();
+	void SetGodMode(bool _value);
+
 	bool m_InFocus = true;
 
 private:
+	std::list<Spawner>* m_Spawners;
+
 	sf::Event m_Event;
 
 	sf::Vector2f m_MousePos;
@@ -44,7 +60,13 @@ private:
 	std::map<int, CButtons> m_ItemListButtons;
 	std::map<int, CBlock> m_ItemPreviews;
 
-	sf::RectangleShape m_BackGround;
+	std::map<int, CButtons> m_PlayerButtons;
+	std::map<int, CButtons> m_EnemyButtons;
+
+	sf::RectangleShape m_PlayerBackGround;
+	sf::RectangleShape m_EnemiesBackGround;
+
+	bool m_bGodMode = false;
 };
 #endif
 

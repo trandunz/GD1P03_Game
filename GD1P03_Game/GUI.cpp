@@ -90,6 +90,15 @@ void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMa
 		heart5.setTexture(*_textureMaster->m_HeartEmpty, true);
 	}
 
+	if (_player->GetGodMode())
+	{
+		heart1.setTexture(*_textureMaster->m_GoldenHeart, true);
+		heart2.setTexture(*_textureMaster->m_GoldenHeart, true);
+		heart3.setTexture(*_textureMaster->m_GoldenHeart, true);
+		heart4.setTexture(*_textureMaster->m_GoldenHeart, true);
+		heart5.setTexture(*_textureMaster->m_GoldenHeart, true);
+	}
+
 	// Position And Draw
 	heart1.setPosition(_renderWindow->getView().getCenter().x + (_renderWindow->getView().getSize().x / 2) - 200, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 30);
 	_renderWindow->draw(heart1);

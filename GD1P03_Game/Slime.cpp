@@ -207,27 +207,12 @@ void Slime::Update()
 
 void Slime::Render(sf::Shader* _shader)
 {
-	float DistanceToPlayer;
-	if (m_Player != nullptr)
-	{
-		DistanceToPlayer = sqrt(((m_Player->GetShape().getPosition().x - m_Shape.getPosition().x) * (m_Player->GetShape().getPosition().x - m_Shape.getPosition().x)) + ((m_Player->GetShape().getPosition().y - m_Shape.getPosition().y) * (m_Player->GetShape().getPosition().y - m_Shape.getPosition().y)));
-	}
-	else
-	{
-		DistanceToPlayer = 0;
-	}
-	
-	if (DistanceToPlayer > 1920 * 1.8)
-	{
-	}
-	else if (DistanceToPlayer <= 1920 * 1.8 && m_Shape.getPosition().y < 1100)
+	if (m_Shape.getPosition().y < 1100)
 	{
 		m_RenderWindow->draw(m_Shape);
 	}
-	else if (DistanceToPlayer <= 1920 * 1.8 && m_Shape.getPosition().y > 1100 && m_Player != nullptr)
+	else
 	{
-		_shader->setUniform("hasTexture", true);
-		_shader->setUniform("lightPos", m_Player->GetShape().getPosition());
 		m_RenderWindow->draw(m_Shape, _shader);
 	}
 }

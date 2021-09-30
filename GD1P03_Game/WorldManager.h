@@ -60,9 +60,6 @@ public:
 	bool bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it);
 	bool bIsItemInRangeOfLightSource(sf::Sprite _shape);
 
-	bool CleanUpBlocks();
-	bool CleanUpSky();
-
 	void InitPointer(CPlayer* _player);
 
 	void OutPutWorldToFiles();
@@ -84,9 +81,8 @@ public:
 	std::list<CFurnace> m_Furnaces = {};
 	std::list<CWorkBench> m_WorkBenches = {};
 	std::list<CDoor> m_Doors = {};
+	std::list<CBlock> m_Tourches = {};
 	std::list<sf::RectangleShape> m_SkyChunk = {};
-
-	std::vector<CBlock> m_TestChunk = {};
 
 	int m_GenerateOffsetX = 296;
 	int m_GenerateOffsetY = 113;

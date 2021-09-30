@@ -55,5 +55,6 @@ public:
 	sf::Texture* m_RedSlime;
 	sf::Texture* m_HPSmall;
 	sf::Texture* m_HPLarge;
+	sf::Texture* m_GoldenHeart;
 };
 #endif

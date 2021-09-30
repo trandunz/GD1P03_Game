@@ -1,14 +1,19 @@
 #include "CDebugWindow.h"
 
-CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player)
+CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners)
 {
 	m_WorldManager = _worldManager;
 	m_Player = _player;
 	m_TextureMaster = _textureMaster;
+	m_Spawners = &_spawners;
 
-	// UI Essentials Creation
-	m_BackGround = sf::RectangleShape(sf::Vector2f(400, 600));
-	m_BackGround.setFillColor(sf::Color::Green);
+	// Player Stuff
+	m_PlayerBackGround = sf::RectangleShape(sf::Vector2f(400, 600));
+	m_PlayerBackGround.setFillColor(sf::Color::Green);
+	// Enemy Stuff
+	m_EnemiesBackGround = sf::RectangleShape(sf::Vector2f(200, 600));
+	m_EnemiesBackGround.setFillColor(sf::Color::Red);
+	m_EnemiesBackGround.setPosition(400, 0);
 
 	// Render Window Creation
 	m_RenderWindow = new sf::RenderWindow(sf::VideoMode(600, 600), "DEBUG CONTROLS", (sf::Style::Titlebar));
@@ -16,30 +21,75 @@ CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _world
 
 CDebugWindow::~CDebugWindow()
 {
+	m_PlayerButtons.clear();
 	m_ItemPreviews.clear();
 	m_ItemListButtons.clear();
 	delete m_RenderWindow;
 	m_RenderWindow = nullptr;
+	m_Spawners = nullptr;
 }
 
 void CDebugWindow::Start()
 {
 	CreateItemListButtons();
+	CreateEnemyControlButtons();
+	CreatePlayerControlButtons();
 }
 
 void CDebugWindow::Update()
 {
 	m_MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
+
+	// bGodMode ? SetHP (Every Frame)
+	GodMode();
+
+	// Buttons (Polled Update)
 	while (m_RenderWindow->pollEvent(m_Event))
 	{
-		// Item Buttons
 		for (int i = 0; i < m_ItemListButtons.size(); i++)
 		{
+			m_ItemListButtons[i].Update();
 			if (m_Event.type == sf::Event::MouseButtonPressed && m_ItemListButtons[i].bIsinBounds(m_MousePos))
 			{
 				AddItemToInventory(i);
+				break;
 			}
-			m_ItemListButtons[i].Update();
+		}
+
+		for (int i = 0; i < m_EnemyButtons.size(); i++)
+		{
+			m_EnemyButtons[i].Update();
+			if (m_Event.type == sf::Event::MouseButtonPressed && m_EnemyButtons[i].bIsinBounds(m_MousePos))
+			{
+				if (i == 0)
+				{
+					KillEnemies(CEnemy::ENEMYTYPE::SLIME);
+				}
+				if (i == 1)
+				{
+					KillEnemies();
+				}
+				break;
+			}
+		}
+
+		for (int i = 0; i < m_PlayerButtons.size(); i++)
+		{
+			m_PlayerButtons[i].Update();
+			if (m_Event.type == sf::Event::MouseButtonPressed && m_PlayerButtons[i].bIsinBounds(m_MousePos))
+			{
+				if (i == 0)
+				{
+					KillPlayer();
+				}
+				else if (i == 1)
+				{
+					m_PlayerButtons[i].SetState("Click");
+					m_PlayerButtons[i].m_bIsPressed = !m_PlayerButtons[i].m_bIsPressed;
+					ToggleGodMode();
+				}
+				break;
+			}
 		}
 	}
 }
@@ -49,7 +99,8 @@ void CDebugWindow::Render()
 	// Clear Render Window
 	m_RenderWindow->clear();
 
-	m_RenderWindow->draw(m_BackGround);
+	m_RenderWindow->draw(m_PlayerBackGround);
+	m_RenderWindow->draw(m_EnemiesBackGround);
 
 	// Item Buttons
 	for (int i = 0; i < m_ItemListButtons.size(); i++)
@@ -62,6 +113,16 @@ void CDebugWindow::Render()
 		m_RenderWindow->draw(m_ItemPreviews[i].GetShape());
 	}
 
+	for (int i = 0; i < m_EnemyButtons.size(); i++)
+	{
+		m_RenderWindow->draw(m_EnemyButtons[i].Sprite);
+	}
+
+	for (int i = 0; i < m_PlayerButtons.size(); i++)
+	{
+		m_RenderWindow->draw(m_PlayerButtons[i].Sprite);
+	}
+
 	// Display
 	m_RenderWindow->display();
 }
@@ -69,6 +130,11 @@ void CDebugWindow::Render()
 void CDebugWindow::SetPlayer(CPlayer* _player)
 {
 	m_Player = _player;
+}
+
+void CDebugWindow::SetSpawners(std::list<Spawner>* _spawners)
+{
+	m_Spawners = _spawners;
 }
 
 void CDebugWindow::CreateItemListButtons()
@@ -745,6 +811,103 @@ void CDebugWindow::CreateItemListButtons()
 	}
 }
 
+void CDebugWindow::CreateEnemyControlButtons()
+{
+	// kill all slimes
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (13 * 30), (1 * 30) - 20);
+		tempbutton->SetLabel("Kill All Enemies");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/KillAllSlimesButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/KillAllSlimesButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/KillAllSlimesButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_EnemyButtons.insert_or_assign(0, *tempbutton);
+		tempbutton = nullptr;
+	}
+	
+	// kill all
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (14 * 30), (1 * 30) - 20);
+		tempbutton->SetLabel("Kill All Enemies");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/KillAllButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/KillAllButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/KillAllButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_EnemyButtons.insert_or_assign(1, *tempbutton);
+		tempbutton = nullptr;
+	}
+}
+
+void CDebugWindow::CreatePlayerControlButtons()
+{
+	// Kill Player Button
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(10 + (0 * 30), (8 * 30) - 20);
+		tempbutton->SetLabel("Kill Player");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/KillPlayerButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/KillPlayerButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/KillPlayerButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_PlayerButtons.insert_or_assign(0, *tempbutton);
+		tempbutton = nullptr;
+	}
+
+	// GodMode Bool Button
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(10 + (1 * 30), (8 * 30) - 20);
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/GodMode.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/GodModeToggled.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/GodMode.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_PlayerButtons.insert_or_assign(1, *tempbutton);
+		tempbutton = nullptr;
+	}
+}
+
 void CDebugWindow::Close()
 {
 	m_RenderWindow->close();
@@ -755,6 +918,16 @@ void CDebugWindow::ResetAllButtons()
 	for (int i = 0; i < m_ItemListButtons.size(); i++)
 	{
 		m_ItemListButtons[i].m_bIsPressed = false;
+	}
+
+	for (int i = 0; i < m_EnemyButtons.size(); i++)
+	{
+		m_EnemyButtons[i].m_bIsPressed = false;
+	}
+
+	for (int i = 0; i < m_PlayerButtons.size(); i++)
+	{
+		m_PlayerButtons[i].m_bIsPressed = false;
 	}
 }
 
@@ -1183,4 +1356,148 @@ void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 		
 	}
 	
+}
+
+void CDebugWindow::ClearPlayerInventory(bool _giveStarterItems)
+{
+	if (m_Player != nullptr)
+	{
+		if (m_Player->GetPickaxe() != nullptr)
+		{
+			delete m_Player->GetPickaxe();
+		}
+		m_Player->SetPickaxe(nullptr);
+		if (m_Player->GetBow() != nullptr)
+		{
+			delete m_Player->GetBow();
+		}
+		m_Player->SetBow(nullptr);
+
+		m_Player->m_InventoryMap.clear();
+		m_Player->m_InventoryStackValues.clear();
+
+		for (int i = 0; i < 50; i++)
+		{
+			m_Player->m_InventoryMap[i];
+			m_Player->m_InventoryStackValues[i];
+		}
+
+		if (_giveStarterItems)
+		{
+			if (!m_Player->IsItemInventory(CBlock::BLOCKTYPE::PICKAXE))
+			{
+				//Starting Items
+				for (int i = 0; i < 50; i++)
+				{
+					if (m_Player->m_InventoryStackValues[i] == 0)
+					{
+						CPickaxe* m_Pickaxe = new CPickaxe();
+						m_Player->AddItemToInventory(m_Pickaxe, 0, false);
+						m_Pickaxe = nullptr;
+						break;
+					}
+				}
+			}
+			if (!m_Player->IsItemInventory(CBlock::BLOCKTYPE::BOW))
+			{
+				//Starting Items
+				for (int i = 0; i < 50; i++)
+				{
+					if (m_Player->m_InventoryStackValues[i] == 0)
+					{
+						Bow* m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+						m_Player->AddItemToInventory(m_Bow, 1, false);
+						m_Bow = nullptr;
+						break;
+					}
+				}
+			}
+			//Starting Items
+			for (int i = 0; i < 50; i++)
+			{
+				if (m_Player->m_InventoryStackValues[i] == 0)
+				{
+					CPotion* m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+					m_Player->AddItemToInventory(m_Potion, 2);
+					m_Potion = nullptr;
+					break;
+				}
+			}
+
+			//Starting Items
+			for (int i = 0; i < 50; i++)
+			{
+				if (m_Player->m_InventoryStackValues[i] == 0)
+				{
+					for (int i = 0; i < 15; i++)
+					{
+						CProjectile* temp = new CProjectile(CBlock::PROJECTILETYPE::ARROW);
+						m_Player->AddItemToInventory(temp, 3);
+						temp = nullptr;
+					}
+
+					break;
+				}
+			}
+		}
+	}
+}
+
+void CDebugWindow::KillEnemies()
+{
+	std::list<Spawner>::iterator spawner = m_Spawners->begin();
+	for (spawner; spawner != m_Spawners->end(); spawner++)
+	{
+		spawner->m_Slimes.clear();
+		spawner->m_Zombies.clear();
+	}
+}
+
+void CDebugWindow::KillEnemies(CEnemy::ENEMYTYPE _type)
+{
+	if (_type == CEnemy::ENEMYTYPE::SLIME)
+	{
+		std::list<Spawner>::iterator spawner = m_Spawners->begin();
+		for (spawner; spawner != m_Spawners->end(); spawner++)
+		{
+			spawner->m_Slimes.clear();
+		}
+	}
+}
+
+void CDebugWindow::KillPlayer()
+{
+	if (m_Player != nullptr)
+	{
+		m_Player->SetCurrentHP(0);
+	}
+}
+
+void CDebugWindow::ToggleGodMode()
+{
+	m_bGodMode = !m_bGodMode;
+
+	if (m_Player != nullptr)
+	{
+		m_Player->ToggleGodMode();
+	}
+}
+
+void CDebugWindow::SetGodMode(bool _value)
+{
+	m_bGodMode = _value;
+}
+
+void CDebugWindow::GodMode()
+{
+	// God Mode
+	if (m_bGodMode && m_Player != nullptr)
+	{
+		m_Player->SetCurrentHP(m_Player->GetMaxHP());
+	}
+	else if (m_Player == nullptr)
+	{
+		ResetAllButtons();
+		SetGodMode(false);
+	}
 }

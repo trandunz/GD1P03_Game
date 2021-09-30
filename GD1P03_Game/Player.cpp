@@ -532,7 +532,7 @@ void CPlayer::Movement(sf::Event& _event)
 	}
 }
 
-void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches )
+void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches )
 {
 	// Mag From Mouse To Player
 	float Mag = sqrt(((_mousePositionSprite.getPosition().x - m_Shape.getPosition().x) * (_mousePositionSprite.getPosition().x - m_Shape.getPosition().x)) + ((_mousePositionSprite.getPosition().y - m_Shape.getPosition().y) * (_mousePositionSprite.getPosition().y - m_Shape.getPosition().y)));
@@ -571,6 +571,10 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			else if (!bMouseNotOver(m_WorkBenches, _mousePositionSprite))
 			{
 				Mine(m_WorkBenches, _mousePositionSprite);
+			}
+			else if (!bMouseNotOver(m_Tourches, _mousePositionSprite))
+			{
+				Mine(m_Tourches, _mousePositionSprite);
 			}
 		}
 		else if (m_Bow != nullptr)
@@ -631,7 +635,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			}
 		}
 		// Left Mouse Clicked And In Empty Space
-		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite) && bMouseNotOver(m_WorkBenches, _mousePositionSprite) && _mousePositionSprite.getGlobalBounds().contains(m_MousePos))
+		else if (bMouseNotOver(m_Chunk, _mousePositionSprite) && bMouseNotOver(m_Doors, _mousePositionSprite) && !SelectedItemIsEmpty() && bMouseNotOver(m_Chests, _mousePositionSprite) && bMouseNotOver(m_Furnaces, _mousePositionSprite) && bMouseNotOver(m_WorkBenches, _mousePositionSprite) && bMouseNotOver(m_Tourches, _mousePositionSprite) && _mousePositionSprite.getGlobalBounds().contains(m_MousePos))
 		{
 			// Place Door
 			if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::DOOR)
@@ -700,6 +704,11 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			// EMPTY BEAKER
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::EMPTYBEAKER)
 			{
+			}
+			// EMPTY BEAKER
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::TOURCH)
+			{
+				PlaceTourch(m_Tourches, _mousePositionSprite);
 			}
 			// Place Block
 			else
@@ -1617,6 +1626,32 @@ void CPlayer::PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _
 		m_WorkBench->m_ArrayIndex = (m_Shape.getPosition().x);
 		m_WorkBenches.push_back(*m_WorkBench);
 		m_WorkBench = nullptr;
+
+		// Decrement Stack Counter / Remove Item From Inventory
+		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+		{
+			RemoveItemFromInventory(m_CurrentItemIndex);
+		}
+		else
+		{
+			m_InventoryStackValues[m_CurrentItemIndex]--;
+		}
+
+		// Audio
+		m_AudioManager->PlayBlockPlace();
+		m_MineTimer->restart();
+	}
+}
+
+void CPlayer::PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePositionSprite)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+	{
+		// Chest
+		m_Block = new CBlock(m_RenderWindow, *m_World, m_TextureMaster->m_Tourch, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, true, CBlock::BLOCKTYPE::TOURCH);
+		m_Block->m_ArrayIndex = (m_Shape.getPosition().x);
+		m_Tourches.push_back(*m_Block);
+		m_Block = nullptr;
 
 		// Decrement Stack Counter / Remove Item From Inventory
 		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
@@ -2556,6 +2591,16 @@ void CPlayer::InputInventoryToFile()
 		}
 	}
 
+}
+
+void CPlayer::ToggleGodMode()
+{
+	m_bGodMode = !m_bGodMode;
+}
+
+bool CPlayer::GetGodMode()
+{
+	return m_bGodMode;
 }
 
 b2World* CPlayer::GetWorld()

@@ -152,6 +152,7 @@ void Spawner::Update(CWorldManager* _worldManager)
 
 		// Update
 		slime.Update();
+		
 	}
 
 	sf::Time elapsedTime = m_DeathParticleTimer.getElapsedTime();
@@ -163,7 +164,7 @@ void Spawner::Update(CWorldManager* _worldManager)
 		if (sit->m_MARKASDESTORY)
 		{
 			// Distance Based Sound
-			float Mag1 = sqrt(((sit->GetShape().getPosition().x - m_Player->GetShape().getPosition().x) * (sit->GetShape().getPosition().x - m_Player->GetShape().getPosition().x)) + ((sit->GetShape().getPosition().y - m_Player->GetShape().getPosition().y) * (sit->GetShape().getPosition().y - m_Player->GetShape().getPosition().y)));
+			float Mag1 = sqrt(((sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x) * (sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x)) + ((sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y) * (sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y)));
 			if (Mag1 <= 1920 * 1.8f && Mag1 <= 520 * 1.8f)
 			{
 				m_AudioManager->PlaySlimeDeath(30);

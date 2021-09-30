@@ -25,13 +25,13 @@ CWorldManager::~CWorldManager()
 {
     OutPutWorldToFiles();
 
-    m_TestChunk.clear();
     m_Chunk.clear();
     m_SkyChunk.clear();
     m_Chests.clear();
     m_Doors.clear();
     m_Furnaces.clear();
     m_WorkBenches.clear();
+    m_Tourches.clear();
 
     m_TourchShader = nullptr;
     m_SurfaceShader = nullptr;
@@ -78,23 +78,27 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
 
     // Update All Blocks In Range Of Player && Set Mouse Pos To Blocks
     float Mag1 = 0;
+    float x = 0;
+    float y = 0;
     for (CBlock& block : m_Chunk)
     {
-        Mag1 = sqrt(((block.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x) * (block.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x)) + ((block.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y) * (block.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y)));
+        x = block.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        x *= x;
+        y = block.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        y *= y;
+        Mag1 = sqrt(x + y);
 
         if (Mag1 < 1920 * 1.f)
         {
-            block.Update();
             if (block.GetShape().getGlobalBounds().contains(_mousePos))
             {
                 m_GUI->m_MousePos.setPosition(block.GetPosition());
             }
         }
-    }
-
-    for (CBlock& block : m_TestChunk)
-    {
-        block.Update();
+        else
+        {
+            continue;
+        }
     }
 
     // Mouse Pos To Door
@@ -332,10 +336,9 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     {
         workbench.Render(_defaultShader);
     }
-
-    for (CBlock& block : m_TestChunk)
+    for (CBlock& tourch : m_Tourches)
     {
-        block.Render();
+        tourch.Render(_defaultShader);
     }
 }
 
@@ -360,7 +363,7 @@ void CWorldManager::CreateSkyChunk(CTextureMaster* _textureMaster)
     sky.setSize(sf::Vector2f(100, 100));
     sky.setOrigin(sky.getGlobalBounds().width / 2, sky.getGlobalBounds().height / 2);
     sky.setPosition(sf::Vector2f(tempx + 10, tempy));
-    m_SkyChunk.push_front(sky);
+    m_SkyChunk.push_back(sky);
 }
 
 void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
@@ -413,6 +416,7 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
 
 void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
 {
+    m_GlobalMutex.lock();
     GenerateNoise();
     for (int y = 0; y < m_GenerateOffsetY; y++)
     {
@@ -731,28 +735,12 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
             }
         }
     }
-}
-
-bool CWorldManager::CleanUpBlocks()
-{
-    while (m_Chunk.size() > 0)
-    {
-        m_Chunk.pop_front();
-    }
-    return true;
-}
-
-bool CWorldManager::CleanUpSky()
-{
-    while (m_SkyChunk.size() > 0)
-    {
-        m_SkyChunk.pop_front();
-    }
-    return true;
+    m_GlobalMutex.unlock();
 }
 
 void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
 {
+    m_GlobalMutex.lock();
     m_XPeriod = 0;
     m_YPeriod = 0;
     m_TurbSize = 10;
@@ -938,15 +926,22 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
             }
         }
     }
+    m_GlobalMutex.unlock();
 }
 
 bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it)
 {
     float Mag1 = 0;
+    float x = 0;
+    float y = 0;
 
     for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
     {
-        Mag1 = sqrt(((_it->GetShape().getPosition().x - fit->GetShape().getPosition().x) * (_it->GetShape().getPosition().x - fit->GetShape().getPosition().x)) + ((_it->GetShape().getPosition().y - fit->GetShape().getPosition().y) * (_it->GetShape().getPosition().y - fit->GetShape().getPosition().y)));
+        x = _it->GetShape().getPosition().x - fit->GetShape().getPosition().x;
+        x *= x;
+        y = _it->GetShape().getPosition().y - fit->GetShape().getPosition().y;
+        y *= y;
+        Mag1 = sqrt(x + y);
         
         if (Mag1 < 600)
         {
@@ -957,6 +952,29 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
                 m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
 
                 return true;
+                break;
+            }
+        }
+    }
+
+    for (std::list<CBlock>::iterator touit = m_Tourches.begin(); touit != m_Tourches.end(); touit++)
+    {
+        x = _it->GetShape().getPosition().x - touit->GetShape().getPosition().x;
+        x *= x;
+        y = _it->GetShape().getPosition().y - touit->GetShape().getPosition().y;
+        y *= y;
+        Mag1 = sqrt(x + y);
+
+        if (Mag1 < 600)
+        {
+            // Surface Shader
+            if (m_TourchShader != nullptr)
+            {
+                m_TourchShader->setUniform("hasTexture", true);
+                m_TourchShader->setUniform("lightPos", touit->GetShape().getPosition());
+
+                return true;
+                break;
             }
         }
     }
@@ -967,10 +985,16 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
 bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
 {
     float Mag1 = 0;
+    float x = 0;
+    float y = 0;
 
     for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
     {
-        Mag1 = sqrt(((_shape.getPosition().x - fit->GetShape().getPosition().x) * (_shape.getPosition().x - fit->GetShape().getPosition().x)) + ((_shape.getPosition().y - fit->GetShape().getPosition().y) * (_shape.getPosition().y - fit->GetShape().getPosition().y)));
+        x = _shape.getPosition().x - fit->GetShape().getPosition().x;
+        x *= x;
+        y = _shape.getPosition().y - fit->GetShape().getPosition().y;
+        y *= y;
+        Mag1 = sqrt(x + y);
 
         if (Mag1 < 600)
         {
@@ -979,8 +1003,28 @@ bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
             {
                 m_TourchShader->setUniform("hasTexture", true);
                 m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
-
                 return true;
+                break;
+            }
+        }
+    }
+    for (std::list<CBlock>::iterator touit = m_Tourches.begin(); touit != m_Tourches.end(); touit++)
+    {
+        x = _shape.getPosition().x - touit->GetShape().getPosition().x;
+        x *= x;
+        y = _shape.getPosition().y - touit->GetShape().getPosition().y;
+        y *= y;
+        Mag1 = sqrt(x + y);
+
+        if (Mag1 < 600)
+        {
+            // Surface Shader
+            if (m_TourchShader != nullptr)
+            {
+                m_TourchShader->setUniform("hasTexture", true);
+                m_TourchShader->setUniform("lightPos", touit->GetShape().getPosition());
+                return true;
+                break;
             }
         }
     }
@@ -1002,7 +1046,7 @@ void CWorldManager::InitPointer(CPlayer* _player)
 
 void CWorldManager::OutPutWorldToFiles(std::string _xPositions, std::string _yPositions)
 {
-    // OFstream
+    // Ofstream
     std::ofstream out_file;
 
     // X Positions
@@ -1186,7 +1230,7 @@ bool CWorldManager::IsObjectInBlock(sf::Sprite _shape)
 {
     for (CBlock& block : m_Chunk)
     {
-        if (block.GetShape().getGlobalBounds().contains(_shape.getPosition()))
+        if (block.GetShape().getGlobalBounds().intersects(_shape.getGlobalBounds()))
         {
             return true;
             break;

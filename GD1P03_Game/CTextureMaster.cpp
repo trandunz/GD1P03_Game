@@ -102,6 +102,9 @@ CTextureMaster::CTextureMaster()
 	m_HPLarge = new sf::Texture();
 	m_HPLarge->loadFromFile("Images/HPLarge.png");
 
+	m_GoldenHeart = new sf::Texture();
+	m_GoldenHeart->loadFromFile("Images/GoldenHeart.png");
+
 	// Set Smooth
 	m_Dirt->setSmooth(true);
 	m_Grass->setSmooth(true);
@@ -179,6 +182,8 @@ CTextureMaster::~CTextureMaster()
 	delete m_RedSlime;
 	delete m_HPSmall;
 	delete m_HPLarge;
+	delete m_GoldenHeart;
+	m_GoldenHeart = nullptr;
 	m_HPSmall = nullptr;
 	m_HPLarge = nullptr;
 	m_GlassBeaker = nullptr;
