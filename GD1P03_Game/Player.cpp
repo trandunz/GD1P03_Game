@@ -232,14 +232,13 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		// Cast sf::Vector2f to b2Vec2 For Sprite Position
 		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 		
-		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
+		if (a->GetBody() == m_Body || b->GetBody() == m_Body && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006))
 		{
 			// Velocity.y > 0 ? bCanJump = true
 			if ((vel1.y <= 0.5f && vel1.y >= -0.5f))
 			{
 				m_bCanJump = true;
 			}
-			
 
 			// Fall Damage
 			if (impactVelocity.y <= 82.8f && impactVelocity.y >= 62.0f && m_bCanFallDamage)
@@ -1052,18 +1051,6 @@ void CPlayer::TakeDamage(float _damage, bool _fallDamage)
 
 		// Set Red
 		m_Shape.setColor(sf::Color(100, 0, 0, 255));
-	}
-	else if (m_DamageTimer->getElapsedTime().asSeconds() >= 0.1f && _fallDamage)
-	{
-		std::cout << "Player Took Damage!" << std::endl;
-		m_Health -= m_Health;
-		m_DamageTimer->restart();
-		m_DamageIndicatorTimer->restart();
-		m_AudioManager->PlayPlayerDamage();
-
-		// Set Red
-		m_Shape.setColor(sf::Color(100, 0, 0, 255));
-		
 	}
 }
 

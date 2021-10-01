@@ -43,7 +43,7 @@ CWorldManager::~CWorldManager()
     m_World = nullptr;
 }
 
-void CWorldManager::Start(CTextureMaster* _textureMaster)
+void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     // World BackGround (Surface)
     m_BGPlainsSurface = sf::Sprite();
@@ -65,9 +65,9 @@ void CWorldManager::Start(CTextureMaster* _textureMaster)
     CreateSkyChunk(_textureMaster);
     //InputWorldFromFiles(_textureMaster);
     CreateWorldBoundary(_textureMaster);
-    CreateNoiseWorld(_textureMaster);
+    CreateNoiseWorld(_textureMaster, _audioManager, _spawners);
     CreateClouds(_textureMaster);
-    CreateDungeon(_textureMaster);
+    CreateDungeon(_textureMaster, _audioManager, _spawners);
 }
 
 void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster)
@@ -414,7 +414,7 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
     m_GlobalMutex.unlock();
 }
 
-void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
+void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     m_GlobalMutex.lock();
     GenerateNoise();
@@ -425,7 +425,15 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster)
             double xyValue = x * m_XPeriod / _NOISEWIDTH_ + y * m_YPeriod / _NOISEHEIGHT_ + m_TurbPower * Turbulence(x, y, m_TurbSize) / 256.0;
             double sineValue = 256 * fabs(sin(xyValue * _PI_));
 
-            if (sineValue <= 70)
+            if (sineValue <= 15 && x % 14 == 0 && y % 14 == 0)
+            {
+                Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader,false);
+                m_SlimeSpawner->ToggleSpawning();
+                m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+                _spawners.push_back(*m_SlimeSpawner);
+                m_SlimeSpawner = nullptr;
+            }
+            else if (sineValue <= 70)
             {
                 // Caves
             }
@@ -1263,7 +1271,7 @@ bool CWorldManager::PositionIsBlock(sf::Vector2f _pos)
     return false;
 }
 
-void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster)
+void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     for (int y = 0; y < m_GenerateOffsetY; y ++)
     {
@@ -1337,7 +1345,15 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster)
             }
             else if (x < -m_GenerateOffsetX - 6 && x >= -m_GenerateOffsetX - 46 && y >= 62 && y < 98)
             {
-                
+                if (x == -m_GenerateOffsetX - 26 && y == 72)
+                {
+                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                    m_SlimeSpawner->ToggleSpawning();
+                    m_SlimeSpawner->SetSpawnCount(1);
+                    m_SlimeSpawner->m_bCanSpawnBoss = true;
+                    _spawners.push_back(*m_SlimeSpawner);
+                    m_SlimeSpawner = nullptr;
+                }
             }
             else
             {

@@ -167,7 +167,11 @@ void CProjectile::Update()
 			{
 
 			}
-			else
+			else if (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0004 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0004) // _ENEMY_FILTER_
+			{
+				m_bMARKASDESTROY = true;
+			}
+			else if (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006) // _WORLD_FILTER_
 			{
 				m_bMARKASDESTROY = true;
 			}
@@ -231,7 +235,7 @@ void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _s
 	m_FixtureDef.filter.categoryBits = _PLAYER_FILTER_;
 	m_FixtureDef.filter.maskBits = _ENEMY_FILTER_;
 	m_FixtureDef.filter.maskBits = _WORLD_FILTER_;
-	m_FixtureDef.filter.groupIndex = -_PLAYER_GROUPINDEX_;
+	m_FixtureDef.filter.groupIndex = _ENEMY_GROUPINDEX_;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	// Sprite

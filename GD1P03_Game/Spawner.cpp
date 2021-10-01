@@ -1,6 +1,6 @@
 #include "Spawner.h"
 
-Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, CWorldManager* _worldManager, bool _sprite)
+Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, bool _sprite)
 {
 	m_World = &_world;
 	m_RenderWindow = _renderWindow;
@@ -12,7 +12,6 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 	m_Type = _type;
 	m_Shader = _shader;
 	m_AudioManager = _audioManager;
-	m_WorldManager = _worldManager;
 	m_TourchShader = _tourchShader;
 
 	switch (_type)
@@ -37,10 +36,9 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 		m_Texture = new sf::Texture();
 		m_Texture->loadFromFile("Images/SlimeSpawner.png");
 		m_Shape.setTexture(*m_Texture, true);
-		m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
-		m_Shape.setPosition(_posX, _posY);
 	}
-	
+	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	m_Shape.setPosition(_posX, _posY);
 
 	Start();
 }
@@ -52,8 +50,12 @@ void Spawner::Start()
 	m_DeathParticles->Start();
 }
 
-void Spawner::Update(CWorldManager* _worldManager)
+void Spawner::Update()
 {
+	int x = 0;
+	int y = 0;
+	int Mag = 0;
+
 	switch (m_Type)
 	{
 	case CEnemy::ENEMYTYPE::DEFAULT:
@@ -66,7 +68,14 @@ void Spawner::Update(CWorldManager* _worldManager)
 		{
 			if (m_SpawnTimer->getElapsedTime().asSeconds() >= m_SpawnFrequency)
 			{
-				m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager);
+				if (m_bCanSpawnBoss)
+				{
+					m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager, true);
+				}
+				else
+				{
+					m_Slimeptr = new Slime(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager);
+				}
 
 				std::cout << "slime spawned" << std::endl;
 				m_Slimes.push_front(*m_Slimeptr);
@@ -75,6 +84,10 @@ void Spawner::Update(CWorldManager* _worldManager)
 
 				if (m_Slimes.front().m_bIsBoss)
 				{
+					x = m_Slimes.front().GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = m_Slimes.front().GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag = sqrt((x * x) + (y * y));
+
 					m_iBossCount++;
 
 					if (m_Player == nullptr)
@@ -86,8 +99,11 @@ void Spawner::Update(CWorldManager* _worldManager)
 						}
 						else
 						{
-							std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-							m_AudioManager->PlayKingSlimeSpawn();
+							if (Mag < 1920 * 1.8)
+							{
+								std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+								m_AudioManager->PlayKingSlimeSpawn();
+							}
 						}
 					}
 					else
@@ -99,8 +115,11 @@ void Spawner::Update(CWorldManager* _worldManager)
 						}
 						else
 						{
-							std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-							m_AudioManager->PlayKingSlimeSpawn();
+							if (Mag < 1920 * 1.8)
+							{
+								std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+								m_AudioManager->PlayKingSlimeSpawn();
+							}
 						}
 					}
 
@@ -121,9 +140,6 @@ void Spawner::Update(CWorldManager* _worldManager)
 
 	}
 
-	int x = 0;
-	int y = 0;
-	int Mag = 0;
 	for (Slime& slime : m_Slimes)
 	{
 		x = slime.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
@@ -144,7 +160,7 @@ void Spawner::Update(CWorldManager* _worldManager)
 		{
 			slime.SetPlayer(m_Player);
 		}
-		else if (Mag > 3000)
+		else if (Mag > 6000)
 		{
 			slime.m_MARKASDESTORY = true;
 			slime.LoosePlayer();
@@ -271,9 +287,11 @@ void Spawner::Update(CWorldManager* _worldManager)
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
+
+							delete this;
 						}
 					}
 				}
@@ -296,10 +314,12 @@ void Spawner::Update(CWorldManager* _worldManager)
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 						}
+
+						delete this;
 					}
 				}
 
@@ -321,9 +341,11 @@ void Spawner::Update(CWorldManager* _worldManager)
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
+
+							delete this;
 						}
 					}
 				}
@@ -346,9 +368,12 @@ void Spawner::Update(CWorldManager* _worldManager)
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
+
+
+							delete this;
 						}
 					}
 				}
@@ -371,9 +396,12 @@ void Spawner::Update(CWorldManager* _worldManager)
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
+
+
+							delete this;
 						}
 					}
 				}
@@ -467,7 +495,7 @@ void Spawner::Update(CWorldManager* _worldManager)
 	}
 }
 
-void Spawner::Render()
+void Spawner::Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
 {
 	// Sprite
 	m_RenderWindow->draw(m_Shape, m_Shader);
@@ -482,9 +510,9 @@ void Spawner::Render()
 	{
 		for (Slime& slime : m_Slimes)
 		{
-			if (m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()))
+			if (_isInRangeOfLightSource)
 			{
-				slime.Render(m_TourchShader);
+				slime.Render(_tourchshader);
 			}
 			else
 			{
@@ -563,5 +591,4 @@ Spawner::~Spawner()
 	m_TextureMaster = nullptr;
 	m_Slimeptr = nullptr;
 	m_Zombieptr = nullptr;
-	m_WorldManager = nullptr;
 }

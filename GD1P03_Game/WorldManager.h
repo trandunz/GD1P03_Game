@@ -32,7 +32,7 @@
 // Local Includes
 #include "Player.h"
 #include "GUI.h"
-#include "Zombie.h"
+#include "Spawner.h"
 
 namespace Utils
 {
@@ -48,12 +48,12 @@ public:
 	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader = NULL, sf::Shader* _surfaceShader = NULL, sf::Shader* _tourchShader = NULL);
 	~CWorldManager();
 
-	void Start(CTextureMaster* _textureMaster);
+	void Start(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 	void Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster);
 	void Render(sf::Shader* _defaultShader = NULL);
 
 	void CreateSkyChunk(CTextureMaster* _textureMaster);
-    void CreateNoiseWorld(CTextureMaster* _textureMaster);
+    void CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 	void CreateWorldBoundary(CTextureMaster* _textureMaster);
 	void CreateClouds(CTextureMaster* _textureMaster);
 
@@ -73,7 +73,7 @@ public:
 	bool IsObjectInBlock(sf::Sprite _shape);
 	bool PositionIsBlock(sf::Vector2f _pos);
 
-	void CreateDungeon(CTextureMaster* _textureMaster);
+	void CreateDungeon(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 	
 	// Variables
 	std::list<CBlock> m_Chunk = {};

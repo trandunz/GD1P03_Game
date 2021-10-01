@@ -8,16 +8,15 @@
 #include "CParticleSystem.h"
 #include "Slime.h"
 #include "Zombie.h"
-#include "WorldManager.h"
 
 class Spawner
 {
 public:
-	Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer*_player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, CWorldManager* _worldManager, bool _sprite = true);
+	Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer*_player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, bool _sprite = true);
 	
 	void Start();
-	void Update(CWorldManager* _worldManager);
-	void Render();
+	void Update();
+	void Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource);
 
 	void LoosePlayer();
 	void SetPlayer(CPlayer* _player);
@@ -35,6 +34,9 @@ public:
 	std::list<Zombie> m_Zombies;
 
 	sf::Sprite m_Shape;
+
+
+	bool m_bCanSpawnBoss = false;
 private:
 	sf::Shader* m_Shader;
 	sf::Shader* m_TourchShader;
@@ -68,7 +70,5 @@ private:
 	CParticleSystem* m_DeathParticles;
 
 	int m_iBossCount = 0;
-
-	CWorldManager* m_WorldManager;
 };
 #endif

@@ -20,7 +20,7 @@ public:
 		BOSSYELLOW,
 	};
 
-	Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager);
+	Slime(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager, bool _boss = false);
 	virtual ~Slime();
 
 	virtual void Start();
@@ -34,33 +34,10 @@ public:
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 
 	virtual void Movement();
+	void SimpleMove();
 	virtual void Attack();
 
 	void TakeDamage(float _damage, bool _projectile = false);
-
-	bool bIsSlimeInRangeOfLightSource(std::list<CFurnace>& _furnaces, sf::Shader* m_TourchShader)
-	{
-		float Mag1 = 0;
-
-		for (std::list<CFurnace>::iterator fit = _furnaces.begin(); fit != _furnaces.end(); fit++)
-		{
-			Mag1 = sqrt(((m_Shape.getPosition().x - fit->GetShape().getPosition().x) * (m_Shape.getPosition().x - fit->GetShape().getPosition().x)) + ((m_Shape.getPosition().y - fit->GetShape().getPosition().y) * (m_Shape.getPosition().y - fit->GetShape().getPosition().y)));
-
-			if (Mag1 < 600)
-			{
-				// Surface Shader
-				if (m_TourchShader != nullptr)
-				{
-					m_TourchShader->setUniform("hasTexture", true);
-					m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
-
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
 
 	SLIMETYPE m_SlimeType = SLIMETYPE::GREEN;
 

@@ -188,13 +188,53 @@ void Start()
 
 	// Map
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
-	m_WorldManager->Start(m_TextureMaster);
+	m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners);
 
-	m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -400, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, m_WorldManager, true);
-	m_SlimeSpawner->ToggleSpawning();
-	m_SlimeSpawner->SetSpawnCount(2);
-	m_Spawners.push_back(*m_SlimeSpawner);
-	m_SlimeSpawner = nullptr;
+	// Spawners (temp place)
+	if (true)
+	{
+		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
+		m_SlimeSpawner->ToggleSpawning();
+		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+		m_Spawners.push_back(*m_SlimeSpawner);
+		m_SlimeSpawner = nullptr;
+
+		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
+		m_SlimeSpawner->ToggleSpawning();
+		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+		m_Spawners.push_back(*m_SlimeSpawner);
+		m_SlimeSpawner = nullptr;
+
+		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
+		m_SlimeSpawner->ToggleSpawning();
+		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+		m_Spawners.push_back(*m_SlimeSpawner);
+		m_SlimeSpawner = nullptr;
+
+		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, true);
+		m_SlimeSpawner->ToggleSpawning();
+		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+		m_Spawners.push_back(*m_SlimeSpawner);
+		m_SlimeSpawner = nullptr;
+
+		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
+		m_SlimeSpawner->ToggleSpawning();
+		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+		m_Spawners.push_back(*m_SlimeSpawner);
+		m_SlimeSpawner = nullptr;
+
+		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, true);
+		m_SlimeSpawner->ToggleSpawning();
+		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+		m_Spawners.push_back(*m_SlimeSpawner);
+		m_SlimeSpawner = nullptr;
+
+		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, true);
+		m_SlimeSpawner->ToggleSpawning();
+		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+		m_Spawners.push_back(*m_SlimeSpawner);
+		m_SlimeSpawner = nullptr;
+	}
 
 	// Init UI
 	InitUI();
@@ -345,7 +385,7 @@ void Update()
 		{
 			for (Spawner& spawner : m_Spawners)
 			{
-				spawner.Update(m_WorldManager);
+				spawner.Update();
 			}
 
 			if (m_AudioManager != nullptr)
@@ -482,6 +522,10 @@ void Render()
 
 	m_DebugWindow->Render();
 
+	float Mag1 = 0;
+	float x = 0;
+	float y = 0;
+
 	// Sky	
 	m_RenderWindow->setView(m_WorldView);
 
@@ -491,11 +535,21 @@ void Render()
 		m_WorldManager->Render();
 	}
 
-	if (m_Spawners.size() > 0)
+	if (m_Spawners.size() > 0 && m_WorldManager != nullptr)
 	{
 		for (Spawner& spawner : m_Spawners)
 		{
-			spawner.Render();
+			for (Slime& slime : spawner.m_Slimes)
+			{
+				x = slime.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+				y = slime.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+				Mag1 = sqrt((x * x) + (y * y));
+
+				if (Mag1 < 1920 * 1.8)
+				{
+					spawner.Render(&m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
+				}
+			}
 		}
 	}
 
