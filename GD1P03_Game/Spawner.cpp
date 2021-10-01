@@ -92,14 +92,14 @@ void Spawner::Update()
 
 					if (m_Player == nullptr)
 					{
-						if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1)
+						if (m_Shape.getPosition().y < 5000 || m_iBossCount > 1)
 						{
 							m_Slimes.pop_front();
 							m_iBossCount--;
 						}
 						else
 						{
-							if (Mag < 1920 * 1.8)
+							if (Mag < 1920 * 4.8)
 							{
 								std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
 								m_AudioManager->PlayKingSlimeSpawn();
@@ -108,14 +108,14 @@ void Spawner::Update()
 					}
 					else
 					{
-						if (m_Shape.getPosition().y < 1000 || m_iBossCount > 1 || m_Player->GetShape().getPosition().y < 1500)
+						if (m_Shape.getPosition().y < 5000 || m_iBossCount > 1 || m_Player->GetShape().getPosition().y < 5500)
 						{
 							m_Slimes.pop_front();
 							m_iBossCount--;
 						}
 						else
 						{
-							if (Mag < 1920 * 1.8)
+							if (Mag < 1920 * 4.8)
 							{
 								std::cout << "Boss Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
 								m_AudioManager->PlayKingSlimeSpawn();
@@ -291,8 +291,8 @@ void Spawner::Update()
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 
-							delete this;
 						}
+						m_SpawnFrequency = 120.0f;
 					}
 				}
 
@@ -318,8 +318,7 @@ void Spawner::Update()
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 						}
-
-						delete this;
+						m_SpawnFrequency = 120.0f;
 					}
 				}
 
@@ -344,9 +343,8 @@ void Spawner::Update()
 							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
-
-							delete this;
 						}
+						m_SpawnFrequency = 120.0f;
 					}
 				}
 
@@ -371,10 +369,8 @@ void Spawner::Update()
 							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
-
-
-							delete this;
 						}
+						m_SpawnFrequency = 120.0f;
 					}
 				}
 
@@ -399,10 +395,8 @@ void Spawner::Update()
 							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
-
-
-							delete this;
 						}
+						m_SpawnFrequency = 120.0f;
 					}
 				}
 
@@ -498,7 +492,7 @@ void Spawner::Update()
 void Spawner::Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
 {
 	// Sprite
-	m_RenderWindow->draw(m_Shape, m_Shader);
+	m_RenderWindow->draw(m_Shape);
 
 	switch (m_Type)
 	{

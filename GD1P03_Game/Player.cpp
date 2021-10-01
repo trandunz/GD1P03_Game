@@ -232,7 +232,7 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		// Cast sf::Vector2f to b2Vec2 For Sprite Position
 		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 		
-		if (a->GetBody() == m_Body || b->GetBody() == m_Body && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006))
+		if ((a->GetBody() == m_Body || b->GetBody() == m_Body) && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006))
 		{
 			// Velocity.y > 0 ? bCanJump = true
 			if ((vel1.y <= 0.5f && vel1.y >= -0.5f))

@@ -45,7 +45,7 @@ public:
 private:
 	
 
-
+	sf::Clock m_AttackTimer;
 
 	CPlayer* m_Player;
 

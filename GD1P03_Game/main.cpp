@@ -105,7 +105,7 @@ int main()
 		m_Settings.antialiasingLevel = 2;
 
 		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetary", sf::Style::Default, m_Settings);
-		m_RenderWindow->setVerticalSyncEnabled(true);
+		m_RenderWindow->setFramerateLimit(144);
 		m_RenderWindow->setKeyRepeatEnabled(false);
 
 		

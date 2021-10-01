@@ -2,14 +2,15 @@
 #ifndef _BLOCK_H__
 #define _BLOCK_H__
 
-#define _PLAYER_FILTER_ 0x0002;
-#define _ENEMY_FILTER_ 0x0004;
-#define _WORLD_FILTER_ 0x0006;
+#define _PLAYER_FILTER_ 0x0002
+#define _ENEMY_FILTER_ 0x0004
+#define _WORLD_FILTER_ 0x0006
+#define _PROJECTILE_FILTER_ 0x0008
 
-#define _PLAYER_GROUPINDEX_ 1;
-#define _PROJECTILE_GROUPINDEX_ 2;
-#define _ENEMY_GROUPINDEX_ 3;
-#define _WORLD_GROUPINDEX_ 4;
+#define _PLAYER_GROUPINDEX_ 1
+#define _PROJECTILE_GROUPINDEX_ 2
+#define _ENEMY_GROUPINDEX_ 3
+#define _WORLD_GROUPINDEX_ 4
 
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>

@@ -40,6 +40,7 @@ CDebugWindow::~CDebugWindow()
 	m_PlayerButtons.clear();
 	m_ItemPreviews.clear();
 	m_ItemListButtons.clear();
+	m_EnemyButtons.clear();
 
 	delete m_RenderWindow;
 
@@ -93,7 +94,19 @@ void CDebugWindow::Update()
 
 		for (int i = 0; i < m_PlayerButtons.size(); i++)
 		{
+			if (i == 2 && m_Player != nullptr)
+			{
+				int x = m_Player->GetShape().getPosition().x;
+				int y = m_Player->GetShape().getPosition().y;
+				std::string positionstring = "Position: ";
+				positionstring += std::to_string(x);
+				positionstring += ", ";
+				positionstring += std::to_string(y);
+
+				m_PlayerButtons[i].SetLabel(positionstring, 40.0f);
+			}
 			m_PlayerButtons[i].Update();
+
 			if (m_Event.type == sf::Event::MouseButtonPressed && m_PlayerButtons[i].bIsinBounds(m_MousePos))
 			{
 				if (i == 0)
@@ -142,7 +155,15 @@ void CDebugWindow::Render()
 
 	for (int i = 0; i < m_PlayerButtons.size(); i++)
 	{
-		m_RenderWindow->draw(m_PlayerButtons[i].Sprite);
+		if (i == 2)
+		{
+			m_PlayerButtons[i].RenderOnlyLabel();
+		}
+		else
+		{
+			m_RenderWindow->draw(m_PlayerButtons[i].Sprite);
+		}
+		
 	}
 
 	// Display
@@ -224,7 +245,7 @@ void CDebugWindow::CreateItemListButtons()
 		case 0:
 		{
 			CPickaxe* pickaxe = new CPickaxe();
-			
+
 			m_ItemPreviews.insert_or_assign(i, *pickaxe);
 			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
 			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
@@ -934,6 +955,28 @@ void CDebugWindow::CreatePlayerControlButtons()
 		tempbutton->SetIdleTex(Idle);
 
 		m_PlayerButtons.insert_or_assign(1, *tempbutton);
+		tempbutton = nullptr;
+	}
+
+	// Position Label
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(75 + 12.5f, 445 + 12.5f);
+
+		if (m_Player != nullptr)
+		{
+			int x = m_Player->GetShape().getPosition().x;
+			int y = m_Player->GetShape().getPosition().y;
+			std::string positionstring = "Position: ";
+			positionstring += std::to_string(x);
+			positionstring += ", ";
+			positionstring += std::to_string(y);
+
+			tempbutton->SetLabel(positionstring, 40.0f);
+		}
+
+		m_PlayerButtons.insert_or_assign(2, *tempbutton);
 		tempbutton = nullptr;
 	}
 }

@@ -15,44 +15,44 @@ CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 	{
 	case CBlock::PROJECTILETYPE::ARROW:
 		m_Texture->loadFromFile("Images/Arrow.png");
-		m_Damage = 25.0f;
+		m_Damage = 50.0f;
 		break;
 	case CBlock::PROJECTILETYPE::FIREARROW:
 		m_Texture->loadFromFile("Images/FireArrow.png");
-		m_Damage = 50.0f;
+		m_Damage = 60.0f;
 		break;
 	case CBlock::PROJECTILETYPE::POISONARROW:
 		m_Texture->loadFromFile("Images/PoisonArrow.png");
-		50.0f;
+		70.0f;
 		break;
 	case CBlock::PROJECTILETYPE::CURSEDARROW:
 		m_Texture->loadFromFile("Images/CursedArrow.png");
-		m_Damage = 75.0f;
+		m_Damage = 80.0f;
 		break;
 
 	case CBlock::PROJECTILETYPE::IRONBULLET:
 		m_Texture->loadFromFile("Images/IronBullet.png");
-		m_Damage = 100.0f;
+		m_Damage = 90.0f;
 		m_Bullet = true;
 		break;
 	case CBlock::PROJECTILETYPE::GOLDBULLET:
 		m_Texture->loadFromFile("Images/GoldBullet.png");
-		m_Damage = 125.0f;
+		m_Damage = 100.0f;
 		m_Bullet = true;
 		break;
 	case CBlock::PROJECTILETYPE::PURPLEBULLET:
 		m_Texture->loadFromFile("Images/PurpleBullet.png");
-		m_Damage = 150.0f;
+		m_Damage = 110.0f;
 		m_Bullet = true;
 		break;
 	case CBlock::PROJECTILETYPE::GOLDENBULLET:
 		m_Texture->loadFromFile("Images/GoldenBullet.png");
-		m_Damage = 175.0f;
+		m_Damage = 120.0f;
 		m_Bullet = true;
 		break;
 	default:
 		m_Texture->loadFromFile("Images/Arrow.png");
-		m_Damage = 25.0f;
+		m_Damage = 50.0f;
 		break;
 	}
 

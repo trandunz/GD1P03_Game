@@ -1347,12 +1347,14 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
             {
                 if (x == -m_GenerateOffsetX - 26 && y == 72)
                 {
-                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, true);
                     m_SlimeSpawner->ToggleSpawning();
                     m_SlimeSpawner->SetSpawnCount(1);
                     m_SlimeSpawner->m_bCanSpawnBoss = true;
-                    _spawners.push_back(*m_SlimeSpawner);
+                    _spawners.push_front(*m_SlimeSpawner);
                     m_SlimeSpawner = nullptr;
+
+                    std::cout << " Created Boss Spawner " << _spawners.front().m_Shape.getPosition().x << " " << _spawners.front().m_Shape.getPosition().y;
                 }
             }
             else

@@ -177,10 +177,38 @@ void CButtons::SetLabel(std::string _newLabel)
 
 	// Update Label
 	m_tLabel.setString(_newLabel);
-	m_tLabel.setCharacterSize(20);
 
 	// Set Origin
 	m_tLabel.setOrigin(sf::Vector2f(m_tLabel.getGlobalBounds().width / 2, m_tLabel.getGlobalBounds().height / 2));
+}
+
+void CButtons::SetLabel(std::string _newLabel, float _fontSize)
+{
+	// Temp Creation
+	std::string oldLabel = m_Label;
+	std::string oldClickLabel = m_OnClickLabel;
+
+	// Checks
+	if (_newLabel != m_OnClickLabel && _newLabel != m_HoverLabel)
+	{
+		m_Label = _newLabel;
+	}
+	if (m_OnClickLabel == oldLabel && _newLabel != m_HoverLabel)
+	{
+		m_OnClickLabel = _newLabel;
+	}
+	if (m_HoverLabel == oldLabel && _newLabel != oldClickLabel)
+	{
+		m_HoverLabel = _newLabel;
+	}
+
+	// Update Label
+	m_tLabel.setString(_newLabel);
+	m_tLabel.setCharacterSize(_fontSize);
+
+	// Set Origin
+	m_tLabel.setOrigin(sf::Vector2f(m_tLabel.getGlobalBounds().width / 2, m_tLabel.getGlobalBounds().height / 2));
+
 }
 
 /// <summary>
@@ -294,6 +322,11 @@ void CButtons::SetIdleTex(sf::Texture _newTexture)
 void CButtons::SetClickTex(sf::Texture _newTexture)
 {
 	m_ClickTexture = _newTexture;
+}
+
+void CButtons::SetFontSize(float _size)
+{
+	m_tLabel.setCharacterSize(_size);
 }
 
 /// <summary>
