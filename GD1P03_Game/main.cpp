@@ -473,7 +473,7 @@ void Update()
 				m_WorldManager->Update(MousePos, m_TextureMaster);
 
 				// World Step
-				m_World.Step(1 / 60.0f, 60.0f, 60.0f);
+				m_World.Step(1 / 60.0f, 30.0f, 30.0f);
 			}
 
 			//
