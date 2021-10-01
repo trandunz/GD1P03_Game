@@ -68,6 +68,7 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
     CreateNoiseWorld(_textureMaster, _audioManager, _spawners);
     CreateClouds(_textureMaster);
     CreateDungeon(_textureMaster, _audioManager, _spawners);
+    CreateSurfaceSpawners(_textureMaster, _audioManager, _spawners);
 }
 
 void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster)
@@ -390,14 +391,14 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
         m_Chunk.push_back(*m_Block);
         m_Block = nullptr;
     }
-    for (int i = 10; i < 69770 / 1.9f; i += 100)
+    for (int i = 10; i < 69770 / 1.9f - 14000; i += 100)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, -6000, false, CBlock::BLOCKTYPE::OBSIDIAN);
         m_Chunk.push_back(*m_Block);
         m_Block = nullptr;
     }
-    for (int i = 10; i < 69770 / 1.9f; i += 100)
+    for (int i = 10; i < 69770 / 1.9f - 14000; i += 100)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, 11300, false, CBlock::BLOCKTYPE::OBSIDIAN);
@@ -407,7 +408,7 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
     for (int j = 500 - 6500; j < 21400 / 1.9f; j += 100)
     {
         // OBSIDIAN
-        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +69570 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
+        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +69570 / 1.9f - 14000, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
         m_Chunk.push_back(*m_Block);
         m_Block = nullptr;
     }
@@ -420,7 +421,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
     GenerateNoise();
     for (int y = 0; y < m_GenerateOffsetY; y++)
     {
-        for (int x =  -m_GenerateOffsetX; x <  +m_GenerateOffsetX + 70; x++)
+        for (int x =  -m_GenerateOffsetX; x <  +m_GenerateOffsetX - 70; x++)
         {
             double xyValue = x * m_XPeriod / _NOISEWIDTH_ + y * m_YPeriod / _NOISEHEIGHT_ + m_TurbPower * Turbulence(x, y, m_TurbSize) / 256.0;
             double sineValue = 256 * fabs(sin(xyValue * _PI_));
@@ -656,60 +657,118 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                     {
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
-                            for (int i = 0; i < 1 + rand() % 4; i++)
+                            for (int i = 0; i < 0 + rand() % 4; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 0, true);
                             }
                             m_Block = nullptr;
                         }
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 1 == 0)
                         {
-                            m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
-                            for (int i = 0; i < 1 + rand() % 3; i++)
+                            m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+                            for (int i = 0; i < 0 + rand() % 8; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 1, true);
                             }
                             m_Block = nullptr;
                         }
-                        if (rand() % 1 == 0)
-                        {
-                            m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
-                            for (int i = 0; i < 2 + rand() % 8; i++)
-                            {
-                                m_Chest->AddItemToInventory(m_Block, 2, true);
-                            }
-                            m_Block = nullptr;
-                        }
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 1 == 0)
                         {
                             m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
-                            for (int i = 0; i < 2 + rand() % 4; i++)
+                            for (int i = 0; i < 0 + rand() % 3; i++)
                             {
-                                m_Chest->AddItemToInventory(m_Potion, 3, true);
+                                m_Chest->AddItemToInventory(m_Potion, 2, true);
                             }
                             m_Potion = nullptr;
                         }
-                        if (rand() % 2 == 0)
-                        {
-                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
-                            for (int i = 0; i < 2 + rand() % 3; i++)
-                            {
-                                m_Chest->AddItemToInventory(m_Potion, 4, true);
-                            }
-                            m_Potion = nullptr;
-                        }
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
-                            for (int i = 0; i < 2 + rand() % 4; i++)
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 3, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_FireArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 4, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_PoisonArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 5, true);
                             }
                             m_Block = nullptr;
                         }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
+                            for (int i = 0; i < 0 + rand() % 14; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 6, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+                            for (int i = 0; i < 0 + rand() % 14; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 7, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 2 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+                            for (int i = 0; i < 0 + rand() % 2; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 8, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 9, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GlassBeaker, CBlock::BLOCKTYPE::EMPTYBEAKER);
+                            for (int i = 0; i < 0 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 10, true);
+                            }
+                            m_Block = nullptr;
+                        }
+
                         m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
@@ -862,7 +921,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
 
-                        srand(1);
+                        srand(x + m_Chest->m_Inventory.size());
                         // ITEM RARITIES
                         if (rand() % 1 == 0)
                         {
@@ -873,17 +932,17 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Block = nullptr;
                         }
-                        srand(10);
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
-                            for (int i = 0; i < 1 + rand() % 2; i++)
+                            for (int i = 0; i < 0 + rand() % 2; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 1, true);
                             }
                             m_Block = nullptr;
                         }
-                        srand(100);
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
@@ -893,42 +952,62 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Block = nullptr;
                         }
-                        srand(1000);
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 3 == 0)
                         {
                             Bow* tempbow = new Bow(CBlock::BOWTYPE::ICE);
                             for (int i = 0; i < 1; i++)
                             {
-                                m_Chest->AddItemToInventory(tempbow, 3, false);
+                                m_Chest->AddItemToInventory(tempbow, 12, false);
                             }
                             tempbow = nullptr;
                         }
-                        srand(2000);
-                        if (rand() % 2 == 0)
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
                         {
                             m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
-                            for (int i = 0; i < 2 + rand() % 4; i++)
+                            for (int i = 0; i < 0 + rand() % 4; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Potion, 3, true);
                             }
                             m_Potion = nullptr;
                         }
-                        else if (rand() % 2 == 1)
+                        else if (rand() % 2 == 0)
                         {
                             m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
-                            for (int i = 0; i < 2 + rand() % 3; i++)
+                            for (int i = 0; i < 0 + rand() % 3; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Potion, 4, true);
                             }
                             m_Potion = nullptr;
                         }
-                        srand(6);
+                        srand(x + m_Chest->m_Inventory.size());
                         if (rand() % 1 == 0)
                         {
-                            m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
-                            for (int i = 0; i < 2 + rand() % 6; i++)
+                            m_Block = new CBlock(_textureMaster->m_PoisonArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 5, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_CursedArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 7, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GlassBeaker, CBlock::BLOCKTYPE::EMPTYBEAKER);
+                            for (int i = 0; i < 0 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 8, true);
                             }
                             m_Block = nullptr;
                         }
@@ -1281,51 +1360,245 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
             {
                 if (y % 5 == 0 && (x == -m_GenerateOffsetX - 51 || x == -m_GenerateOffsetX - 55))
                 {
-                    // Iron
+                    // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
             }
+            // Hallway
             else if (x < -m_GenerateOffsetX - 16 && x > -m_GenerateOffsetX - 56 && y >= 20 && y < 26)
             {
                 if (y == 22 && (x == -m_GenerateOffsetX - 55))
                 {
-                    // Iron
+                    // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
+                }
+
+                if (y == 25 && (x * 100) % 1500 == 0)
+                {
+                    m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100);
+                    m_Chest->SetSizeAndPos(x * 100 + 10, y * 100, 100, 100);
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    // ITEM RARITIES
+                    if (rand() % 1 == 0)
+                    {
+                        m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+                        for (int i = 0; i < 0 + rand() % 3; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Block, 0, true);
+                        }
+                        m_Block = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                        for (int i = 0; i < 0 + rand() % 3; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Block, 1, true);
+                        }
+                        m_Block = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+                        for (int i = 0; i < 0 + rand() % 3; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Potion, 2, true);
+                        }
+                        m_Potion = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        CProjectile* m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+                        for (int i = 0; i < 0 + rand() % 4; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Projectile, 4, true);
+                        }
+                        m_Projectile = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        CProjectile* m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+                        for (int i = 0; i < 0 + rand() % 4; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Projectile, 5, true);
+                        }
+                        m_Projectile = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        CProjectile* m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::IRONBULLET);
+                        for (int i = 0; i < 0 + rand() % 7; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Projectile, 12, true);
+                        }
+                        m_Projectile = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 3 == 0)
+                    {
+                        Bow* m_Bow = new Bow(CBlock::BOWTYPE::IRONGUN);
+                        for (int i = 0; i < 1; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Bow, 14, true);
+                        }
+                        m_Bow = nullptr;
+                    }
+
+                    m_Chests.push_back(*m_Chest);
+                    m_Chest = nullptr;
+                }
+
+                if (y == 22 && (x * 100) % 1700 == 0)
+                {
+                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                    m_SlimeSpawner->ToggleSpawning();
+                    m_SlimeSpawner->SetSpawnCount(2);
+                    _spawners.push_front(*m_SlimeSpawner);
+                    m_SlimeSpawner = nullptr;
                 }
             }
             else if (x < -m_GenerateOffsetX - 16 && x > -m_GenerateOffsetX - 22 && y >= 26 && y < 46)
             {
                 if (y % 5 == 0 && (x == -m_GenerateOffsetX - 17 || x == -m_GenerateOffsetX - 21))
                 {
-                    // Iron
+                    // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
             }
+            // Hallway
             else if (x < -m_GenerateOffsetX - 16 && x > -m_GenerateOffsetX - 56 && y >= 46 && y < 52)
             {
                 if (y == 47 && (x == -m_GenerateOffsetX - 55))
                 {
-                    // Iron
+                    // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
+                }
+
+                if (y == 51 && (x * 100) % 1500 == 0)
+                {
+                    m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100);
+                    m_Chest->SetSizeAndPos(x * 100 + 10, y * 100, 100, 100);
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    // ITEM RARITIES
+                    if (rand() % 1 == 0)
+                    {
+                        m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+                        for (int i = 0; i < 0 + rand() % 3; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Block, 0, true);
+                        }
+                        m_Block = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
+                        for (int i = 0; i < 0 + rand() % 3; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Block, 1, true);
+                        }
+                        m_Block = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+                        for (int i = 0; i < 0 + rand() % 3; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Potion, 2, true);
+                        }
+                        m_Potion = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        CProjectile* m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+                        for (int i = 0; i < 0 + rand() % 4; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Projectile, 4, true);
+                        }
+                        m_Projectile = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        CProjectile* m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+                        for (int i = 0; i < 0 + rand() % 4; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Projectile, 5, true);
+                        }
+                        m_Projectile = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 1 == 0)
+                    {
+                        CProjectile* m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::IRONBULLET);
+                        for (int i = 0; i < 0 + rand() % 7; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Projectile, 12, true);
+                        }
+                        m_Projectile = nullptr;
+                    }
+
+                    srand(x + m_Chest->m_Inventory.size());
+                    if (rand() % 2 == 0)
+                    {
+                        Bow* m_Bow = new Bow(CBlock::BOWTYPE::IRONGUN);
+                        for (int i = 0; i < 0 + rand() % 2; i++)
+                        {
+                            m_Chest->AddItemToInventory(m_Bow, 14, true);
+                        }
+                        m_Bow = nullptr;
+                    }
+
+                    m_Chests.push_back(*m_Chest);
+                    m_Chest = nullptr;
+                }
+
+                if (y == 48 && (x * 100) % 1700 == 0)
+                {
+                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                    m_SlimeSpawner->ToggleSpawning();
+                    m_SlimeSpawner->SetSpawnCount(2);
+                    _spawners.push_front(*m_SlimeSpawner);
+                    m_SlimeSpawner = nullptr;
                 }
             }
             else if (x < -m_GenerateOffsetX - 50 && x > -m_GenerateOffsetX - 56 && y >= 52 && y < 92)
             {
                 if (y % 5 == 0 && (x == -m_GenerateOffsetX - 51 || x == -m_GenerateOffsetX - 55))
                 {
-                    // Iron
+                    // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
@@ -1336,12 +1609,14 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
             {
                 if (y == 94 && (x == -m_GenerateOffsetX - 55))
                 {
-                    // Iron
+                    // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
                     m_Chunk.push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
+
+                
             }
             else if (x < -m_GenerateOffsetX - 6 && x >= -m_GenerateOffsetX - 46 && y >= 62 && y < 98)
             {
@@ -1356,10 +1631,12 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
 
                     std::cout << " Created Boss Spawner " << _spawners.front().m_Shape.getPosition().x << " " << _spawners.front().m_Shape.getPosition().y;
                 }
+
+
             }
             else
             {
-                // Iron
+                // Obsidan "Steps"
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
                 m_Chunk.push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
@@ -1369,6 +1646,51 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
 
         }
     }   
+}
+
+void CWorldManager::CreateSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
+{
+    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
 }
 
 void CWorldManager::GenerateNoise()

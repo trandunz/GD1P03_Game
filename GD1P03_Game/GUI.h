@@ -28,6 +28,9 @@ public:
 
 	void SetFont(sf::Font& _font);
 
+	void FPSUI(sf::RenderWindow* _renderWindow, float _fps);
+	void InitFpsUI(float _fps);
+
 	void HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster);
 	sf::Text InitHealthUI(CPlayer* _player);
 	void MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI = NULL);
@@ -90,6 +93,9 @@ private:
 
 	std::string m_HealthString;
 	sf::Text m_HealthText;
+
+	std::string m_Fps;
+	sf::Text m_FpsText;
 
 	std::string m_StatusString;
 	sf::Text m_StatusText;

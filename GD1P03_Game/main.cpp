@@ -91,6 +91,18 @@ sf::Text m_GameOverText;
 CDebugWindow* m_DebugWindow = nullptr;
 bool m_DebugInFocus = true;
 
+
+static long ONE_SECOND_NS = 1000000000;
+static int MAX_FPS = 60;
+
+int maxUpdates = 10;
+
+float m_Fps;
+sf::Clock m_FpsClock;
+sf::Time m_PreviousTime;
+sf::Time m_CurrentTime;
+sf::Time m_TimeDelta;
+
 /// <summary>
 /// 
 /// </summary>
@@ -190,52 +202,6 @@ void Start()
 	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
 	m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners);
 
-	// Spawners (temp place)
-	if (true)
-	{
-		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
-		m_SlimeSpawner->ToggleSpawning();
-		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-		m_Spawners.push_back(*m_SlimeSpawner);
-		m_SlimeSpawner = nullptr;
-
-		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
-		m_SlimeSpawner->ToggleSpawning();
-		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-		m_Spawners.push_back(*m_SlimeSpawner);
-		m_SlimeSpawner = nullptr;
-
-		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
-		m_SlimeSpawner->ToggleSpawning();
-		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-		m_Spawners.push_back(*m_SlimeSpawner);
-		m_SlimeSpawner = nullptr;
-
-		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, 24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, true);
-		m_SlimeSpawner->ToggleSpawning();
-		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-		m_Spawners.push_back(*m_SlimeSpawner);
-		m_SlimeSpawner = nullptr;
-
-		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, false);
-		m_SlimeSpawner->ToggleSpawning();
-		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-		m_Spawners.push_back(*m_SlimeSpawner);
-		m_SlimeSpawner = nullptr;
-
-		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, true);
-		m_SlimeSpawner->ToggleSpawning();
-		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-		m_Spawners.push_back(*m_SlimeSpawner);
-		m_SlimeSpawner = nullptr;
-
-		m_SlimeSpawner = new Spawner(m_AudioManager, m_RenderWindow, m_World, m_TextureMaster, Utils::m_Scale, -24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, &m_CoreShader, &m_TourchShader, true);
-		m_SlimeSpawner->ToggleSpawning();
-		m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-		m_Spawners.push_back(*m_SlimeSpawner);
-		m_SlimeSpawner = nullptr;
-	}
-
 	// Init UI
 	InitUI();
 
@@ -264,6 +230,11 @@ void Update()
 { 
 	while (m_RenderWindow->isOpen())
 	{
+		// Fps    // floor(m_Fps)
+		m_CurrentTime = m_FpsClock.getElapsedTime();
+		m_Fps = 1.0f / (m_CurrentTime.asSeconds() - m_PreviousTime.asSeconds());
+		m_PreviousTime = m_CurrentTime;
+
 		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
 
 		// PopOutMenu Update
@@ -378,9 +349,10 @@ void Update()
 			}
 		}
 
-		//
-		// UnPolled Update
-		//
+		// Update here (also call world.step here)
+			//
+			// UnPolled Update
+			//
 		if (!m_bClose)
 		{
 			for (Spawner& spawner : m_Spawners)
@@ -438,7 +410,7 @@ void Update()
 					if (true)
 					{
 						m_Chest = new CChest(m_RenderWindow, m_World, Utils::m_Scale, m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
-						
+
 						m_Chest->m_Inventory = m_Player->m_InventoryMap;
 						m_Chest->m_InventoryStackValues = m_Player->m_InventoryStackValues;
 						m_WorldManager->m_Chests.push_back(*m_Chest);
@@ -491,7 +463,7 @@ void Update()
 						spawner.SetPlayer(m_Player);
 					}
 
-					
+
 				}
 			}
 
@@ -501,7 +473,7 @@ void Update()
 				m_WorldManager->Update(MousePos, m_TextureMaster);
 
 				// World Step
-				m_World.Step(1 / 60.0f, 60, 60);
+				m_World.Step(1 / 60.0f, 60.0f, 60.0f);
 			}
 
 			//
@@ -569,6 +541,7 @@ void Render()
 		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
 		m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
 		m_GUI->StatusEffectUI(m_RenderWindow, m_Player);
+		m_GUI->FPSUI(m_RenderWindow, m_Fps);
 		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, m_WorldManager->m_Chests);
 	}
 
@@ -604,6 +577,7 @@ void InitUI()
 	m_GUI->InitInventoryUI(m_Player, m_RenderWindow, m_TextureMaster);
 	m_GUI->InitChestUI(m_RenderWindow,m_TextureMaster);
 	m_GUI->InitStatusEffectUI(m_Player);
+	m_GUI->InitFpsUI(m_Fps);
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));
@@ -616,7 +590,7 @@ void InitUI()
 /// <param name="_object"></param>
 void CenterViewsToSprite(sf::Sprite _object)
 {
-	if (_object.getPosition().x < -34200 || _object.getPosition().x > 34200)
+	if (_object.getPosition().x < -34200 || _object.getPosition().x > 34200 - 14000)
 	{
 		if (_object.getPosition().y < -4500 || _object.getPosition().y > 10000)
 		{

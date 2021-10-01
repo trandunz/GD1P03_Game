@@ -75,6 +75,8 @@ public:
 
 	void CreateDungeon(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 	
+	void CreateSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+
 	// Variables
 	std::list<CBlock> m_Chunk = {};
 	std::list<CChest> m_Chests = {};

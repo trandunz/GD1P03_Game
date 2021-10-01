@@ -29,6 +29,30 @@ GUI::~GUI()
 	m_FirstEmpySlotTimer = nullptr;
 }
 
+void GUI::FPSUI(sf::RenderWindow* _renderWindow, float _fps)
+{
+	m_Fps = ToString(_fps);
+	m_FpsText.setString(m_Fps);
+	m_FpsText.setOrigin(m_FpsText.getGlobalBounds().width / 2, m_FpsText.getGlobalBounds().height / 2);
+	m_FpsText.setPosition(_renderWindow->getView().getCenter().x, _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 15);
+	_renderWindow->draw(m_FpsText);
+}
+
+void GUI::InitFpsUI(float _fps)
+{
+
+	// Health Text
+	m_FpsText = sf::Text();
+	m_Fps = ToString(_fps);
+	m_FpsText.setString(m_Fps);
+	m_FpsText.setFont(m_Font);
+	m_FpsText.setFillColor(sf::Color::White);
+	m_FpsText.setOutlineThickness(0.75f);
+	m_FpsText.setOutlineColor(sf::Color::Black);
+	m_FpsText.setOrigin(m_FpsText.getGlobalBounds().width / 2, m_FpsText.getGlobalBounds().height / 2);
+	m_FpsText.setCharacterSize(22);
+}
+
 void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster)
 {
 	std::string string = "Life: " + ToString(_player->GetCurrentHP()) + " / " + ToString(_player->GetMaxHP());
@@ -150,7 +174,7 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 {
 
 	// Assigning Render Texture View and Zooming
-	if (_player->GetShape().getPosition().x < -34200 || _player->GetShape().getPosition().x > 34200)
+	if (_player->GetShape().getPosition().x < -34200 || _player->GetShape().getPosition().x > 34200 - 14000)
 	{
 		if (_player->GetShape().getPosition().y < -4500 || _player->GetShape().getPosition().y > 10000)
 		{

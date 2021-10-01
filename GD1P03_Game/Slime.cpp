@@ -569,7 +569,7 @@ void Slime::SimpleMove()
 	}
 
 	// Move Left
-	if (velocity.x < 1.0f && velocity.x > -1.0f && DirectionToPlayer < 0)
+	if (velocity.x < 1.0f && velocity.x > -1.0f)
 	{
 
 		// Face Left
@@ -657,7 +657,7 @@ void Slime::SimpleMove()
 		}
 	}
 	// Move Right
-	else if (velocity.x < 1.0f && velocity.x > -1.0f && DirectionToPlayer > 0)
+	else if (velocity.x < 1.0f && velocity.x > -1.0f)
 	{
 		// Face Right
 		m_Shape.setScale(-1, 1);
