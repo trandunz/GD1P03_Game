@@ -405,6 +405,11 @@ void Update()
 						m_Chest = nullptr;
 					}
 
+					// Clears The saved Inventory
+					m_Player->m_InventoryMap.clear();
+					m_Player->m_InventoryStackValues.clear();
+					m_Player->OutPutInventoryToFile();
+
 					delete m_Player;
 					m_Player = nullptr;
 					m_WorldManager->InitPointer(m_Player);

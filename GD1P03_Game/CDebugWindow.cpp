@@ -7,13 +7,29 @@ CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _world
 	m_TextureMaster = _textureMaster;
 	m_Spawners = &_spawners;
 
+	// Texture
+	m_PlayerPreviewTexture.loadFromFile("Images/PlayerIconRight.png");
+	m_PlayerPreview.setTexture(m_PlayerPreviewTexture, true);
+
 	// Player Stuff
 	m_PlayerBackGround = sf::RectangleShape(sf::Vector2f(400, 600));
 	m_PlayerBackGround.setFillColor(sf::Color::Green);
+	m_PlayerStatsBackGround = sf::RectangleShape(sf::Vector2f(350, 275));
+	m_PlayerStatsBackGround.setFillColor(sf::Color::Yellow);
+	m_PlayerStatsBackGround.setPosition(25, 300);
+	m_PlayerImageIconBackGround = sf::RectangleShape(sf::Vector2f(125, 125));
+	m_PlayerImageIconBackGround.setFillColor(sf::Color::Magenta);
+	m_PlayerImageIconBackGround.setPosition(50, 325);
+	m_PlayerPreview.setPosition(50 + 12.5f, 325 + 12.5f);
+
 	// Enemy Stuff
-	m_EnemiesBackGround = sf::RectangleShape(sf::Vector2f(200, 600));
+	m_EnemiesBackGround = sf::RectangleShape(sf::Vector2f(200, 300));
 	m_EnemiesBackGround.setFillColor(sf::Color::Red);
 	m_EnemiesBackGround.setPosition(400, 0);
+	// World Stuff
+	m_WorldBackGround = sf::RectangleShape(sf::Vector2f(200, 300));
+	m_WorldBackGround.setFillColor(sf::Color::Blue);
+	m_WorldBackGround.setPosition(400, 300);
 
 	// Render Window Creation
 	m_RenderWindow = new sf::RenderWindow(sf::VideoMode(600, 600), "DEBUG CONTROLS", (sf::Style::Titlebar));
@@ -24,7 +40,9 @@ CDebugWindow::~CDebugWindow()
 	m_PlayerButtons.clear();
 	m_ItemPreviews.clear();
 	m_ItemListButtons.clear();
+
 	delete m_RenderWindow;
+
 	m_RenderWindow = nullptr;
 	m_Spawners = nullptr;
 }
@@ -101,6 +119,10 @@ void CDebugWindow::Render()
 
 	m_RenderWindow->draw(m_PlayerBackGround);
 	m_RenderWindow->draw(m_EnemiesBackGround);
+	m_RenderWindow->draw(m_WorldBackGround);
+	m_RenderWindow->draw(m_PlayerStatsBackGround);
+	m_RenderWindow->draw(m_PlayerImageIconBackGround);
+	m_RenderWindow->draw(m_PlayerPreview);
 
 	// Item Buttons
 	for (int i = 0; i < m_ItemListButtons.size(); i++)
@@ -139,6 +161,7 @@ void CDebugWindow::SetSpawners(std::list<Spawner>* _spawners)
 
 void CDebugWindow::CreateItemListButtons()
 {
+	// Row 1 Buttons
 	for (int i = 0; i < 10; i++)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
@@ -147,6 +170,7 @@ void CDebugWindow::CreateItemListButtons()
 		m_ItemListButtons.insert_or_assign(i, *tempbutton);
 		tempbutton = nullptr;
 	}
+	// Row 2 Buttons
 	for (int i = 10; i < 20; i++)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
@@ -155,6 +179,7 @@ void CDebugWindow::CreateItemListButtons()
 		m_ItemListButtons.insert_or_assign(i, *tempbutton);
 		tempbutton = nullptr;
 	}
+	// Row 3 Buttons
 	for (int i = 20; i < 30; i++)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
@@ -163,6 +188,7 @@ void CDebugWindow::CreateItemListButtons()
 		m_ItemListButtons.insert_or_assign(i, *tempbutton);
 		tempbutton = nullptr;
 	}
+	// Row 4 Buttons
 	for (int i = 30; i < 40; i++)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
@@ -171,6 +197,7 @@ void CDebugWindow::CreateItemListButtons()
 		m_ItemListButtons.insert_or_assign(i, *tempbutton);
 		tempbutton = nullptr;
 	}
+	// Row 5 Buttons
 	for (int i = 40; i < 50; i++)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
@@ -179,6 +206,7 @@ void CDebugWindow::CreateItemListButtons()
 		m_ItemListButtons.insert_or_assign(i, *tempbutton);
 		tempbutton = nullptr;
 	}
+	// Row 6 Buttons
 	for (int i = 50; i < 60; i++)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
@@ -188,6 +216,7 @@ void CDebugWindow::CreateItemListButtons()
 		tempbutton = nullptr;
 	}
 
+	// Item Icons / Previews
 	for (int i = 0; i < m_ItemListButtons.size(); i++)
 	{
 		switch (i)
@@ -805,6 +834,7 @@ void CDebugWindow::CreateItemListButtons()
 		}
 	}
 
+	// Item Previews Updates
 	for (int i = 0; i < m_ItemPreviews.size(); i++)
 	{
 		m_ItemPreviews[i].Update();
@@ -818,7 +848,7 @@ void CDebugWindow::CreateEnemyControlButtons()
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
 		tempbutton->SetPosition(20 + (13 * 30), (1 * 30) - 20);
-		tempbutton->SetLabel("Kill All Enemies");
+		tempbutton->SetLabel("Kill All Slimes");
 
 		sf::Texture Hover;
 		Hover.loadFromFile("Images/KillAllSlimesButton-Hover.png");
@@ -836,7 +866,7 @@ void CDebugWindow::CreateEnemyControlButtons()
 		tempbutton = nullptr;
 	}
 	
-	// kill all
+	// kill all Enemies
 	if (true)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
@@ -928,6 +958,65 @@ void CDebugWindow::ResetAllButtons()
 	for (int i = 0; i < m_PlayerButtons.size(); i++)
 	{
 		m_PlayerButtons[i].m_bIsPressed = false;
+	}
+}
+
+void CDebugWindow::KillEnemies()
+{
+	std::list<Spawner>::iterator spawner = m_Spawners->begin();
+	for (spawner; spawner != m_Spawners->end(); spawner++)
+	{
+		spawner->m_Slimes.clear();
+		spawner->m_Zombies.clear();
+	}
+}
+
+void CDebugWindow::KillEnemies(CEnemy::ENEMYTYPE _type)
+{
+	if (_type == CEnemy::ENEMYTYPE::SLIME)
+	{
+		std::list<Spawner>::iterator spawner = m_Spawners->begin();
+		for (spawner; spawner != m_Spawners->end(); spawner++)
+		{
+			spawner->m_Slimes.clear();
+		}
+	}
+}
+
+void CDebugWindow::KillPlayer()
+{
+	if (m_Player != nullptr)
+	{
+		m_Player->SetCurrentHP(0);
+	}
+}
+
+void CDebugWindow::ToggleGodMode()
+{
+	m_bGodMode = !m_bGodMode;
+
+	if (m_Player != nullptr)
+	{
+		m_Player->ToggleGodMode();
+	}
+}
+
+void CDebugWindow::SetGodMode(bool _value)
+{
+	m_bGodMode = _value;
+}
+
+void CDebugWindow::GodMode()
+{
+	// God Mode
+	if (m_bGodMode && m_Player != nullptr)
+	{
+		m_Player->SetCurrentHP(m_Player->GetMaxHP());
+	}
+	else if (m_Player == nullptr)
+	{
+		ResetAllButtons();
+		SetGodMode(false);
 	}
 }
 
@@ -1353,9 +1442,7 @@ void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 				break;
 			}
 		}
-		
 	}
-	
 }
 
 void CDebugWindow::ClearPlayerInventory(bool _giveStarterItems)
@@ -1384,7 +1471,7 @@ void CDebugWindow::ClearPlayerInventory(bool _giveStarterItems)
 
 		if (_giveStarterItems)
 		{
-			if (!m_Player->IsItemInventory(CBlock::BLOCKTYPE::PICKAXE))
+			if (!m_Player->IsItemInInventory(CBlock::BLOCKTYPE::PICKAXE))
 			{
 				//Starting Items
 				for (int i = 0; i < 50; i++)
@@ -1398,7 +1485,7 @@ void CDebugWindow::ClearPlayerInventory(bool _giveStarterItems)
 					}
 				}
 			}
-			if (!m_Player->IsItemInventory(CBlock::BLOCKTYPE::BOW))
+			if (!m_Player->IsItemInInventory(CBlock::BLOCKTYPE::BOW))
 			{
 				//Starting Items
 				for (int i = 0; i < 50; i++)
@@ -1440,64 +1527,5 @@ void CDebugWindow::ClearPlayerInventory(bool _giveStarterItems)
 				}
 			}
 		}
-	}
-}
-
-void CDebugWindow::KillEnemies()
-{
-	std::list<Spawner>::iterator spawner = m_Spawners->begin();
-	for (spawner; spawner != m_Spawners->end(); spawner++)
-	{
-		spawner->m_Slimes.clear();
-		spawner->m_Zombies.clear();
-	}
-}
-
-void CDebugWindow::KillEnemies(CEnemy::ENEMYTYPE _type)
-{
-	if (_type == CEnemy::ENEMYTYPE::SLIME)
-	{
-		std::list<Spawner>::iterator spawner = m_Spawners->begin();
-		for (spawner; spawner != m_Spawners->end(); spawner++)
-		{
-			spawner->m_Slimes.clear();
-		}
-	}
-}
-
-void CDebugWindow::KillPlayer()
-{
-	if (m_Player != nullptr)
-	{
-		m_Player->SetCurrentHP(0);
-	}
-}
-
-void CDebugWindow::ToggleGodMode()
-{
-	m_bGodMode = !m_bGodMode;
-
-	if (m_Player != nullptr)
-	{
-		m_Player->ToggleGodMode();
-	}
-}
-
-void CDebugWindow::SetGodMode(bool _value)
-{
-	m_bGodMode = _value;
-}
-
-void CDebugWindow::GodMode()
-{
-	// God Mode
-	if (m_bGodMode && m_Player != nullptr)
-	{
-		m_Player->SetCurrentHP(m_Player->GetMaxHP());
-	}
-	else if (m_Player == nullptr)
-	{
-		ResetAllButtons();
-		SetGodMode(false);
 	}
 }

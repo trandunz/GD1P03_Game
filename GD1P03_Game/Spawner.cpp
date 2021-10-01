@@ -201,57 +201,255 @@ void Spawner::Update(CWorldManager* _worldManager)
 			// Delete
 			sit->m_MARKASDESTORY = false;
 
+			float x = 0;
+			float y = 0;
 
 			switch (sit->m_SlimeType)
 			{
 			case Slime::SLIMETYPE::GREEN:
 			{
 				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::RED:
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 0, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::BOSSYELLOW:
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 140, 0, 225));
+
+				m_iBossCount--;
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::BOSSPURPLE:
 			{
 				m_DeathParticles->SetColor(sf::Color(48, 0, 148, 225));
+
+				m_iBossCount--;
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::BOSSRED:
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 0, 0, 225));
+
+				m_iBossCount--;
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::BOSSBLUE:
 			{
 				m_DeathParticles->SetColor(sf::Color(0, 70, 148, 225));
+
+				m_iBossCount--;
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::BOSSGREEN:
 			{
 				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
+
+				m_iBossCount--;
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::PURPLE:
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 0, 148, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::BLUE:
 			{
 				m_DeathParticles->SetColor(sf::Color(0, 70, 148, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			case Slime::SLIMETYPE::YELLOW:
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 140, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+				}
+
 				break;
 			}
 			default:
@@ -263,21 +461,6 @@ void Spawner::Update(CWorldManager* _worldManager)
 			m_DeathParticleTimer.restart();
 			m_DeathParticles->SetEmitter(sit->GetShape().getPosition());
 			m_SpawnTimer->restart();
-
-			if (sit->m_bIsBoss)
-			{
-				m_iBossCount--;
-				if (m_Player != nullptr)
-				{
-					// Add 2 Gold To Inventory As Reward
-					for (int i = 0; i < 2; i++)
-					{
-						CBlock* temp = new CBlock(m_TextureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
-						m_Player->AddItemToInventory(temp, true);
-						temp = nullptr;
-					}
-				}
-			}
 
 			sit = m_Slimes.erase(sit);
 		}

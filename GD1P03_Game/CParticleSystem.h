@@ -1,5 +1,9 @@
 #pragma once
+#ifndef _PARTICLESYSTEM_H__
+#define _PARTICLESYSTEM_H__
+
 #include <SFML/Graphics.hpp>
+
 class CParticleSystem : public sf::Drawable, public sf::Transformable
 {
 public:
@@ -41,4 +45,4 @@ private:
 
 	bool m_bIsDead = false;
 };
-
+#endif

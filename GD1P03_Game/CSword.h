@@ -1,5 +1,9 @@
 #pragma once
+#ifndef _SWORD_H__
+#define _SWORD_H__
+
 #include "Block.h"
+
 class CSword : public CBlock
 {
 public:
@@ -22,4 +26,4 @@ private:
 	sf::Texture m_RightTex;
 
 };
-
+#endif

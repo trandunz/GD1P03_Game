@@ -1,6 +1,6 @@
 #pragma once
-#ifndef  _SPAWNER_H
-#define _SPAWNER_H
+#ifndef  _SPAWNER_H__
+#define _SPAWNER_H__
 
 
 #include <SFML/Graphics.hpp>

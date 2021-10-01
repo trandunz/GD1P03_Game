@@ -48,6 +48,7 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 CPlayer::~CPlayer()
 {
 	m_InventoryMap.clear();
+	m_InventoryStackValues.clear();
 	m_Projectiles.clear();
 
 	DestroyBody();
@@ -108,7 +109,7 @@ void CPlayer::Start()
 	InitInventory();
 	InputInventoryToFile();
 
-	if (!IsItemInventory(CBlock::BLOCKTYPE::PICKAXE))
+	if (!IsItemInInventory(CBlock::BLOCKTYPE::PICKAXE))
 	{
 		//Starting Items
 		for (int i = 0; i < 50; i++)
@@ -234,12 +235,26 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
 		{
 			// Velocity.y > 0 ? bCanJump = true
-			if ((vel1.y <= 1.0f && vel1.y >= -1.0f))
+			if ((vel1.y <= 0.5f && vel1.y >= -0.5f))
 			{
 				m_bCanJump = true;
 			}
+			
+
+			// Fall Damage
+			if (impactVelocity.y <= 82.8f && impactVelocity.y >= 62.0f && m_bCanFallDamage)
+			{
+				//std::cout << impactVelocity.y << std::endl;
+				TakeDamage(impactVelocity.y / 2);
+			}
+			else if (impactVelocity.y > 82.8f && m_bCanFallDamage)
+			{
+				//std::cout << impactVelocity.y << std::endl;
+				TakeDamage(impactVelocity.y * 2);
+			}
+
 			// Velocity.y > 0 ? bCanJump = true
-			if ((vel1.y > 3.0f && vel1.y <= -3.0f))
+			if ((vel1.y > 2.0f || vel1.y <= -2.0f))
 			{
 				m_bCanFallDamage = true;
 			}
@@ -247,21 +262,9 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 			{
 				m_bCanFallDamage = false;
 			}
-
-			// Fall Damage
-			if (impactVelocity.y <= 110.7f && impactVelocity.y >= 70.7f && m_bCanFallDamage)
-			{
-				//std::cout << impactVelocity.y << std::endl;
-				TakeDamage(impactVelocity.y);
-			}
-			else if (impactVelocity.y > 110.7f && m_bCanFallDamage)
-			{
-				//std::cout << impactVelocity.y << std::endl;
-				TakeDamage(impactVelocity.y * 1.5);
-			}
 		}
 		// Velocity.y == 0 ? bCanJump = false
-		else if (vel1.y < -2.0f || vel1.y > 2.0f)
+		else if (vel1.y < -0.1f || vel1.y > 0.1f)
 		{
 			m_bCanJump = false;
 		}
@@ -674,8 +677,12 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::GOLDENINGOT)
 			{
 			}
-			// ARROWS Ingot
+			// ARROWS
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
+			{
+			}
+			// Red Slime
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::REDSLIME)
 			{
 			}
 			//Chest
@@ -1306,7 +1313,7 @@ void CPlayer::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 	
 }
 
-bool CPlayer::IsItemInventory(CBlock::BLOCKTYPE _type)
+bool CPlayer::IsItemInInventory(CBlock::BLOCKTYPE _type)
 {
 	for (int i = 0; i < m_InventoryMap.size(); i++)
 	{
@@ -1330,7 +1337,7 @@ int CPlayer::GetPositionInInventory(CBlock::BLOCKTYPE _type)
 	return NULL;
 }
 
-int CPlayer::IsItemInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount)
+int CPlayer::IsItemInInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount)
 {
 	int tempCount = 0;
 	for (int i = 0; i < m_InventoryStackValues.size(); i++)

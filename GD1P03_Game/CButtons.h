@@ -13,6 +13,8 @@
 //
 
 #pragma once
+#ifndef _BUTTONS_H__
+#define _BUTTONS_H__
 
 // Non-Local Includes
 #include <SFML/Graphics.hpp>
@@ -88,4 +90,4 @@ private:
 
 	sf::Vector2f m_vMousePosition;
 };
-
+#endif

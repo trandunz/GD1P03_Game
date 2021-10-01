@@ -770,44 +770,49 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
 
+                        srand(1);
                         // ITEM RARITIES
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
-                            for (int i = 0; i < 1 + rand() % 4; i++)
+                            for (int i = 0; i < 1 + rand() % 2; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 0, true);
                             }
                             m_Block = nullptr;
                         }
+                        srand(10);
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
-                            for (int i = 0; i < 1 + rand() % 3; i++)
+                            for (int i = 0; i < 1 + rand() % 2; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 1, true);
                             }
                             m_Block = nullptr;
                         }
+                        srand(100);
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
-                            for (int i = 0; i < 2 + rand() % 8; i++)
+                            for (int i = 0; i < 2 + rand() % 6; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 2, true);
                             }
                             m_Block = nullptr;
                         }
+                        srand(1000);
                         if (rand() % 2 == 0)
                         {
-                            m_Block = new CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
+                           Bow* tempbow = new Bow(CBlock::BOWTYPE::ICE);
                             for (int i = 0; i < 1; i++)
                             {
-                                m_Chest->AddItemToInventory(m_Block, 3, false);
+                                m_Chest->AddItemToInventory(tempbow, 3, false);
                             }
-                            m_Block = nullptr;
+                            tempbow = nullptr;
                         }
-                        if (rand() % 1 == 0)
+                        srand(2000);
+                        if (rand() % 2 == 0)
                         {
                             m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
                             for (int i = 0; i < 2 + rand() % 4; i++)
@@ -816,7 +821,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Potion = nullptr;
                         }
-                        if (rand() % 2 == 0)
+                        else if (rand() % 2 == 1)
                         {
                             m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
                             for (int i = 0; i < 2 + rand() % 3; i++)
@@ -825,6 +830,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Potion = nullptr;
                         }
+                        srand(6);
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
@@ -848,44 +854,49 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                         m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
                         m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
 
+                        srand(1);
                         // ITEM RARITIES
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
-                            for (int i = 0; i < 1 + rand() % 4; i++)
+                            for (int i = 0; i < 1 + rand() % 2; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 0, true);
                             }
                             m_Block = nullptr;
                         }
+                        srand(10);
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_GoldIngot, CBlock::BLOCKTYPE::GOLDINGOT);
-                            for (int i = 0; i < 1 + rand() % 3; i++)
+                            for (int i = 0; i < 1 + rand() % 2; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 1, true);
                             }
                             m_Block = nullptr;
                         }
+                        srand(100);
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
-                            for (int i = 0; i < 2 + rand() % 8; i++)
+                            for (int i = 0; i < 2 + rand() % 6; i++)
                             {
                                 m_Chest->AddItemToInventory(m_Block, 2, true);
                             }
                             m_Block = nullptr;
                         }
-                        if (rand() % 2 == 0)
+                        srand(1000);
+                        if (rand() % 3 == 0)
                         {
-                            m_Block = new CBlock(_textureMaster->m_Bow, CBlock::BLOCKTYPE::BOW);
+                            Bow* tempbow = new Bow(CBlock::BOWTYPE::ICE);
                             for (int i = 0; i < 1; i++)
                             {
-                                m_Chest->AddItemToInventory(m_Block, 3, false);
+                                m_Chest->AddItemToInventory(tempbow, 3, false);
                             }
-                            m_Block = nullptr;
+                            tempbow = nullptr;
                         }
-                        if (rand() % 1 == 0)
+                        srand(2000);
+                        if (rand() % 2 == 0)
                         {
                             m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
                             for (int i = 0; i < 2 + rand() % 4; i++)
@@ -894,7 +905,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Potion = nullptr;
                         }
-                        if (rand() % 2 == 0)
+                        else if (rand() % 2 == 1)
                         {
                             m_Potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
                             for (int i = 0; i < 2 + rand() % 3; i++)
@@ -903,6 +914,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             }
                             m_Potion = nullptr;
                         }
+                        srand(6);
                         if (rand() % 1 == 0)
                         {
                             m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);

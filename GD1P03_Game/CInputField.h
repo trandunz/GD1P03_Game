@@ -13,8 +13,8 @@
 //
 
 #pragma once
-#ifndef _INPUTFIELD_H_
-#define _INPUTFIELD_H_
+#ifndef _INPUTFIELD_H__
+#define _INPUTFIELD_H__
 
 // Non-Local Includes
 #include <SFML/Graphics.hpp>

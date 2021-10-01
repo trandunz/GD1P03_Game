@@ -9,7 +9,7 @@
 #define _PLAYER_GROUPINDEX_ 1;
 #define _PROJECTILE_GROUPINDEX_ 2;
 #define _ENEMY_GROUPINDEX_ 3;
-#define _WORLD_GROUPINDEX_ 4;
+#define _WORLD_GROUPINDEX_ 4; 
 
 #include <vector>
 #include <fstream>
@@ -66,6 +66,7 @@ public:
 
 	void SetCurrentHP(int _amount);
 	void SetMaxHP(int _amount);
+
 	void SetMousePos(sf::Vector2f _position);
 
 	bool bCanMove();
@@ -82,11 +83,11 @@ public:
 	bool bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Sprite& _mousePositionSprite);
 	
 	bool IsBlockInInventory(CBlock* _block);
-	bool IsItemInventory(CBlock::BLOCKTYPE _type);
+	bool IsItemInInventory(CBlock::BLOCKTYPE _type);
 	bool SelectedItemIsEmpty();
 
 	int	GetPositionInInventory(CBlock::BLOCKTYPE _type);
-	int IsItemInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount);
+	int IsItemInInventory(CBlock::BLOCKTYPE _type, bool _bReturnAmount);
 
 	void AddItemToInventory(CBlock* _block, int _position, bool _canStack = true);
 	void AddItemToInventory(CBlock* _block, bool _canStack = true);
@@ -119,35 +120,14 @@ public:
 
 	b2World* GetWorld();
 
-
 	std::map<int, int> m_InventoryStackValues;
 	std::map<int, CBlock> m_InventoryMap;
 
 	sf::Sprite m_MapIcon;
 
-	int m_CurrentItemIndex = 0;
-
 	// Textures
 	sf::Texture* m_PlayerRightTex;
 	sf::Texture* m_PlayerLeftTex;
-
-	CPickaxe* m_Pickaxe;
-	Bow* m_Bow;
-	CSword* m_Sword;
-
-	// Box2d
-	b2BodyDef m_BodyDef;
-	b2Body* m_Body;
-	b2PolygonShape m_b2pShape;
-	b2FixtureDef m_FixtureDef;
-
-	CAudioManager* m_AudioManager;
-
-	CParticleSystem* m_TestParticles;
-
-	bool m_bInventoryOpen = false;
-	bool m_bPlayerIsInChest = false;
-
 
 	// Mouse
 	sf::Vector2f m_MousePos;
@@ -155,26 +135,12 @@ public:
 	sf::Clock m_HPPotionTimer;
 
 	int m_InventorySize = -1;
+	int m_CurrentItemIndex = 0;
+
+	bool m_bInventoryOpen = false;
+	bool m_bPlayerIsInChest = false;
+
 private:
-	sf::Sprite m_Shape;
-
-	// Player
-	b2Vec2 m_Velocity;
-	const int m_MoveSpeed = 60;
-	int m_MaxHP = 100;
-	int m_Health = 100;
-	float m_HeathRegenSpeed = 1;
-	float m_HeathRegenAmount = 1;
-	int m_InteractionRange = 10;
-	float m_AttackSpeed = 0.7f;
-	bool m_bGodMode = false;
-
-	bool m_bCanPlace = true;
-	
-	bool m_bCanMove = true;
-	bool m_bCanJump = false;
-	bool m_bCanFallDamage = true;
-
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;
@@ -184,35 +150,56 @@ private:
 	sf::Clock* m_DamageTimer;
 	sf::Clock* m_DamageIndicatorTimer;
 	CTextureMaster* m_TextureMaster;
+	CAudioManager* m_AudioManager;
+
+	// Player
+	sf::Sprite m_Shape;
+	b2Vec2 m_Velocity;
+
+	int m_MoveSpeed = 30;
+	int m_JumpMulti = 1.8;
+	int m_MaxHP = 100;
+	int m_Health = 100;
+	int m_InteractionRange = 10;
+
+	float m_HeathRegenSpeed = 1;
+	float m_HeathRegenAmount = 1;
+	float m_AttackSpeed = 0.7f;
+	
+	bool m_bGodMode = false;
+	bool m_bCanPlace = true;
+	bool m_bCanMove = true;
+	bool m_bCanJump = false;
+	bool m_bCanFallDamage = true;
 
 	// Textures
 	sf::Texture* m_MapIconTex;
 	sf::Texture* m_MapIconTexRight;
 
-	// Temp Block Pointer (Used To Create New Blocks During Block Placement)
+	// Temp Pointers
 	CBlock* m_Block;
-
-	// Temp Door Pointer
 	CDoor* m_Door;
-
 	CChest* m_Chest;
-
 	CFurnace* m_Furnace;
-
 	CWorkBench* m_WorkBench;
-
+	CPickaxe* m_Pickaxe;
+	Bow* m_Bow;
+	CSword* m_Sword;
+	CParticleSystem* m_TestParticles;
 	CProjectile* m_Projectile;
-	CPotion* m_Potion = nullptr;
+	CPotion* m_Potion;
 
+	// Projectiles And Attacks
 	std::list<CProjectile> m_Projectiles;
-
 	sf::Clock m_AttackTimer;
-
 	sf::Clock m_ParticleTimer;
-
 	sf::Clock m_HealthRegenTimer;
 
-
+	// Box2d
+	b2BodyDef m_BodyDef;
+	b2Body* m_Body;
+	b2PolygonShape m_b2pShape;
+	b2FixtureDef m_FixtureDef;
 };
 #endif
 

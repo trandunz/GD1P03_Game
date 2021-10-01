@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _DEBUGWINDOW_H_
-#define _DEBUGWINDOW_H_
+#ifndef _DEBUGWINDOW_H__
+#define _DEBUGWINDOW_H__
 
 #include "GUI.h"
 #include "WorldManager.h"
@@ -19,6 +19,8 @@ public:
 	void Update();
 	void Render();
 
+	void Close();
+
 	void SetPlayer(CPlayer* _player);
 	void SetSpawners(std::list<Spawner>* _spawners);
 
@@ -26,13 +28,7 @@ public:
 	void CreateEnemyControlButtons();
 	void CreatePlayerControlButtons();
 
-	void Close();
-
 	void ResetAllButtons();
-
-	void AddItemToInventory(int _itemIndexValue);
-
-	void ClearPlayerInventory(bool _giveStarterItems = false);
 
 	void KillEnemies();
 	void KillEnemies(CEnemy::ENEMYTYPE _type);
@@ -42,6 +38,9 @@ public:
 	void GodMode();
 	void ToggleGodMode();
 	void SetGodMode(bool _value);
+
+	void AddItemToInventory(int _itemIndexValue);
+	void ClearPlayerInventory(bool _giveStarterItems = false);
 
 	bool m_InFocus = true;
 
@@ -64,7 +63,15 @@ private:
 	std::map<int, CButtons> m_EnemyButtons;
 
 	sf::RectangleShape m_PlayerBackGround;
+	sf::RectangleShape m_PlayerStatsBackGround;
+	sf::RectangleShape m_PlayerImageIconBackGround;
+
 	sf::RectangleShape m_EnemiesBackGround;
+
+	sf::RectangleShape m_WorldBackGround;
+
+	sf::Sprite m_PlayerPreview;
+	sf::Texture m_PlayerPreviewTexture;
 
 	bool m_bGodMode = false;
 };
