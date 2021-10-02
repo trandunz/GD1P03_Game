@@ -12,6 +12,11 @@
 #define _ENEMY_GROUPINDEX_ 3
 #define _WORLD_GROUPINDEX_ 4
 
+#define _PLAINS_ 0
+#define _JUNGLE_ 1
+#define _SAND_ 2 
+#define _HELL_ 3
+
 #include <vector>
 #include <fstream>
 
@@ -31,7 +36,7 @@
 class CPlayer
 {
 public:
-	CPlayer(sf::RenderWindow* _renderWindow, b2World& m_World, const float& _scale, CAudioManager* _audioManager, CTextureMaster* _textureMaster);
+	CPlayer(sf::RenderWindow* _renderWindow, b2World& m_World, const float& _scale, CAudioManager* _audioManager, CTextureMaster* _textureMaster, bool* _changeScenes, int* _sceneValue);
 	~CPlayer();
 
 	void Start();
@@ -62,7 +67,7 @@ public:
 	int GetCurrentHP();
 	int GetMaxHP();
 
-	void TakeDamage(float _damage, bool _fallDamage = false);
+	void TakeDamage(float _damage);
 	void Heal(float _amount);
 
 	void SetCurrentHP(int _amount);
@@ -97,7 +102,7 @@ public:
 	void ToggleInventoryUI(std::list<CChest>& _chests);
 
 	template <typename T>
-	int Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
+	void Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
 
 	void PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
 	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
@@ -152,6 +157,8 @@ private:
 	sf::Clock* m_DamageIndicatorTimer;
 	CTextureMaster* m_TextureMaster;
 	CAudioManager* m_AudioManager;
+	bool* m_bChangeScenes;
+	int* m_SceneValue;
 
 	// Player
 	sf::Sprite m_Shape;

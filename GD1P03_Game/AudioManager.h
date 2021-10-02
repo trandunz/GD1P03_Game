@@ -21,7 +21,9 @@ public:
 	void PlayBlockPlace();
 	void PlayGroundMine();
 	void PlayMusic();
+	void PlayMusicSand();
 	void PlayUnderGroundMusic();
+	void PlayUnderGroundMusicSand();
 
 	void PlayPlayerDamage();
 	void PlayPlayerDeath();
@@ -61,6 +63,9 @@ private:
 
 	sf::Music m_Music;
 	sf::Music m_UnderGroundMusic;
+
+	sf::Music m_MusicSand;
+	sf::Music m_UnderGroundMusicSand;
 
 	sf::Sound m_PickupSound;
 	sf::SoundBuffer m_PickupSoundBuffer;

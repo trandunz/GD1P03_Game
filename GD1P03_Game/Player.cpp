@@ -1,6 +1,6 @@
 #include "Player.h"
 
-CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, CAudioManager* _audioManager, CTextureMaster* _textureMaster)
+CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, CAudioManager* _audioManager, CTextureMaster* _textureMaster, bool* _changeScenes, int* _sceneValue)
 {
 	// Init
 	m_TestParticles = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
@@ -14,6 +14,8 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
 	m_Sword = nullptr;
+	m_bChangeScenes = _changeScenes;
+	m_SceneValue = _sceneValue;
 
 	// Textures
 	m_PlayerRightTex = new sf::Texture();
@@ -74,7 +76,8 @@ CPlayer::~CPlayer()
 	delete m_MineTimer;
 	delete m_DamageTimer;
 	delete m_DamageIndicatorTimer;
-
+	m_SceneValue = nullptr;
+	m_bChangeScenes = nullptr;
 	m_Sword = nullptr;
 	m_DamageIndicatorTimer = nullptr;
 	m_DamageTimer = nullptr;
@@ -716,13 +719,60 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				PlaceTourch(m_Tourches, _mousePositionSprite);
 			}
+			// PORTAL KEY GREEN
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYGREEN)
+			{
+				*m_bChangeScenes = true;
+				*m_SceneValue = _JUNGLE_;
+			}
+			// PORTAL KEY RED
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)
+			{
+				*m_bChangeScenes = true;
+				*m_SceneValue = _SAND_;
+			}
+			// PORTAL KEY YELLOW
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYRED)
+			{
+				*m_bChangeScenes = true;
+				*m_SceneValue = _HELL_;
+			}
+			// PORTAL KEY PLAINS
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYPLAINS)
+			{
+				*m_bChangeScenes = true;
+				*m_SceneValue = _PLAINS_;
+			}
 			// Place Block
 			else
 			{
 				PlaceBlock(m_Chunk, _mousePositionSprite);
 			}
 		}
-
+		// PORTAL KEY GREEN
+		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYGREEN)
+		{
+		*m_bChangeScenes = true;
+		*m_SceneValue = _JUNGLE_;
+		}
+		// PORTAL KEY RED
+		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)
+		{
+		*m_bChangeScenes = true;
+		*m_SceneValue = _SAND_;
+		}
+		// PORTAL KEY YELLOW
+		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYRED)
+		{
+		*m_bChangeScenes = true;
+		*m_SceneValue = _HELL_;
+		}
+		// PORTAL KEY PLAINS
+		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYPLAINS)
+		{
+		*m_bChangeScenes = true;
+		*m_SceneValue = _PLAINS_;
+		}
 	}
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && m_bCanPlace)
 	{
@@ -751,6 +801,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 				Mine(m_WorkBenches, _mousePositionSprite);
 			}
 		}
+		
 	}
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && Mag < m_InteractionRange * 100 && m_bCanPlace)
 	{
@@ -1038,9 +1089,9 @@ int CPlayer::GetMaxHP()
 	return m_MaxHP;
 }
 
-void CPlayer::TakeDamage(float _damage, bool _fallDamage)
+void CPlayer::TakeDamage(float _damage)
 {
-	if (m_DamageTimer->getElapsedTime().asSeconds() >= 0.4f && !_fallDamage)
+	if (m_DamageTimer->getElapsedTime().asSeconds() >= 0.3f)
 	{
 
 		std::cout << "Player Took Damage!" << std::endl;
@@ -1417,7 +1468,7 @@ bool CPlayer::SelectedItemIsEmpty()
 }
 
 template <typename T>
-int CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
+void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 {
 	typename std::list<T>::iterator it;
 	for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
@@ -1494,21 +1545,6 @@ void CPlayer::PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionS
 	{
 		// Block
 		m_Block = new CBlock(m_RenderWindow, *m_World, m_InventoryMap[m_CurrentItemIndex].GetShape().getTexture(), m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y,false, m_InventoryMap[m_CurrentItemIndex].m_Type);
-		if (m_Block->m_Type == CBlock::BLOCKTYPE::SAND)
-		{
-			m_World->DestroyBody(m_Block->m_Body);
-			m_Block->m_BodyDef.type = b2_dynamicBody;
-			m_Block->m_BodyDef.position = b2Vec2(_mousePositionSprite.getPosition().x / m_Scale, (_mousePositionSprite.getPosition().y / m_Scale));
-			m_Block->m_BodyDef.fixedRotation = true;
-			m_Block->m_Body = m_World->CreateBody(&m_Block->m_BodyDef);
-
-			m_Block->m_b2pShape.SetAsBox((100 / 2) / m_Scale, (100 / 2) / m_Scale);
-
-			m_Block->m_FixtureDef.density = 2.0f;
-			m_Block->m_FixtureDef.shape = &m_Block->m_b2pShape;
-			m_Block->m_FixtureDef.friction = 2.0f;
-			m_Block->m_Body->CreateFixture(&m_Block->m_FixtureDef);
-		}
 		m_Chunk.push_back(*m_Block);
 		m_Block = nullptr;
 		m_Door = nullptr;
@@ -2574,6 +2610,83 @@ void CPlayer::InputInventoryToFile()
 				{
 					m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::BROKENSWORD);
 					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 36:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyGreen, CBlock::BLOCKTYPE::PORTALKEYGREEN);
+					AddItemToInventory(m_Block, i, false);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 37:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyRed, CBlock::BLOCKTYPE::PORTALKEYRED);
+					AddItemToInventory(m_Block, i, false);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 38:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+					AddItemToInventory(m_Block, i, false);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 39:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_SandStone, CBlock::BLOCKTYPE::SANDSTONE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 40:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_HardSandStone, CBlock::BLOCKTYPE::HARDSANDSTONE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 41:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_Cactas, CBlock::BLOCKTYPE::CACTUS);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case 42:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::PORTALKEYPLAINS);
+					AddItemToInventory(m_Block, i, false);
 					m_Block = nullptr;
 				}
 

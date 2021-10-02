@@ -14,6 +14,7 @@ public:
 	sf::Texture* m_Dirt;
 	sf::Texture* m_Grass;
 	sf::Texture* m_Sky;
+	sf::Texture* m_SandBG;
 	sf::Texture* m_ItemSpacer;
 	sf::Texture* m_HeartFull;
 	sf::Texture* m_HeartEmpty;
@@ -38,6 +39,7 @@ public:
 	sf::Texture* m_GoldIngot;
 	sf::Texture* m_DiamondIngot;
 	sf::Texture* m_UnderGroundPlains;
+	sf::Texture* m_UnderGroundSand;
 	sf::Texture* m_Cloud;
 	sf::Texture* m_CloudDark;
 	sf::Texture* m_WorkBench;
@@ -56,5 +58,12 @@ public:
 	sf::Texture* m_HPSmall;
 	sf::Texture* m_HPLarge;
 	sf::Texture* m_GoldenHeart;
+	sf::Texture* m_PortalKeyGreen;
+	sf::Texture* m_PortalKeyRed;
+	sf::Texture* m_PortalKeyYellow;
+	sf::Texture* m_SandStone;
+	sf::Texture* m_HardSandStone;
+	sf::Texture* m_Cactas;
+	sf::Texture* m_PortalKeyPlains;
 };
 #endif

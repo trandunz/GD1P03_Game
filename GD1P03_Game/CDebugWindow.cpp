@@ -236,6 +236,15 @@ void CDebugWindow::CreateItemListButtons()
 		m_ItemListButtons.insert_or_assign(i, *tempbutton);
 		tempbutton = nullptr;
 	}
+	// Row 7 Buttons
+	for (int i = 60; i < 70; i++)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(10 + ((i - 60) * 30), (7 * 30) - 20);
+		tempbutton->SetLabel("");
+		m_ItemListButtons.insert_or_assign(i, *tempbutton);
+		tempbutton = nullptr;
+	}
 
 	// Item Icons / Previews
 	for (int i = 0; i < m_ItemListButtons.size(); i++)
@@ -850,6 +859,83 @@ void CDebugWindow::CreateItemListButtons()
 			block = nullptr;
 			break;
 		}
+		case 56:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyGreen, CBlock::BLOCKTYPE::PORTALKEYGREEN);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 57:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyRed, CBlock::BLOCKTYPE::PORTALKEYRED);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 58:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 59:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_SandStone, CBlock::BLOCKTYPE::SANDSTONE);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 60:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_HardSandStone, CBlock::BLOCKTYPE::HARDSANDSTONE);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 61:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_Cactas, CBlock::BLOCKTYPE::CACTUS);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 62:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::PORTALKEYPLAINS);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
 		default:
 			break;
 		}
@@ -917,7 +1003,7 @@ void CDebugWindow::CreatePlayerControlButtons()
 	if (true)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
-		tempbutton->SetPosition(10 + (0 * 30), (8 * 30) - 20);
+		tempbutton->SetPosition(10 + (0 * 30), (9 * 30) - 20);
 		tempbutton->SetLabel("Kill Player");
 
 		sf::Texture Hover;
@@ -940,7 +1026,7 @@ void CDebugWindow::CreatePlayerControlButtons()
 	if (true)
 	{
 		CButtons* tempbutton = new CButtons(m_RenderWindow);
-		tempbutton->SetPosition(10 + (1 * 30), (8 * 30) - 20);
+		tempbutton->SetPosition(10 + (1 * 30), (9 * 30) - 20);
 
 		sf::Texture Hover;
 		Hover.loadFromFile("Images/GodMode.png");
@@ -1478,6 +1564,55 @@ void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 			{
 				CProjectile* block = new CProjectile(CBlock::PROJECTILETYPE::GOLDENBULLET);
 				m_Player->AddItemToInventory(block, true);
+				block = nullptr;
+				break;
+			}
+			case 56:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyRed, CBlock::BLOCKTYPE::PORTALKEYRED);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 57:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyGreen, CBlock::BLOCKTYPE::PORTALKEYGREEN);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 58:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 59:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_SandStone, CBlock::BLOCKTYPE::SANDSTONE);
+				m_Player->AddItemToInventory(block, true);
+				block = nullptr;
+				break;
+			}
+			case 60:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_HardSandStone, CBlock::BLOCKTYPE::HARDSANDSTONE);
+				m_Player->AddItemToInventory(block, true);
+				block = nullptr;
+				break;
+			}
+			case 61:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_Cactas, CBlock::BLOCKTYPE::CACTUS);
+				m_Player->AddItemToInventory(block, true);
+				block = nullptr;
+				break;
+			}
+			case 62:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::PORTALKEYPLAINS);
+				m_Player->AddItemToInventory(block, false);
 				block = nullptr;
 				break;
 			}

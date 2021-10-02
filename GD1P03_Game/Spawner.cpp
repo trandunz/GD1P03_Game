@@ -287,11 +287,17 @@ void Spawner::Update()
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 
 						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
+						
 						m_SpawnFrequency = 120.0f;
 					}
 				}
@@ -314,10 +320,16 @@ void Spawner::Update()
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
+
 						m_SpawnFrequency = 120.0f;
 					}
 				}
@@ -340,10 +352,17 @@ void Spawner::Update()
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
+
+							
 						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
 					}
 				}
@@ -363,13 +382,18 @@ void Spawner::Update()
 
 					if (Mag1 < 1920 * 1.5)
 					{
-						// Add 2 RedSlime To Inventory As Reward
+						// Add 2 Diamond To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
 					}
 				}
@@ -392,10 +416,15 @@ void Spawner::Update()
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::DIAMOND);
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
 					}
 				}

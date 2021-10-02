@@ -128,6 +128,7 @@ void CAudioManager::PlayMusic()
 {
 	if (m_Music.getStatus() != m_Music.Playing)
 	{
+		m_MusicSand.stop();
 		m_Music.openFromFile("Music/TerrariaDay.wav");
 		m_Music.setLoop(true);
 		m_Music.play();
@@ -155,10 +156,43 @@ void CAudioManager::PlayMusic()
 	}
 }
 
+void CAudioManager::PlayMusicSand()
+{
+	if (m_MusicSand.getStatus() != m_MusicSand.Playing)
+	{
+		m_Music.stop();
+		m_MusicSand.openFromFile("Music/TerrariaDaySand.wav");
+		m_MusicSand.setLoop(true);
+		m_MusicSand.play();
+	}
+
+	if (m_MusicLevel == 1)
+	{
+		m_MusicSand.setVolume(0.f);
+	}
+	else if (m_MusicLevel == 2)
+	{
+		m_MusicSand.setVolume(2.5f);
+	}
+	else if (m_MusicLevel == 3)
+	{
+		m_MusicSand.setVolume(5.0f);
+	}
+	else if (m_MusicLevel == 4)
+	{
+		m_MusicSand.setVolume(7.5f);
+	}
+	else
+	{
+		m_MusicSand.setVolume(10.0f);
+	}
+}
+
 void CAudioManager::PlayUnderGroundMusic()
 {
 	if (m_UnderGroundMusic.getStatus() != m_UnderGroundMusic.Playing)
 	{
+		m_UnderGroundMusicSand.stop();
 		m_UnderGroundMusic.openFromFile("Music/TerrariaUnderGround.wav");
 		m_UnderGroundMusic.setLoop(true);
 		m_UnderGroundMusic.play();
@@ -183,6 +217,38 @@ void CAudioManager::PlayUnderGroundMusic()
 	else
 	{
 		m_UnderGroundMusic.setVolume(0.0f);
+	}
+}
+
+void CAudioManager::PlayUnderGroundMusicSand()
+{
+	if (m_UnderGroundMusicSand.getStatus() != m_UnderGroundMusicSand.Playing)
+	{
+		m_UnderGroundMusic.stop();
+		m_UnderGroundMusicSand.openFromFile("Music/TerrariaUnderGroundSand.wav");
+		m_UnderGroundMusicSand.setLoop(true);
+		m_UnderGroundMusicSand.play();
+	}
+
+	if (m_MusicLevel == 1)
+	{
+		m_UnderGroundMusicSand.setVolume(10.0f);
+	}
+	else if (m_MusicLevel == 2)
+	{
+		m_UnderGroundMusicSand.setVolume(7.5f);
+	}
+	else if (m_MusicLevel == 3)
+	{
+		m_UnderGroundMusicSand.setVolume(5.0f);
+	}
+	else if (m_MusicLevel == 4)
+	{
+		m_UnderGroundMusicSand.setVolume(2.5f);
+	}
+	else
+	{
+		m_UnderGroundMusicSand.setVolume(0.0f);
 	}
 }
 

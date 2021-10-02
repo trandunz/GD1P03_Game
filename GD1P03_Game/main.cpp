@@ -1,3 +1,8 @@
+#define _PLAINS_ 0
+#define _JUNGLE_ 1
+#define _SAND_ 2 
+#define _HELL_ 3
+
 // Non-Local Includes
 #include <iostream>
 
@@ -9,17 +14,19 @@ void Start();
 void Update();
 void Render();
 
-void InitWorldView();
-void InitUI();
+static void InitWorldView();
+static void InitUI();
 
-void CenterViewsToSprite(sf::Sprite _object);
+static void CenterViewsToSprite(sf::Sprite _object);
 
 bool PickupItemOnGround();
 
-void InitShaders();
+static void InitShaders();
 
-void InitGameOver();
-void GameOverScreen();
+static void InitGameOver();
+static void GameOverScreen();
+
+void ChangeScene(bool* _changeScene, int* _sceneValue);
 
 // Mouse
 sf::Vector2f MousePos;
@@ -27,8 +34,7 @@ sf::Vector2f MousePos;
 // Font
 sf::Font m_Font;
 
-// Main Render Window
-sf::RenderWindow* m_RenderWindow;
+// Main Event
 sf::Event m_Event;
 
 // World
@@ -42,8 +48,21 @@ b2World m_World(m_Gravity);
 sf::View m_WorldView;
 sf::View m_UIView;
 
-// UI
+// Pointers
+sf::RenderWindow* m_RenderWindow;
 GUI* m_GUI;
+CTextureMaster* m_TextureMaster;
+CAudioManager* m_AudioManager;
+Bow* m_Bow;
+CPotion* m_Potion;
+Spawner* m_SlimeSpawner;
+CPickaxe* m_Pickaxe;
+CBlock* m_Block;
+CChest* m_Chest;
+CDoor* m_Door;
+bool* m_bChangeScenes;
+int* m_SceneValue;
+
 
 // Player
 CPlayer* m_Player;
@@ -51,36 +70,18 @@ CPlayer* m_Player;
 // Close App?
 bool m_bClose = false;
 
-// Audio Manager
-CAudioManager* m_AudioManager;
-
-// Block Pointer If Needed To Make Stuff
-CBlock* m_Block;
-
-// Block Pointer If Needed To Make Stuff
-CChest* m_Chest;
-
-// Block Pointer If Needed To Make Stuff
-CDoor* m_Door;
-
-// Block Pointer If Needed To Make Stuff
-CPickaxe* m_Pickaxe;
-
-CTextureMaster* m_TextureMaster;
-
+// Misc Clocks / Timers
 sf::Clock m_DeathTimer;
 sf::Clock m_InventoryClickTimer;
 
-Spawner* m_SlimeSpawner;
+// Lists
 std::list<Spawner> m_Spawners;
 
+// Shaders
 sf::Shader m_CoreShader;
 sf::Shader m_SurfaceShader;
 sf::Shader m_ShaderMiniMap;
 sf::Shader m_TourchShader;
-
-Bow* m_Bow;
-CPotion* m_Potion;
 
 // Gameover screen variables
 float m_PlayerRespawnTime = 5;
@@ -88,15 +89,11 @@ sf::Clock m_FadeTimer;
 sf::RectangleShape m_FadeScreen;
 sf::Text m_GameOverText;
 
+// Debug
 CDebugWindow* m_DebugWindow = nullptr;
 bool m_DebugInFocus = true;
 
-
-static long ONE_SECOND_NS = 1000000000;
-static int MAX_FPS = 60;
-
-int maxUpdates = 10;
-
+// Fps
 float m_Fps;
 sf::Clock m_FpsClock;
 sf::Time m_PreviousTime;
@@ -133,22 +130,7 @@ int main()
 	Update();
 	//
 
-	//// Save
-	//std::list<CBlock>::iterator itr;
-	//std::ofstream output("ChunkPositions.txt");
-	//output.open("ChunkPositions.txt");
-
-	//for (itr = m_Chunk.begin(); itr != m_Chunk.end(); itr++)
-	//{
-	//	output << itr->GetShape().getPosition().x;
-	//	output << ",";
-	//	output << itr->GetShape().getPosition().y;
-	//	output << std::endl;
-	//}
-	//output.close();
-
 	m_Spawners.clear();
-
 	delete m_DebugWindow;
 	delete m_TextureMaster;
 	delete m_GUI;
@@ -156,6 +138,10 @@ int main()
 	delete m_RenderWindow;
 	delete m_WorldManager;
 	delete m_AudioManager;
+	delete m_bChangeScenes;
+	delete m_SceneValue;
+	m_SceneValue = nullptr;
+	m_bChangeScenes = nullptr;
 	m_Potion = nullptr;
 	m_Chest = nullptr;
 	m_AudioManager = nullptr;
@@ -184,6 +170,9 @@ void Start()
 {
 	InitShaders();
 	InitGameOver();
+	m_bChangeScenes = new bool;
+	m_SceneValue = new int;
+	*m_bChangeScenes = false;
 
 	m_TextureMaster = new CTextureMaster();
 	m_Event = sf::Event();
@@ -195,7 +184,7 @@ void Start()
 	m_AudioManager = new CAudioManager();
 
 	// Player
-	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
+	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
 	m_Player->Start();
 
 	// Map
@@ -210,14 +199,14 @@ void Start()
 
 	// Center All Views To Player
 	CenterViewsToSprite(m_Player->GetShape());
+
+	// Already Has A Pickaxe Somehow?
+	m_GUI->InitHotBarScrolling(m_Player);
 	
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
 	m_Block = nullptr;
 	m_bClose = false;
-
-	// Already Has A Pickaxe Somehow?
-	m_GUI->InitHotBarScrolling(m_Player);
 
 	m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners);
 	m_DebugWindow->Start();
@@ -230,14 +219,15 @@ void Update()
 { 
 	while (m_RenderWindow->isOpen())
 	{
-		// Fps    // floor(m_Fps)
+		// Fps Float Update
 		m_CurrentTime = m_FpsClock.getElapsedTime();
 		m_Fps = 1.0f / (m_CurrentTime.asSeconds() - m_PreviousTime.asSeconds());
 		m_PreviousTime = m_CurrentTime;
 
+		// Get Mouse Pos Every Frame
 		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
 
-		// PopOutMenu Update
+		// DebugWindow Update
 		if (m_DebugWindow != nullptr)
 		{
 			m_DebugWindow->Update();
@@ -349,10 +339,9 @@ void Update()
 			}
 		}
 
-		// Update here (also call world.step here)
-			//
-			// UnPolled Update
-			//
+		//
+		// UnPolled Update
+		//
 		if (!m_bClose)
 		{
 			for (Spawner& spawner : m_Spawners)
@@ -362,8 +351,24 @@ void Update()
 
 			if (m_AudioManager != nullptr)
 			{
-				m_AudioManager->PlayMusic();
-				m_AudioManager->PlayUnderGroundMusic();
+				if (*m_SceneValue == _PLAINS_)
+				{
+					m_AudioManager->PlayMusic();
+					m_AudioManager->PlayUnderGroundMusic();
+				}
+				else if (*m_SceneValue == _JUNGLE_)
+				{
+
+				}
+				else if (*m_SceneValue == _SAND_)
+				{
+					m_AudioManager->PlayMusicSand();
+					m_AudioManager->PlayUnderGroundMusicSand();
+				}
+				else if (*m_SceneValue == _HELL_)
+				{
+
+				}
 			}
 
 			// Player Exists
@@ -446,7 +451,7 @@ void Update()
 				if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime)
 				{
 					// Player
-					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster);
+					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
 					m_Player->Start();
 
 					m_WorldManager->InitPointer(m_Player);
@@ -454,9 +459,6 @@ void Update()
 
 					// Already Has A Pickaxe Selected
 					m_GUI->InitHotBarScrolling(m_Player);
-
-					//m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World,m_GUI, &m_CoreShader, &m_SurfaceShader);
-					//m_WorldManager->Start(m_TextureMaster);
 
 					for (Spawner& spawner : m_Spawners)
 					{
@@ -480,6 +482,9 @@ void Update()
 			// Main Render
 			//
 			Render();
+
+			// Portal To Next Scene?
+			ChangeScene(m_bChangeScenes, m_SceneValue);
 		}
 	}
 }
@@ -492,8 +497,10 @@ void Render()
 	m_RenderWindow->clear();
 	/////////////////////////////////////
 
+	// Debug Window
 	m_DebugWindow->Render();
 
+	// Mag Variables For Culling
 	float Mag1 = 0;
 	float x = 0;
 	float y = 0;
@@ -501,12 +508,14 @@ void Render()
 	// Sky	
 	m_RenderWindow->setView(m_WorldView);
 
+	// WorldManager
 	if (m_WorldManager != nullptr)
 	{
 		m_WorldManager->CreateSkyChunk(m_TextureMaster);
 		m_WorldManager->Render();
 	}
 
+	// Spawners
 	if (m_Spawners.size() > 0 && m_WorldManager != nullptr)
 	{
 		for (Spawner& spawner : m_Spawners)
@@ -525,12 +534,13 @@ void Render()
 		}
 	}
 
-	// Player
+	// Player & UI (UI Depends On Player)
 	if (m_Player != nullptr && m_WorldManager != nullptr)
 	{
 		m_Player->Render();
 
 		// UI
+		// Set View To UI
 		m_RenderWindow->setView(m_UIView);
 		/////////////////////////////////////
 
@@ -545,11 +555,14 @@ void Render()
 		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, m_WorldManager->m_Chests);
 	}
 
+	// "You Died"
 	m_RenderWindow->draw(m_FadeScreen);
 	m_RenderWindow->draw(m_GameOverText);
 
 	/////////////////////////////////////
 	m_RenderWindow->display();
+
+	// Reset View To World
 	m_RenderWindow->setView(m_WorldView);
 }
 
@@ -590,9 +603,9 @@ void InitUI()
 /// <param name="_object"></param>
 void CenterViewsToSprite(sf::Sprite _object)
 {
-	if (_object.getPosition().x < -34200 || _object.getPosition().x > 34200 - 14000)
+	if (_object.getPosition().x < -34200 || _object.getPosition().x > 34200 - 14000) // Camera Goes Out Of World?
 	{
-		if (_object.getPosition().y < -4500 || _object.getPosition().y > 10000)
+		if (_object.getPosition().y < -4500 || _object.getPosition().y > 10000) // Camera Goes Out Of World?
 		{
 			m_WorldView.setCenter(_object.getPosition().x,m_WorldView.getCenter().y);
 		}
@@ -604,7 +617,7 @@ void CenterViewsToSprite(sf::Sprite _object)
 	}
 	else
 	{
-		if (_object.getPosition().y < -4500 || _object.getPosition().y > 10000)
+		if (_object.getPosition().y < -4500 || _object.getPosition().y > 10000) // Camera Goes Out Of World?
 		{
 			m_WorldView.setCenter(_object.getPosition().x, m_WorldView.getCenter().y);
 		}
@@ -616,6 +629,8 @@ void CenterViewsToSprite(sf::Sprite _object)
 	}
 
 	m_UIView.setCenter(_object.getPosition());
+
+	// Reset View To World
 	m_RenderWindow->setView(m_WorldView);
 }
 
@@ -707,16 +722,54 @@ void GameOverScreen()
 
 void InitGameOver()
 {
-	m_Font.loadFromFile("Fonts/ANDYB.TTF");
 	m_FadeScreen.setSize(sf::Vector2f(30000, 30000));
 	m_FadeScreen.setOrigin(sf::Vector2f(15000, 15000));
 	m_FadeScreen.setFillColor(sf::Color::Transparent);
+
+	m_Font.loadFromFile("Fonts/ANDYB.TTF");
 	m_GameOverText.setCharacterSize(400);
 	m_GameOverText.setString("You Died");
 	m_GameOverText.setFont(m_Font);
 	m_GameOverText.setOrigin(m_GameOverText.getGlobalBounds().width / 2, m_GameOverText.getGlobalBounds().height / 2);
 	m_GameOverText.setFillColor(sf::Color::Transparent);
 	m_GameOverText.setOutlineColor(sf::Color::Transparent);
+}
+
+void ChangeScene(bool* _changeScene, int* _sceneValue)
+{
+	if (*_changeScene == true)
+	{
+		*_changeScene = false;
+		delete m_WorldManager;
+		m_WorldManager = nullptr;
+		m_Spawners.clear();
+
+		m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader); // add enum
+		
+		if (*_sceneValue == 0)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::PLAINS);
+		}
+		else if (*_sceneValue == 1)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::JUNGLE);
+		}
+		else if (*_sceneValue == 2)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::SAND);
+		}
+		else if (*_sceneValue == 3)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::HELL);
+		}
+		
+		if (m_Player != nullptr)
+		{
+			m_Player->DestroyBody();
+			m_Player->CreateBody(0, -400, b2_dynamicBody);
+			m_Player->ResetSpritePos();
+		}
+	}
 }
 
 

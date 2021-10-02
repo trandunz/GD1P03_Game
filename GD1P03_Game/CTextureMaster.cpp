@@ -105,6 +105,31 @@ CTextureMaster::CTextureMaster()
 	m_GoldenHeart = new sf::Texture();
 	m_GoldenHeart->loadFromFile("Images/GoldenHeart.png");
 
+	m_PortalKeyGreen = new sf::Texture();
+	m_PortalKeyGreen->loadFromFile("Images/PortalKeyGreen.png");
+	m_PortalKeyRed = new sf::Texture();
+	m_PortalKeyRed->loadFromFile("Images/PortalKeyRed.png");
+	m_PortalKeyYellow = new sf::Texture();
+	m_PortalKeyYellow->loadFromFile("Images/PortalKeyYellow.png");
+
+	m_SandStone = new sf::Texture();
+	m_SandStone->loadFromFile("Images/SandStone.png");
+	m_HardSandStone = new sf::Texture();
+	m_HardSandStone->loadFromFile("Images/HardSandStone.png");
+
+	m_Cactas = new sf::Texture();
+	m_Cactas->loadFromFile("Images/Cactus.png");
+
+	m_PortalKeyPlains = new sf::Texture();
+	m_PortalKeyPlains->loadFromFile("Images/PortalKeyPlains.png");
+
+	m_SandBG = new sf::Texture();
+	m_SandBG->loadFromFile("Images/SandBG.png");
+
+	m_UnderGroundSand = new sf::Texture();
+	m_UnderGroundSand->setRepeated(true);
+	m_UnderGroundSand->loadFromFile("Images/UnderGroundSand.png");
+
 	// Set Smooth
 	m_Dirt->setSmooth(true);
 	m_Grass->setSmooth(true);
@@ -183,6 +208,24 @@ CTextureMaster::~CTextureMaster()
 	delete m_HPSmall;
 	delete m_HPLarge;
 	delete m_GoldenHeart;
+	delete m_PortalKeyGreen;
+	delete m_PortalKeyRed;
+	delete m_PortalKeyYellow;
+	delete m_SandStone;
+	delete m_HardSandStone;
+	delete m_Cactas;
+	delete m_PortalKeyPlains;
+	delete m_SandBG;
+	delete m_UnderGroundSand;
+	m_UnderGroundSand = nullptr;
+	m_SandBG = nullptr;
+	m_PortalKeyPlains = nullptr;
+	m_Cactas = nullptr;
+	m_SandStone = nullptr;
+	m_HardSandStone = nullptr;
+	m_PortalKeyGreen = nullptr;
+	m_PortalKeyRed = nullptr;
+	m_PortalKeyYellow = nullptr;
 	m_GoldenHeart = nullptr;
 	m_HPSmall = nullptr;
 	m_HPLarge = nullptr;

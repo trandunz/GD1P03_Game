@@ -52,7 +52,7 @@ protected:
 	int m_Health = 100;
 	int m_MaxHealth = 100;
 	int m_MoveSpeed = 50;
-	float m_AttackSpeed = 1.0f;
+	float m_AttackSpeed = 0.5f;
 
 	// Box2d
 	b2BodyDef m_BodyDef;

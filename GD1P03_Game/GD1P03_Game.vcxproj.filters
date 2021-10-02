@@ -13,179 +13,206 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{6888b82b-6f03-4f37-8034-e5a9de3fe040}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Items / Blocks">
+      <UniqueIdentifier>{9a370c86-f1c0-4320-bcdc-e9a6eb983687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{b8f6d0fc-1e53-48a3-8b9c-b9e7f6f27bd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{7ad86424-9fed-421a-80ed-054ad501de83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Items / Blocks">
+      <UniqueIdentifier>{fa9a89e5-47b8-4b9a-9986-05d0326ae077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{1f8edf03-6085-4250-ad1a-017006f816d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\FragmentShaders">
+      <UniqueIdentifier>{baeae4f5-8623-4beb-a092-e99c35382cbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\VertexShaders">
+      <UniqueIdentifier>{2af12c51-ec0a-4afe-893f-2f89fc88b4f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\External">
+      <UniqueIdentifier>{aa0e77fb-91f6-4613-820b-2b18ee358ad3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Block.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Chest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AudioManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WorldManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Pickaxe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CTextureMaster.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CFurnace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Zombie.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Slime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Spawner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CProjectile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CParticleSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CWorkBench.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CPotion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CSword.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CButtons.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CInputField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CDebugWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Slime.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Zombie.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Bow.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CFurnace.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Chest.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CPotion.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CProjectile.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CSword.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorkBench.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Pickaxe.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="CButtons.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CInputField.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CParticleSystem.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Chest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AudioManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Door.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WorldManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Pickaxe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CTextureMaster.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CFurnace.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Zombie.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Slime.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Spawner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CProjectile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CParticleSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CWorkBench.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CPotion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CSword.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CButtons.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CInputField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CDebugWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Zombie.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Bow.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="CFurnace.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Chest.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="CPotion.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="CProjectile.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="CSword.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="CWorkBench.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Pickaxe.h">
+      <Filter>Header Files\Items / Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CParticleSystem.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CInputField.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CButtons.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CTextureMaster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\utils-master\stringutils.h">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\External</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragment_shader_surface.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Shaders\fragment_shader _UI.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\FragmentShaders</Filter>
     </None>
     <None Include="Shaders\fragment_shader.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\vertex_shader.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\vertex_shader_surface.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\vertex_shader_UI.vert">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\FragmentShaders</Filter>
     </None>
     <None Include="Shaders\fragment_shader_tourch.frag">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\FragmentShaders</Filter>
+    </None>
+    <None Include="Shaders\fragment_shader_surface.frag">
+      <Filter>Resource Files\FragmentShaders</Filter>
+    </None>
+    <None Include="Shaders\vertex_shader_UI.vert">
+      <Filter>Resource Files\VertexShaders</Filter>
+    </None>
+    <None Include="Shaders\vertex_shader.vert">
+      <Filter>Resource Files\VertexShaders</Filter>
+    </None>
+    <None Include="Shaders\vertex_shader_surface.vert">
+      <Filter>Resource Files\VertexShaders</Filter>
     </None>
     <None Include="Shaders\vertex_shader_tourch.vert">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\VertexShaders</Filter>
     </None>
   </ItemGroup>
 </Project>

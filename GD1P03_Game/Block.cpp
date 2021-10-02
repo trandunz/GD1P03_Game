@@ -158,6 +158,21 @@ void CBlock::Start()
 		m_BlockStrength = 1;
 		break;
 	}
+	case CBlock::BLOCKTYPE::SANDSTONE:
+	{
+		m_BlockStrength = 3;
+		break;
+	}
+	case CBlock::BLOCKTYPE::HARDSANDSTONE:
+	{
+		m_BlockStrength = 6;
+		break;
+	}
+	case CBlock::BLOCKTYPE::CACTUS:
+	{
+		m_BlockStrength = 1;
+		break;
+	}
 
 	default:
 	{

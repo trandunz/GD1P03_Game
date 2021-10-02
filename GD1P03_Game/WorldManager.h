@@ -44,16 +44,25 @@ namespace Utils
 class CWorldManager
 {
 public:
+	enum WORLDTYPE
+	{
+		PLAINS,
+		SAND,
+		JUNGLE,
+		HELL
+	};
+
 	// Functions
 	CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader = NULL, sf::Shader* _surfaceShader = NULL, sf::Shader* _tourchShader = NULL);
 	~CWorldManager();
 
-	void Start(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+	void Start(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners, WORLDTYPE _worldtype = WORLDTYPE::PLAINS);
 	void Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster);
 	void Render(sf::Shader* _defaultShader = NULL);
 
 	void CreateSkyChunk(CTextureMaster* _textureMaster);
     void CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+	void CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 	void CreateWorldBoundary(CTextureMaster* _textureMaster);
 	void CreateClouds(CTextureMaster* _textureMaster);
 
@@ -89,6 +98,8 @@ public:
 	int m_GenerateOffsetX = 296;
 	int m_GenerateOffsetY = 113;
 private:
+	WORLDTYPE m_WorldType = WORLDTYPE::PLAINS;
+
 	// Variables
 	sf::Shader* m_Shader;
 	sf::Shader* m_SurfaceShader;
@@ -101,6 +112,7 @@ private:
 	GUI* m_GUI;
 
 	sf::Sprite m_BGPlainsSurface;
+	sf::Sprite m_BGSandSurface;
 	sf::Sprite m_BGPlainsUnderGr;
 
 	// Temp Pointers (Used To Create New Blocks)
