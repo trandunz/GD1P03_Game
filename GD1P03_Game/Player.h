@@ -13,7 +13,7 @@
 #define _WORLD_GROUPINDEX_ 4
 
 #define _PLAINS_ 0
-#define _JUNGLE_ 1
+#define _ICE 1
 #define _SAND_ 2 
 #define _HELL_ 3
 

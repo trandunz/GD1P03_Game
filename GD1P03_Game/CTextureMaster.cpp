@@ -105,8 +105,8 @@ CTextureMaster::CTextureMaster()
 	m_GoldenHeart = new sf::Texture();
 	m_GoldenHeart->loadFromFile("Images/GoldenHeart.png");
 
-	m_PortalKeyGreen = new sf::Texture();
-	m_PortalKeyGreen->loadFromFile("Images/PortalKeyGreen.png");
+	m_PortalKeyBlue = new sf::Texture();
+	m_PortalKeyBlue->loadFromFile("Images/PortalKeyBlue.png");
 	m_PortalKeyRed = new sf::Texture();
 	m_PortalKeyRed->loadFromFile("Images/PortalKeyRed.png");
 	m_PortalKeyYellow = new sf::Texture();
@@ -129,6 +129,36 @@ CTextureMaster::CTextureMaster()
 	m_UnderGroundSand = new sf::Texture();
 	m_UnderGroundSand->setRepeated(true);
 	m_UnderGroundSand->loadFromFile("Images/UnderGroundSand.png");
+
+	m_UnderGroundIce = new sf::Texture();
+	m_UnderGroundIce->setRepeated(true);
+	m_UnderGroundIce->loadFromFile("Images/UnderGroundIce.png");
+
+	m_IceBG = new sf::Texture();
+	m_IceBG->loadFromFile("Images/IceBG.png");
+
+	m_Snow = new sf::Texture();
+	m_Snow->loadFromFile("Images/Snow.png");
+
+	m_LeavesIce = new sf::Texture();
+	m_LeavesIce->loadFromFile("Images/LeavesIce.png");
+
+	m_DirtHell = new sf::Texture();
+	m_DirtHell->loadFromFile("Images/DirtHell.png");
+	m_StoneHell = new sf::Texture();
+	m_StoneHell->loadFromFile("Images/StoneHell.png");
+	m_BrickHell = new sf::Texture();
+	m_BrickHell->loadFromFile("Images/BrickHell.png");
+
+	m_UnderGroundHell = new sf::Texture();
+	m_UnderGroundHell->setRepeated(true);
+	m_UnderGroundHell->loadFromFile("Images/UnderGroundHell.png");
+
+	m_HellBG = new sf::Texture();
+	m_HellBG->loadFromFile("Images/HellBG.png");
+
+	m_TerrariaHellBG = new sf::Texture();
+	m_TerrariaHellBG->loadFromFile("Images/TerrariaBGHell.png");
 
 	// Set Smooth
 	m_Dirt->setSmooth(true);
@@ -208,7 +238,7 @@ CTextureMaster::~CTextureMaster()
 	delete m_HPSmall;
 	delete m_HPLarge;
 	delete m_GoldenHeart;
-	delete m_PortalKeyGreen;
+	delete m_PortalKeyBlue;
 	delete m_PortalKeyRed;
 	delete m_PortalKeyYellow;
 	delete m_SandStone;
@@ -217,13 +247,33 @@ CTextureMaster::~CTextureMaster()
 	delete m_PortalKeyPlains;
 	delete m_SandBG;
 	delete m_UnderGroundSand;
+	delete m_UnderGroundIce;
+	delete m_IceBG;
+	delete m_Snow;
+	delete m_LeavesIce;
+	delete m_DirtHell;
+	delete m_StoneHell;
+	delete m_BrickHell;
+	delete m_UnderGroundHell;
+	delete m_HellBG;
+	delete m_TerrariaHellBG;
+	m_TerrariaHellBG = nullptr;
+	m_UnderGroundHell = nullptr;
+	m_HellBG = nullptr;
+	m_DirtHell = nullptr;
+	m_StoneHell = nullptr;
+	m_BrickHell = nullptr;
+	m_LeavesIce = nullptr;
+	m_UnderGroundIce = nullptr;
+	m_IceBG = nullptr;
+	m_Snow = nullptr;
 	m_UnderGroundSand = nullptr;
 	m_SandBG = nullptr;
 	m_PortalKeyPlains = nullptr;
 	m_Cactas = nullptr;
 	m_SandStone = nullptr;
 	m_HardSandStone = nullptr;
-	m_PortalKeyGreen = nullptr;
+	m_PortalKeyBlue = nullptr;
 	m_PortalKeyRed = nullptr;
 	m_PortalKeyYellow = nullptr;
 	m_GoldenHeart = nullptr;

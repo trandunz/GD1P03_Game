@@ -1,5 +1,5 @@
 #define _PLAINS_ 0
-#define _JUNGLE_ 1
+#define _ICE 1
 #define _SAND_ 2 
 #define _HELL_ 3
 
@@ -356,9 +356,10 @@ void Update()
 					m_AudioManager->PlayMusic();
 					m_AudioManager->PlayUnderGroundMusic();
 				}
-				else if (*m_SceneValue == _JUNGLE_)
+				else if (*m_SceneValue == _ICE)
 				{
-
+					m_AudioManager->PlayMusicIce();
+					m_AudioManager->PlayUnderGroundMusicIce();
 				}
 				else if (*m_SceneValue == _SAND_)
 				{
@@ -367,7 +368,8 @@ void Update()
 				}
 				else if (*m_SceneValue == _HELL_)
 				{
-
+					m_AudioManager->PlayMusicHell();
+					m_AudioManager->PlayUnderGroundMusicHell();
 				}
 			}
 
@@ -752,7 +754,7 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 		}
 		else if (*_sceneValue == 1)
 		{
-			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::JUNGLE);
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::ICE);
 		}
 		else if (*_sceneValue == 2)
 		{

@@ -129,6 +129,8 @@ void CAudioManager::PlayMusic()
 	if (m_Music.getStatus() != m_Music.Playing)
 	{
 		m_MusicSand.stop();
+		m_MusicIce.stop();
+		m_MusicHell.stop();
 		m_Music.openFromFile("Music/TerrariaDay.wav");
 		m_Music.setLoop(true);
 		m_Music.play();
@@ -161,6 +163,8 @@ void CAudioManager::PlayMusicSand()
 	if (m_MusicSand.getStatus() != m_MusicSand.Playing)
 	{
 		m_Music.stop();
+		m_MusicIce.stop();
+		m_MusicHell.stop();
 		m_MusicSand.openFromFile("Music/TerrariaDaySand.wav");
 		m_MusicSand.setLoop(true);
 		m_MusicSand.play();
@@ -188,11 +192,81 @@ void CAudioManager::PlayMusicSand()
 	}
 }
 
+void CAudioManager::PlayMusicIce()
+{
+	if (m_MusicIce.getStatus() != m_MusicIce.Playing)
+	{
+		m_Music.stop();
+		m_MusicHell.stop();
+		m_MusicSand.stop();
+		m_MusicIce.openFromFile("Music/TerrariaDayIce.wav");
+		m_MusicIce.setLoop(true);
+		m_MusicIce.play();
+	}
+
+	if (m_MusicLevel == 1)
+	{
+		m_MusicIce.setVolume(0.f);
+	}
+	else if (m_MusicLevel == 2)
+	{
+		m_MusicIce.setVolume(2.5f);
+	}
+	else if (m_MusicLevel == 3)
+	{
+		m_MusicIce.setVolume(5.0f);
+	}
+	else if (m_MusicLevel == 4)
+	{
+		m_MusicIce.setVolume(7.5f);
+	}
+	else
+	{
+		m_MusicIce.setVolume(10.0f);
+	}
+}
+
+void CAudioManager::PlayMusicHell()
+{
+	if (m_MusicHell.getStatus() != m_MusicHell.Playing)
+	{
+		m_Music.stop();
+		m_MusicSand.stop();
+		m_MusicIce.stop();
+		m_MusicHell.openFromFile("Music/TerrariaDayHell.wav");
+		m_MusicHell.setLoop(true);
+		m_MusicHell.play();
+	}
+
+	if (m_MusicLevel == 1)
+	{
+		m_MusicHell.setVolume(0.f);
+	}
+	else if (m_MusicLevel == 2)
+	{
+		m_MusicHell.setVolume(2.5f);
+	}
+	else if (m_MusicLevel == 3)
+	{
+		m_MusicHell.setVolume(5.0f);
+	}
+	else if (m_MusicLevel == 4)
+	{
+		m_MusicHell.setVolume(7.5f);
+	}
+	else
+	{
+		m_MusicHell.setVolume(10.0f);
+	}
+}
+
 void CAudioManager::PlayUnderGroundMusic()
 {
 	if (m_UnderGroundMusic.getStatus() != m_UnderGroundMusic.Playing)
 	{
 		m_UnderGroundMusicSand.stop();
+		m_UnderGroundMusicIce.stop();
+		m_UnderGroundMusicHell.stop();
 		m_UnderGroundMusic.openFromFile("Music/TerrariaUnderGround.wav");
 		m_UnderGroundMusic.setLoop(true);
 		m_UnderGroundMusic.play();
@@ -225,6 +299,8 @@ void CAudioManager::PlayUnderGroundMusicSand()
 	if (m_UnderGroundMusicSand.getStatus() != m_UnderGroundMusicSand.Playing)
 	{
 		m_UnderGroundMusic.stop();
+		m_UnderGroundMusicIce.stop();
+		m_UnderGroundMusicHell.stop();
 		m_UnderGroundMusicSand.openFromFile("Music/TerrariaUnderGroundSand.wav");
 		m_UnderGroundMusicSand.setLoop(true);
 		m_UnderGroundMusicSand.play();
@@ -249,6 +325,74 @@ void CAudioManager::PlayUnderGroundMusicSand()
 	else
 	{
 		m_UnderGroundMusicSand.setVolume(0.0f);
+	}
+}
+
+void CAudioManager::PlayUnderGroundMusicIce()
+{
+	if (m_UnderGroundMusicIce.getStatus() != m_UnderGroundMusicIce.Playing)
+	{
+		m_UnderGroundMusicSand.stop();
+		m_UnderGroundMusic.stop();
+		m_UnderGroundMusicHell.stop();
+		m_UnderGroundMusicIce.openFromFile("Music/TerrariaUnderGroundIce.wav");
+		m_UnderGroundMusicIce.setLoop(true);
+		m_UnderGroundMusicIce.play();
+	}
+
+	if (m_MusicLevel == 1)
+	{
+		m_UnderGroundMusicIce.setVolume(10.0f);
+	}
+	else if (m_MusicLevel == 2)
+	{
+		m_UnderGroundMusicIce.setVolume(7.5f);
+	}
+	else if (m_MusicLevel == 3)
+	{
+		m_UnderGroundMusicIce.setVolume(5.0f);
+	}
+	else if (m_MusicLevel == 4)
+	{
+		m_UnderGroundMusicIce.setVolume(2.5f);
+	}
+	else
+	{
+		m_UnderGroundMusicIce.setVolume(0.0f);
+	}
+}
+
+void CAudioManager::PlayUnderGroundMusicHell()
+{
+	if (m_UnderGroundMusicHell.getStatus() != m_UnderGroundMusicHell.Playing)
+	{
+		m_UnderGroundMusicSand.stop();
+		m_UnderGroundMusic.stop();
+		m_UnderGroundMusicIce.stop();
+		m_UnderGroundMusicHell.openFromFile("Music/TerrariaUnderGroundHell.wav");
+		m_UnderGroundMusicHell.setLoop(true);
+		m_UnderGroundMusicHell.play();
+	}
+
+	if (m_MusicLevel == 1)
+	{
+		m_UnderGroundMusicHell.setVolume(10.0f);
+	}
+	else if (m_MusicLevel == 2)
+	{
+		m_UnderGroundMusicHell.setVolume(7.5f);
+	}
+	else if (m_MusicLevel == 3)
+	{
+		m_UnderGroundMusicHell.setVolume(5.0f);
+	}
+	else if (m_MusicLevel == 4)
+	{
+		m_UnderGroundMusicHell.setVolume(2.5f);
+	}
+	else
+	{
+		m_UnderGroundMusicHell.setVolume(0.0f);
 	}
 }
 

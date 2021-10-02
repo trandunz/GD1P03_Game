@@ -44,11 +44,11 @@ namespace Utils
 class CWorldManager
 {
 public:
-	enum WORLDTYPE
+	enum class WORLDTYPE
 	{
 		PLAINS,
 		SAND,
-		JUNGLE,
+		ICE,
 		HELL
 	};
 
@@ -63,6 +63,8 @@ public:
 	void CreateSkyChunk(CTextureMaster* _textureMaster);
     void CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 	void CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+	void CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+	void CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 	void CreateWorldBoundary(CTextureMaster* _textureMaster);
 	void CreateClouds(CTextureMaster* _textureMaster);
 
@@ -86,6 +88,11 @@ public:
 	
 	void CreateSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
 
+	void CreateSandBackgrounds(CTextureMaster* _textureMaster);
+	void CreatePlainsBackgrounds(CTextureMaster* _textureMaster);
+	void CreateIceBackgrounds(CTextureMaster* _textureMaster);
+	void CreateHellBackgrounds(CTextureMaster* _textureMaster);
+
 	// Variables
 	std::list<CBlock> m_Chunk = {};
 	std::list<CChest> m_Chests = {};
@@ -98,7 +105,7 @@ public:
 	int m_GenerateOffsetX = 296;
 	int m_GenerateOffsetY = 113;
 private:
-	WORLDTYPE m_WorldType = WORLDTYPE::PLAINS;
+	WORLDTYPE m_WorldType = CWorldManager::WORLDTYPE::PLAINS;
 
 	// Variables
 	sf::Shader* m_Shader;
@@ -119,6 +126,8 @@ private:
 	CBlock* m_Block;
 	CChest* m_Chest;
 	CPotion* m_Potion;
+
+	CParticleSystem* m_WeatherEffects;
 
 	// Threads
 	sf::Mutex m_GlobalMutex;

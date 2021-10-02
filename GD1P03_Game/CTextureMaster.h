@@ -58,12 +58,22 @@ public:
 	sf::Texture* m_HPSmall;
 	sf::Texture* m_HPLarge;
 	sf::Texture* m_GoldenHeart;
-	sf::Texture* m_PortalKeyGreen;
+	sf::Texture* m_PortalKeyBlue;
 	sf::Texture* m_PortalKeyRed;
 	sf::Texture* m_PortalKeyYellow;
 	sf::Texture* m_SandStone;
 	sf::Texture* m_HardSandStone;
 	sf::Texture* m_Cactas;
 	sf::Texture* m_PortalKeyPlains;
+	sf::Texture* m_UnderGroundIce;
+	sf::Texture* m_IceBG;
+	sf::Texture* m_Snow;
+	sf::Texture* m_LeavesIce;
+	sf::Texture* m_DirtHell;
+	sf::Texture* m_StoneHell;
+	sf::Texture* m_BrickHell;
+	sf::Texture* m_UnderGroundHell;
+	sf::Texture* m_HellBG;
+	sf::Texture* m_TerrariaHellBG;
 };
 #endif

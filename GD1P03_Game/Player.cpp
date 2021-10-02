@@ -720,10 +720,10 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 				PlaceTourch(m_Tourches, _mousePositionSprite);
 			}
 			// PORTAL KEY GREEN
-			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYGREEN)
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYBLUE)
 			{
 				*m_bChangeScenes = true;
-				*m_SceneValue = _JUNGLE_;
+				*m_SceneValue = _ICE;
 			}
 			// PORTAL KEY RED
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)
@@ -750,10 +750,10 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			}
 		}
 		// PORTAL KEY GREEN
-		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYGREEN)
+		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYBLUE)
 		{
 		*m_bChangeScenes = true;
-		*m_SceneValue = _JUNGLE_;
+		*m_SceneValue = _ICE;
 		}
 		// PORTAL KEY RED
 		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)
@@ -2619,7 +2619,7 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_PortalKeyGreen, CBlock::BLOCKTYPE::PORTALKEYGREEN);
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyBlue, CBlock::BLOCKTYPE::PORTALKEYBLUE);
 					AddItemToInventory(m_Block, i, false);
 					m_Block = nullptr;
 				}

@@ -22,8 +22,12 @@ public:
 	void PlayGroundMine();
 	void PlayMusic();
 	void PlayMusicSand();
+	void PlayMusicIce();
+	void PlayMusicHell();
 	void PlayUnderGroundMusic();
 	void PlayUnderGroundMusicSand();
+	void PlayUnderGroundMusicIce();
+	void PlayUnderGroundMusicHell();
 
 	void PlayPlayerDamage();
 	void PlayPlayerDeath();
@@ -66,6 +70,12 @@ private:
 
 	sf::Music m_MusicSand;
 	sf::Music m_UnderGroundMusicSand;
+
+	sf::Music m_MusicIce;
+	sf::Music m_UnderGroundMusicIce;
+
+	sf::Music m_MusicHell;
+	sf::Music m_UnderGroundMusicHell;
 
 	sf::Sound m_PickupSound;
 	sf::SoundBuffer m_PickupSoundBuffer;

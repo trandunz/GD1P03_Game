@@ -173,6 +173,26 @@ void CBlock::Start()
 		m_BlockStrength = 1;
 		break;
 	}
+	case CBlock::BLOCKTYPE::SNOW:
+	{
+		m_BlockStrength = 2;
+		break;
+	}
+	case CBlock::BLOCKTYPE::DIRTHELL:
+	{
+		m_BlockStrength = 2;
+		break;
+	}
+	case CBlock::BLOCKTYPE::STONEHELL:
+	{
+		m_BlockStrength = 3;
+		break;
+	}
+	case CBlock::BLOCKTYPE::BRICKHELL:
+	{
+		m_BlockStrength = 6;
+		break;
+	}
 
 	default:
 	{

@@ -12,6 +12,7 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_Block = nullptr;
     m_Chest = nullptr;
     m_Potion = nullptr;
+    m_WeatherEffects = nullptr;
 
     // Set World Seed (Change Time To A Value For Custom)
     _gui->m_CurrentSeed = _CURRENT_TIME_;
@@ -33,6 +34,8 @@ CWorldManager::~CWorldManager()
     m_WorkBenches.clear();
     m_Tourches.clear();
 
+    delete m_WeatherEffects;
+    m_WeatherEffects = nullptr;
     m_TourchShader = nullptr;
     m_SurfaceShader = nullptr;
     m_Shader = nullptr;
@@ -49,78 +52,33 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
 
     switch (m_WorldType)
     {
-    case CWorldManager::PLAINS:
-        // World BackGround (Surface)
-        m_BGPlainsSurface = sf::Sprite();
-        m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
-        m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
-        m_BGPlainsSurface.setScale(4.7, 4.7);
-        m_BGPlainsSurface.setColor(sf::Color::White);
+    case CWorldManager::WORLDTYPE::PLAINS:
 
-        // World BackGround (Under Ground)
-        m_BGPlainsUnderGr = sf::Sprite();
-        m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundPlains, true);
-        m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 80000, 40000));
-        m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
-        m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
-        m_BGPlainsUnderGr.setPosition(0, 0);
-
+        CreatePlainsBackgrounds(_textureMaster);
         CreateNoiseWorld(_textureMaster, _audioManager, _spawners);
         CreateClouds(_textureMaster);
         break;
-    case CWorldManager::SAND:
-        // World BackGround (Surface)
-        m_BGPlainsSurface = sf::Sprite();
-        m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
-        m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
-        m_BGPlainsSurface.setScale(4.7, 4.7);
-        m_BGPlainsSurface.setColor(sf::Color::White);
-
-        // World BackGround Sand (Surface)
-        m_BGSandSurface = sf::Sprite();
-        m_BGSandSurface.setTexture(*_textureMaster->m_SandBG, true);
-        m_BGSandSurface.setOrigin(m_BGSandSurface.getGlobalBounds().width / 2, m_BGSandSurface.getGlobalBounds().height / 2);
-        m_BGSandSurface.setScale(2.8, 2.8);
-        m_BGSandSurface.setColor(sf::Color::White);
-
-        // World BackGround Sand (Under Ground)
-        m_BGPlainsUnderGr = sf::Sprite();
-        m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundSand, true);
-        m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 80000, 40000));
-        m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
-        m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
-        m_BGPlainsUnderGr.setPosition(0, 0);
-
+    case CWorldManager::WORLDTYPE::SAND:
+        m_WeatherEffects = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
+        CreateSandBackgrounds(_textureMaster);
         CreateSandNoiseWorld(_textureMaster, _audioManager, _spawners);
         break;
-    case CWorldManager::JUNGLE:
+    case CWorldManager::WORLDTYPE::ICE:
+        m_WeatherEffects = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
+        CreateIceBackgrounds(_textureMaster);
+        CreateIceNoiseWorld(_textureMaster, _audioManager, _spawners);
         break;
-    case CWorldManager::HELL:
+    case CWorldManager::WORLDTYPE::HELL:
+        CreateHellBackgrounds(_textureMaster);
+        CreateHellNoiseWorld(_textureMaster, _audioManager, _spawners);
         break;
     default:
-        // Plains
-        // World BackGround (Surface)
-        m_BGPlainsSurface = sf::Sprite();
-        m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
-        m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
-        m_BGPlainsSurface.setScale(4.7, 4.7);
-        m_BGPlainsSurface.setColor(sf::Color::White);
 
-        // World BackGround (Under Ground)
-        m_BGPlainsUnderGr = sf::Sprite();
-        m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundPlains, true);
-        m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 80000, 40000));
-        m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
-        m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
-        m_BGPlainsUnderGr.setPosition(0, 0);
-
+        CreatePlainsBackgrounds(_textureMaster);
         CreateNoiseWorld(_textureMaster, _audioManager, _spawners);
         CreateClouds(_textureMaster);
         break;
     }
-
-    
-
     
     // World
     CreateSkyChunk(_textureMaster);
@@ -1182,6 +1140,664 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
     m_GlobalMutex.unlock();
 }
 
+void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
+{
+    m_GlobalMutex.lock();
+    GenerateNoise();
+    for (int y = 0; y < m_GenerateOffsetY; y++)
+    {
+        for (int x = -m_GenerateOffsetX; x < +m_GenerateOffsetX - 70; x++)
+        {
+            double xyValue = x * m_XPeriod / _NOISEWIDTH_ + y * m_YPeriod / _NOISEHEIGHT_ + m_TurbPower * Turbulence(x, y, m_TurbSize) / 256.0;
+            double sineValue = 256 * fabs(sin(xyValue * _PI_));
+
+            if (sineValue <= 15 && x % 15 == 0 && y % 15 == 0)
+            {
+                // Spawners
+                Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                m_SlimeSpawner->ToggleSpawning();
+                m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+                _spawners.push_back(*m_SlimeSpawner);
+                m_SlimeSpawner = nullptr;
+            }
+            else if (sineValue <= 70)
+            {
+                // Caves
+            }
+            else if (sineValue > 95 && sineValue <= 100 && y > 10)
+            {
+                // Iron
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 82 && sineValue <= 85 && y > 6)
+            {
+                // coal
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 76 && sineValue <= 79 && y > 60)
+            {
+                // Diamond
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIAMONDORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 74 && sineValue <= 76 && y > 40)
+            {
+                // gold
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else
+            {
+                if (y > 12 || y > 11 || y > 10)
+                {
+                    if (_DIRT_RARITY_SURFACE_)
+                    {
+                        // Dirt
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SNOW);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+                    else if (_DIRT_RARITY_UNDERGOUND_)
+                    {
+                        // Dirt
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+                    else if (rand() % 30 == 0 && y < 80 && y >= 50)
+                    {
+                        if (_MOSSYBRICK_RARITY_UNDERGOUND_)
+                        {
+                            // MossyBrick
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
+                            //m_Block->SetSize(100, 100);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                        else
+                        {
+                            // Dirt
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                    }
+                    else
+                    {
+                        if (_MOSSYBRICK_RARITY_SURFACE_)
+                        {
+                            // Mossy Brick
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                        else
+                        {
+                            // Stone
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONE);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                    }
+                }
+                else if (y == 0)
+                {
+                    // Trees
+                    if (_TREE_RARITY_)
+                    {
+                        // Trunk
+                        if (true)
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 100, true, CBlock::BLOCKTYPE::WOOD);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 200, true, CBlock::BLOCKTYPE::WOOD);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 300, true, CBlock::BLOCKTYPE::WOOD);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 400, true, CBlock::BLOCKTYPE::WOOD);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 500, true, CBlock::BLOCKTYPE::WOOD);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 600, true, CBlock::BLOCKTYPE::WOOD);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                        // Leaves
+                        if (true)
+                        {
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 1000, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 110, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 210, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - 90, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - -190, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 310, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - -290, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 110, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 210, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - 90, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - 190, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 110, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 210, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                    }
+
+                    // Chests
+                    else if (_CHEST_RARITY_)
+                    {
+                        m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
+                        m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+                            for (int i = 0; i < 0 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 0, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+                            for (int i = 0; i < 0 + rand() % 8; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 1, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+                            for (int i = 0; i < 0 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 2, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 3, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_FireArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 4, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_PoisonArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 5, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
+                            for (int i = 0; i < 0 + rand() % 14; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 6, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+                            for (int i = 0; i < 0 + rand() % 14; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 7, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 2 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+                            for (int i = 0; i < 0 + rand() % 2; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 8, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 9, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GlassBeaker, CBlock::BLOCKTYPE::EMPTYBEAKER);
+                            for (int i = 0; i < 0 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 10, true);
+                            }
+                            m_Block = nullptr;
+                        }
+
+                        m_Chests.push_back(*m_Chest);
+                        m_Chest = nullptr;
+                    }
+
+                    // Grass
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SNOW);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+                else
+                {
+                    if (_STONE_RARITY_)
+                    {
+                        // Stone
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONE);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+                    else
+                    {
+                        // Dirt
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SNOW);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+
+                }
+            }
+        }
+    }
+    m_GlobalMutex.unlock();
+}
+
+void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
+{
+    m_GlobalMutex.lock();
+    GenerateNoise();
+    for (int y = 0; y < m_GenerateOffsetY; y++)
+    {
+        for (int x = -m_GenerateOffsetX; x < +m_GenerateOffsetX - 70; x++)
+        {
+            double xyValue = x * m_XPeriod / _NOISEWIDTH_ + y * m_YPeriod / _NOISEHEIGHT_ + m_TurbPower * Turbulence(x, y, m_TurbSize) / 256.0;
+            double sineValue = 256 * fabs(sin(xyValue * _PI_));
+
+            if (sineValue <= 15 && x % 15 == 0 && y % 15 == 0)
+            {
+                // Spawners
+                Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                m_SlimeSpawner->ToggleSpawning();
+                m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+                _spawners.push_back(*m_SlimeSpawner);
+                m_SlimeSpawner = nullptr;
+            }
+            else if (sineValue <= 70)
+            {
+                // Caves
+            }
+            else if (sineValue > 95 && sineValue <= 100 && y > 10)
+            {
+                // Iron
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 82 && sineValue <= 85 && y > 6)
+            {
+                // coal
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 76 && sineValue <= 79 && y > 60)
+            {
+                // Purple
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_PurpleOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::PURPLEORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 74 && sineValue <= 76 && y > 40)
+            {
+                // gold
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else if (sineValue > 70 && sineValue <= 72 && y > 95)
+            {
+                // red
+                m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldenOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDENORE);
+                m_Chunk.push_back(*m_Block);
+                m_Block->m_ArrayIndex = x + y;
+                m_Block = nullptr;
+            }
+            else
+            {
+                if (y > 12 || y > 11 || y > 10)
+                {
+                    if (_DIRT_RARITY_SURFACE_)
+                    {
+                        // Sand
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+                    else if (_DIRT_RARITY_UNDERGOUND_)
+                    {
+                        // Sand
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+                    else if (rand() % 30 == 0 && y < 80 && y >= 50)
+                    {
+                        if (_MOSSYBRICK_RARITY_UNDERGOUND_)
+                        {
+                            // Hard SandStone
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_BrickHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::BRICKHELL);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                        else
+                        {
+                            // Sand
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                    }
+                    else
+                    {
+                        if (_MOSSYBRICK_RARITY_SURFACE_)
+                        {
+                            // Hard SandStone
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_BrickHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::BRICKHELL);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                        else
+                        {
+                            // SandStone
+                            m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_StoneHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONEHELL);
+                            m_Chunk.push_back(*m_Block);
+                            m_Block->m_ArrayIndex = x + y;
+                            m_Block = nullptr;
+                        }
+                    }
+                }
+                else if (y == 0)
+                {
+                    // Trees
+                    if (_TREE_RARITY_)
+                    {
+                    }
+
+                    // Chests
+                    else if (_CHEST_RARITY_)
+                    {
+                        m_Chest = new CChest(m_RenderWindow, *m_World, 50.0f, x * 100 + 10, y * 100 - 100);
+                        m_Chest->SetSizeAndPos(x * 100 + 10, y * 100 - 100, 100, 100);
+
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_IronIngot, CBlock::BLOCKTYPE::IRONINGOT);
+                            for (int i = 0; i < 0 + rand() % 4; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 0, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Cloud, CBlock::BLOCKTYPE::CLOUD);
+                            for (int i = 0; i < 0 + rand() % 8; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 1, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+                            for (int i = 0; i < 0 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Potion, 2, true);
+                            }
+                            m_Potion = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Arrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 3, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_FireArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 4, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_PoisonArrow, CBlock::BLOCKTYPE::PROJECTILE);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 5, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Tourch, CBlock::BLOCKTYPE::TOURCH);
+                            for (int i = 0; i < 0 + rand() % 14; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 6, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_Stone, CBlock::BLOCKTYPE::STONE);
+                            for (int i = 0; i < 0 + rand() % 14; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 7, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 2 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GoldOre, CBlock::BLOCKTYPE::GOLDORE);
+                            for (int i = 0; i < 0 + rand() % 2; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 8, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+                            for (int i = 0; i < 0 + rand() % 6; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 9, true);
+                            }
+                            m_Block = nullptr;
+                        }
+                        srand(x + m_Chest->m_Inventory.size());
+                        if (rand() % 1 == 0)
+                        {
+                            m_Block = new CBlock(_textureMaster->m_GlassBeaker, CBlock::BLOCKTYPE::EMPTYBEAKER);
+                            for (int i = 0; i < 0 + rand() % 3; i++)
+                            {
+                                m_Chest->AddItemToInventory(m_Block, 10, true);
+                            }
+                            m_Block = nullptr;
+                        }
+
+                        m_Chests.push_back(*m_Chest);
+                        m_Chest = nullptr;
+                    }
+
+                    // Grass
+                    m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
+                    m_Chunk.push_back(*m_Block);
+                    m_Block->m_ArrayIndex = x + y;
+                    m_Block = nullptr;
+                }
+                else
+                {
+                    if (_STONE_RARITY_)
+                    {
+                        // SandStone
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_StoneHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONEHELL);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+                    else
+                    {
+                        // Sand
+                        m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
+                        m_Chunk.push_back(*m_Block);
+                        m_Block->m_ArrayIndex = x + y;
+                        m_Block = nullptr;
+                    }
+
+                }
+            }
+        }
+    }
+    m_GlobalMutex.unlock();
+}
+
 void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
 {
     m_GlobalMutex.lock();
@@ -2090,6 +2706,99 @@ void CWorldManager::CreateSurfaceSpawners(CTextureMaster* _textureMaster, CAudio
     m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
     _spawners.push_back(*m_SlimeSpawner);
     m_SlimeSpawner = nullptr;
+}
+
+void CWorldManager::CreateSandBackgrounds(CTextureMaster* _textureMaster)
+{
+    // World BackGround (Surface)
+    m_BGPlainsSurface = sf::Sprite();
+    m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
+    m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
+    m_BGPlainsSurface.setScale(4.7, 4.7);
+    m_BGPlainsSurface.setColor(sf::Color::White);
+
+    // World BackGround Sand (Surface)
+    m_BGSandSurface = sf::Sprite();
+    m_BGSandSurface.setTexture(*_textureMaster->m_SandBG, true);
+    m_BGSandSurface.setOrigin(m_BGSandSurface.getGlobalBounds().width / 2, m_BGSandSurface.getGlobalBounds().height / 2);
+    m_BGSandSurface.setScale(2.8, 2.8);
+    m_BGSandSurface.setColor(sf::Color::White);
+
+    // World BackGround Sand (Under Ground)
+    m_BGPlainsUnderGr = sf::Sprite();
+    m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundSand, true);
+    m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 80000, 40000));
+    m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
+    m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
+    m_BGPlainsUnderGr.setPosition(0, 0);
+}
+
+void CWorldManager::CreatePlainsBackgrounds(CTextureMaster* _textureMaster)
+{
+    // World BackGround (Surface)
+    m_BGPlainsSurface = sf::Sprite();
+    m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
+    m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
+    m_BGPlainsSurface.setScale(4.7, 4.7);
+    m_BGPlainsSurface.setColor(sf::Color::White);
+
+    // World BackGround (Under Ground)
+    m_BGPlainsUnderGr = sf::Sprite();
+    m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundPlains, true);
+    m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 80000, 40000));
+    m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
+    m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
+    m_BGPlainsUnderGr.setPosition(0, 0);
+}
+
+void CWorldManager::CreateIceBackgrounds(CTextureMaster* _textureMaster)
+{
+    // World BackGround (Surface)
+    m_BGPlainsSurface = sf::Sprite();
+    m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
+    m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
+    m_BGPlainsSurface.setScale(4.7, 4.7);
+    m_BGPlainsSurface.setColor(sf::Color::White);
+
+    // World BackGround Sand (Surface)
+    m_BGSandSurface = sf::Sprite();
+    m_BGSandSurface.setTexture(*_textureMaster->m_IceBG, true);
+    m_BGSandSurface.setOrigin(m_BGSandSurface.getGlobalBounds().width / 2, m_BGSandSurface.getGlobalBounds().height / 2);
+    m_BGSandSurface.setScale(2.8, 2.8);
+    m_BGSandSurface.setColor(sf::Color::White);
+
+    // World BackGround Sand (Under Ground)
+    m_BGPlainsUnderGr = sf::Sprite();
+    m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundIce, true);
+    m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 80000, 40000));
+    m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
+    m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
+    m_BGPlainsUnderGr.setPosition(0, 0);
+}
+
+void CWorldManager::CreateHellBackgrounds(CTextureMaster* _textureMaster)
+{
+    // World BackGround (Surface)
+    m_BGPlainsSurface = sf::Sprite();
+    m_BGPlainsSurface.setTexture(*_textureMaster->m_TerrariaHellBG, true);
+    m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
+    m_BGPlainsSurface.setScale(4.7, 4.7);
+    m_BGPlainsSurface.setColor(sf::Color::White);
+
+    // World BackGround Sand (Surface)
+    m_BGSandSurface = sf::Sprite();
+    m_BGSandSurface.setTexture(*_textureMaster->m_HellBG, true);
+    m_BGSandSurface.setOrigin(m_BGSandSurface.getGlobalBounds().width / 2, m_BGSandSurface.getGlobalBounds().height / 2);
+    m_BGSandSurface.setScale(2.8, 2.8);
+    m_BGSandSurface.setColor(sf::Color::White);
+
+    // World BackGround Sand (Under Ground)
+    m_BGPlainsUnderGr = sf::Sprite();
+    m_BGPlainsUnderGr.setTexture(*_textureMaster->m_UnderGroundHell, true);
+    m_BGPlainsUnderGr.setTextureRect(sf::IntRect(0, 0, 80000, 40000));
+    m_BGPlainsUnderGr.setOrigin(m_BGPlainsUnderGr.getGlobalBounds().width / 2, m_BGPlainsUnderGr.getGlobalBounds().height / 2);
+    m_BGPlainsUnderGr.setColor(sf::Color::Transparent);
+    m_BGPlainsUnderGr.setPosition(0, 0);
 }
 
 void CWorldManager::GenerateNoise()
