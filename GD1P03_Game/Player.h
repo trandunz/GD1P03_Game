@@ -47,10 +47,6 @@ public:
 	void Movement(sf::Event& _event);
 
 	void Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
-	
-	void Attack(CBlock* _item);
-
-	void InitInventory();
 
 	b2Body* GetBody();
 	sf::Sprite& GetShape();
@@ -101,16 +97,6 @@ public:
 
 	void ToggleInventoryUI(std::list<CChest>& _chests);
 
-	template <typename T>
-	void Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
-
-	void PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
-	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
-	void PlaceChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
-	void PlaceFurnace(std::list<CFurnace>& m_Chests, sf::Sprite& _mousePositionSprite);
-	void PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
-	void PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePositionSprite);
-
 	void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 	void DestroyBody();
 
@@ -118,13 +104,12 @@ public:
 	void Lst_MoveToFront(std::list<CDoor>& list, std::list<CDoor>::iterator element);
 	void Lst_MoveToFront(std::list<CChest>& list, std::list<CChest>::iterator element);
 
-	void OutPutInventoryToFile();
-	void InputInventoryToFile();
-
 	void ToggleGodMode();
 	bool GetGodMode();
 
 	b2World* GetWorld();
+
+	void OutPutInventoryToFile();
 
 	std::map<int, int> m_InventoryStackValues;
 	std::map<int, CBlock> m_InventoryMap;
@@ -147,6 +132,23 @@ public:
 	bool m_bPlayerIsInChest = false;
 
 private:
+
+	void Attack(CBlock* _item);
+
+	void InitInventory();
+
+	void InputInventoryToFile();
+
+	template <typename T>
+	void Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite);
+
+	void PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite);
+	void PlaceDoor(std::list<CDoor>& m_Doors, sf::Sprite& _mousePositionSprite);
+	void PlaceChest(std::list<CChest>& m_Chests, sf::Sprite& _mousePositionSprite);
+	void PlaceFurnace(std::list<CFurnace>& m_Chests, sf::Sprite& _mousePositionSprite);
+	void PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
+	void PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePositionSprite);
+
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;

@@ -345,7 +345,7 @@ void CPlayer::Render(sf::Shader* _defaultShader)
 	// Draw All Particles (Mining)
 	m_RenderWindow->draw(*m_TestParticles);
 }
-
+ 
 void CPlayer::Movement()
 {
 	// Cast sf::Vector2f to b2Vec2 For Sprite Position

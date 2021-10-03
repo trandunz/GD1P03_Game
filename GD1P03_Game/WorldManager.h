@@ -94,12 +94,12 @@ public:
 	void CreateHellBackgrounds(CTextureMaster* _textureMaster);
 
 	// Variables
-	std::list<CBlock> m_Chunk = {};
-	std::list<CChest> m_Chests = {};
-	std::list<CFurnace> m_Furnaces = {};
-	std::list<CWorkBench> m_WorkBenches = {};
-	std::list<CDoor> m_Doors = {};
-	std::list<CBlock> m_Tourches = {};
+	std::list<CBlock>* m_Chunk;
+	std::list<CChest>* m_Chests;
+	std::list<CFurnace>* m_Furnaces;
+	std::list<CWorkBench>* m_WorkBenches;
+	std::list<CDoor>* m_Doors;
+	std::list<CBlock>* m_Tourches;
 	std::list<sf::RectangleShape> m_SkyChunk = {};
 
 	int m_GenerateOffsetX = 296;

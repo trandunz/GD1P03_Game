@@ -13,6 +13,12 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_Chest = nullptr;
     m_Potion = nullptr;
     m_WeatherEffects = nullptr;
+    m_Chunk = new std::list<CBlock>{};
+    m_Chests = new std::list<CChest>{};
+    m_Furnaces = new std::list<CFurnace>{};
+    m_WorkBenches = new std::list<CWorkBench>{};
+    m_Doors = new std::list<CDoor>{};
+    m_Tourches = new std::list<CBlock>{};
 
     // Set World Seed (Change Time To A Value For Custom)
     _gui->m_CurrentSeed = _CURRENT_TIME_;
@@ -24,17 +30,33 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
 
 CWorldManager::~CWorldManager()
 {
-    OutPutWorldToFiles();
-
-    m_Chunk.clear();
+    m_Chunk->clear();
     m_SkyChunk.clear();
-    m_Chests.clear();
-    m_Doors.clear();
-    m_Furnaces.clear();
-    m_WorkBenches.clear();
-    m_Tourches.clear();
+    m_Chests->clear();
+    m_Doors->clear();
+    m_Furnaces->clear();
+    m_WorkBenches->clear();
+    m_Tourches->clear();
 
-    delete m_WeatherEffects;
+    if (m_WeatherEffects != nullptr)
+    {
+        delete m_WeatherEffects;
+    }
+
+    delete m_Chunk;
+    delete m_Chests;
+    delete m_Doors;
+    delete m_Furnaces;
+    delete m_WorkBenches;
+    delete m_Tourches;
+
+    m_Chunk = nullptr;
+    m_Chests = nullptr;
+    m_Doors = nullptr;
+    m_Furnaces = nullptr;
+    m_WorkBenches = nullptr;
+    m_Tourches = nullptr;
+
     m_WeatherEffects = nullptr;
     m_TourchShader = nullptr;
     m_SurfaceShader = nullptr;
@@ -89,7 +111,6 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
 
 void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster)
 {
-
     // Set Mouse / Block Indicator To Rounded Sky Position
     m_GUI->m_MousePos.setPosition(m_SkyChunk.front().getPosition());
 
@@ -97,7 +118,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     float Mag1 = 0;
     float x = 0;
     float y = 0;
-    for (CBlock& block : m_Chunk)
+    for (CBlock& block : *m_Chunk)
     {
         x = block.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         x *= x;
@@ -119,7 +140,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Door
-    for (CDoor& door : m_Doors)
+    for (CDoor& door : *m_Doors)
     {
         if (door.GetShape().getGlobalBounds().contains(_mousePos))
         {
@@ -128,7 +149,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Chest
-    for (CChest& chest : m_Chests)
+    for (CChest& chest : *m_Chests)
     {
         if (chest.GetShape().getGlobalBounds().contains(_mousePos))
         {
@@ -137,7 +158,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Furnace
-    for (CFurnace& furnace : m_Furnaces)
+    for (CFurnace& furnace : *m_Furnaces)
     {
         Mag1 = 400;
 
@@ -169,7 +190,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Workbench
-    for (CWorkBench& workbench : m_WorkBenches)
+    for (CWorkBench& workbench : *m_WorkBenches)
     {
         Mag1 = 400;
 
@@ -200,11 +221,11 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
 
     }
 
-    if (m_WorkBenches.size() <= 0)
+    if (m_WorkBenches->size() <= 0)
     {
         m_GUI->m_bCanWorkBench = false;
     }
-    if (m_Furnaces.size() <= 0)
+    if (m_Furnaces->size() <= 0)
     {
         m_GUI->m_bCanSmelt = false;
     }
@@ -244,7 +265,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     float y = 0;
 
     // Draw Blocks In Range (With Shaders : Player, Tourch, Surface)
-    for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    for (it = m_Chunk->begin(); it != m_Chunk->end(); it++)
     {
         x = it->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         y = it->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
@@ -316,7 +337,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     }
 
     // Doors, Chests, Funaces
-    for (CDoor& door : m_Doors)
+    for (CDoor& door : *m_Doors)
     {
         x = door.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         y = door.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
@@ -327,7 +348,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
             door.Render(_defaultShader);
         }
     }
-    for (CChest& chest : m_Chests)
+    for (CChest& chest : *m_Chests)
     {
         x = chest.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         y = chest.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
@@ -338,7 +359,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
             chest.Render(_defaultShader);
         }
     }
-    for (CFurnace& furnace : m_Furnaces)
+    for (CFurnace& furnace : *m_Furnaces)
     {
         x = furnace.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         y = furnace.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
@@ -349,11 +370,11 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
             furnace.Render(_defaultShader);
         }
     }
-    for (CWorkBench& workbench : m_WorkBenches)
+    for (CWorkBench& workbench : *m_WorkBenches)
     {
         workbench.Render(_defaultShader);
     }
-    for (CBlock& tourch : m_Tourches)
+    for (CBlock& tourch : *m_Tourches)
     {
         tourch.Render(_defaultShader);
     }
@@ -390,42 +411,42 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, -6000, false, CBlock::BLOCKTYPE::OBSIDIAN);
-        m_Chunk.push_back(*m_Block);
+        m_Chunk->push_back(*m_Block);
         m_Block = nullptr;
     }
     for (int i = -90; i > -69770 / 1.9f; i -= 100)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, 11300, false, CBlock::BLOCKTYPE::OBSIDIAN);
-        m_Chunk.push_back(*m_Block);
+        m_Chunk->push_back(*m_Block);
         m_Block = nullptr;
     }
     for (int j = 500 - 6500; j < 21400 / 1.9f; j += 100)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, -69770 / 1.9f, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
-        m_Chunk.push_back(*m_Block);
+        m_Chunk->push_back(*m_Block);
         m_Block = nullptr;
     }
     for (int i = 10; i < 69770 / 1.9f - 14000; i += 100)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, -6000, false, CBlock::BLOCKTYPE::OBSIDIAN);
-        m_Chunk.push_back(*m_Block);
+        m_Chunk->push_back(*m_Block);
         m_Block = nullptr;
     }
     for (int i = 10; i < 69770 / 1.9f - 14000; i += 100)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, i, 11300, false, CBlock::BLOCKTYPE::OBSIDIAN);
-        m_Chunk.push_back(*m_Block);
+        m_Chunk->push_back(*m_Block);
         m_Block = nullptr;
     }
     for (int j = 500 - 6500; j < 21400 / 1.9f; j += 100)
     {
         // OBSIDIAN
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, +69570 / 1.9f - 14000, j, false, CBlock::BLOCKTYPE::OBSIDIAN);
-        m_Chunk.push_back(*m_Block);
+        m_Chunk->push_back(*m_Block);
         m_Block = nullptr;
     }
     m_GlobalMutex.unlock();
@@ -459,7 +480,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
             {
                 // Iron
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -467,7 +488,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
             {
                 // coal
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -475,7 +496,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
             {
                 // Diamond
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIAMONDORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -483,7 +504,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
             {
                 // gold
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -495,7 +516,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -503,7 +524,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -514,7 +535,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                             // MossyBrick
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
                             //m_Block->SetSize(100, 100);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -522,7 +543,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                         {
                             // Dirt
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -533,7 +554,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                         {
                             // Mossy Brick
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -541,7 +562,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                         {
                             // Stone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONE);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -556,27 +577,27 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                         if (true)
                         {
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 100, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 200, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 300, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 400, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 500, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 600, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -584,70 +605,70 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                         if (true)
                         {
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 10, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 10, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 10, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 10, y * 100 - 1000, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
 
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 110, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 210, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 - 90, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 - -190, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 310, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 - -290, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
 
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 110, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 210, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 - 90, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 - 190, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
 
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 110, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Leaves, Utils::m_Scale, x * 100 + 210, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -770,13 +791,13 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                             m_Block = nullptr;
                         }
 
-                        m_Chests.push_back(*m_Chest);
+                        m_Chests->push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
                     // Grass
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Grass, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GRASS);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -786,7 +807,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                     {
                         // Stone
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONE);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -794,7 +815,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -834,7 +855,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // Iron
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -842,7 +863,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // coal
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -850,7 +871,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // Purple
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_PurpleOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::PURPLEORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -858,7 +879,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // gold
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -866,7 +887,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // red
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldenOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDENORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -878,7 +899,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // Sand
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Sand, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SAND);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -886,7 +907,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // Sand
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Sand, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SAND);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -896,7 +917,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // Hard SandStone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_HardSandStone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::HARDSANDSTONE);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -904,7 +925,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // Sand
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Sand, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SAND);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -915,7 +936,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // Hard SandStone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_HardSandStone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::HARDSANDSTONE);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -923,7 +944,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // SandStone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_SandStone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SANDSTONE);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -938,15 +959,15 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         if (true)
                         {
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 100, true, CBlock::BLOCKTYPE::CACTUS);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 200, true, CBlock::BLOCKTYPE::CACTUS);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 300, true, CBlock::BLOCKTYPE::CACTUS);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
 
@@ -954,33 +975,33 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                             if (rand() % 3 == 0)
                             {
                                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 400, true, CBlock::BLOCKTYPE::CACTUS);
-                                m_Chunk.push_back(*m_Block);
+                                m_Chunk->push_back(*m_Block);
                                 m_Block->m_ArrayIndex = x + y;
                                 m_Block = nullptr;
                             }
                             else if (rand() % 3 == 1)
                             {
                                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 400, true, CBlock::BLOCKTYPE::CACTUS);
-                                m_Chunk.push_back(*m_Block);
+                                m_Chunk->push_back(*m_Block);
                                 m_Block->m_ArrayIndex = x + y;
                                 m_Block = nullptr;
                                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 500, true, CBlock::BLOCKTYPE::CACTUS);
-                                m_Chunk.push_back(*m_Block);
+                                m_Chunk->push_back(*m_Block);
                                 m_Block->m_ArrayIndex = x + y;
                                 m_Block = nullptr;
                             }
                             else if (rand() % 3 == 1)
                             {
                                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 400, true, CBlock::BLOCKTYPE::CACTUS);
-                                m_Chunk.push_back(*m_Block);
+                                m_Chunk->push_back(*m_Block);
                                 m_Block->m_ArrayIndex = x + y;
                                 m_Block = nullptr;
                                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 500, true, CBlock::BLOCKTYPE::CACTUS);
-                                m_Chunk.push_back(*m_Block);
+                                m_Chunk->push_back(*m_Block);
                                 m_Block->m_ArrayIndex = x + y;
                                 m_Block = nullptr;
                                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cactas, Utils::m_Scale, x * 100 + 10, y * 100 - 600, true, CBlock::BLOCKTYPE::CACTUS);
-                                m_Chunk.push_back(*m_Block);
+                                m_Chunk->push_back(*m_Block);
                                 m_Block->m_ArrayIndex = x + y;
                                 m_Block = nullptr;
                             }
@@ -1104,13 +1125,13 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                             m_Block = nullptr;
                         }
 
-                        m_Chests.push_back(*m_Chest);
+                        m_Chests->push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
                     // Grass
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Sand, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SAND);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -1120,7 +1141,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // SandStone
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_SandStone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SANDSTONE);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1128,7 +1149,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // Sand
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Sand, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SAND);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1168,7 +1189,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
             {
                 // Iron
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1176,7 +1197,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
             {
                 // coal
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1184,7 +1205,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
             {
                 // Diamond
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DiamondOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIAMONDORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1192,7 +1213,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
             {
                 // gold
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1204,7 +1225,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SNOW);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1212,7 +1233,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1223,7 +1244,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                             // MossyBrick
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
                             //m_Block->SetSize(100, 100);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1231,7 +1252,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                         {
                             // Dirt
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRT);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1242,7 +1263,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                         {
                             // Mossy Brick
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_MossyBrick, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::MOSSYBRICK);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1250,7 +1271,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                         {
                             // Stone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONE);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1265,27 +1286,27 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                         if (true)
                         {
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 100, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 200, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 300, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 400, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 500, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Wood, Utils::m_Scale, x * 100 + 10, y * 100 - 600, true, CBlock::BLOCKTYPE::WOOD);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1293,70 +1314,70 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                         if (true)
                         {
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 10, y * 100 - 1000, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
 
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 110, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 210, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - 90, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - -190, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 310, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - -290, y * 100 - 700, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
 
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 110, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 210, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - 90, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 - 190, y * 100 - 800, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
 
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 110, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_LeavesIce, Utils::m_Scale, x * 100 + 210, y * 100 - 900, true, CBlock::BLOCKTYPE::LEAVES);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1479,13 +1500,13 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                             m_Block = nullptr;
                         }
 
-                        m_Chests.push_back(*m_Chest);
+                        m_Chests->push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
                     // Grass
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SNOW);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -1495,7 +1516,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                     {
                         // Stone
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Stone, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONE);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1503,7 +1524,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                     {
                         // Dirt
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Snow, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::SNOW);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1543,7 +1564,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // Iron
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1551,7 +1572,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // coal
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Coal, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::COALORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1559,7 +1580,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // Purple
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_PurpleOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::PURPLEORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1567,7 +1588,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // gold
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1575,7 +1596,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
             {
                 // red
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_GoldenOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::GOLDENORE);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
@@ -1587,7 +1608,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // Sand
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1595,7 +1616,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // Sand
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1605,7 +1626,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // Hard SandStone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_BrickHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::BRICKHELL);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1613,7 +1634,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // Sand
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1624,7 +1645,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // Hard SandStone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_BrickHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::BRICKHELL);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1632,7 +1653,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                         {
                             // SandStone
                             m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_StoneHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONEHELL);
-                            m_Chunk.push_back(*m_Block);
+                            m_Chunk->push_back(*m_Block);
                             m_Block->m_ArrayIndex = x + y;
                             m_Block = nullptr;
                         }
@@ -1762,13 +1783,13 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                             m_Block = nullptr;
                         }
 
-                        m_Chests.push_back(*m_Chest);
+                        m_Chests->push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
                     // Grass
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -1778,7 +1799,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // SandStone
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_StoneHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::STONEHELL);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1786,7 +1807,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                     {
                         // Sand
                         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_DirtHell, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::DIRTHELL);
-                        m_Chunk.push_back(*m_Block);
+                        m_Chunk->push_back(*m_Block);
                         m_Block->m_ArrayIndex = x + y;
                         m_Block = nullptr;
                     }
@@ -1820,7 +1841,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                 {
                     // Cloud
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Cloud, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::CLOUD);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = (x + y) * 1337;
                     m_Block = nullptr;
 
@@ -1901,7 +1922,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             m_Block = nullptr;
                         }
 
-                        m_Chests.push_back(*m_Chest);
+                        m_Chests->push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
                 }
@@ -2005,13 +2026,13 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             m_Block = nullptr;
                         }
 
-                        m_Chests.push_back(*m_Chest);
+                        m_Chests->push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
                     // Cloud
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_CloudDark, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::CLOUD);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = (x + y) * 1337;
                     m_Block = nullptr;
                 }
@@ -2027,7 +2048,7 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
     float x = 0;
     float y = 0;
 
-    for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
+    for (std::list<CFurnace>::iterator fit = m_Furnaces->begin(); fit != m_Furnaces->end(); fit++)
     {
         x = _it->GetShape().getPosition().x - fit->GetShape().getPosition().x;
         x *= x;
@@ -2042,14 +2063,14 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
             {
                 m_TourchShader->setUniform("hasTexture", true);
                 m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
-
+                fit = m_Furnaces->end();
                 return true;
                 break;
             }
         }
     }
 
-    for (std::list<CBlock>::iterator touit = m_Tourches.begin(); touit != m_Tourches.end(); touit++)
+    for (std::list<CBlock>::iterator touit = m_Tourches->begin(); touit != m_Tourches->end(); touit++)
     {
         x = _it->GetShape().getPosition().x - touit->GetShape().getPosition().x;
         x *= x;
@@ -2064,7 +2085,7 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
             {
                 m_TourchShader->setUniform("hasTexture", true);
                 m_TourchShader->setUniform("lightPos", touit->GetShape().getPosition());
-
+                touit = m_Tourches->end();
                 return true;
                 break;
             }
@@ -2080,7 +2101,7 @@ bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
     float x = 0;
     float y = 0;
 
-    for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
+    for (std::list<CFurnace>::iterator fit = m_Furnaces->begin(); fit != m_Furnaces->end(); fit++)
     {
         x = _shape.getPosition().x - fit->GetShape().getPosition().x;
         x *= x;
@@ -2100,7 +2121,7 @@ bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
             }
         }
     }
-    for (std::list<CBlock>::iterator touit = m_Tourches.begin(); touit != m_Tourches.end(); touit++)
+    for (std::list<CBlock>::iterator touit = m_Tourches->begin(); touit != m_Tourches->end(); touit++)
     {
         x = _shape.getPosition().x - touit->GetShape().getPosition().x;
         x *= x;
@@ -2144,7 +2165,7 @@ void CWorldManager::OutPutWorldToFiles(std::string _xPositions, std::string _yPo
     // X Positions
     out_file.open(_xPositions);
     out_file.clear();
-    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    for (std::list<CBlock>::iterator it = m_Chunk->begin(); it != m_Chunk->end(); it++)
     {
         out_file << it->GetShape().getPosition().x << std::endl;
     }
@@ -2153,7 +2174,7 @@ void CWorldManager::OutPutWorldToFiles(std::string _xPositions, std::string _yPo
     // Y Positions
     out_file.open(_yPositions);
     out_file.clear();
-    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    for (std::list<CBlock>::iterator it = m_Chunk->begin(); it != m_Chunk->end(); it++)
     {
         out_file << it->GetShape().getPosition().y << std::endl;
     }
@@ -2169,7 +2190,7 @@ void CWorldManager::OutPutWorldToFiles()
     // X Positions
     out_file.open("Output/output_x.txt");
     out_file.clear();
-    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    for (std::list<CBlock>::iterator it = m_Chunk->begin(); it != m_Chunk->end(); it++)
     {
         
         out_file << it->GetShape().getPosition().x << std::endl;
@@ -2181,7 +2202,7 @@ void CWorldManager::OutPutWorldToFiles()
     // Y Positions
     out_file.open("Output/output_y.txt");
     out_file.clear();
-    for (std::list<CBlock>::iterator it = m_Chunk.begin(); it != m_Chunk.end(); it++)
+    for (std::list<CBlock>::iterator it = m_Chunk->begin(); it != m_Chunk->end(); it++)
     {
         out_file << it->GetShape().getPosition().y << std::endl;
     }
@@ -2322,13 +2343,13 @@ void CWorldManager::InputWorldFromFiles(CTextureMaster* _textureMaster)
     for (int i = 0; i < 15000; i++)
     {
         m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Dirt, 50.0f, xPositions[i], yPositions[i], false, CBlock::BLOCKTYPE::DIRT);
-        m_Chunk.push_back(*m_Block);
+        m_Chunk->push_back(*m_Block);
         m_Block = nullptr;
 
         m_LoadTimer.restart();
     }
     
-    std::cout << m_Chunk.size();
+    std::cout << m_Chunk->size();
     
     m_GlobalMutex.unlock();
 }
@@ -2342,7 +2363,7 @@ void CWorldManager::DrawBackGround(sf::Shader* _defaultShader)
 
 bool CWorldManager::IsObjectInBlock(sf::Sprite _shape)
 {
-    for (CBlock& block : m_Chunk)
+    for (CBlock& block : *m_Chunk)
     {
         if (block.GetShape().getGlobalBounds().intersects(_shape.getGlobalBounds()))
         {
@@ -2355,7 +2376,7 @@ bool CWorldManager::IsObjectInBlock(sf::Sprite _shape)
 
 bool CWorldManager::PositionIsBlock(sf::Vector2f _pos)
 {
-    for (CBlock& block : m_Chunk)
+    for (CBlock& block : *m_Chunk)
     {
         if (block.GetShape().getGlobalBounds().contains(_pos) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x - 50, _pos.y - 50)) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x + 50, _pos.y + 50)) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x - 50, _pos.y + 50)) || block.GetShape().getGlobalBounds().contains(sf::Vector2f(_pos.x + 50, _pos.y - 50)))
         {
@@ -2377,7 +2398,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                 {
                     // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -2389,7 +2410,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                 {
                     // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -2477,7 +2498,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                         m_Bow = nullptr;
                     }
 
-                    m_Chests.push_back(*m_Chest);
+                    m_Chests->push_back(*m_Chest);
                     m_Chest = nullptr;
                 }
 
@@ -2496,7 +2517,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                 {
                     // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -2508,7 +2529,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                 {
                     // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -2596,7 +2617,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                         m_Bow = nullptr;
                     }
 
-                    m_Chests.push_back(*m_Chest);
+                    m_Chests->push_back(*m_Chest);
                     m_Chest = nullptr;
                 }
 
@@ -2615,7 +2636,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                 {
                     // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -2626,7 +2647,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                 {
                     // Obsidan "Steps"
                     m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
-                    m_Chunk.push_back(*m_Block);
+                    m_Chunk->push_back(*m_Block);
                     m_Block->m_ArrayIndex = x + y;
                     m_Block = nullptr;
                 }
@@ -2653,7 +2674,7 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
             {
                 // Obsidan "Steps"
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_Obsidian, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::OBSIDIAN);
-                m_Chunk.push_back(*m_Block);
+                m_Chunk->push_back(*m_Block);
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }

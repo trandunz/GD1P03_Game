@@ -1,3 +1,4 @@
+// Scene Values
 #define _PLAINS_ 0
 #define _ICE 1
 #define _SAND_ 2 
@@ -27,6 +28,7 @@ static void InitGameOver();
 static void GameOverScreen();
 
 void ChangeScene(bool* _changeScene, int* _sceneValue);
+void SceneMusic();
 
 // Mouse
 sf::Vector2f MousePos;
@@ -63,7 +65,6 @@ CDoor* m_Door;
 bool* m_bChangeScenes;
 int* m_SceneValue;
 
-
 // Player
 CPlayer* m_Player;
 
@@ -78,10 +79,10 @@ sf::Clock m_InventoryClickTimer;
 std::list<Spawner> m_Spawners;
 
 // Shaders
-sf::Shader m_CoreShader;
-sf::Shader m_SurfaceShader;
-sf::Shader m_ShaderMiniMap;
-sf::Shader m_TourchShader;
+sf::Shader* m_CoreShader;
+sf::Shader* m_SurfaceShader;
+sf::Shader* m_ShaderMiniMap;
+sf::Shader* m_TourchShader;
 
 // Gameover screen variables
 float m_PlayerRespawnTime = 5;
@@ -117,8 +118,6 @@ int main()
 		m_RenderWindow->setFramerateLimit(144);
 		m_RenderWindow->setKeyRepeatEnabled(false);
 
-		
-
 		// Window Icon
 		sf::Image icon;
 		icon.loadFromFile("Images/Chest.png");
@@ -131,6 +130,7 @@ int main()
 	//
 
 	m_Spawners.clear();
+
 	delete m_DebugWindow;
 	delete m_TextureMaster;
 	delete m_GUI;
@@ -140,6 +140,14 @@ int main()
 	delete m_AudioManager;
 	delete m_bChangeScenes;
 	delete m_SceneValue;
+	delete m_CoreShader;
+	delete m_ShaderMiniMap;
+	delete m_SurfaceShader;
+	delete m_TourchShader;
+	m_CoreShader = nullptr;
+	m_ShaderMiniMap = nullptr;
+	m_SurfaceShader = nullptr;
+	m_TourchShader = nullptr;
 	m_SceneValue = nullptr;
 	m_bChangeScenes = nullptr;
 	m_Potion = nullptr;
@@ -170,11 +178,16 @@ void Start()
 {
 	InitShaders();
 	InitGameOver();
+
+	// Init Change Scene Variables
 	m_bChangeScenes = new bool;
 	m_SceneValue = new int;
 	*m_bChangeScenes = false;
 
+	// Textures
 	m_TextureMaster = new CTextureMaster();
+
+	// Main RenderWindow Event
 	m_Event = sf::Event();
 
 	// UI
@@ -188,7 +201,7 @@ void Start()
 	m_Player->Start();
 
 	// Map
-	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader, &m_TourchShader);
+	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader, m_TourchShader);
 	m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners);
 
 	// Init UI
@@ -203,11 +216,13 @@ void Start()
 	// Already Has A Pickaxe Somehow?
 	m_GUI->InitHotBarScrolling(m_Player);
 	
+	// Init Nullptr
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
 	m_Block = nullptr;
 	m_bClose = false;
 
+	// Debug
 	m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners);
 	m_DebugWindow->Start();
 }
@@ -253,7 +268,7 @@ void Update()
 				{
 					if (!m_Player->m_bInventoryOpen)
 					{
-						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
+						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
 					}
 				}
 				break;
@@ -288,7 +303,7 @@ void Update()
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
 					{
-						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
+						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
 					}
 
 					break;
@@ -304,7 +319,7 @@ void Update()
 				}
 			}
 			
-			// Right On Press Mouse
+			// Right On Press Mouse; m_Player == nullptr ? NA
 			if (m_Player != nullptr)
 			{
 				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
@@ -331,8 +346,9 @@ void Update()
 					}
 				}
 
-				m_GUI->ClickedItemInInventory(m_Event, m_Player, m_WorldManager->m_Chests);
+				m_GUI->ClickedItemInInventory(m_Event, m_Player, *m_WorldManager->m_Chests);
 			}
+			// Mouse Released ? GUI->LetGoOfInventoryItem
 			else if (m_Player != nullptr && m_Event.type == sf::Event::MouseButtonReleased)
 			{
 				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
@@ -344,36 +360,16 @@ void Update()
 		//
 		if (!m_bClose)
 		{
+			// Spawner Updates
 			for (Spawner& spawner : m_Spawners)
 			{
 				spawner.Update();
 			}
 
-			if (m_AudioManager != nullptr)
-			{
-				if (*m_SceneValue == _PLAINS_)
-				{
-					m_AudioManager->PlayMusic();
-					m_AudioManager->PlayUnderGroundMusic();
-				}
-				else if (*m_SceneValue == _ICE)
-				{
-					m_AudioManager->PlayMusicIce();
-					m_AudioManager->PlayUnderGroundMusicIce();
-				}
-				else if (*m_SceneValue == _SAND_)
-				{
-					m_AudioManager->PlayMusicSand();
-					m_AudioManager->PlayUnderGroundMusicSand();
-				}
-				else if (*m_SceneValue == _HELL_)
-				{
-					m_AudioManager->PlayMusicHell();
-					m_AudioManager->PlayUnderGroundMusicHell();
-				}
-			}
+			// Variable Scene Music
+			SceneMusic();
 
-			// Player Exists
+			// Player, World Manager and GUI Exists
 			if (m_Player != nullptr && m_WorldManager != nullptr && m_GUI != nullptr)
 			{
 				// Centre View To Player
@@ -404,7 +400,7 @@ void Update()
 				}
 
 				// Player Update And Movement
-				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, m_WorldManager->m_WorkBenches, m_WorldManager->m_Tourches);
+				m_Player->Interact(*m_WorldManager->m_Furnaces, *m_WorldManager->m_Chests, *m_WorldManager->m_Doors, *m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, *m_WorldManager->m_WorkBenches, *m_WorldManager->m_Tourches);
 				m_Player->Update(MousePos);
 				m_Player->Movement();
 
@@ -420,7 +416,7 @@ void Update()
 
 						m_Chest->m_Inventory = m_Player->m_InventoryMap;
 						m_Chest->m_InventoryStackValues = m_Player->m_InventoryStackValues;
-						m_WorldManager->m_Chests.push_back(*m_Chest);
+						m_WorldManager->m_Chests->push_back(*m_Chest);
 						m_Chest = nullptr;
 					}
 
@@ -530,7 +526,7 @@ void Render()
 
 				if (Mag1 < 1920 * 1.8)
 				{
-					spawner.Render(&m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
+					spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
 				}
 			}
 		}
@@ -547,14 +543,14 @@ void Render()
 		/////////////////////////////////////
 
 		m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
-		m_GUI->MiniMapUI(m_RenderWindow, m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, &m_SurfaceShader);
+		m_GUI->MiniMapUI(m_RenderWindow, *m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, m_SurfaceShader);
 
 		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
-		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
-		m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
+		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
+		m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
 		m_GUI->StatusEffectUI(m_RenderWindow, m_Player);
 		m_GUI->FPSUI(m_RenderWindow, m_Fps);
-		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, m_WorldManager->m_Chests);
+		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, *m_WorldManager->m_Chests);
 	}
 
 	// "You Died"
@@ -677,22 +673,35 @@ bool PickupItemOnGround()
 
 void InitShaders()
 {
-	if (!m_CoreShader.loadFromFile("Shaders/vertex_shader.vert", "Shaders/fragment_shader.frag"))
+	if (m_CoreShader == nullptr)
+	{
+		m_CoreShader = new sf::Shader();
+	}
+	if (!m_CoreShader->loadFromFile("Shaders/vertex_shader.vert", "Shaders/fragment_shader.frag"))
 	{
 		std::cout << "Core Shader Failed To Load!" << std::endl;
 	}
-
-	if (!m_SurfaceShader.loadFromFile("Shaders/vertex_shader_surface.vert", "Shaders/fragment_shader_surface.frag"))
+	if (m_SurfaceShader == nullptr)
+	{
+		m_SurfaceShader = new sf::Shader();
+	}
+	if (!m_SurfaceShader->loadFromFile("Shaders/vertex_shader_surface.vert", "Shaders/fragment_shader_surface.frag"))
 	{
 		std::cout << "Surface Shader Failed To Load!" << std::endl;
 	}
-
-	if (!m_ShaderMiniMap.loadFromFile("Shaders/vertex_shader_UI.vert", "Shaders/fragment_shader_UI.frag"))
+	if (m_ShaderMiniMap == nullptr)
+	{
+		m_ShaderMiniMap = new sf::Shader();
+	}
+	if (!m_ShaderMiniMap->loadFromFile("Shaders/vertex_shader_UI.vert", "Shaders/fragment_shader_UI.frag"))
 	{
 		std::cout << "Black Shader Failed To Load!" << std::endl;
 	}
-
-	if (!m_TourchShader.loadFromFile("Shaders/vertex_shader_Tourch.vert", "Shaders/fragment_shader_Tourch.frag"))
+	if (m_TourchShader == nullptr)
+	{
+		m_TourchShader = new sf::Shader();
+	}
+	if (!m_TourchShader->loadFromFile("Shaders/vertex_shader_Tourch.vert", "Shaders/fragment_shader_Tourch.frag"))
 	{
 		std::cout << "Tourch Shader Failed To Load!" << std::endl;
 	}
@@ -746,7 +755,7 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 		m_WorldManager = nullptr;
 		m_Spawners.clear();
 
-		m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, &m_CoreShader, &m_SurfaceShader); // add enum
+		m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader); // add enum
 		
 		if (*_sceneValue == 0)
 		{
@@ -770,6 +779,34 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 			m_Player->DestroyBody();
 			m_Player->CreateBody(0, -400, b2_dynamicBody);
 			m_Player->ResetSpritePos();
+			m_WorldManager->InitPointer(m_Player);
+		}
+	}
+}
+
+void SceneMusic()
+{
+	if (m_AudioManager != nullptr)
+	{
+		if (*m_SceneValue == _PLAINS_)
+		{
+			m_AudioManager->PlayMusic();
+			m_AudioManager->PlayUnderGroundMusic();
+		}
+		else if (*m_SceneValue == _ICE)
+		{
+			m_AudioManager->PlayMusicIce();
+			m_AudioManager->PlayUnderGroundMusicIce();
+		}
+		else if (*m_SceneValue == _SAND_)
+		{
+			m_AudioManager->PlayMusicSand();
+			m_AudioManager->PlayUnderGroundMusicSand();
+		}
+		else if (*m_SceneValue == _HELL_)
+		{
+			m_AudioManager->PlayMusicHell();
+			m_AudioManager->PlayUnderGroundMusicHell();
 		}
 	}
 }
