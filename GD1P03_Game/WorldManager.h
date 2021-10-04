@@ -72,6 +72,7 @@ public:
 	bool bIsItemInRangeOfLightSource(sf::Sprite _shape);
 
 	void InitPointer(CPlayer* _player);
+	void InitShaders(sf::Shader* _shader, sf::Shader* _surfaceshader, sf::Shader* _tourchshader);
 
 	void OutPutWorldToFiles();
 	void OutPutWorldToFiles(std::string _xPositions, std::string _yPositions);

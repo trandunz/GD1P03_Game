@@ -1,15 +1,15 @@
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\vc142.pdb
-c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\player.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\pickaxe.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\main.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\gui.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\enemy.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\door.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cworkbench.obj
+c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cwizard.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\ctexturemaster.obj
-c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\csword.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cprojectile.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cpotion.obj
+c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cpickaxe.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cparticlesystem.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cinputfield.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\chest.obj
@@ -23,6 +23,7 @@ c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\r
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\zombie.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\spawner.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\slime.obj
+c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\player.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\x64\release\gd1p03_game.exe
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\gd1p03_game.ipdb
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\gd1p03_game.iobj

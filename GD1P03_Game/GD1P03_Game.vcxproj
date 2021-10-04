@@ -158,6 +158,7 @@
     <ClCompile Include="CPotion.cpp" />
     <ClCompile Include="CProjectile.cpp" />
     <ClCompile Include="CTextureMaster.cpp" />
+    <ClCompile Include="CWizard.cpp" />
     <ClCompile Include="CWorkBench.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="CPotion.h" />
     <ClInclude Include="CProjectile.h" />
     <ClInclude Include="CTextureMaster.h" />
+    <ClInclude Include="CWizard.h" />
     <ClInclude Include="CWorkBench.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Enemy.h" />

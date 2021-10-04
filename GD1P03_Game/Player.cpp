@@ -1004,11 +1004,7 @@ void CPlayer::InitInventory()
 	// Init Inventory
 	for (int i = 0; i < 50; i++)
 	{
-		m_InventoryStackValues[i];
-	}
-	for (int i = 0; i < 50; i++)
-	{
-		m_InventoryMap[i];
+		m_InventoryStackValues[i] = 0;
 	}
 }
 
@@ -2066,7 +2062,7 @@ void CPlayer::OutPutInventoryToFile()
 	out_file.clear();
 	for (int i = 0; i < m_InventoryMap.size(); i++)
 	{
-		out_file << (int) m_InventoryMap[i].m_Type << std::endl;
+		out_file << (int)m_InventoryMap[i].m_Type << std::endl;
 	}
 	out_file.close();
 
@@ -2083,6 +2079,7 @@ void CPlayer::OutPutInventoryToFile()
 	//
 	// output_inventory_stackvalues
 	out_file.open("Output/output_inventory_stackvalues.txt");
+	out_file.clear();
 	for (int i = 0; i < m_InventoryMap.size(); i++)
 	{
 		out_file << m_InventoryStackValues[i] << std::endl;
@@ -2462,7 +2459,7 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENORE);
+					m_Block = new CBlock(m_TextureMaster->m_GoldenOre, CBlock::BLOCKTYPE::GOLDENORE);
 					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}
@@ -2505,17 +2502,6 @@ void CPlayer::InputInventoryToFile()
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
 					m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
-					AddItemToInventory(m_Block, i, true);
-					m_Block = nullptr;
-				}
-
-				break;
-			}
-			case (int)CBlock::BLOCKTYPE::BROKENSWORD:
-			{
-				for (int J = 0; J < stackvalues[i]; J++)
-				{
-					m_Block = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::BROKENSWORD);
 					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}
@@ -2603,8 +2589,8 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::SNOW);
-					AddItemToInventory(m_Block, i, false);
+					m_Block = new CBlock(m_TextureMaster->m_Snow, CBlock::BLOCKTYPE::SNOW);
+					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}
 
@@ -2614,8 +2600,8 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::DIRTHELL);
-					AddItemToInventory(m_Block, i, false);
+					m_Block = new CBlock(m_TextureMaster->m_DirtHell, CBlock::BLOCKTYPE::DIRTHELL);
+					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}
 
@@ -2625,8 +2611,8 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::STONEHELL);
-					AddItemToInventory(m_Block, i, false);
+					m_Block = new CBlock(m_TextureMaster->m_StoneHell, CBlock::BLOCKTYPE::STONEHELL);
+					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}
 
@@ -2636,8 +2622,8 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::BRICKHELL);
-					AddItemToInventory(m_Block, i, false);
+					m_Block = new CBlock(m_TextureMaster->m_BrickHell, CBlock::BLOCKTYPE::BRICKHELL);
+					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}
 

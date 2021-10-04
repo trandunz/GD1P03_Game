@@ -114,6 +114,9 @@
     <ClCompile Include="CPickaxe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CWizard.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h">
@@ -183,6 +186,9 @@
       <Filter>Resource Files\External</Filter>
     </ClInclude>
     <ClInclude Include="CPickaxe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CWizard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

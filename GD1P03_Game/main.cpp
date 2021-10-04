@@ -779,6 +779,7 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 			m_Player->CreateBody(0, -400, b2_dynamicBody);
 			m_Player->ResetSpritePos();
 			m_WorldManager->InitPointer(m_Player);
+			m_WorldManager->InitShaders(m_CoreShader, m_SurfaceShader, m_TourchShader);
 		}
 	}
 }

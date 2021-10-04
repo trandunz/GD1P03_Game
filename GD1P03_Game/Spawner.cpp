@@ -25,7 +25,6 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 		m_DeathParticles = new CParticleSystem(600, sf::seconds(0.6f), sf::Color(0, 99, 28, 225));
 		break;
 	}
-
 	default:
 		m_DeathParticles = new CParticleSystem(600, sf::seconds(0.6f), sf::Color(79, 0, 24, 225));
 		break;
@@ -126,6 +125,31 @@ void Spawner::Update()
 				}
 
 				m_Slimeptr = nullptr;
+				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+				m_SpawnTimer->restart();
+			}
+		}
+		break;
+	}
+
+	case CEnemy::ENEMYTYPE::NPC:
+	{
+		if (m_bSpawn && m_Wizards.size() < m_SpawnCount && m_Player != nullptr)
+		{
+			if (m_SpawnTimer->getElapsedTime().asSeconds() >= m_SpawnFrequency)
+			{
+				CWizard* tempwizard = new CWizard(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager);
+
+				std::cout << "slime spawned" << std::endl;
+				m_Wizards.push_front(*tempwizard);
+				m_Wizards.front().SetPlayer(m_Player);
+				m_Wizards.front().Start();
+
+				//x = m_Wizards.front().GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+				//y = m_Wizards.front().GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+				//Mag = sqrt((x * x) + (y * y));
+
+				tempwizard = nullptr;
 				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
 				m_SpawnTimer->restart();
 			}
@@ -544,6 +568,21 @@ void Spawner::Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
 		}
 		break;
 	}
+	case CEnemy::ENEMYTYPE::NPC:
+	{
+		for (CWizard& wizard : m_Wizards)
+		{
+			if (_isInRangeOfLightSource)
+			{
+				wizard.Render(_tourchshader);
+			}
+			else
+			{
+				wizard.Render(m_Shader);
+			}
+		}
+		break;
+	}
 	default:
 		break;
 	}
@@ -592,12 +631,14 @@ void Spawner::KillAllChilderan()
 {
 	m_Slimes.clear();
 	m_Zombies.clear();
+	m_Wizards.clear();
 }
 
 Spawner::~Spawner()
 {
 	m_Zombies.clear();
 	m_Slimes.clear();
+	m_Wizards.clear();
 
 	delete m_DeathParticles;
 	m_DeathParticles = nullptr;

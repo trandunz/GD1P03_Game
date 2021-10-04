@@ -8,6 +8,7 @@
 #include "CParticleSystem.h"
 #include "Slime.h"
 #include "Zombie.h"
+#include "CWizard.h"
 
 class Spawner
 {
@@ -32,6 +33,8 @@ public:
 
 	std::list<Slime> m_Slimes;
 	std::list<Zombie> m_Zombies;
+	std::list<CWizard> m_Wizards;
+
 
 	sf::Sprite m_Shape;
 

@@ -15,7 +15,8 @@ public:
 	{
 		DEFAULT = 0,
 		ZOMBIE,
-		SLIME
+		SLIME,
+		NPC,
 	};
 
 	CEnemy();
@@ -23,15 +24,19 @@ public:
 
 	virtual void Start();
 	virtual void Update();
-	virtual void Render();
+	virtual void Render(sf::Shader* _shader = NULL);
 
 	void SetHealth(int _value);
 	int GetHealth();
+
+	void SetPlayer(CPlayer* _player);
 
 	sf::Sprite GetShape();
 
 	virtual void Movement();
 	virtual void Attack();
+
+	virtual void TakeDamage(float _damage, bool _projectile = false);
 
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 	void DestroyBody();
@@ -48,6 +53,7 @@ protected:
 	b2World* m_World;
 	float m_Scale = 50.0f;
 	sf::Sprite m_Shape;
+	CPlayer* m_Player;
 
 	int m_Health = 100;
 	int m_MaxHealth = 100;
@@ -61,6 +67,8 @@ protected:
 	b2FixtureDef m_FixtureDef;
 
 	sf::Texture* m_Texture;
+
+	sf::Clock m_DamageTimer;
 };
 #endif
 

@@ -37,8 +37,6 @@ public:
 	void SimpleMove();
 	virtual void Attack();
 
-	void TakeDamage(float _damage, bool _projectile = false);
-
 	SLIMETYPE m_SlimeType = SLIMETYPE::GREEN;
 
 	bool m_bIsBoss = false;
@@ -50,7 +48,5 @@ private:
 	CPlayer* m_Player;
 
 	bool m_bCanFallDamage = true;
-
-	sf::Clock* m_DamageTimer;
 };
 #endif

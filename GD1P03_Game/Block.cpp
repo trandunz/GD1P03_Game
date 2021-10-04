@@ -6,7 +6,7 @@ CBlock::CBlock()
 	m_Scale = 50.0f;
 	m_World = nullptr;
 	m_Body = nullptr;
-	m_Type = BLOCKTYPE::BLOCK;
+	m_Type = BLOCKTYPE::MOSSYBRICK;
 	m_Texture = nullptr;
 
 	// Optimization
@@ -244,7 +244,7 @@ void CBlock::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, flo
 	m_Size.y = _y;
 
 	DestroyBody();
-	CreateBody(_currentPosX, _currentPosY, b2_staticBody);
+	CreateBody(_currentPosX, _currentPosY, b2_staticBody, true);
 }
 
 sf::Vector2f CBlock::GetSize()

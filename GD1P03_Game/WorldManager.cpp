@@ -81,10 +81,18 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
         CreateClouds(_textureMaster);
         break;
     case CWorldManager::WORLDTYPE::SAND:
+    {
         m_WeatherEffects = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
         CreateSandBackgrounds(_textureMaster);
         CreateSandNoiseWorld(_textureMaster, _audioManager, _spawners);
+        Spawner* wizardspawn = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -400 * 100 + 10, -400 * 100, m_Player, CEnemy::ENEMYTYPE::NPC, m_Shader, m_TourchShader, false);
+        wizardspawn->ToggleSpawning();
+        wizardspawn->SetSpawnCount(1);
+        _spawners.push_back(*wizardspawn);
+        wizardspawn = nullptr;
         break;
+    }
+
     case CWorldManager::WORLDTYPE::ICE:
         m_WeatherEffects = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
         CreateIceBackgrounds(_textureMaster);
@@ -2155,6 +2163,13 @@ void CWorldManager::InitPointer(CPlayer* _player)
     m_BGPlainsSurface.setColor(sf::Color::White);
 
     std::cout << "Player Initialized On World" << std::endl;
+}
+
+void CWorldManager::InitShaders(sf::Shader* _shader, sf::Shader* _surfaceshader, sf::Shader* _tourchshader)
+{
+    m_Shader = _shader;
+    m_SurfaceShader = _surfaceshader;
+    m_TourchShader = _tourchshader;
 }
 
 void CWorldManager::OutPutWorldToFiles(std::string _xPositions, std::string _yPositions)
