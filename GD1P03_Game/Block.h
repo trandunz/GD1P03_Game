@@ -154,7 +154,7 @@ public:
 	sf::Vector2f GetSize();
 
 	sf::Sprite& GetShape();
-	b2Body* GetBody()
+	inline b2Body* GetBody() 
 	{
 		return m_Body;
 	}
@@ -164,16 +164,15 @@ public:
 
 	float GetHeight(float x) 
 	{
-		return 0;//1 - cosf( x * 0.1f );
+		return 0;
 	}
 
 	b2Body* m_Body;
-	b2BodyDef m_BodyDef;
-	b2PolygonShape m_b2pShape;
-	b2FixtureDef m_FixtureDef;
+	b2BodyDef* m_BodyDef;
+	b2PolygonShape* m_b2pShape;
+	b2FixtureDef* m_FixtureDef;
 
 	BLOCKTYPE m_Type;
-
 
 	bool MARKASDESTROY = false;
 

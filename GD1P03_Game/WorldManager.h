@@ -104,6 +104,7 @@ public:
 
 	int m_GenerateOffsetX = 296;
 	int m_GenerateOffsetY = 113;
+
 private:
 	WORLDTYPE m_WorldType = CWorldManager::WORLDTYPE::PLAINS;
 

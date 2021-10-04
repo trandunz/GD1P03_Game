@@ -201,42 +201,44 @@ void CProjectile::Render()
 void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {
 	// Body
-	m_BodyDef.type = _type;
-	m_BodyDef.fixedRotation = false;
-	m_BodyDef.position = b2Vec2(_posX / 50.0f, (_posY / 50.0f));
-	m_BodyDef.bullet = true;
-	m_BodyDef.gravityScale = 4;
+	m_BodyDef = new b2BodyDef();
+	m_BodyDef->type = _type;
+	m_BodyDef->fixedRotation = false;
+	m_BodyDef->position = b2Vec2(_posX / 50.0f, (_posY / 50.0f));
+	m_BodyDef->bullet = true;
+	m_BodyDef->gravityScale = 4;
 	int* damage = new int(m_Damage);
-	m_BodyDef.userData.pointer = reinterpret_cast<uintptr_t>(damage);
+	m_BodyDef->userData.pointer = reinterpret_cast<uintptr_t>(damage);
 	damage = nullptr;
 	//
-	m_Body = m_World->CreateBody(&m_BodyDef);
+	m_Body = m_World->CreateBody(m_BodyDef);
 
+	m_b2pShape = new b2PolygonShape();
 	// Bullet
 	if (m_Bullet)
 	{
-		m_b2pShape.SetAsBox((10 / 2) / 50.0f, (10 / 2) / 50.0f);
+		m_b2pShape->SetAsBox((10 / 2) / 50.0f, (10 / 2) / 50.0f);
 		m_Body->SetGravityScale(0);
 	}
 	// Arrow
 	else
 	{
-		m_b2pShape.SetAsBox((10 / 2) / 50.0f, (10 / 2) / 50.0f);
+		m_b2pShape->SetAsBox((10 / 2) / 50.0f, (10 / 2) / 50.0f);
 	}
-
 
 	// Fixture
+	m_FixtureDef = new b2FixtureDef();
 	if (_sensor)
 	{
-		m_FixtureDef.isSensor = true;
+		m_FixtureDef->isSensor = true;
 	}
-	m_FixtureDef.density = 1.0f;
-	m_FixtureDef.shape = &m_b2pShape;
-	m_FixtureDef.filter.categoryBits = _PLAYER_FILTER_;
-	m_FixtureDef.filter.maskBits = _ENEMY_FILTER_;
-	m_FixtureDef.filter.maskBits = _WORLD_FILTER_;
-	m_FixtureDef.filter.groupIndex = _ENEMY_GROUPINDEX_;
-	m_Body->CreateFixture(&m_FixtureDef);
+	m_FixtureDef->density = 1.0f;
+	m_FixtureDef->shape = m_b2pShape;
+	m_FixtureDef->filter.categoryBits = _PLAYER_FILTER_;
+	m_FixtureDef->filter.maskBits = _ENEMY_FILTER_;
+	m_FixtureDef->filter.maskBits = _WORLD_FILTER_;
+	m_FixtureDef->filter.groupIndex = _ENEMY_GROUPINDEX_;
+	m_Body->CreateFixture(m_FixtureDef);
 
 	// Sprite
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
@@ -249,6 +251,25 @@ void CProjectile::DestroyBody()
 	if (m_World != nullptr && m_Body != nullptr)
 	{
 		m_World->DestroyBody(m_Body);
+
+		if (m_BodyDef != nullptr)
+		{
+			delete m_BodyDef;
+			m_BodyDef = nullptr;
+		}
+
+		if (m_b2pShape != nullptr)
+		{
+			delete m_b2pShape;
+			m_b2pShape = nullptr;
+		}
+
+		if (m_FixtureDef != nullptr)
+		{
+			delete m_FixtureDef;
+			m_FixtureDef = nullptr;
+		}
+
 		m_Body = nullptr;
 	}
 }

@@ -859,39 +859,6 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 					iit->second.m_bIsItemAndSelected = true;
 					break;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::WOOD)
-				{
-					std::cout << "Wood Sword Selected!" << "( gui)" << std::endl;
-					if (_player->GetSword() != nullptr)
-					{
-						delete _player->GetSword();
-						_player->SetSword(nullptr);
-					}
-					iit->second.m_bIsItemAndSelected = true;
-					break;
-				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::ANCIENT)
-				{
-					std::cout << "Ancient Sword Selected!" << "( gui)" << std::endl;
-					if (_player->GetSword() != nullptr)
-					{
-						delete _player->GetSword();
-						_player->SetSword(nullptr);
-					}
-					iit->second.m_bIsItemAndSelected = true;
-					break;
-				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::FLAME)
-				{
-					std::cout << "Flame Sword Selected!" << "( gui)" << std::endl;
-					if (_player->GetSword() != nullptr)
-					{
-						delete _player->GetSword();
-						_player->SetSword(nullptr);
-					}
-					iit->second.m_bIsItemAndSelected = true;
-					break;
-				}
 			}
 		}
 		else if (_event.mouseWheelScroll.delta <= -1)
@@ -1134,39 +1101,6 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 					iit->second.m_bIsItemAndSelected = true;
 					break;
 				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::WOOD)
-				{
-					std::cout << "Wood Sword Selected!" << "( gui)" << std::endl;
-					if (_player->GetSword() != nullptr)
-					{
-						delete _player->GetSword();
-						_player->SetSword(nullptr);
-					}
-					iit->second.m_bIsItemAndSelected = true;
-					break;
-				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::ANCIENT)
-				{
-					std::cout << "Ancient Sword Selected!" << "( gui)" << std::endl;
-					if (_player->GetSword() != nullptr)
-					{
-						delete _player->GetSword();
-						_player->SetSword(nullptr);
-					}
-					iit->second.m_bIsItemAndSelected = true;
-					break;
-				}
-				else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::FLAME)
-				{
-					std::cout << "Flame Sword Selected!" << "( gui)" << std::endl;
-					if (_player->GetSword() != nullptr)
-					{
-						delete _player->GetSword();
-						_player->SetSword(nullptr);
-					}
-					iit->second.m_bIsItemAndSelected = true;
-					break;
-				}
 			}
 		}
 	}
@@ -1396,39 +1330,6 @@ void GUI::InitHotBarScrolling(CPlayer* _player)
 				{
 					delete _player->GetBow();
 					_player->SetBow(nullptr);
-				}
-				iit->second.m_bIsItemAndSelected = true;
-				break;
-			}
-			else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::WOOD)
-			{
-				std::cout << "Wood Sword Selected!" << "( gui)" << std::endl;
-				if (_player->GetSword() != nullptr)
-				{
-					delete _player->GetSword();
-					_player->SetSword(nullptr);
-				}
-				iit->second.m_bIsItemAndSelected = true;
-				break;
-			}
-			else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::ANCIENT)
-			{
-				std::cout << "Ancient Sword Selected!" << "( gui)" << std::endl;
-				if (_player->GetSword() != nullptr)
-				{
-					delete _player->GetSword();
-					_player->SetSword(nullptr);
-				}
-				iit->second.m_bIsItemAndSelected = true;
-				break;
-			}
-			else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::SWORD && !_player->bInventoryOpen() && iit->second.m_SwordType == CBlock::SWORDTYPE::FLAME)
-			{
-				std::cout << "Flame Sword Selected!" << "( gui)" << std::endl;
-				if (_player->GetSword() != nullptr)
-				{
-					delete _player->GetSword();
-					_player->SetSword(nullptr);
 				}
 				iit->second.m_bIsItemAndSelected = true;
 				break;
@@ -3650,79 +3551,6 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 
 			case CBlock::BLOCKTYPE::SWORD:
 			{
-				switch (item.m_SwordType)
-				{
-				case CBlock::SWORDTYPE::WOOD:
-				{
-					CSword* tempsword = new CSword(CBlock::SWORDTYPE::WOOD);
-					_player->AddItemToInventory(tempsword, false);
-					tempsword = nullptr;
-
-					// Player Is Holding Pixkaxe During Swap
-					InitHotBarScrolling(_player);
-
-					// Remove 4 Wood
-					for (int i = 0; i < 4; i++)
-					{
-						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
-						{
-							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
-						}
-						else
-						{
-							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
-						}
-					}
-					break;
-				}
-				case CBlock::SWORDTYPE::ANCIENT:
-				{
-					CSword* tempsword = new CSword(CBlock::SWORDTYPE::ANCIENT);
-					_player->AddItemToInventory(tempsword, false);
-					tempsword = nullptr;
-
-					// Player Is Holding Pixkaxe During Swap
-					InitHotBarScrolling(_player);
-
-					// Remove 4 Stone
-					for (int i = 0; i < 4; i++)
-					{
-						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::MOSSYBRICK)] <= 1)
-						{
-							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::MOSSYBRICK));
-						}
-						else
-						{
-							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::MOSSYBRICK)]--;
-						}
-					}
-					break;
-				}
-				case CBlock::SWORDTYPE::FLAME :
-				{
-					CSword* tempsword = new CSword(CBlock::SWORDTYPE::FLAME);
-					_player->AddItemToInventory(tempsword, false);
-					tempsword = nullptr;
-
-					// Player Is Holding Pixkaxe During Swap
-					InitHotBarScrolling(_player);
-
-					// Remove 4 Wood
-					for (int i = 0; i < 4; i++)
-					{
-						if (_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)] <= 1)
-						{
-							_player->RemoveItemFromInventory(_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS));
-						}
-						else
-						{
-							_player->m_InventoryStackValues[_player->GetPositionInInventory(CBlock::BLOCKTYPE::PLANKS)]--;
-						}
-					}
-					break;
-				}
-				}
-
 				break;
 			}
 

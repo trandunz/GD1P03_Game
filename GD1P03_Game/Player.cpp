@@ -13,7 +13,6 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 	m_Chest = nullptr;
 	m_Door = nullptr;
 	m_Pickaxe = nullptr;
-	m_Sword = nullptr;
 	m_bChangeScenes = _changeScenes;
 	m_SceneValue = _sceneValue;
 
@@ -63,10 +62,6 @@ CPlayer::~CPlayer()
 	{
 		delete m_Bow;
 	}
-	if (m_Sword != nullptr)
-	{
-		delete m_Sword;
-	}
 	delete m_MapIconTexRight;
 	delete m_MapIconTex;
 	delete m_PlayerRightTex;
@@ -78,7 +73,6 @@ CPlayer::~CPlayer()
 	delete m_DamageIndicatorTimer;
 	m_SceneValue = nullptr;
 	m_bChangeScenes = nullptr;
-	m_Sword = nullptr;
 	m_DamageIndicatorTimer = nullptr;
 	m_DamageTimer = nullptr;
 	m_MineTimer = nullptr;
@@ -161,11 +155,6 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	{
 		m_Bow->FlipSprite(m_Shape.getPosition(), m_Shape, m_PlayerLeftTex, m_PlayerRightTex);
 	}
-	// Player Has Sword ? Orient Sprite
-	else if (m_Sword != nullptr)
-	{
-		m_Sword->FlipSprite(m_Shape.getPosition(), m_Shape, m_PlayerLeftTex, m_PlayerRightTex);
-	}
 
 	// Holdable Items (Pickaxe, Bow e.t.c)
 	std::map<int, CBlock>::iterator cit;
@@ -185,12 +174,6 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 				m_Bow = new Bow(m_RenderWindow, *m_World, m_Scale,m_Shape.getPosition().x, m_Shape.getPosition().y, cit->second.m_BowType);
 				cit->second.m_bIsItemAndSelected = false;
 			}
-			else if (m_Bow == nullptr && cit->second.m_Type == CBlock::BLOCKTYPE::SWORD)
-			{
-				std::cout << "New Sword Created!" << std::endl;
-				m_Sword = new CSword(m_RenderWindow, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, cit->second.m_SwordType);
-				cit->second.m_bIsItemAndSelected = false;
-			}
 
 			// Outer For
 			break;
@@ -206,11 +189,6 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	{
 		delete m_Bow;
 		m_Bow = nullptr;
-	}
-	else if (m_InventoryMap[m_CurrentItemIndex].m_Type != CBlock::BLOCKTYPE::SWORD && m_Sword != nullptr)
-	{
-		delete m_Sword;
-		m_Sword = nullptr;
 	}
 	
 	// Collision Constacts
@@ -281,10 +259,6 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	{
 		Attack(m_Bow);
 	}
-	else if (m_Sword != nullptr)
-	{
-		Attack(m_Sword);
-	}
 
 	// Update All Projectiles
 	for (CProjectile& projectile : m_Projectiles)
@@ -326,11 +300,6 @@ void CPlayer::Render(sf::Shader* _defaultShader)
 	if (m_Bow != nullptr)
 	{
 		m_Bow->Render();
-	}
-	// Player Has Sword ? Render()
-	if (m_Sword != nullptr)
-	{
-		m_Sword->Render();
 	}
 
 	// Draw All Projectiles
@@ -1069,16 +1038,6 @@ void CPlayer::SetBow(Bow* _bow)
 	m_Bow = _bow;
 }
 
-CSword* CPlayer::GetSword()
-{
-	return m_Sword;
-}
-
-void CPlayer::SetSword(CSword* _sword)
-{
-	m_Sword = _sword;
-}
-
 int CPlayer::GetCurrentHP()
 {
 	return m_Health;
@@ -1415,11 +1374,6 @@ void CPlayer::RemoveItemFromInventory(int _position)
 			}
 			if (it->second.m_Type == CBlock::BLOCKTYPE::SWORD)
 			{
-				if (m_Sword != nullptr)
-				{
-					delete m_Sword;
-				}
-				m_Sword = nullptr;
 			}
 
 			while (m_InventoryStackValues[_position] > 0)
@@ -2539,67 +2493,7 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					switch (swordtypes[i])
-					{
-					case 0:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::WOOD);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					case 1:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::ANCIENT);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					case 2:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::FLAME);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					case 3:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::GOD);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					case 4:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::GOLDEN);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					case 5:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::GREEN);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					case 6:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::PURPLE);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					case 7:
-					{
-						m_Sword = new CSword(CBlock::SWORDTYPE::SLIME);
-						AddItemToInventory(m_Sword, i, false);
-						m_Sword = nullptr;
-						break;
-					}
-					default:
-						break;
-					}
+					break;
 				}
 
 				break;

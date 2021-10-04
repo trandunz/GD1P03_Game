@@ -90,9 +90,6 @@
     <ClCompile Include="CProjectile.cpp">
       <Filter>Source Files\Items / Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="CSword.cpp">
-      <Filter>Source Files\Items / Blocks</Filter>
-    </ClCompile>
     <ClCompile Include="CWorkBench.cpp">
       <Filter>Source Files\Items / Blocks</Filter>
     </ClCompile>
@@ -113,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CPickaxe.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -158,16 +158,10 @@
     <ClInclude Include="CProjectile.h">
       <Filter>Header Files\Items / Blocks</Filter>
     </ClInclude>
-    <ClInclude Include="CSword.h">
-      <Filter>Header Files\Items / Blocks</Filter>
-    </ClInclude>
     <ClInclude Include="CWorkBench.h">
       <Filter>Header Files\Items / Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Door.h">
-      <Filter>Header Files\Items / Blocks</Filter>
-    </ClInclude>
-    <ClInclude Include="Pickaxe.h">
       <Filter>Header Files\Items / Blocks</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
@@ -187,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="include\utils-master\stringutils.h">
       <Filter>Resource Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="CPickaxe.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

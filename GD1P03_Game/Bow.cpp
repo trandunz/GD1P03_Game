@@ -10,6 +10,7 @@ Bow::Bow(BOWTYPE _bowType)
 	m_Texture = nullptr;
 	m_Texture = new sf::Texture();
 
+
 	m_BowType = _bowType;
 	switch (m_BowType)
 	{

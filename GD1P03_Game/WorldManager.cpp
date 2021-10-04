@@ -481,7 +481,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                 // Iron
                 m_Block = new CBlock(m_RenderWindow, *m_World, _textureMaster->m_IronOre, Utils::m_Scale, x * 100 + 10, y * 100, false, CBlock::BLOCKTYPE::IRONORE);
                 m_Chunk->push_back(*m_Block);
-                m_Block->m_ArrayIndex = x + y;
+                m_Block->m_ArrayIndex = (long) (x + y);
                 m_Block = nullptr;
             }
             else if (sineValue > 82 && sineValue <= 85 && y > 6)

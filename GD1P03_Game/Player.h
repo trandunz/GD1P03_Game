@@ -19,11 +19,10 @@
 
 #include <vector>
 #include <fstream>
-
+#include "CPickaxe.h"
 #include "Chest.h"
 #include "Door.h"
 #include "AudioManager.h"
-#include "Pickaxe.h"
 #include "CTextureMaster.h"
 #include "CFurnace.h"
 #include "CProjectile.h"
@@ -31,7 +30,6 @@
 #include "CParticleSystem.h"
 #include "CPotion.h"
 #include "CWorkBench.h"
-#include "CSword.h"
 
 class CPlayer
 {
@@ -56,9 +54,6 @@ public:
 
 	Bow* GetBow();
 	void SetBow(Bow* _bow);
-
-	CSword* GetSword();
-	void SetSword(CSword* _sword);
 
 	int GetCurrentHP();
 	int GetMaxHP();
@@ -194,7 +189,6 @@ private:
 	CWorkBench* m_WorkBench;
 	CPickaxe* m_Pickaxe;
 	Bow* m_Bow;
-	CSword* m_Sword;
 	CParticleSystem* m_TestParticles;
 	CProjectile* m_Projectile;
 	CPotion* m_Potion;

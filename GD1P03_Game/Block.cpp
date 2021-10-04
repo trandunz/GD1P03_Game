@@ -9,6 +9,11 @@ CBlock::CBlock()
 	m_Type = BLOCKTYPE::BLOCK;
 	m_Texture = nullptr;
 
+	// Optimization
+	m_BodyDef = nullptr;
+	m_b2pShape = nullptr;
+	m_FixtureDef = nullptr;
+
 	Start();
 }
 
@@ -58,10 +63,14 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Textu
 CBlock::~CBlock()
 {
 	DestroyBody();
+
 	m_Texture = nullptr;
 	m_Body = nullptr;
 	m_RenderWindow = nullptr;
 	m_World = nullptr;
+	m_BodyDef = nullptr;
+	m_b2pShape = nullptr;
+	m_FixtureDef = nullptr;
 }
 
 void CBlock::Start()
@@ -253,6 +262,25 @@ void CBlock::DestroyBody()
 	if (m_World != nullptr && m_Body != nullptr)
 	{
 		m_World->DestroyBody(m_Body);
+
+		if (m_BodyDef != nullptr)
+		{
+			delete m_BodyDef;
+			m_BodyDef = nullptr;
+		}
+
+		if (m_b2pShape != nullptr)
+		{
+			delete m_b2pShape;
+			m_b2pShape = nullptr;
+		}
+
+		if (m_FixtureDef != nullptr)
+		{
+			delete m_FixtureDef;
+			m_FixtureDef = nullptr;
+		}
+
 		m_Body = nullptr;
 	}
 }
@@ -260,24 +288,28 @@ void CBlock::DestroyBody()
 void CBlock::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {
 	//ground physics
-	m_BodyDef.type = _type;
-	m_BodyDef.position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
-	m_BodyDef.allowSleep = true;
-	m_BodyDef.awake = false;
-	m_Body = m_World->CreateBody(&m_BodyDef);
+	m_BodyDef = new b2BodyDef();
+	m_BodyDef->type = _type;
+	m_BodyDef->position = b2Vec2(_posX / m_Scale, (_posY / m_Scale));
+	m_BodyDef->allowSleep = true;
+	m_BodyDef->awake = false;
+	m_Body = m_World->CreateBody(m_BodyDef);
 	m_Body->SetAwake(false);
 
-	m_b2pShape.SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
+	m_b2pShape = new b2PolygonShape();
+	m_b2pShape->SetAsBox((m_Size.x / 2) / m_Scale, (m_Size.y / 2) / m_Scale);
 
+	m_FixtureDef = new b2FixtureDef();
 	if (_sensor)
 	{
-		m_FixtureDef.isSensor = true;
+		m_FixtureDef->isSensor = true;
 	}
-	m_FixtureDef.density = 1.0f;
-	m_FixtureDef.shape = &m_b2pShape;
-	m_FixtureDef.filter.categoryBits = _WORLD_FILTER_;
-	m_FixtureDef.filter.groupIndex = -_WORLD_GROUPINDEX_;
-	m_Body->CreateFixture(&m_FixtureDef);
+
+	m_FixtureDef->density = 1.0f;
+	m_FixtureDef->shape = m_b2pShape;
+	m_FixtureDef->filter.categoryBits = _WORLD_FILTER_;
+	m_FixtureDef->filter.groupIndex = -_WORLD_GROUPINDEX_;
+	m_Body->CreateFixture(m_FixtureDef);
 
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);

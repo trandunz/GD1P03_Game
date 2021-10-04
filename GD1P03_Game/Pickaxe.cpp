@@ -1,4 +1,4 @@
-#include "Pickaxe.h"
+#include "CPickaxe.h"
 
 CPickaxe::CPickaxe(PICKAXETYPE _pickType)
 {

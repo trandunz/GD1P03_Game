@@ -426,6 +426,7 @@ void Update()
 					m_Player->OutPutInventoryToFile();
 
 					delete m_Player;
+
 					m_Player = nullptr;
 					m_WorldManager->InitPointer(m_Player);
 					m_DebugWindow->SetPlayer(m_Player);
@@ -462,8 +463,6 @@ void Update()
 					{
 						spawner.SetPlayer(m_Player);
 					}
-
-
 				}
 			}
 
