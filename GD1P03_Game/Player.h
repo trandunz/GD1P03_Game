@@ -144,6 +144,14 @@ private:
 	void PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
 	void PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePositionSprite);
 
+	void CalculateAndAddPicktypes(int _array[50], int _iterator);
+	void CalculateAndAddBowtypes(int _array[50], int _iterator);
+	void CalculateAndAddProjectileTypes(int _array[50], int _iterator);
+	void CalculateAndAddPotionTypes(int _array[50], int _iterator);
+
+	void GrabAllSavedValues(int types[50], int stackvalues[50], int bowtypes[50], int swordtypes[50], int picktypes[50], int projtypes[50], int potiontypes[50]);
+
+
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;

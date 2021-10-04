@@ -53,7 +53,6 @@ CPlayer::~CPlayer()
 	m_Projectiles.clear();
 
 	DestroyBody();
-
 	if (m_Pickaxe != nullptr)
 	{
 		delete m_Pickaxe;
@@ -1653,6 +1652,333 @@ void CPlayer::PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePosit
 	}
 }
 
+void CPlayer::CalculateAndAddPicktypes(int _array[50], int _iterator)
+{
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		m_Pickaxe = new CPickaxe();
+		AddItemToInventory(m_Pickaxe, _iterator, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case 1:
+	{
+		m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::IRON);
+		AddItemToInventory(m_Pickaxe, _iterator, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case 2:
+	{
+		m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
+		AddItemToInventory(m_Pickaxe, _iterator, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case 3:
+	{
+		m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
+		AddItemToInventory(m_Pickaxe, _iterator, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case 4:
+	{
+		m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::OBSIDIAN);
+		AddItemToInventory(m_Pickaxe, _iterator, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case 5:
+	{
+		m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::PURPLE);
+		AddItemToInventory(m_Pickaxe, _iterator, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	case 6:
+	{
+		m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLDEN);
+		AddItemToInventory(m_Pickaxe, _iterator, false);
+		m_Pickaxe = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::CalculateAndAddBowtypes(int _array[50], int _iterator)
+{
+	// Bow
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 1:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::OBSIDIAN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 2:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::ICE);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 3:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::BLOOD);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 4:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::IRON);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 5:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::GOLDEN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 6:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::PURPLE);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 7:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::GREEN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 8:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::IRONGUN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 9:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::GOLDGUN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 10:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::PURPLEGUN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 11:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::GOLDENGUN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	case 12:
+	{
+		m_Bow = new Bow(CBlock::BOWTYPE::GREENGUN);
+		AddItemToInventory(m_Bow, _iterator, false);
+		m_Bow = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::CalculateAndAddProjectileTypes(int _array[50], int _iterator)
+{
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		m_Projectile = new CProjectile();
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	case 1:
+	{
+		m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	case 2:
+	{
+		m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	case 3:
+	{
+		m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	case 4:
+	{
+		m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::IRONBULLET);
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	case 5:
+	{
+		m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::GOLDBULLET);
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	case 6:
+	{
+		m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::PURPLEBULLET);
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	case 7:
+	{
+		m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::GOLDENBULLET);
+		AddItemToInventory(m_Projectile, _iterator, true);
+		m_Projectile = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::CalculateAndAddPotionTypes(int _array[50], int _iterator)
+{
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		CPotion* potion = new CPotion(CBlock::POTIONTYPE::HPSMALL);
+		AddItemToInventory(potion, _iterator, true);
+		potion = nullptr;
+		break;
+	}
+	case 1:
+	{
+		CPotion* potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
+		AddItemToInventory(potion, _iterator, true);
+		potion = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtypes[50], int swordtypes[50], int picktypes[50], int projtypes[50], int potiontypes[50])
+{
+	// Main Types
+	std::ifstream xoutputs("Output/output_inventory_types.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> types[i];
+		}
+		xoutputs.close();
+	}
+
+	// Stack Values
+	xoutputs.open("Output/output_inventory_stackvalues.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> stackvalues[i];
+		}
+		xoutputs.close();
+	}
+
+	// Bow Types
+	xoutputs.open("Output/output_inventory_bowtypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> bowtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	// Sword Types
+	xoutputs.open("Output/output_inventory_swordtypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> swordtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	// Pick Types
+	xoutputs.open("Output/output_inventory_pickaxetypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> picktypes[i];
+		}
+		xoutputs.close();
+	}
+
+	// Projectile Types
+	xoutputs.open("Output/output_inventory_projtypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> projtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	// PotionTypes
+	xoutputs.open("Output/output_inventory_potiontypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 50; i++)
+		{
+			xoutputs >> potiontypes[i];
+		}
+		xoutputs.close();
+	}
+}
+
 void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {
 	//falling object physics
@@ -1821,82 +2147,7 @@ void CPlayer::InputInventoryToFile()
 	int projtypes[50] = {};
 	int potiontypes[50] = {};
 
-	// Main Types
-	std::ifstream xoutputs("Output/output_inventory_types.txt");
-	if (xoutputs.is_open())
-	{
-		for (int i = 0; i < 50; i++)
-		{
-			xoutputs >> types[i];
-		}
-		xoutputs.close();
-	}
-
-	// Stack Values
-	xoutputs.open("Output/output_inventory_stackvalues.txt");
-	if (xoutputs.is_open())
-	{
-		for (int i = 0; i < 50; i++)
-		{
-			xoutputs >> stackvalues[i];
-		}
-		xoutputs.close();
-	}
-
-	// Bow Types
-	xoutputs.open("Output/output_inventory_bowtypes.txt");
-	if (xoutputs.is_open())
-	{
-		for (int i = 0; i < 50; i++)
-		{
-			xoutputs >> bowtypes[i];
-		}
-		xoutputs.close();
-	}
-
-	// Sword Types
-	xoutputs.open("Output/output_inventory_swordtypes.txt");
-	if (xoutputs.is_open())
-	{
-		for (int i = 0; i < 50; i++)
-		{
-			xoutputs >> swordtypes[i];
-		}
-		xoutputs.close();
-	}
-
-	// Pick Types
-	xoutputs.open("Output/output_inventory_pickaxetypes.txt");
-	if (xoutputs.is_open())
-	{
-		for (int i = 0; i < 50; i++)
-		{
-			xoutputs >> picktypes[i];
-		}
-		xoutputs.close();
-	}
-
-	// Projectile Types
-	xoutputs.open("Output/output_inventory_projtypes.txt");
-	if (xoutputs.is_open())
-	{
-		for (int i = 0; i < 50; i++)
-		{
-			xoutputs >> projtypes[i];
-		}
-		xoutputs.close();
-	}
-
-	// PotionTypes
-	xoutputs.open("Output/output_inventory_potiontypes.txt");
-	if (xoutputs.is_open())
-	{
-		for (int i = 0; i < 50; i++)
-		{
-			xoutputs >> potiontypes[i];
-		}
-		xoutputs.close();
-	}
+	GrabAllSavedValues(types, stackvalues, bowtypes, swordtypes, picktypes, projtypes, potiontypes);
 
 	for (int i = 0; i < 50; i++)
 	{
@@ -1904,69 +2155,16 @@ void CPlayer::InputInventoryToFile()
 		{
 			switch (types[i])
 			{
-			case 0:
+			case (int)CBlock::BLOCKTYPE::PICKAXE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					switch (picktypes[i])
-					{
-					case 0:
-					{
-						m_Pickaxe = new CPickaxe();
-						AddItemToInventory(m_Pickaxe, i, false);
-						m_Pickaxe = nullptr;
-						break;
-					}
-					case 1:
-					{
-						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::IRON);
-						AddItemToInventory(m_Pickaxe, i, false);
-						m_Pickaxe = nullptr;
-						break;
-					}
-					case 2:
-					{
-						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLD);
-						AddItemToInventory(m_Pickaxe, i, false);
-						m_Pickaxe = nullptr;
-						break;
-					}
-					case 3:
-					{
-						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::DIAMOND);
-						AddItemToInventory(m_Pickaxe, i, false);
-						m_Pickaxe = nullptr;
-						break;
-					}
-					case 4:
-					{
-						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::OBSIDIAN);
-						AddItemToInventory(m_Pickaxe, i, false);
-						m_Pickaxe = nullptr;
-						break;
-					}
-					case 5:
-					{
-						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::PURPLE);
-						AddItemToInventory(m_Pickaxe, i, false);
-						m_Pickaxe = nullptr;
-						break;
-					}
-					case 6:
-					{
-						m_Pickaxe = new CPickaxe(CBlock::PICKAXETYPE::GOLDEN);
-						AddItemToInventory(m_Pickaxe, i, false);
-						m_Pickaxe = nullptr;
-						break;
-					}
-					default:
-						break;
-					}
+					CalculateAndAddPicktypes(picktypes, i);
 				}
 
 				break;
 			}
-			case 1:
+			case (int)CBlock::BLOCKTYPE::DOOR:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -1974,10 +2172,10 @@ void CPlayer::InputInventoryToFile()
 					AddItemToInventory(m_Door, i, false);
 					m_Door = nullptr;
 				}
-				
+
 				break;
 			}
-			case 2:
+			case (int)CBlock::BLOCKTYPE::CHEST:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -1988,7 +2186,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 3:
+			case (int)CBlock::BLOCKTYPE::DIRT:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -1999,7 +2197,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 4:
+			case (int)CBlock::BLOCKTYPE::STONE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2010,7 +2208,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 5:
+			case (int)CBlock::BLOCKTYPE::WOOD:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2021,7 +2219,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 6:
+			case (int)CBlock::BLOCKTYPE::PLANKS:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2032,7 +2230,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 7:
+			case (int)CBlock::BLOCKTYPE::SAND:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2043,7 +2241,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 8:
+			case (int)CBlock::BLOCKTYPE::MOSSYBRICK:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2054,7 +2252,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 9:
+			case (int)CBlock::BLOCKTYPE::GRASS:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2065,7 +2263,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 11:
+			case (int)CBlock::BLOCKTYPE::LEAVES:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2076,7 +2274,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 12:
+			case (int)CBlock::BLOCKTYPE::FURNACE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2087,7 +2285,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 13:
+			case (int)CBlock::BLOCKTYPE::IRONORE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2098,7 +2296,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 14:
+			case (int)CBlock::BLOCKTYPE::GOLDORE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2109,7 +2307,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 15:
+			case (int)CBlock::BLOCKTYPE::DIAMONDORE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2120,7 +2318,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 16:
+			case (int)CBlock::BLOCKTYPE::COALORE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2131,7 +2329,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 17:
+			case (int)CBlock::BLOCKTYPE::OBSIDIAN:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2142,113 +2340,15 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 18:
+			case (int)CBlock::BLOCKTYPE::BOW:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					// Bow
-					switch (bowtypes[i])
-					{
-					case 0:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::BASIC);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 1:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::OBSIDIAN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 2:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::ICE);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 3:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::BLOOD);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 4:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::IRON);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 5:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::GOLDEN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 6:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::PURPLE);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 7:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::GREEN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 8:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::IRONGUN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 9:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::GOLDGUN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 10:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::PURPLEGUN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 11:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::GOLDENGUN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					case 12:
-					{
-						m_Bow = new Bow(CBlock::BOWTYPE::GREENGUN);
-						AddItemToInventory(m_Bow, i, false);
-						m_Bow = nullptr;
-						break;
-					}
-					default:
-						break;
-					}
+					CalculateAndAddBowtypes(bowtypes, i);
 				}
-				
-
 				break;
 			}
-			case 19:
+			case (int)CBlock::BLOCKTYPE::IRONINGOT:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2259,7 +2359,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 20:
+			case (int)CBlock::BLOCKTYPE::GOLDINGOT:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2270,7 +2370,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 21:
+			case (int)CBlock::BLOCKTYPE::DIAMOND:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2281,7 +2381,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 22:
+			case (int)CBlock::BLOCKTYPE::CLOUD:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2292,7 +2392,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 23:
+			case (int)CBlock::BLOCKTYPE::WORKBENCH:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2303,7 +2403,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 24:
+			case (int)CBlock::BLOCKTYPE::PURPLEINGOT:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2314,7 +2414,7 @@ void CPlayer::InputInventoryToFile()
 				m_Block = nullptr;
 				break;
 			}
-			case 25:
+			case (int)CBlock::BLOCKTYPE::GOLDENINGOT:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2325,7 +2425,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 26:
+			case (int)CBlock::BLOCKTYPE::ANVIL:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2336,7 +2436,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 27:
+			case (int)CBlock::BLOCKTYPE::TOURCH:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2347,7 +2447,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 28:
+			case (int)CBlock::BLOCKTYPE::PURPLEORE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2358,7 +2458,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 29:
+			case (int)CBlock::BLOCKTYPE::GOLDENORE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2369,105 +2469,27 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 30:
+			case (int)CBlock::BLOCKTYPE::PROJECTILE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
 					// Projectile
-					switch (projtypes[i])
-					{
-					case 0:
-					{
-						m_Projectile = new CProjectile();
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					case 1:
-					{
-						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::FIREARROW);
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					case 2:
-					{
-						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::CURSEDARROW);
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					case 3:
-					{
-						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::POISONARROW);
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					case 4:
-					{
-						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::IRONBULLET);
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					case 5:
-					{
-						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::GOLDBULLET);
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					case 6:
-					{
-						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::PURPLEBULLET);
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					case 7:
-					{
-						m_Projectile = new CProjectile(CBlock::PROJECTILETYPE::GOLDENBULLET);
-						AddItemToInventory(m_Projectile, i, true);
-						m_Projectile = nullptr;
-						break;
-					}
-					default:
-						break;
-					}
-				}
-				
-				break;
-			}
-			case 31:
-			{
-				for (int J = 0; J < stackvalues[i]; J++)
-				{
-					// Projectile
-					switch (potiontypes[i])
-					{
-					case 0:
-					{
-						CPotion* potion= new CPotion(CBlock::POTIONTYPE::HPSMALL);
-						AddItemToInventory(potion, i, true);
-						potion = nullptr;
-						break;
-					}
-					case 1:
-					{
-						CPotion* potion = new CPotion(CBlock::POTIONTYPE::HPLARGE);
-						AddItemToInventory(potion, i, true);
-						potion = nullptr;
-						break;
-					}
-					default:
-						break;
-					}
+					CalculateAndAddProjectileTypes(projtypes, i);
 				}
 
 				break;
 			}
-			case 32:
+			case (int)CBlock::BLOCKTYPE::POTION:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					// Projectile
+					CalculateAndAddPotionTypes(potiontypes, i);
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::EMPTYBEAKER:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2478,7 +2500,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 33:
+			case (int)CBlock::BLOCKTYPE::REDSLIME:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2489,16 +2511,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 34:
-			{
-				for (int J = 0; J < stackvalues[i]; J++)
-				{
-					break;
-				}
-
-				break;
-			}
-			case 35:
+			case (int)CBlock::BLOCKTYPE::BROKENSWORD:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2509,7 +2522,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 36:
+			case (int)CBlock::BLOCKTYPE::PORTALKEYBLUE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2520,7 +2533,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 37:
+			case (int)CBlock::BLOCKTYPE::PORTALKEYRED:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2531,7 +2544,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 38:
+			case (int)CBlock::BLOCKTYPE::PORTALKEYYELLOW:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2542,7 +2555,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 39:
+			case (int)CBlock::BLOCKTYPE::SANDSTONE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2553,7 +2566,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 40:
+			case (int)CBlock::BLOCKTYPE::HARDSANDSTONE:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2564,7 +2577,7 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 41:
+			case (int)CBlock::BLOCKTYPE::CACTUS:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
@@ -2575,11 +2588,55 @@ void CPlayer::InputInventoryToFile()
 
 				break;
 			}
-			case 42:
+			case (int)CBlock::BLOCKTYPE::PORTALKEYPLAINS:
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
 					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::PORTALKEYPLAINS);
+					AddItemToInventory(m_Block, i, false);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::SNOW:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::SNOW);
+					AddItemToInventory(m_Block, i, false);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::DIRTHELL:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::DIRTHELL);
+					AddItemToInventory(m_Block, i, false);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::STONEHELL:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::STONEHELL);
+					AddItemToInventory(m_Block, i, false);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::BRICKHELL:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::BRICKHELL);
 					AddItemToInventory(m_Block, i, false);
 					m_Block = nullptr;
 				}
@@ -2591,7 +2648,6 @@ void CPlayer::InputInventoryToFile()
 			}
 		}
 	}
-
 }
 
 void CPlayer::ToggleGodMode()
