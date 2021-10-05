@@ -85,11 +85,11 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
         m_WeatherEffects = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
         CreateSandBackgrounds(_textureMaster);
         CreateSandNoiseWorld(_textureMaster, _audioManager, _spawners);
-        Spawner* wizardspawn = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -400 * 100 + 10, -400 * 100, m_Player, CEnemy::ENEMYTYPE::NPC, m_Shader, m_TourchShader, false);
+        /*Spawner* wizardspawn = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -400 * 100 + 10, -400 * 100, m_Player, CEnemy::ENEMYTYPE::NPC, m_Shader, m_TourchShader, false);
         wizardspawn->ToggleSpawning();
         wizardspawn->SetSpawnCount(1);
         _spawners.push_back(*wizardspawn);
-        wizardspawn = nullptr;
+        wizardspawn = nullptr;*/
         break;
     }
 
