@@ -223,7 +223,7 @@ void Start()
 	m_bClose = false;
 
 	// Debug
-	m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners);
+	m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue);
 	m_DebugWindow->Start();
 }
 

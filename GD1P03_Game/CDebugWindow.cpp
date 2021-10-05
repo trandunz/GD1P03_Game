@@ -1,11 +1,13 @@
 #include "CDebugWindow.h"
 
-CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners)
+CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners, bool* _bChangeScenes, int* _sceneValue)
 {
 	m_WorldManager = _worldManager;
 	m_Player = _player;
 	m_TextureMaster = _textureMaster;
 	m_Spawners = &_spawners;
+	m_bChangeScenes = _bChangeScenes;
+	m_SceneValue = _sceneValue;
 
 	// Texture
 	m_PlayerPreviewTexture.loadFromFile("Images/PlayerIconRight.png");
@@ -41,9 +43,12 @@ CDebugWindow::~CDebugWindow()
 	m_ItemPreviews.clear();
 	m_ItemListButtons.clear();
 	m_EnemyButtons.clear();
+	m_WorldButtons.clear();
 
 	delete m_RenderWindow;
 
+	m_bChangeScenes = nullptr;
+	m_SceneValue = nullptr;
 	m_RenderWindow = nullptr;
 	m_Spawners = nullptr;
 }
@@ -53,6 +58,7 @@ void CDebugWindow::Start()
 	CreateItemListButtons();
 	CreateEnemyControlButtons();
 	CreatePlayerControlButtons();
+	CreateWorldControlButtons();
 }
 
 void CDebugWindow::Update()
@@ -122,6 +128,36 @@ void CDebugWindow::Update()
 				break;
 			}
 		}
+
+		for (int i = 0; i < m_WorldButtons.size(); i++)
+		{
+			m_WorldButtons[i].Update();
+
+			if (m_Event.type == sf::Event::MouseButtonPressed && m_WorldButtons[i].bIsinBounds(m_MousePos))
+			{
+				if (i == 0)
+				{
+					*m_bChangeScenes = true;
+					*m_SceneValue = _PLAINS_;
+				}
+				else if (i == 1)
+				{
+					*m_bChangeScenes = true;
+					*m_SceneValue = _SAND_;
+				}
+				else if (i == 2)
+				{
+					*m_bChangeScenes = true;
+					*m_SceneValue = _ICE_;
+				}
+				else if (i == 3)
+				{
+					*m_bChangeScenes = true;
+					*m_SceneValue = _HELL_;
+				}
+				break;
+			}
+		}
 	}
 }
 
@@ -151,6 +187,11 @@ void CDebugWindow::Render()
 	for (int i = 0; i < m_EnemyButtons.size(); i++)
 	{
 		m_RenderWindow->draw(m_EnemyButtons[i].Sprite);
+	}
+
+	for (int i = 0; i < m_WorldButtons.size(); i++)
+	{
+		m_RenderWindow->draw(m_WorldButtons[i].Sprite);
 	}
 
 	for (int i = 0; i < m_PlayerButtons.size(); i++)
@@ -1037,6 +1078,98 @@ void CDebugWindow::CreateEnemyControlButtons()
 		tempbutton->SetIdleTex(Idle);
 
 		m_EnemyButtons.insert_or_assign(1, *tempbutton);
+		tempbutton = nullptr;
+	}
+}
+
+void CDebugWindow::CreateWorldControlButtons()
+{
+	// Force Plains Biome
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (13 * 30), (11 * 30) - 20);
+		tempbutton->SetLabel("Force Plains");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/ForcePlainsButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/ForcePlainsButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/ForcePlainsButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_WorldButtons.insert_or_assign(0, *tempbutton);
+		tempbutton = nullptr;
+	}
+	// Force Sand Biome
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (14 * 30), (11 * 30) - 20);
+		tempbutton->SetLabel("Force Sand");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/ForceSandButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/ForceSandButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/ForceSandButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_WorldButtons.insert_or_assign(1, *tempbutton);
+		tempbutton = nullptr;
+	}
+	// Force Ice Biome
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (15 * 30), (11 * 30) - 20);
+		tempbutton->SetLabel("Force Ice");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/ForceIceButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/ForceIceButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/ForceIceButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_WorldButtons.insert_or_assign(2, *tempbutton);
+		tempbutton = nullptr;
+	}
+	// Force Hell Biome
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (16 * 30), (11 * 30) - 20);
+		tempbutton->SetLabel("Force Hell");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/ForceHellButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/ForceHellButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/ForceHellButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_WorldButtons.insert_or_assign(3, *tempbutton);
 		tempbutton = nullptr;
 	}
 }

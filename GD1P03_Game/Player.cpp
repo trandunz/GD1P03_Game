@@ -691,7 +691,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYBLUE)
 			{
 				*m_bChangeScenes = true;
-				*m_SceneValue = _ICE;
+				*m_SceneValue = _ICE_;
 			}
 			// PORTAL KEY RED
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)
@@ -721,7 +721,7 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYBLUE)
 		{
 		*m_bChangeScenes = true;
-		*m_SceneValue = _ICE;
+		*m_SceneValue = _ICE_;
 		}
 		// PORTAL KEY RED
 		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)

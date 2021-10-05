@@ -12,7 +12,7 @@
 class CDebugWindow
 {
 public:
-	CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners);
+	CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners, bool* _bChangeScenes, int* _sceneValue);
 	~CDebugWindow();
 
 	void Start();
@@ -26,6 +26,7 @@ public:
 
 	void CreateItemListButtons();
 	void CreateEnemyControlButtons();
+	void CreateWorldControlButtons();
 	void CreatePlayerControlButtons();
 
 	void ResetAllButtons();
@@ -61,6 +62,7 @@ private:
 
 	std::map<int, CButtons> m_PlayerButtons;
 	std::map<int, CButtons> m_EnemyButtons;
+	std::map<int, CButtons> m_WorldButtons;
 
 	sf::RectangleShape m_PlayerBackGround;
 	sf::RectangleShape m_PlayerStatsBackGround;
@@ -74,6 +76,9 @@ private:
 	sf::Texture m_PlayerPreviewTexture;
 
 	bool m_bGodMode = false;
+
+	bool* m_bChangeScenes;
+	int* m_SceneValue;
 };
 #endif
 
