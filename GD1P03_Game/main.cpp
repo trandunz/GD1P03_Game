@@ -225,6 +225,8 @@ void Start()
 	// Debug
 	m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue);
 	m_DebugWindow->Start();
+
+	m_GUI->InitArmourOnPlayer(m_Player);
 }
 
 /// <summary>
@@ -426,8 +428,8 @@ void Update()
 					m_Player->OutPutInventoryToFile();
 
 					delete m_Player;
-
 					m_Player = nullptr;
+
 					m_WorldManager->InitPointer(m_Player);
 					m_DebugWindow->SetPlayer(m_Player);
 					for (Spawner& spawner : m_Spawners)
@@ -543,8 +545,8 @@ void Render()
 
 		m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
 		m_GUI->MiniMapUI(m_RenderWindow, *m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, m_SurfaceShader);
-
 		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
+		m_GUI->UtilityUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
 		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
 		m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
 		m_GUI->StatusEffectUI(m_RenderWindow, m_Player);
@@ -588,6 +590,7 @@ void InitUI()
 	m_GUI->InitChestUI(m_RenderWindow,m_TextureMaster);
 	m_GUI->InitStatusEffectUI(m_Player);
 	m_GUI->InitFpsUI(m_Fps);
+	m_GUI->InitUtilityUI(m_Player, m_RenderWindow, m_TextureMaster);
 
 	// UI View
 	m_UIView = sf::View(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(m_RenderWindow->getSize().x, m_RenderWindow->getSize().y));

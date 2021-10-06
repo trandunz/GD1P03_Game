@@ -14,6 +14,8 @@ CTextureMaster::CTextureMaster()
 	m_Sky->setSmooth(true);
 	m_ItemSpacer = new sf::Texture();
 	m_ItemSpacer->loadFromFile("Images/ItemSpacer.png");
+	m_EquipmentSpacer = new sf::Texture();
+	m_EquipmentSpacer->loadFromFile("Images/EquipmentSpacer.png");
 	m_HeartFull = new sf::Texture();
 	m_HeartFull->loadFromFile("Images/HeartFull.png");
 	m_HeartEmpty = new sf::Texture();
@@ -160,6 +162,27 @@ CTextureMaster::CTextureMaster()
 	m_TerrariaHellBG = new sf::Texture();
 	m_TerrariaHellBG->loadFromFile("Images/TerrariaBGHell.png");
 
+	m_CactusHead = new sf::Texture();
+	m_CactusHead->loadFromFile("Images/CactusHeadItem.png");
+	m_CactusChestPlate = new sf::Texture();
+	m_CactusChestPlate->loadFromFile("Images/CactusChestPlateItem.png");
+	m_CactusLegs = new sf::Texture();
+	m_CactusLegs->loadFromFile("Images/CactusLegsItem.png");
+
+	m_EquipmentSpacerHelmet = new sf::Texture();
+	m_EquipmentSpacerHelmet->loadFromFile("Images/EquipmentSpacerHelmet.png");
+	m_EquipmentSpacerChestPlate = new sf::Texture();
+	m_EquipmentSpacerChestPlate->loadFromFile("Images/EquipmentSpacerChestPlate.png");
+	m_EquipmentSpacerLeggings = new sf::Texture();
+	m_EquipmentSpacerLeggings->loadFromFile("Images/EquipmentSpacerLeggings.png");
+
+	m_IronHead = new sf::Texture();
+	m_IronHead->loadFromFile("Images/IronHeadItem.png");
+	m_IronChestPlate = new sf::Texture();
+	m_IronChestPlate->loadFromFile("Images/IronChestPlateItem.png");
+	m_IronLegs = new sf::Texture();
+	m_IronLegs->loadFromFile("Images/IronLegsItem.png");
+
 	// Set Smooth
 	m_Dirt->setSmooth(true);
 	m_Grass->setSmooth(true);
@@ -257,6 +280,27 @@ CTextureMaster::~CTextureMaster()
 	delete m_UnderGroundHell;
 	delete m_HellBG;
 	delete m_TerrariaHellBG;
+	delete m_EquipmentSpacer;
+	delete m_CactusHead;
+	delete m_CactusChestPlate;
+	delete m_CactusLegs;
+	delete m_EquipmentSpacerHelmet;
+	delete m_EquipmentSpacerChestPlate;
+	delete m_EquipmentSpacerLeggings;
+	delete m_IronHead;
+	delete m_IronChestPlate;
+	delete m_IronLegs;
+
+	m_IronHead = nullptr;
+	m_IronChestPlate = nullptr;
+	m_IronLegs = nullptr;
+	m_EquipmentSpacerHelmet = nullptr;
+	m_EquipmentSpacerChestPlate = nullptr;
+	m_EquipmentSpacerLeggings = nullptr;
+	m_CactusHead = nullptr;
+	m_CactusChestPlate = nullptr;
+	m_CactusLegs = nullptr;
+	m_EquipmentSpacer = nullptr;
 	m_TerrariaHellBG = nullptr;
 	m_UnderGroundHell = nullptr;
 	m_HellBG = nullptr;

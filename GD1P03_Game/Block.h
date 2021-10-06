@@ -76,6 +76,9 @@ public:
 		DIRTHELL = 44,
 		STONEHELL = 45,
 		BRICKHELL = 46,
+		HELMET,
+		CHESTPLATE,
+		LEGGINGS,
 	};
 
 	enum class PICKAXETYPE
@@ -195,6 +198,15 @@ public:
 	PROJECTILETYPE m_ProjectileType = PROJECTILETYPE::ARROW;
 	POTIONTYPE m_PotionType = POTIONTYPE::HPSMALL;
 	SWORDTYPE m_SwordType = SWORDTYPE::WOOD;
+
+	int m_ArmourValue = 0;
+	sf::Texture m_ArmourHeadLeft;
+	sf::Texture m_ArmourHeadRight;
+	sf::Texture m_ArmourChestLeft;
+	sf::Texture m_ArmourChestRight;
+	sf::Texture m_ArmourLegsLeft;
+	sf::Texture m_ArmourLegsRight;
+
 protected:
 	sf::RenderWindow* m_RenderWindow;
 

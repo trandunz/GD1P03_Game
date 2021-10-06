@@ -106,6 +106,9 @@ public:
 
 	void OutPutInventoryToFile();
 
+	void SetArmour(int _value);
+	int GetArmour();
+
 	std::map<int, int> m_InventoryStackValues;
 	std::map<int, CBlock> m_InventoryMap;
 
@@ -126,6 +129,10 @@ public:
 	bool m_bInventoryOpen = false;
 	bool m_bPlayerIsInChest = false;
 
+	sf::Sprite m_HelmetShape;
+	sf::Sprite m_ChesPlateShape;
+	sf::Sprite m_LegsShape;
+
 private:
 
 	void Attack(CBlock* _item);
@@ -144,12 +151,12 @@ private:
 	void PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
 	void PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePositionSprite);
 
-	void CalculateAndAddPicktypes(int _array[50], int _iterator);
-	void CalculateAndAddBowtypes(int _array[50], int _iterator);
-	void CalculateAndAddProjectileTypes(int _array[50], int _iterator);
-	void CalculateAndAddPotionTypes(int _array[50], int _iterator);
+	void CalculateAndAddPicktypes(int _array[60], int _iterator);
+	void CalculateAndAddBowtypes(int _array[60], int _iterator);
+	void CalculateAndAddProjectileTypes(int _array[60], int _iterator);
+	void CalculateAndAddPotionTypes(int _array[60], int _iterator);
 
-	void GrabAllSavedValues(int types[50], int stackvalues[50], int bowtypes[50], int swordtypes[50], int picktypes[50], int projtypes[50], int potiontypes[50]);
+	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60]);
 
 
 	// Essentials
@@ -174,6 +181,7 @@ private:
 	int m_MaxHP = 100;
 	int m_Health = 100;
 	int m_InteractionRange = 10;
+	int m_Armour = 0;
 
 	float m_HeathRegenSpeed = 1;
 	float m_HeathRegenAmount = 1;

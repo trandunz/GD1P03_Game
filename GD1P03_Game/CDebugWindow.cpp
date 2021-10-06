@@ -287,6 +287,27 @@ void CDebugWindow::CreateItemListButtons()
 		tempbutton = nullptr;
 	}
 
+	// Armour And Equipment
+	// 
+	// Row 8 Buttons
+	for (int i = 70; i < 80; i++)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(55 + ((i - 70) * 30), (17 * 30) - 20);
+		tempbutton->SetLabel("");
+		m_ItemListButtons.insert_or_assign(i, *tempbutton);
+		tempbutton = nullptr;
+	}
+	// Row 9 Buttons
+	for (int i = 80; i < 90; i++)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(55 + ((i - 80) * 30), (18 * 30) - 20);
+		tempbutton->SetLabel("");
+		m_ItemListButtons.insert_or_assign(i, *tempbutton);
+		tempbutton = nullptr;
+	}
+
 	// Item Icons / Previews
 	for (int i = 0; i < m_ItemListButtons.size(); i++)
 	{
@@ -1013,6 +1034,39 @@ void CDebugWindow::CreateItemListButtons()
 		case 66:
 		{
 			CBlock* block = new CBlock(m_TextureMaster->m_BrickHell, CBlock::BLOCKTYPE::BRICKHELL);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 70:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_CactusHead, CBlock::BLOCKTYPE::HELMET);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 71:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_CactusChestPlate, CBlock::BLOCKTYPE::CHESTPLATE);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 72:
+		{
+			CBlock* block = new CBlock(m_TextureMaster->m_CactusLegs, CBlock::BLOCKTYPE::LEGGINGS);
 			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
 			m_ItemPreviews.insert_or_assign(i, *block);
 			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
@@ -1817,6 +1871,27 @@ void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 			case 66:
 			{
 				CBlock* block = new CBlock(m_TextureMaster->m_BrickHell, CBlock::BLOCKTYPE::BRICKHELL);
+				m_Player->AddItemToInventory(block, true);
+				block = nullptr;
+				break;
+			}
+			case 70:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_CactusHead, CBlock::BLOCKTYPE::HELMET);
+				m_Player->AddItemToInventory(block, true);
+				block = nullptr;
+				break;
+			}
+			case 71:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_CactusChestPlate, CBlock::BLOCKTYPE::CHESTPLATE);
+				m_Player->AddItemToInventory(block, true);
+				block = nullptr;
+				break;
+			}
+			case 72:
+			{
+				CBlock* block = new CBlock(m_TextureMaster->m_CactusLegs, CBlock::BLOCKTYPE::LEGGINGS);
 				m_Player->AddItemToInventory(block, true);
 				block = nullptr;
 				break;

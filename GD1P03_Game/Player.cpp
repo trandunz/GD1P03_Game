@@ -61,6 +61,7 @@ CPlayer::~CPlayer()
 	{
 		delete m_Bow;
 	}
+
 	delete m_MapIconTexRight;
 	delete m_MapIconTex;
 	delete m_PlayerRightTex;
@@ -108,7 +109,7 @@ void CPlayer::Start()
 	if (!IsItemInInventory(CBlock::BLOCKTYPE::PICKAXE))
 	{
 		//Starting Items
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			if (m_InventoryStackValues[i] == 0)
 			{
@@ -140,6 +141,19 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	// Set SFML Shape Transform To Box 2D Body Transform
 	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+
+	m_HelmetShape.setOrigin(m_HelmetShape.getGlobalBounds().width / 2, (m_HelmetShape.getGlobalBounds().height / 2) - 10);
+	m_ChesPlateShape.setOrigin((m_HelmetShape.getGlobalBounds().width / 2) + 20, (m_HelmetShape.getGlobalBounds().height / 2) - 10);
+	m_LegsShape.setOrigin(m_HelmetShape.getGlobalBounds().width / 2, (m_HelmetShape.getGlobalBounds().height / 2) - 10);
+
+	m_HelmetShape.setPosition(m_Body->GetPosition().x * m_Scale, (m_Body->GetPosition().y) * m_Scale);
+	m_HelmetShape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+	m_ChesPlateShape.setPosition(m_Body->GetPosition().x * m_Scale, (m_Body->GetPosition().y) * m_Scale);
+	m_ChesPlateShape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+	m_LegsShape.setPosition(m_Body->GetPosition().x * m_Scale, (m_Body->GetPosition().y * m_Scale));
+	m_LegsShape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+
+
 
 	// Set Map Icon Position
 	m_MapIcon.setPosition(m_Shape.getPosition());
@@ -310,6 +324,19 @@ void CPlayer::Render(sf::Shader* _defaultShader)
 	// Player Sprite
 	m_RenderWindow->draw(m_Shape, _defaultShader);
 
+	if (m_InventoryMap[50].m_ArmourValue > 0)
+	{
+		m_RenderWindow->draw(m_HelmetShape);
+	}
+	if (m_InventoryMap[51].m_ArmourValue > 0)
+	{
+		m_RenderWindow->draw(m_ChesPlateShape);
+	}
+	if (m_InventoryMap[52].m_ArmourValue > 0)
+	{
+		m_RenderWindow->draw(m_LegsShape);
+	}
+
 	// Draw All Particles (Mining)
 	m_RenderWindow->draw(*m_TestParticles);
 }
@@ -353,135 +380,167 @@ void CPlayer::Movement()
 		{
 			m_Body->ApplyLinearImpulseToCenter(-1 * m_MoveSpeed * b2Vec2(m_Velocity.x, 0.0f), true);
 		}
-
-		// Input Right ? Animation
-		if (m_Velocity.x > 0.1f)
+	}
+	// Input Right ? Animation
+	if (m_Velocity.x > 0.1f)
+	{
+		if (m_Shape.getTexture() != m_PlayerRightTex)
 		{
-			if (m_Shape.getTexture() != m_PlayerRightTex)
-			{
-				m_Shape.setTexture(*m_PlayerRightTex);
-				m_MapIcon.setTexture(*m_MapIconTexRight);
-			}
-			if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
-			{
-				if (m_Shape.getTextureRect().left < 1500)
-				{
-					m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
-				}
-				else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
-				{
-					m_Shape.setTextureRect(sf::IntRect(100, 0, 100, 200));
-				}
-				m_AnimationTimer->restart();
-			}
+			m_Shape.setTexture(*m_PlayerRightTex);
+			m_HelmetShape.setScale(sf::Vector2f(1, 1));
+			m_ChesPlateShape.setScale(sf::Vector2f(1, 1));
+			m_LegsShape.setScale(sf::Vector2f(1, 1));
+			m_MapIcon.setTexture(*m_MapIconTexRight);
 		}
-		// Input Left ? Animation
-		else if (m_Velocity.x < -0.1f)
+		if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
 		{
-			if (m_Shape.getTexture() != m_PlayerLeftTex)
+			if (m_Shape.getTextureRect().left < 1500)
 			{
-				m_Shape.setTexture(*m_PlayerLeftTex);
-				m_MapIcon.setTexture(*m_MapIconTex);
+				m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
+				m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
+				m_LegsShape.setTextureRect(sf::IntRect(m_LegsShape.getTextureRect().left + 100, m_LegsShape.getTextureRect().top, m_LegsShape.getTextureRect().width, m_LegsShape.getTextureRect().height));
+				m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
 			}
-			if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
+			else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
 			{
-				if (m_Shape.getTextureRect().left < 1500)
-				{
-					m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
-				}
-
-				else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
-				{
-					m_Shape.setTextureRect(sf::IntRect(100, 0, 100, 200));
-				}
-				m_AnimationTimer->restart();
+				m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+				m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
+				m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+				m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
 			}
+			m_AnimationTimer->restart();
 		}
-		// Input  ? NA : Animation && Sound
-		else if (m_Velocity.x == 0.0f)
+	}
+	// Input Left ? Animation
+	else if (m_Velocity.x < -0.1f)
+	{
+		if (m_Shape.getTexture() != m_PlayerLeftTex)
 		{
-			// Input Right ? NA : Animation
-			if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x > 15.0f)
-			{
-				if (m_AudioManager != nullptr)
-				{
-					m_AudioManager->PlayRunning();
-				}
-
-				if (m_Shape.getTexture() != m_PlayerRightTex)
-				{
-					m_Shape.setTexture(*m_PlayerRightTex);
-					m_MapIcon.setTexture(*m_MapIconTexRight);
-
-
-				}
-				if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
-				{
-					if (m_Shape.getTextureRect().left < 1500)
-					{
-						m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
-					}
-					else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
-					{
-						m_Shape.setTextureRect(sf::IntRect(100, 0, 100, 200));
-					}
-					m_AnimationTimer->restart();
-				}
-			}
-			// Input Left ? NA : Animation
-			else if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x < -15.0f)
-			{
-				if (m_AudioManager != nullptr)
-				{
-					m_AudioManager->PlayRunning();
-				}
-
-				if (m_Shape.getTexture() != m_PlayerLeftTex)
-				{
-					m_Shape.setTexture(*m_PlayerLeftTex);
-					m_MapIcon.setTexture(*m_MapIconTex);
-				}
-				if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
-				{
-					if (m_Shape.getTextureRect().left < 1500)
-					{
-						m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
-					}
-
-					else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
-					{
-						m_Shape.setTextureRect(sf::IntRect(100, 0, 100, 200));
-					}
-					m_AnimationTimer->restart();
-				}
-			}
-			// Input ? NA : Default Animation State
-			else
-			{
-				m_Shape.setTextureRect(sf::IntRect(0, 0, 100, 200));
-			}
+			m_Shape.setTexture(*m_PlayerLeftTex);
+			m_HelmetShape.setScale(sf::Vector2f(-1, 1));
+			m_ChesPlateShape.setScale(sf::Vector2f(-1, 1));
+			m_LegsShape.setScale(sf::Vector2f(-1, 1));
+			m_MapIcon.setTexture(*m_MapIconTex);
 		}
+		if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
+		{
+			if (m_Shape.getTextureRect().left < 1500)
+			{
+				m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
+				m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
+				m_LegsShape.setTextureRect(sf::IntRect(m_LegsShape.getTextureRect().left + 100, m_LegsShape.getTextureRect().top, m_LegsShape.getTextureRect().width, m_LegsShape.getTextureRect().height));
+				m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
+			}
 
-		// Input Right ? Audio
+			else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
+			{
+				m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+				m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
+				m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+				m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
+			}
+			m_AnimationTimer->restart();
+		}
+	}
+	// Input  ? NA : Animation && Sound
+	else if (m_Velocity.x == 0.0f)
+	{
+		// Input Right ? NA : Animation
 		if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x > 15.0f)
 		{
 			if (m_AudioManager != nullptr)
 			{
 				m_AudioManager->PlayRunning();
 			}
+
+			if (m_Shape.getTexture() != m_PlayerRightTex)
+			{
+				m_Shape.setTexture(*m_PlayerRightTex);
+				m_HelmetShape.setScale(sf::Vector2f(1, 1));
+				m_ChesPlateShape.setScale(sf::Vector2f(1, 1));
+				m_LegsShape.setScale(sf::Vector2f(1, 1));
+				m_MapIcon.setTexture(*m_MapIconTexRight);
+			}
+			if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
+			{
+				if (m_Shape.getTextureRect().left < 1500)
+				{
+					m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
+					m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
+					m_LegsShape.setTextureRect(sf::IntRect(m_LegsShape.getTextureRect().left + 100, m_LegsShape.getTextureRect().top, m_LegsShape.getTextureRect().width, m_LegsShape.getTextureRect().height));
+					m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
+				}
+				else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
+				{
+					m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+					m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
+					m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+					m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
+				}
+				m_AnimationTimer->restart();
+			}
 		}
-		// Input Left ? Audio
+		// Input Left ? NA : Animation
 		else if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x < -15.0f)
 		{
 			if (m_AudioManager != nullptr)
 			{
 				m_AudioManager->PlayRunning();
 			}
-		}
 
-		// Debug
-		//std::cout << m_Shape.getPosition().x << std::endl;
-		//std::cout << m_Shape.getPosition().y << std::endl;
+			if (m_Shape.getTexture() != m_PlayerLeftTex)
+			{
+				m_Shape.setTexture(*m_PlayerLeftTex);
+				m_HelmetShape.setScale(sf::Vector2f(-1, 1));
+				m_ChesPlateShape.setScale(sf::Vector2f(-1, 1));
+				m_LegsShape.setScale(sf::Vector2f(-1, 1));
+				m_MapIcon.setTexture(*m_MapIconTex);
+			}
+			if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
+			{
+				if (m_Shape.getTextureRect().left < 1500)
+				{
+					m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
+					m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
+					m_LegsShape.setTextureRect(sf::IntRect(m_LegsShape.getTextureRect().left + 100, m_LegsShape.getTextureRect().top, m_LegsShape.getTextureRect().width, m_LegsShape.getTextureRect().height));
+					m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
+				}
+
+				else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
+				{
+					m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+					m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
+					m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+					m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
+				}
+				m_AnimationTimer->restart();
+			}
+		}
+		// Input ? NA : Default Animation State
+		else
+		{
+			m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+			m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
+			m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+			m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
+		}
+	}
+
+	// Input Right ? Audio
+	if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x > 15.0f)
+	{
+		if (m_AudioManager != nullptr)
+		{
+			m_AudioManager->PlayRunning();
+		}
+	}
+	// Input Left ? Audio
+	else if (m_Body->GetLinearVelocityFromWorldPoint(worldposition).x < -15.0f)
+	{
+		if (m_AudioManager != nullptr)
+		{
+			m_AudioManager->PlayRunning();
+		}
 	}
 }
 
@@ -1002,7 +1061,7 @@ void CPlayer::Attack(CBlock* _item)
 void CPlayer::InitInventory()
 {
 	// Init Inventory
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 60; i++)
 	{
 		m_InventoryStackValues[i] = 0;
 	}
@@ -1049,7 +1108,12 @@ void CPlayer::TakeDamage(float _damage)
 	{
 
 		std::cout << "Player Took Damage!" << std::endl;
-		m_Health -= _damage;
+		std::cout << "Armour : " << m_Armour << std::endl;
+		m_Health -= (_damage - m_Armour);
+		if (m_Health > m_MaxHP)
+		{
+			m_Health = m_MaxHP;
+		}
 		m_DamageTimer->restart();
 		m_DamageIndicatorTimer->restart();
 		m_AudioManager->PlayPlayerDamage();
@@ -1648,7 +1712,7 @@ void CPlayer::PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePosit
 	}
 }
 
-void CPlayer::CalculateAndAddPicktypes(int _array[50], int _iterator)
+void CPlayer::CalculateAndAddPicktypes(int _array[60], int _iterator)
 {
 	switch (_array[_iterator])
 	{
@@ -1706,7 +1770,7 @@ void CPlayer::CalculateAndAddPicktypes(int _array[50], int _iterator)
 	}
 }
 
-void CPlayer::CalculateAndAddBowtypes(int _array[50], int _iterator)
+void CPlayer::CalculateAndAddBowtypes(int _array[60], int _iterator)
 {
 	// Bow
 	switch (_array[_iterator])
@@ -1807,7 +1871,7 @@ void CPlayer::CalculateAndAddBowtypes(int _array[50], int _iterator)
 	}
 }
 
-void CPlayer::CalculateAndAddProjectileTypes(int _array[50], int _iterator)
+void CPlayer::CalculateAndAddProjectileTypes(int _array[60], int _iterator)
 {
 	switch (_array[_iterator])
 	{
@@ -1872,7 +1936,7 @@ void CPlayer::CalculateAndAddProjectileTypes(int _array[50], int _iterator)
 	}
 }
 
-void CPlayer::CalculateAndAddPotionTypes(int _array[50], int _iterator)
+void CPlayer::CalculateAndAddPotionTypes(int _array[60], int _iterator)
 {
 	switch (_array[_iterator])
 	{
@@ -1895,13 +1959,13 @@ void CPlayer::CalculateAndAddPotionTypes(int _array[50], int _iterator)
 	}
 }
 
-void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtypes[50], int swordtypes[50], int picktypes[50], int projtypes[50], int potiontypes[50])
+void CPlayer::GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60])
 {
 	// Main Types
 	std::ifstream xoutputs("Output/output_inventory_types.txt");
 	if (xoutputs.is_open())
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> types[i];
 		}
@@ -1912,7 +1976,7 @@ void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtype
 	xoutputs.open("Output/output_inventory_stackvalues.txt");
 	if (xoutputs.is_open())
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> stackvalues[i];
 		}
@@ -1923,7 +1987,7 @@ void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtype
 	xoutputs.open("Output/output_inventory_bowtypes.txt");
 	if (xoutputs.is_open())
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> bowtypes[i];
 		}
@@ -1934,7 +1998,7 @@ void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtype
 	xoutputs.open("Output/output_inventory_swordtypes.txt");
 	if (xoutputs.is_open())
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> swordtypes[i];
 		}
@@ -1945,7 +2009,7 @@ void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtype
 	xoutputs.open("Output/output_inventory_pickaxetypes.txt");
 	if (xoutputs.is_open())
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> picktypes[i];
 		}
@@ -1956,7 +2020,7 @@ void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtype
 	xoutputs.open("Output/output_inventory_projtypes.txt");
 	if (xoutputs.is_open())
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> projtypes[i];
 		}
@@ -1967,7 +2031,7 @@ void CPlayer::GrabAllSavedValues(int types[50], int stackvalues[50], int bowtype
 	xoutputs.open("Output/output_inventory_potiontypes.txt");
 	if (xoutputs.is_open())
 	{
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> potiontypes[i];
 		}
@@ -2131,22 +2195,32 @@ void CPlayer::OutPutInventoryToFile()
 	out_file.close();
 }
 
+void CPlayer::SetArmour(int _value)
+{
+	m_Armour = _value;
+}
+
+int CPlayer::GetArmour()
+{
+	return m_Armour;
+}
+
 void CPlayer::InputInventoryToFile()
 {
 	//
 	// Reading From File??
 	//
-	int types[50] = {};
-	int stackvalues[50] = {};
-	int bowtypes[50] = {};
-	int swordtypes[50] = {};
-	int picktypes[50] = {};
-	int projtypes[50] = {};
-	int potiontypes[50] = {};
+	int types[60] = {};
+	int stackvalues[60] = {};
+	int bowtypes[60] = {};
+	int swordtypes[60] = {};
+	int picktypes[60] = {};
+	int projtypes[60] = {};
+	int potiontypes[60] = {};
 
 	GrabAllSavedValues(types, stackvalues, bowtypes, swordtypes, picktypes, projtypes, potiontypes);
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 60; i++)
 	{
 		if (stackvalues[i] != 0)
 		{
@@ -2623,6 +2697,39 @@ void CPlayer::InputInventoryToFile()
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
 					m_Block = new CBlock(m_TextureMaster->m_BrickHell, CBlock::BLOCKTYPE::BRICKHELL);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::HELMET:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_CactusHead, CBlock::BLOCKTYPE::HELMET);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::CHESTPLATE:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_CactusChestPlate, CBlock::BLOCKTYPE::CHESTPLATE);
+					AddItemToInventory(m_Block, i, true);
+					m_Block = nullptr;
+				}
+
+				break;
+			}
+			case (int)CBlock::BLOCKTYPE::LEGGINGS:
+			{
+				for (int J = 0; J < stackvalues[i]; J++)
+				{
+					m_Block = new CBlock(m_TextureMaster->m_CactusLegs, CBlock::BLOCKTYPE::LEGGINGS);
 					AddItemToInventory(m_Block, i, true);
 					m_Block = nullptr;
 				}

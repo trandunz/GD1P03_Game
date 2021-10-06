@@ -605,7 +605,6 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTe
 	m_MousePointer = sf::Sprite();
 	m_MousePointer.setTexture(*_textureMaster->m_MousePointerTex);
 	m_MousePointer.setOrigin(m_MousePointer.getGlobalBounds().width / 2, m_MousePointer.getGlobalBounds().height / 2);
-	
 }
 
 void GUI::InitMousePosSprite(CTextureMaster* _textureMaster)
@@ -1358,8 +1357,120 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 						std::map<int, CBlock>::iterator cit = _player->m_InventoryMap.find(j);
 						std::map<int, int>::iterator vit = _player->m_InventoryStackValues.find(j);
 
-						if (sit->first != cit->first)
+						if (sit->first >= 50)
 						{
+							if (sit->first == 50 && sit->first != cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::HELMET)
+							{
+								_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
+								_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
+								std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+								std::swap(_player->m_InventoryMap[sit->first], cit->second);
+
+								// Moved Item Into Currently Selected Slot?
+								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
+								{
+									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetPickaxe() != nullptr)
+										{
+											delete _player->GetPickaxe();
+											_player->SetPickaxe(nullptr);
+										}
+
+										std::cout << "Pickaxe Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+									else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetBow() != nullptr)
+										{
+											delete _player->GetBow();
+											_player->SetBow(nullptr);
+										}
+
+										std::cout << "Bow Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+								}
+
+								// Debug
+								std::cout << "Mouse Released On Selected Item!" << std::endl;
+
+								// Saves My Sanity
+								for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+								{
+									_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
+								}
+
+								_player->SetArmour(_player->GetArmour() + _player->m_InventoryMap[sit->first].m_ArmourValue);
+								std::cout << "Armour : " << _player->GetArmour() << std::endl;
+								_player->m_HelmetShape.setTexture(_player->m_InventoryMap[50].m_ArmourHeadLeft, true);
+							}
+							else if (sit->first == 50 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::HELMET)
+							{
+							}
+							if (sit->first == 51 && sit->first != cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::CHESTPLATE)
+							{
+								_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
+								_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
+								std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+								std::swap(_player->m_InventoryMap[sit->first], cit->second);
+
+								// Moved Item Into Currently Selected Slot?
+								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
+								{
+									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetPickaxe() != nullptr)
+										{
+											delete _player->GetPickaxe();
+											_player->SetPickaxe(nullptr);
+										}
+
+										std::cout << "Pickaxe Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+									else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetBow() != nullptr)
+										{
+											delete _player->GetBow();
+											_player->SetBow(nullptr);
+										}
+
+										std::cout << "Bow Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+								}
+
+								// Debug
+								std::cout << "Mouse Released On Selected Item!" << std::endl;
+
+								// Saves My Sanity
+								for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+								{
+									_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
+								}
+
+								_player->SetArmour(_player->GetArmour() + _player->m_InventoryMap[sit->first].m_ArmourValue);
+								std::cout << "Armour : " << _player->GetArmour() << std::endl;
+								_player->m_ChesPlateShape.setTexture(_player->m_InventoryMap[51].m_ArmourChestLeft, true);
+
+								break;
+							}
+							else if (sit->first == 51 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::CHESTPLATE)
+							{
+							}
+							if (sit->first == 52 && sit->first != cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::LEGGINGS)
+							{
 							_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
 							_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
 							std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
@@ -1400,22 +1511,194 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 							std::cout << "Mouse Released On Selected Item!" << std::endl;
 
 							// Saves My Sanity
-							for (int i = 0; i < 50; i++)
+							for (int i = 0; i < _player->m_InventoryMap.size(); i++)
 							{
 								_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
 							}
-							break;
-						}
-						else if (sit->first == cit->first)
-						{
 
+							_player->SetArmour(_player->GetArmour() + _player->m_InventoryMap[sit->first].m_ArmourValue);
+							std::cout << "Armour : " << _player->GetArmour() << std::endl;
+							_player->m_LegsShape.setTexture(_player->m_InventoryMap[52].m_ArmourLegsLeft, true);
+
+							break;
+							}
+							else if (sit->first == 52 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::LEGGINGS)
+							{
+							}
+							if (sit->first == 58 && sit->first != cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
+							{
+								_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
+								_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
+								std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+								std::swap(_player->m_InventoryMap[sit->first], cit->second);
+
+								// Moved Item Into Currently Selected Slot?
+								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
+								{
+									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetPickaxe() != nullptr)
+										{
+											delete _player->GetPickaxe();
+											_player->SetPickaxe(nullptr);
+										}
+
+										std::cout << "Pickaxe Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+									else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetBow() != nullptr)
+										{
+											delete _player->GetBow();
+											_player->SetBow(nullptr);
+										}
+
+										std::cout << "Bow Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+								}
+
+								// Debug
+								std::cout << "Mouse Released On Selected Item!" << std::endl;
+
+								// Saves My Sanity
+								for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+								{
+									_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
+								}
+								break;
+							}
+							else if (sit->first == 58 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
+							{
+							}
+							if (sit->first == 59 && sit->first != cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
+							{
+								_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
+								_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
+								std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+								std::swap(_player->m_InventoryMap[sit->first], cit->second);
+
+								// Moved Item Into Currently Selected Slot?
+								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
+								{
+									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetPickaxe() != nullptr)
+										{
+											delete _player->GetPickaxe();
+											_player->SetPickaxe(nullptr);
+										}
+
+										std::cout << "Pickaxe Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+									else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetBow() != nullptr)
+										{
+											delete _player->GetBow();
+											_player->SetBow(nullptr);
+										}
+
+										std::cout << "Bow Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+								}
+
+								// Debug
+								std::cout << "Mouse Released On Selected Item!" << std::endl;
+
+								// Saves My Sanity
+								for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+								{
+									_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
+								}
+								break;
+							}
+							else if (sit->first == 59 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
+							{
+							}
+						
 						}
+						else
+						{
+							if (sit->first != cit->first)
+							{
+								if (_player->m_InventoryMap[j].m_ArmourValue > 0)
+								{
+									_player->SetArmour(_player->GetArmour() - _player->m_InventoryMap[j].m_ArmourValue);
+								}
+
+								_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
+								_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
+								std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+								std::swap(_player->m_InventoryMap[sit->first], cit->second);
+
+								// Moved Item Into Currently Selected Slot?
+								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
+								{
+									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetPickaxe() != nullptr)
+										{
+											delete _player->GetPickaxe();
+											_player->SetPickaxe(nullptr);
+										}
+
+										std::cout << "Pickaxe Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+									else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetBow() != nullptr)
+										{
+											delete _player->GetBow();
+											_player->SetBow(nullptr);
+										}
+
+										std::cout << "Bow Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+								}
+
+								// Debug
+								std::cout << "Mouse Released On Selected Item!" << std::endl;
+
+								// Saves My Sanity
+								for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+								{
+									_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
+								}
+								break;
+							}
+							else if (sit->first == cit->first)
+							{
+								
+							}
+						}
+						
+						_player->m_HelmetShape.setOrigin(_player->m_HelmetShape.getGlobalBounds().width / 2, _player->m_HelmetShape.getGlobalBounds().height / 2);
+						_player->m_ChesPlateShape.setOrigin(_player->m_HelmetShape.getGlobalBounds().width / 2, _player->m_HelmetShape.getGlobalBounds().height / 2);
+						_player->m_LegsShape.setOrigin(_player->m_HelmetShape.getGlobalBounds().width / 2, _player->m_HelmetShape.getGlobalBounds().height / 2);
 
 						// Debug
 						std::cout << "Mouse Released!" << std::endl;
 
 						// Saves My Sanity
-						for (int i = 0; i < 50; i++)
+						for (int i = 0; i < _player->m_InventoryMap.size(); i++)
 						{
 							_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
 						}
@@ -1423,7 +1706,7 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 					else if (_event.type == sf::Event::MouseButtonReleased)
 					{
 						// Saves My Sanity
-						for (int i = 0; i < 50; i++)
+						for (int i = 0; i < _player->m_InventoryMap.size(); i++)
 						{
 							_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
 						}
@@ -4404,6 +4687,35 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 		m_ChestSlots[i].setTexture(*_textureMaster->m_ItemSpacer);
 	}
 
+	// Row 6
+	for (int i = 50; i < 60; i++)
+	{
+		_renderWindow->mapCoordsToPixel(m_ChestSlots[i].getPosition(), _uiView);
+		m_ChestSlots[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + 900 + ((i - 50) * 65), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + 65 + 65);
+
+		for (CChest& chest : _chests)
+		{
+			_renderWindow->mapCoordsToPixel(chest.m_Inventory[i].GetPosition(), _uiView);
+			chest.m_Inventory[i].SetPosition(m_ChestSlots[i].getPosition().x, m_ChestSlots[i].getPosition().y);
+
+			m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
+			if (chest.m_bIsOpen)
+			{
+				m_ChestItemStackCounters[i].setPosition(m_ChestSlots[i].getPosition().x - 8, m_ChestSlots[i].getPosition().y + 18);
+				if (chest.m_InventoryStackValues[i] <= 1)
+				{
+					m_ChestItemStackCounters[i].setString("");
+				}
+				else
+				{
+					m_ChestItemStackCounters[i].setString(std::to_string(chest.m_InventoryStackValues[i]));
+				}
+			}
+		}
+
+		m_ChestSlots[i].setTexture(*_textureMaster->m_ItemSpacer);
+	}
+
 }
 
 void GUI::InitChestUI(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
@@ -4550,6 +4862,34 @@ void GUI::InitChestUI(sf::RenderWindow* _renderWindow, CTextureMaster* _textureM
 		m_ChestItemStackCounters[i].setOrigin(m_ChestItemStackCounters[i].getGlobalBounds().width / 2, m_ChestItemStackCounters[i].getGlobalBounds().height / 2);
 	}
 
+	// Row 6
+	for (int i = 50; i < 60; i++)
+	{
+		std::cout << "Create Chest Space" << std::endl;
+
+		sf::Sprite test = sf::Sprite();
+		test.setTexture(*_textureMaster->m_ItemSpacer, true);
+		test.setScale(sf::Vector2f(0.6, 0.6));
+		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
+
+		m_ChestSlots.emplace(i, test);
+
+		color = m_CraftingSlots[i].getColor();
+		color.a = 210.0f;
+		m_CraftingSlots[i].setColor(color);
+
+		sf::Text stackcounter = sf::Text();
+		stackcounter.setFont(m_Font);
+		stackcounter.setCharacterSize(18);
+		stackcounter.setFillColor(sf::Color::White);
+		stackcounter.setOutlineThickness(0.75f);
+		stackcounter.setOutlineColor(sf::Color::Black);
+		stackcounter.setString("");
+		_renderWindow->mapCoordsToPixel(stackcounter.getPosition());
+		m_ChestItemStackCounters.insert_or_assign(i, stackcounter);
+		m_ChestItemStackCounters[i].setOrigin(m_ChestItemStackCounters[i].getGlobalBounds().width / 2, m_ChestItemStackCounters[i].getGlobalBounds().height / 2);
+	}
+
 
 	std::cout << "Size of slots: " << m_CraftingSlots.size() << std::endl;
 }
@@ -4628,6 +4968,138 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _w
 
 		_renderWindow->setView(_uiView);
 	}
+}
+
+void GUI::UtilityUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests)
+{
+	_renderWindow->setView(_uiView);
+
+	sf::Vector2f MousePos = _renderWindow->mapPixelToCoords((sf::Mouse::getPosition(*_renderWindow)), _uiView);
+
+	if (m_FirstEmpyChestSlotTimer.getElapsedTime().asSeconds() >= 0.1f)
+	{
+		FindFirstEmptyChestSlot(_chests);
+		m_FirstEmpyChestSlotTimer.restart();
+	}
+
+	// Row 1
+	for (int i = 50; i < 60; i++)
+	{
+		_renderWindow->mapCoordsToPixel(m_InventorySlotMap[i].getPosition(), _uiView);
+		m_InventorySlotMap[i].setPosition(_renderWindow->getView().getCenter().x - (_renderWindow->getView().getSize().x / 2) + (60 * 31), _renderWindow->getView().getCenter().y - (_renderWindow->getView().getSize().y / 2) + 265 + ((i-50) * 65) + 65);
+
+		m_MousePointer.setPosition(MousePos);
+
+		//ClickedItemInInventory(_event, _player, i);
+		if (bPlayerIsMovingAnItem(_player))
+		{
+			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+			HoldItemInInventory(_player, _chests);
+		}
+		else
+		{
+			_renderWindow->mapCoordsToPixel(_player->m_InventoryMap[i].GetPosition(), _uiView);
+			_player->m_InventoryMap[i].SetPosition(m_InventorySlotMap[i].getPosition().x, m_InventorySlotMap[i].getPosition().y);
+			m_InventoryItemStackCounters[i].setPosition(m_InventorySlotMap[i].getPosition().x - 8, m_InventorySlotMap[i].getPosition().y + 18);
+		}
+		//std::cout << _player->m_InventoryMap[0].GetPosition().x << _player->m_InventoryMap[0].GetPosition().y << std::endl;
+
+
+		if (i == 50)
+		{
+			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacerHelmet, true);
+		}
+		else if (i == 51)
+		{
+			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacerChestPlate, true);
+		}
+		else if (i == 52)
+		{
+			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacerLeggings, true);
+		}
+		else
+		{
+			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacer, true);
+		}
+
+		if (_player->m_InventoryStackValues[i] <= 1)
+		{
+			m_InventoryItemStackCounters[i].setString("");
+		}
+		else
+		{
+			m_InventoryItemStackCounters[i].setString(std::to_string(_player->m_InventoryStackValues[i]));
+		}
+
+		
+	}
+}
+
+void GUI::InitUtilityUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
+{
+	// Row 1
+	for (int i = 50; i < 60; i++)
+	{
+		sf::Sprite test = sf::Sprite();
+
+		if (i == 50)
+		{
+			test.setTexture(*_textureMaster->m_EquipmentSpacerHelmet, true);
+		}
+		else if (i == 51)
+		{
+			test.setTexture(*_textureMaster->m_EquipmentSpacerChestPlate, true);
+		}
+		else if (i == 52)
+		{
+			test.setTexture(*_textureMaster->m_EquipmentSpacerLeggings, true);
+		}
+		else
+		{
+			test.setTexture(*_textureMaster->m_EquipmentSpacer, true);
+		}
+		
+		test.setScale(sf::Vector2f(0.6, 0.6));
+		test.setOrigin(test.getGlobalBounds().width / 2, test.getGlobalBounds().height / 2);
+		m_InventorySlotMap.emplace(i, test);
+		sf::Color color = m_InventorySlotMap[i].getColor();
+		color.a = 230.0f;
+		m_InventorySlotMap[i].setColor(color);
+
+		sf::Text stackcounter = sf::Text();
+		stackcounter.setFont(m_Font);
+		stackcounter.setCharacterSize(18);
+		stackcounter.setFillColor(sf::Color::White);
+		stackcounter.setOutlineThickness(0.75f);
+		stackcounter.setOutlineColor(sf::Color::Black);
+		stackcounter.setString("");
+		_renderWindow->mapCoordsToPixel(stackcounter.getPosition());
+		m_InventoryItemStackCounters.insert({ i, stackcounter });
+		m_InventoryItemStackCounters[i].setOrigin(m_InventoryItemStackCounters[i].getGlobalBounds().width / 2, m_InventoryItemStackCounters[i].getGlobalBounds().height / 2);
+
+		_player->m_InventoryStackValues.emplace(i, 0);
+	}
+
+	for (int i = 50; i < 60; i++)
+	{
+		std::cout << i << std::endl;
+		m_InventoryItemStackCounters[i];
+	}
+}
+
+void GUI::InitArmourOnPlayer(CPlayer* _player)
+{
+	_player->SetArmour(_player->GetArmour() + _player->m_InventoryMap[50].m_ArmourValue);
+	std::cout << "Armour : " << _player->GetArmour() << std::endl;
+	_player->m_HelmetShape.setTexture(_player->m_InventoryMap[50].m_ArmourHeadLeft, true);
+
+	_player->SetArmour(_player->GetArmour() + _player->m_InventoryMap[51].m_ArmourValue);
+	std::cout << "Armour : " << _player->GetArmour() << std::endl;
+	_player->m_ChesPlateShape.setTexture(_player->m_InventoryMap[51].m_ArmourChestLeft, true);
+
+	_player->SetArmour(_player->GetArmour() + _player->m_InventoryMap[52].m_ArmourValue);
+	std::cout << "Armour : " << _player->GetArmour() << std::endl;
+	_player->m_LegsShape.setTexture(_player->m_InventoryMap[52].m_ArmourLegsLeft, true);
 }
 
 std::string GUI::ToString(int32 integer)

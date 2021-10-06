@@ -43,6 +43,10 @@ public:
 	void ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests);
 	void InitChestUI(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
 	void Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView, std::list<CChest>& _chests, sf::Shader* _defaultShader = NULL);
+	
+	void UtilityUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests);
+	void InitUtilityUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster);
+	void InitArmourOnPlayer(CPlayer* _player);
 
 	std::string ToString(int32 integer);
 

@@ -16,6 +16,7 @@ public:
 	sf::Texture* m_Sky;
 	sf::Texture* m_SandBG;
 	sf::Texture* m_ItemSpacer;
+	sf::Texture* m_EquipmentSpacer;
 	sf::Texture* m_HeartFull;
 	sf::Texture* m_HeartEmpty;
 	sf::Texture* m_CIITexture;
@@ -75,5 +76,18 @@ public:
 	sf::Texture* m_UnderGroundHell;
 	sf::Texture* m_HellBG;
 	sf::Texture* m_TerrariaHellBG;
+
+	sf::Texture* m_CactusHead;
+	sf::Texture* m_CactusChestPlate;
+	sf::Texture* m_CactusLegs;
+
+	sf::Texture* m_IronHead;
+	sf::Texture* m_IronChestPlate;
+	sf::Texture* m_IronLegs;
+
+	sf::Texture* m_EquipmentSpacerHelmet;
+	sf::Texture* m_EquipmentSpacerChestPlate;
+	sf::Texture* m_EquipmentSpacerLeggings;
+
 };
 #endif
