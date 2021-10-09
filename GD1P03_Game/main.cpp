@@ -9,6 +9,13 @@
 
 // Local Includes
 #include "CDebugWindow.h"
+#include "CMainMenu.h"
+
+enum class GAMESTATE
+{
+	MENU,
+	GAME,
+};
 
 // Forward Declaration
 void Start();
@@ -29,6 +36,15 @@ static void GameOverScreen();
 
 void ChangeScene(bool* _changeScene, int* _sceneValue);
 void SceneMusic();
+
+void GameStateSpecificStart(GAMESTATE _state);
+void GameStateSpecificUpdate(GAMESTATE _state);
+void GameStateSpecificRender(GAMESTATE _state);
+
+void CreateRenderWindow(sf::Uint32 _style);
+
+// GameState
+GAMESTATE m_GameState = GAMESTATE::MENU;
 
 // Mouse
 sf::Vector2f MousePos;
@@ -52,6 +68,7 @@ sf::View m_UIView;
 
 // Pointers
 sf::RenderWindow* m_RenderWindow;
+CMainMenu* m_MainMenu;
 GUI* m_GUI;
 CTextureMaster* m_TextureMaster;
 CAudioManager* m_AudioManager;
@@ -114,9 +131,10 @@ int main()
 		sf::ContextSettings m_Settings;
 		m_Settings.antialiasingLevel = 2;
 
-		m_RenderWindow = new sf::RenderWindow(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetary", sf::Style::Default, m_Settings);
-		m_RenderWindow->setFramerateLimit(144);
-		m_RenderWindow->setKeyRepeatEnabled(false);
+		CreateRenderWindow(sf::Style::Titlebar + sf::Style::Close);
+
+		// Font
+		m_Font.loadFromFile("Fonts/ANDYB.TTF");
 
 		// Window Icon
 		sf::Image icon;
@@ -144,6 +162,8 @@ int main()
 	delete m_ShaderMiniMap;
 	delete m_SurfaceShader;
 	delete m_TourchShader;
+	delete m_MainMenu;
+	m_MainMenu = nullptr;
 	m_CoreShader = nullptr;
 	m_ShaderMiniMap = nullptr;
 	m_SurfaceShader = nullptr;
@@ -176,317 +196,20 @@ int main()
 /// </summary>
 void Start()
 {
-	InitShaders();
-	InitGameOver();
-
-	// Init Change Scene Variables
-	m_bChangeScenes = new bool;
-	m_SceneValue = new int;
-	*m_bChangeScenes = false;
-
-	// Textures
-	m_TextureMaster = new CTextureMaster();
-
-	// Main RenderWindow Event
-	m_Event = sf::Event();
-
-	// UI
-	m_GUI = new GUI();
-
-	// Music
-	m_AudioManager = new CAudioManager();
-
-	// Player
-	m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
-	m_Player->Start();
-
-	// Map
-	m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader, m_TourchShader);
-	m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners);
-
-	// Init UI
-	InitUI();
-
-	// Init World
-	InitWorldView();
-
-	// Center All Views To Player
-	CenterViewsToSprite(m_Player->GetShape());
-
-	// Already Has A Pickaxe Somehow?
-	m_GUI->InitHotBarScrolling(m_Player);
-	
-	// Init Nullptr
-	m_Door = nullptr;
-	m_Pickaxe = nullptr;
-	m_Block = nullptr;
-	m_bClose = false;
-
-	// Debug
-	m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue);
-	m_DebugWindow->Start();
-
-	m_GUI->InitArmourOnPlayer(m_Player);
+	GameStateSpecificStart(m_GameState);
 }
 
 /// <summary>
 /// 
 /// </summary>
 void Update()
-{ 
+{
 	while (m_RenderWindow->isOpen())
 	{
-		// Fps Float Update
-		m_CurrentTime = m_FpsClock.getElapsedTime();
-		m_Fps = 1.0f / (m_CurrentTime.asSeconds() - m_PreviousTime.asSeconds());
-		m_PreviousTime = m_CurrentTime;
-
-		// Get Mouse Pos Every Frame
-		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
-
-		// DebugWindow Update
-		if (m_DebugWindow != nullptr)
-		{
-			m_DebugWindow->Update();
-		}
-
-		//
-		// Polled Update
-		//
-		while (m_RenderWindow->pollEvent(m_Event))
-		{
-			// Regained Focus
-			if (m_Event.type == sf::Event::GainedFocus)
-			{
-				m_DebugInFocus = false;
-				break;
-			}
-
-			// Click Out Of Window
-			if (m_Event.type == sf::Event::LostFocus)
-			{
-				m_DebugInFocus = true;
-				if (m_Player != nullptr)
-				{
-					if (!m_Player->m_bInventoryOpen)
-					{
-						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
-					}
-				}
-				break;
-			}
-
-			// Exit
-			if (m_Event.type == sf::Event::Closed)
-			{
-				if (m_Player != nullptr)
-				{
-					m_Player->OutPutInventoryToFile();
-				}
-
-				m_DebugWindow->Close();
-				m_RenderWindow->close();
-				m_bClose = true;
-				break;
-			}
-
-			// Resize
-			if (m_Event.type == sf::Event::Resized)
-			{
-				break;
-			}
-
-			// General Key Pressed
-			if (m_Event.type == sf::Event::KeyPressed)
-			{
-				if (m_Player != nullptr)
-				{
-					m_Player->Movement(m_Event);
-
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
-					{
-						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
-					}
-
-					break;
-				}
-			}
-
-			// Mouse Wheel Scroll
-			if (m_Event.type == sf::Event::MouseWheelScrolled)
-			{
-				if (m_Player != nullptr)
-				{
-					m_GUI->HotBarScrolling(m_Event, m_Player);
-				}
-			}
-			
-			// Right On Press Mouse; m_Player == nullptr ? NA
-			if (m_Player != nullptr)
-			{
-				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
-				{
-					m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
-				}
-			}
-
-			// General On Press Mouse
-			if (m_Event.type == sf::Event::MouseButtonPressed)
-			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-				{
-					if (m_GUI != nullptr && m_Spawners.size() > 0)
-					{
-						for (std::list<Spawner>::iterator spit = m_Spawners.begin(); spit != m_Spawners.end(); spit++)
-						{
-							if (spit->m_Shape.getGlobalBounds().contains(MousePos))
-							{
-								spit->ToggleSpawning();
-								break;
-							}
-						}
-					}
-				}
-
-				m_GUI->ClickedItemInInventory(m_Event, m_Player, *m_WorldManager->m_Chests);
-			}
-			// Mouse Released ? GUI->LetGoOfInventoryItem
-			else if (m_Player != nullptr && m_Event.type == sf::Event::MouseButtonReleased)
-			{
-				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
-			}
-		}
-
-		//
-		// UnPolled Update
-		//
-		if (!m_bClose)
-		{
-			// Spawner Updates
-			for (Spawner& spawner : m_Spawners)
-			{
-				spawner.Update();
-			}
-
-			// Variable Scene Music
-			SceneMusic();
-
-			// Player, World Manager and GUI Exists
-			if (m_Player != nullptr && m_WorldManager != nullptr && m_GUI != nullptr)
-			{
-				// Centre View To Player
-				CenterViewsToSprite(m_Player->GetShape());
-
-				if (m_AudioManager != nullptr)
-				{
-					if (m_Player->GetShape().getPosition().y >= 1000 && m_Player->GetShape().getPosition().y < 1200)
-					{
-						m_AudioManager->m_MusicLevel = 4;
-					}
-					else if (m_Player->GetShape().getPosition().y >= 1200 && m_Player->GetShape().getPosition().y < 1400)
-					{
-						m_AudioManager->m_MusicLevel = 3;
-					}
-					else if (m_Player->GetShape().getPosition().y >= 1400 && m_Player->GetShape().getPosition().y < 1600)
-					{
-						m_AudioManager->m_MusicLevel = 2;
-					}
-					else if (m_Player->GetShape().getPosition().y >= 1600)
-					{
-						m_AudioManager->m_MusicLevel = 1;
-					}
-					else
-					{
-						m_AudioManager->m_MusicLevel = 5;
-					}
-				}
-
-				// Player Update And Movement
-				m_Player->Interact(*m_WorldManager->m_Furnaces, *m_WorldManager->m_Chests, *m_WorldManager->m_Doors, *m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, *m_WorldManager->m_WorkBenches, *m_WorldManager->m_Tourches);
-				m_Player->Update(MousePos);
-				m_Player->Movement();
-
-				// Player Dies
-				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
-				{
-					m_AudioManager->PlayPlayerDeath();
-
-					// Drop Chest
-					if (true)
-					{
-						m_Chest = new CChest(m_RenderWindow, m_World, Utils::m_Scale, m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
-
-						m_Chest->m_Inventory = m_Player->m_InventoryMap;
-						m_Chest->m_InventoryStackValues = m_Player->m_InventoryStackValues;
-						m_WorldManager->m_Chests->push_back(*m_Chest);
-						m_Chest = nullptr;
-					}
-
-					// Clears The saved Inventory
-					m_Player->m_InventoryMap.clear();
-					m_Player->m_InventoryStackValues.clear();
-					m_Player->OutPutInventoryToFile();
-
-					delete m_Player;
-					m_Player = nullptr;
-
-					m_WorldManager->InitPointer(m_Player);
-					m_DebugWindow->SetPlayer(m_Player);
-					for (Spawner& spawner : m_Spawners)
-					{
-						spawner.LoosePlayer();
-					}
-
-					m_FadeScreen.setPosition(m_WorldView.getCenter());
-					m_GameOverText.setPosition(m_WorldView.getCenter());
-					m_FadeTimer.restart();
-					m_DeathTimer.restart();
-				}
-			}
-
-			// Players Dead
-			else if (m_Player == nullptr)
-			{
-				GameOverScreen();
-
-				if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime)
-				{
-					// Player
-					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
-					m_Player->Start();
-
-					m_WorldManager->InitPointer(m_Player);
-					m_DebugWindow->SetPlayer(m_Player);
-
-					// Already Has A Pickaxe Selected
-					m_GUI->InitHotBarScrolling(m_Player);
-
-					for (Spawner& spawner : m_Spawners)
-					{
-						spawner.SetPlayer(m_Player);
-					}
-				}
-			}
-
-			if (m_WorldManager != nullptr)
-			{
-				// MousePosBox Position
-				m_WorldManager->Update(MousePos, m_TextureMaster);
-
-				// World Step
-				m_World.Step(1 / 60.0f, 30.0f, 30.0f);
-			}
-
-			//
-			// Main Render
-			//
-			Render();
-
-			// Portal To Next Scene?
-			ChangeScene(m_bChangeScenes, m_SceneValue);
-		}
+		GameStateSpecificUpdate(m_GameState);
 	}
 }
+	
 
 /// <summary>
 /// 
@@ -496,73 +219,10 @@ void Render()
 	m_RenderWindow->clear();
 	/////////////////////////////////////
 
-	// Debug Window
-	m_DebugWindow->Render();
-
-	// Mag Variables For Culling
-	float Mag1 = 0;
-	float x = 0;
-	float y = 0;
-
-	// Sky	
-	m_RenderWindow->setView(m_WorldView);
-
-	// WorldManager
-	if (m_WorldManager != nullptr)
-	{
-		m_WorldManager->CreateSkyChunk(m_TextureMaster);
-		m_WorldManager->Render();
-	}
-
-	// Spawners
-	if (m_Spawners.size() > 0 && m_WorldManager != nullptr)
-	{
-		for (Spawner& spawner : m_Spawners)
-		{
-			for (Slime& slime : spawner.m_Slimes)
-			{
-				x = slime.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
-				y = slime.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
-				Mag1 = sqrt((x * x) + (y * y));
-
-				if (Mag1 < 1920 * 1.8)
-				{
-					spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
-				}
-			}
-		}
-	}
-
-	// Player & UI (UI Depends On Player)
-	if (m_Player != nullptr && m_WorldManager != nullptr)
-	{
-		m_Player->Render();
-
-		// UI
-		// Set View To UI
-		m_RenderWindow->setView(m_UIView);
-		/////////////////////////////////////
-
-		m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
-		m_GUI->MiniMapUI(m_RenderWindow, *m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, m_SurfaceShader);
-		m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
-		m_GUI->UtilityUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
-		m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
-		m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
-		m_GUI->StatusEffectUI(m_RenderWindow, m_Player);
-		m_GUI->FPSUI(m_RenderWindow, m_Fps);
-		m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, *m_WorldManager->m_Chests);
-	}
-
-	// "You Died"
-	m_RenderWindow->draw(m_FadeScreen);
-	m_RenderWindow->draw(m_GameOverText);
+	GameStateSpecificRender(m_GameState);
 
 	/////////////////////////////////////
 	m_RenderWindow->display();
-
-	// Reset View To World
-	m_RenderWindow->setView(m_WorldView);
 }
 
 /// <summary>
@@ -739,7 +399,6 @@ void InitGameOver()
 	m_FadeScreen.setOrigin(sf::Vector2f(15000, 15000));
 	m_FadeScreen.setFillColor(sf::Color::Transparent);
 
-	m_Font.loadFromFile("Fonts/ANDYB.TTF");
 	m_GameOverText.setCharacterSize(400);
 	m_GameOverText.setString("You Died");
 	m_GameOverText.setFont(m_Font);
@@ -814,7 +473,511 @@ void SceneMusic()
 	}
 }
 
+void GameStateSpecificStart(GAMESTATE _state) 
+{
 
+	switch (_state)
+	{
+	case GAMESTATE::MENU:
+	{
+		if (m_MainMenu != nullptr)
+		{
+			delete m_MainMenu;
+			m_MainMenu = nullptr;
+		}
+
+		if (m_AudioManager != nullptr)
+		{
+			delete m_AudioManager;
+			m_AudioManager = nullptr;
+		}
+
+		if (m_bChangeScenes != nullptr)
+		{
+			delete m_bChangeScenes;
+			m_bChangeScenes = nullptr;
+		}
+
+		if (m_SceneValue != nullptr)
+		{
+			delete m_SceneValue;
+			m_SceneValue = nullptr;
+		}
+
+		// Init Change Scene Variables
+		m_bChangeScenes = new bool;
+		m_SceneValue = new int;
+		*m_bChangeScenes = false;
+
+		// Music
+		m_AudioManager = new CAudioManager();
+
+		m_MainMenu = new CMainMenu(m_RenderWindow, m_Font);
+
+		SceneMusic();
+
+		break;
+	}
+	case GAMESTATE::GAME:
+	{
+		InitShaders();
+		InitGameOver();
+
+		// Textures
+		m_TextureMaster = new CTextureMaster();
+
+		// Main RenderWindow Event
+		m_Event = sf::Event();
+
+		// UI
+		m_GUI = new GUI();
+
+		// Player
+		m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
+		m_Player->Start();
+
+		// Map
+		m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader, m_TourchShader);
+		m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners);
+
+		// Init UI
+		InitUI();
+
+		// Init World
+		InitWorldView();
+
+		// Center All Views To Player
+		CenterViewsToSprite(m_Player->GetShape());
+
+		// Already Has A Pickaxe Somehow?
+		m_GUI->InitHotBarScrolling(m_Player);
+
+		// Init Nullptr
+		m_Door = nullptr;
+		m_Pickaxe = nullptr;
+		m_Block = nullptr;
+		m_bClose = false;
+
+		// Debug
+		m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue);
+		m_DebugWindow->Start();
+
+		m_GUI->InitArmourOnPlayer(m_Player);
+
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void GameStateSpecificUpdate(GAMESTATE _state)
+{
+	switch (_state)
+	{
+	case GAMESTATE::MENU:
+	{
+		sf::Vector2f m_MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
+
+		// Polled Update
+		while (m_RenderWindow->pollEvent(m_Event))
+		{
+			// Exit
+			if (m_Event.type == sf::Event::Closed)
+			{
+				m_RenderWindow->close();
+				break;
+			}
+
+			// General On Press Mouse
+			if (m_Event.type == sf::Event::MouseButtonPressed)
+			{
+				if (m_MainMenu->m_Play->bIsinBounds(m_MousePos))
+				{
+					m_GameState = GAMESTATE::GAME;
+					GameStateSpecificStart(GAMESTATE::GAME);
+					CreateRenderWindow(sf::Style::Default);
+				}
+				else if (m_MainMenu->m_Options->bIsinBounds(m_MousePos))
+				{
+
+				}
+				else if (m_MainMenu->m_Exit->bIsinBounds(m_MousePos))
+				{
+					m_RenderWindow->close();
+				}
+
+				break;
+			}
+		}
+
+		m_MainMenu->Update(m_Event);
+		
+		// Variable Scene Music
+		SceneMusic();
+
+		break;
+	}
+	case GAMESTATE::GAME:
+	{
+		// Fps Float Update
+		m_CurrentTime = m_FpsClock.getElapsedTime();
+		m_Fps = 1.0f / (m_CurrentTime.asSeconds() - m_PreviousTime.asSeconds());
+		m_PreviousTime = m_CurrentTime;
+
+		// Get Mouse Pos Every Frame
+		MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)), m_WorldView);
+
+		// DebugWindow Update
+		if (m_DebugWindow != nullptr)
+		{
+			m_DebugWindow->Update();
+		}
+
+		//
+		// Polled Update
+		//
+		while (m_RenderWindow->pollEvent(m_Event))
+		{
+			// Regained Focus
+			if (m_Event.type == sf::Event::GainedFocus)
+			{
+				m_DebugInFocus = false;
+				break;
+			}
+
+			// Click Out Of Window
+			if (m_Event.type == sf::Event::LostFocus)
+			{
+				m_DebugInFocus = true;
+				if (m_Player != nullptr)
+				{
+					if (!m_Player->m_bInventoryOpen)
+					{
+						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
+					}
+				}
+				break;
+			}
+
+			// Exit
+			if (m_Event.type == sf::Event::Closed)
+			{
+				if (m_Player != nullptr)
+				{
+					m_Player->OutPutInventoryToFile();
+				}
+
+				m_DebugWindow->Close();
+				m_RenderWindow->close();
+				m_bClose = true;
+				break;
+			}
+
+			// Resize
+			if (m_Event.type == sf::Event::Resized)
+			{
+				break;
+			}
+
+			// General Key Pressed
+			if (m_Event.type == sf::Event::KeyPressed)
+			{
+				if (m_Player != nullptr)
+				{
+					m_Player->Movement(m_Event);
+
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
+					{
+						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
+					}
+
+					break;
+				}
+			}
+
+			// Mouse Wheel Scroll
+			if (m_Event.type == sf::Event::MouseWheelScrolled)
+			{
+				if (m_Player != nullptr)
+				{
+					m_GUI->HotBarScrolling(m_Event, m_Player);
+				}
+			}
+
+			// Right On Press Mouse; m_Player == nullptr ? NA
+			if (m_Player != nullptr)
+			{
+				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
+				{
+					m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
+				}
+			}
+
+			// General On Press Mouse
+			if (m_Event.type == sf::Event::MouseButtonPressed)
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+				{
+					if (m_GUI != nullptr && m_Spawners.size() > 0)
+					{
+						for (std::list<Spawner>::iterator spit = m_Spawners.begin(); spit != m_Spawners.end(); spit++)
+						{
+							if (spit->m_Shape.getGlobalBounds().contains(MousePos))
+							{
+								spit->ToggleSpawning();
+								break;
+							}
+						}
+					}
+				}
+
+				m_GUI->ClickedItemInInventory(m_Event, m_Player, *m_WorldManager->m_Chests);
+			}
+			// Mouse Released ? GUI->LetGoOfInventoryItem
+			else if (m_Player != nullptr && m_Event.type == sf::Event::MouseButtonReleased)
+			{
+				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
+			}
+		}
+
+		//
+		// UnPolled Update
+		//
+		if (!m_bClose)
+		{
+			// Spawner Updates
+			for (Spawner& spawner : m_Spawners)
+			{
+				spawner.Update();
+			}
+
+			// Variable Scene Music
+			SceneMusic();
+
+			// Player, World Manager and GUI Exists
+			if (m_Player != nullptr && m_WorldManager != nullptr && m_GUI != nullptr)
+			{
+				// Centre View To Player
+				CenterViewsToSprite(m_Player->GetShape());
+
+				if (m_AudioManager != nullptr)
+				{
+					if (m_Player->GetShape().getPosition().y >= 1000 && m_Player->GetShape().getPosition().y < 1200)
+					{
+						m_AudioManager->m_MusicLevel = 4;
+					}
+					else if (m_Player->GetShape().getPosition().y >= 1200 && m_Player->GetShape().getPosition().y < 1400)
+					{
+						m_AudioManager->m_MusicLevel = 3;
+					}
+					else if (m_Player->GetShape().getPosition().y >= 1400 && m_Player->GetShape().getPosition().y < 1600)
+					{
+						m_AudioManager->m_MusicLevel = 2;
+					}
+					else if (m_Player->GetShape().getPosition().y >= 1600)
+					{
+						m_AudioManager->m_MusicLevel = 1;
+					}
+					else
+					{
+						m_AudioManager->m_MusicLevel = 5;
+					}
+				}
+
+				// Player Update And Movement
+				m_Player->Interact(*m_WorldManager->m_Furnaces, *m_WorldManager->m_Chests, *m_WorldManager->m_Doors, *m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, *m_WorldManager->m_WorkBenches, *m_WorldManager->m_Tourches);
+				m_Player->Update(MousePos);
+				m_Player->Movement();
+
+				// Player Dies
+				if (m_Player->GetCurrentHP() <= 0.0f && m_Player != nullptr)
+				{
+					m_AudioManager->PlayPlayerDeath();
+
+					// Drop Chest
+					if (true)
+					{
+						m_Chest = new CChest(m_RenderWindow, m_World, Utils::m_Scale, m_Player->GetShape().getPosition().x, m_Player->GetShape().getPosition().y);
+
+						m_Chest->m_Inventory = m_Player->m_InventoryMap;
+						m_Chest->m_InventoryStackValues = m_Player->m_InventoryStackValues;
+						m_WorldManager->m_Chests->push_back(*m_Chest);
+						m_Chest = nullptr;
+					}
+
+					// Clears The saved Inventory
+					m_Player->m_InventoryMap.clear();
+					m_Player->m_InventoryStackValues.clear();
+					m_Player->OutPutInventoryToFile();
+
+					delete m_Player;
+					m_Player = nullptr;
+
+					m_WorldManager->InitPointer(m_Player);
+					m_DebugWindow->SetPlayer(m_Player);
+					for (Spawner& spawner : m_Spawners)
+					{
+						spawner.LoosePlayer();
+					}
+
+					m_FadeScreen.setPosition(m_WorldView.getCenter());
+					m_GameOverText.setPosition(m_WorldView.getCenter());
+					m_FadeTimer.restart();
+					m_DeathTimer.restart();
+				}
+			}
+
+			// Players Dead
+			else if (m_Player == nullptr)
+			{
+				GameOverScreen();
+
+				if (m_DeathTimer.getElapsedTime().asSeconds() >= m_PlayerRespawnTime)
+				{
+					// Player
+					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
+					m_Player->Start();
+
+					m_WorldManager->InitPointer(m_Player);
+					m_DebugWindow->SetPlayer(m_Player);
+
+					// Already Has A Pickaxe Selected
+					m_GUI->InitHotBarScrolling(m_Player);
+
+					for (Spawner& spawner : m_Spawners)
+					{
+						spawner.SetPlayer(m_Player);
+					}
+				}
+			}
+
+			if (m_WorldManager != nullptr)
+			{
+				// MousePosBox Position
+				m_WorldManager->Update(MousePos, m_TextureMaster);
+
+				// World Step
+				m_World.Step(1 / 60.0f, 30.0f, 30.0f);
+			}
+
+
+			m_MainMenu->Update(m_Event);
+
+			// Portal To Next Scene?
+			ChangeScene(m_bChangeScenes, m_SceneValue);
+		}
+
+		break;
+	}
+	default:
+		break;
+	}
+
+	//
+	// Main Render
+	//
+	Render();
+}
+
+void GameStateSpecificRender(GAMESTATE _state)
+{
+	switch (_state)
+	{
+	case GAMESTATE::MENU:
+	{
+		m_RenderWindow->draw(*m_MainMenu);
+		break;
+	}
+	case GAMESTATE::GAME:
+	{
+		// Debug Window
+		m_DebugWindow->Render();
+
+		// Mag Variables For Culling
+		float Mag1 = 0;
+		float x = 0;
+		float y = 0;
+
+		// Sky	
+		m_RenderWindow->setView(m_WorldView);
+
+		// WorldManager
+		if (m_WorldManager != nullptr)
+		{
+			m_WorldManager->CreateSkyChunk(m_TextureMaster);
+			m_WorldManager->Render();
+		}
+
+		// Spawners
+		if (m_Spawners.size() > 0 && m_WorldManager != nullptr)
+		{
+			for (Spawner& spawner : m_Spawners)
+			{
+				for (Slime& slime : spawner.m_Slimes)
+				{
+					x = slime.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = slime.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.8)
+					{
+						spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
+					}
+				}
+			}
+		}
+
+		// Player & UI (UI Depends On Player)
+		if (m_Player != nullptr && m_WorldManager != nullptr)
+		{
+			m_Player->Render();
+
+			// UI
+			// Set View To UI
+			m_RenderWindow->setView(m_UIView);
+			/////////////////////////////////////
+
+			m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
+			m_GUI->MiniMapUI(m_RenderWindow, *m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, m_SurfaceShader);
+			m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
+			m_GUI->UtilityUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
+			m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
+			m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
+			m_GUI->StatusEffectUI(m_RenderWindow, m_Player);
+			m_GUI->FPSUI(m_RenderWindow, m_Fps);
+			m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, *m_WorldManager->m_Chests);
+		}
+
+		// "You Died"
+		m_RenderWindow->draw(m_FadeScreen);
+		m_RenderWindow->draw(m_GameOverText);
+
+		// Reset View To World
+		m_RenderWindow->setView(m_WorldView);
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CreateRenderWindow(sf::Uint32 _style)
+{
+	// Recreate RenderWindow With Resize Available
+	// Render Window Settings
+	sf::ContextSettings m_Settings;
+	m_Settings.antialiasingLevel = 2;
+
+	if (m_RenderWindow == nullptr)
+	{
+		m_RenderWindow = new sf::RenderWindow();
+	}
+
+	m_RenderWindow->create(sf::VideoMode(Utils::WINDOWWIDTH, Utils::WINDOWHEIGHT), "Planetary", _style, m_Settings);
+	m_RenderWindow->setFramerateLimit(144);
+	m_RenderWindow->setKeyRepeatEnabled(false);
+}
 
 
 

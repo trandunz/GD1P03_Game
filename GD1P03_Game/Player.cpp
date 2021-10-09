@@ -394,18 +394,18 @@ void CPlayer::Movement()
 		}
 		if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
 		{
-			if (m_Shape.getTextureRect().left < 1500)
+			if (m_Shape.getTextureRect().left < 1200)
 			{
 				m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
 				m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
 				m_LegsShape.setTextureRect(sf::IntRect(m_LegsShape.getTextureRect().left + 100, m_LegsShape.getTextureRect().top, m_LegsShape.getTextureRect().width, m_LegsShape.getTextureRect().height));
 				m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
 			}
-			else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
+			else if (m_Shape.getTextureRect() == sf::IntRect(1200, 0, 100, 200))
 			{
 				m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
 				m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
-				m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+				m_LegsShape.setTextureRect(sf::IntRect(0, 0, 100, 190));
 				m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
 			}
 			m_AnimationTimer->restart();
@@ -424,7 +424,7 @@ void CPlayer::Movement()
 		}
 		if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
 		{
-			if (m_Shape.getTextureRect().left < 1500)
+			if (m_Shape.getTextureRect().left < 1200)
 			{
 				m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
 				m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
@@ -432,11 +432,11 @@ void CPlayer::Movement()
 				m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
 			}
 
-			else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
+			else if (m_Shape.getTextureRect() == sf::IntRect(1200, 0, 100, 200))
 			{
 				m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
 				m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
-				m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+				m_LegsShape.setTextureRect(sf::IntRect(0, 0, 100, 190));
 				m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
 			}
 			m_AnimationTimer->restart();
@@ -463,18 +463,18 @@ void CPlayer::Movement()
 			}
 			if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
 			{
-				if (m_Shape.getTextureRect().left < 1500)
+				if (m_Shape.getTextureRect().left < 1200)
 				{
 					m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
 					m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
 					m_LegsShape.setTextureRect(sf::IntRect(m_LegsShape.getTextureRect().left + 100, m_LegsShape.getTextureRect().top, m_LegsShape.getTextureRect().width, m_LegsShape.getTextureRect().height));
 					m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
 				}
-				else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
+				else if (m_Shape.getTextureRect() == sf::IntRect(1200, 0, 100, 200))
 				{
 					m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
 					m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
-					m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+					m_LegsShape.setTextureRect(sf::IntRect(0, 0, 100, 190));
 					m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
 				}
 				m_AnimationTimer->restart();
@@ -498,7 +498,7 @@ void CPlayer::Movement()
 			}
 			if (m_AnimationTimer->getElapsedTime() >= sf::Time(sf::seconds(0.03f)))
 			{
-				if (m_Shape.getTextureRect().left < 1500)
+				if (m_Shape.getTextureRect().left < 1200)
 				{
 					m_HelmetShape.setTextureRect(sf::IntRect(m_HelmetShape.getTextureRect().left + 100, m_HelmetShape.getTextureRect().top, m_HelmetShape.getTextureRect().width, m_HelmetShape.getTextureRect().height));
 					m_ChesPlateShape.setTextureRect(sf::IntRect(m_ChesPlateShape.getTextureRect().left + 120, m_ChesPlateShape.getTextureRect().top, m_ChesPlateShape.getTextureRect().width, m_ChesPlateShape.getTextureRect().height));
@@ -506,11 +506,11 @@ void CPlayer::Movement()
 					m_Shape.setTextureRect(sf::IntRect(m_Shape.getTextureRect().left + 100, m_Shape.getTextureRect().top, m_Shape.getTextureRect().width, m_Shape.getTextureRect().height));
 				}
 
-				else if (m_Shape.getTextureRect() == sf::IntRect(1500, 0, 100, 200))
+				else if (m_Shape.getTextureRect() == sf::IntRect(1200, 0, 100, 200))
 				{
 					m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
 					m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
-					m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+					m_LegsShape.setTextureRect(sf::IntRect(0, 0, 100, 190));
 					m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
 				}
 				m_AnimationTimer->restart();
@@ -521,7 +521,7 @@ void CPlayer::Movement()
 		{
 			m_HelmetShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
 			m_ChesPlateShape.setTextureRect(sf::IntRect(120, 0, 120, 190));
-			m_LegsShape.setTextureRect(sf::IntRect(100, 0, 100, 190));
+			m_LegsShape.setTextureRect(sf::IntRect(0, 0, 100, 190));
 			m_Shape.setTextureRect(sf::IntRect(000, 0, 100, 200));
 		}
 	}
@@ -1109,7 +1109,7 @@ void CPlayer::TakeDamage(float _damage)
 
 		std::cout << "Player Took Damage!" << std::endl;
 		std::cout << "Armour : " << m_Armour << std::endl;
-		m_Health -= (_damage - m_Armour);
+		m_Health -= (_damage / (1 + m_Armour / 6));
 		if (m_Health > m_MaxHP)
 		{
 			m_Health = m_MaxHP;
@@ -1959,7 +1959,160 @@ void CPlayer::CalculateAndAddPotionTypes(int _array[60], int _iterator)
 	}
 }
 
-void CPlayer::GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60])
+void CPlayer::CalculateAndAddHelmetTypes(int _array[60], int _iterator)
+{
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::CACTUS);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 1:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::IRON);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 2:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::GOLD);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 3:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::DIAMOND);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 4:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::PURPLE);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 5:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::GOLDEN);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::CalculateAndAddChestPlateTypes(int _array[60], int _iterator)
+{
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::CACTUS);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 1:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::IRON);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 2:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::GOLD);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 3:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::DIAMOND);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 4:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::PURPLE);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 5:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::GOLDEN);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::CalculateAndAddLeggingsTypes(int _array[60], int _iterator)
+{
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::CACTUS);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 1:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::IRON);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 2:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::GOLD);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 3:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::DIAMOND);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 4:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::PURPLE);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	case 5:
+	{
+		CArmour* armour = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::GOLDEN);
+		AddItemToInventory(armour, _iterator, false);
+		armour = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60])
 {
 	// Main Types
 	std::ifstream xoutputs("Output/output_inventory_types.txt");
@@ -2034,6 +2187,17 @@ void CPlayer::GrabAllSavedValues(int types[60], int stackvalues[60], int bowtype
 		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> potiontypes[i];
+		}
+		xoutputs.close();
+	}
+
+	// ArmourTypes
+	xoutputs.open("Output/output_inventory_armourtypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 60; i++)
+		{
+			xoutputs >> armourtypes[i];
 		}
 		xoutputs.close();
 	}
@@ -2193,6 +2357,17 @@ void CPlayer::OutPutInventoryToFile()
 	}
 
 	out_file.close();
+
+	//
+	// output_inventory_types
+	out_file.open("Output/output_inventory_armourtypes.txt");
+	out_file.clear();
+	for (int i = 0; i < m_InventoryMap.size(); i++)
+	{
+		out_file << (int)m_InventoryMap[i].m_ArmourType << std::endl;
+	}
+
+	out_file.close();
 }
 
 void CPlayer::SetArmour(int _value)
@@ -2217,8 +2392,9 @@ void CPlayer::InputInventoryToFile()
 	int picktypes[60] = {};
 	int projtypes[60] = {};
 	int potiontypes[60] = {};
+	int armourtypes[60] = {};
 
-	GrabAllSavedValues(types, stackvalues, bowtypes, swordtypes, picktypes, projtypes, potiontypes);
+	GrabAllSavedValues(types, stackvalues, bowtypes, swordtypes, picktypes, projtypes, potiontypes, armourtypes);
 
 	for (int i = 0; i < 60; i++)
 	{
@@ -2707,9 +2883,7 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_CactusHead, CBlock::BLOCKTYPE::HELMET);
-					AddItemToInventory(m_Block, i, true);
-					m_Block = nullptr;
+					CalculateAndAddHelmetTypes(armourtypes, i);
 				}
 
 				break;
@@ -2718,9 +2892,7 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_CactusChestPlate, CBlock::BLOCKTYPE::CHESTPLATE);
-					AddItemToInventory(m_Block, i, true);
-					m_Block = nullptr;
+					CalculateAndAddChestPlateTypes(armourtypes, i);
 				}
 
 				break;
@@ -2729,9 +2901,7 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_CactusLegs, CBlock::BLOCKTYPE::LEGGINGS);
-					AddItemToInventory(m_Block, i, true);
-					m_Block = nullptr;
+					CalculateAndAddLeggingsTypes(armourtypes, i);
 				}
 
 				break;

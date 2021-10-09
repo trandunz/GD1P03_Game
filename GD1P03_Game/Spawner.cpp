@@ -350,7 +350,7 @@ void Spawner::Update()
 						}
 
 						// Drop Yellow PortalKey
-						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyBlue, CBlock::BLOCKTYPE::PORTALKEYBLUE);
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
 
@@ -384,7 +384,7 @@ void Spawner::Update()
 						}
 
 						// Drop Yellow PortalKey
-						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyRed, CBlock::BLOCKTYPE::PORTALKEYRED);
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
@@ -415,7 +415,7 @@ void Spawner::Update()
 						}
 
 						// Drop Yellow PortalKey
-						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyBlue, CBlock::BLOCKTYPE::PORTALKEYBLUE);
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
@@ -446,7 +446,7 @@ void Spawner::Update()
 						}
 
 						// Drop Yellow PortalKey
-						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::PORTALKEYPLAINS);
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
 						m_SpawnFrequency = 120.0f;

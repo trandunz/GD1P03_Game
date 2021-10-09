@@ -94,6 +94,8 @@ public:
 	void CreateIceBackgrounds(CTextureMaster* _textureMaster);
 	void CreateHellBackgrounds(CTextureMaster* _textureMaster);
 
+	void ParralaxBackground();
+
 	// Variables
 	std::list<CBlock>* m_Chunk;
 	std::list<CChest>* m_Chests;
@@ -136,6 +138,8 @@ private:
 
 	sf::Clock m_LoadTimer;
 	bool m_bIsLoading = true;
+
+	sf::Clock m_ParralaxClock;
 
 	// Noise
 	double m_Noise[_NOISEHEIGHT_][_NOISEWIDTH_] = {}; // Noise Array (0-1)

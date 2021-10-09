@@ -122,6 +122,9 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     // Set Mouse / Block Indicator To Rounded Sky Position
     m_GUI->m_MousePos.setPosition(m_SkyChunk.front().getPosition());
 
+    // Parralax Background
+    ParralaxBackground();
+
     // Update All Blocks In Range Of Player && Set Mouse Pos To Blocks
     float Mag1 = 0;
     float x = 0;
@@ -464,6 +467,14 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
 {
     m_GlobalMutex.lock();
     GenerateNoise();
+
+    // Spawners
+    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 10, -400, m_Player, CEnemy::ENEMYTYPE::NPC, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
     for (int y = 0; y < m_GenerateOffsetY; y++)
     {
         for (int x =  -m_GenerateOffsetX; x <  +m_GenerateOffsetX - 70; x++)
@@ -576,6 +587,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                         }
                     }
                 }
+                // Goround Level
                 else if (y == 0)
                 {
                     // Trees
@@ -2233,7 +2245,7 @@ void CWorldManager::WorldBackGroundColourGradient()
     if (m_Player != nullptr)
     {
         // Positioning Planes Surface
-        m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
+        //m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
         m_BGSandSurface.setPosition(m_RenderWindow->getView().getCenter());
 
         // Colour
@@ -2775,8 +2787,10 @@ void CWorldManager::CreatePlainsBackgrounds(CTextureMaster* _textureMaster)
     m_BGPlainsSurface = sf::Sprite();
     m_BGPlainsSurface.setTexture(*_textureMaster->m_Sky, true);
     m_BGPlainsSurface.setOrigin(m_BGPlainsSurface.getGlobalBounds().width / 2, m_BGPlainsSurface.getGlobalBounds().height / 2);
-    m_BGPlainsSurface.setScale(4.7, 4.7);
+    m_BGPlainsSurface.setScale(3.7f, 3.7f);
     m_BGPlainsSurface.setColor(sf::Color::White);
+    m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
+    m_BGPlainsSurface.setTextureRect(sf::IntRect(0, 0, m_BGPlainsSurface.getTexture()->getSize().x * 1000, m_BGPlainsSurface.getTexture()->getSize().y));
 
     // World BackGround (Under Ground)
     m_BGPlainsUnderGr = sf::Sprite();
@@ -2886,4 +2900,23 @@ double CWorldManager::Turbulence(double _x, double _y, double _size)
 
     // Return Noise Value
     return(128.0 * value / initialSize);
+}
+
+void CWorldManager::ParralaxBackground()
+{
+    /*if (m_ParralaxClock.getElapsedTime().asSeconds() >= 0.03f)
+    {
+        if (m_BGPlainsSurface.getPosition().x <= m_BGPlainsSurface.getTextureRect().width / 2)
+        {
+            m_BGPlainsSurface.setPosition(m_BGPlainsSurface.getPosition().x - 2, m_BGPlainsSurface.getPosition().y);
+        }
+        else
+        {
+            m_BGPlainsSurface.setPosition(m_BGPlainsSurface.getPosition().x + m_BGPlainsSurface.getTextureRect().width, m_BGPlainsSurface.getPosition().y);
+        }
+        
+        m_ParralaxClock.restart();
+    }*/
+
+    m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
 }

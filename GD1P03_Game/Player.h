@@ -30,6 +30,7 @@
 #include "CParticleSystem.h"
 #include "CPotion.h"
 #include "CWorkBench.h"
+#include "CArmour.h"
 
 class CPlayer
 {
@@ -155,8 +156,11 @@ private:
 	void CalculateAndAddBowtypes(int _array[60], int _iterator);
 	void CalculateAndAddProjectileTypes(int _array[60], int _iterator);
 	void CalculateAndAddPotionTypes(int _array[60], int _iterator);
+	void CalculateAndAddHelmetTypes(int _array[60], int _iterator);
+	void CalculateAndAddChestPlateTypes(int _array[60], int _iterator);
+	void CalculateAndAddLeggingsTypes(int _array[60], int _iterator);
 
-	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60]);
+	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60]);
 
 
 	// Essentials

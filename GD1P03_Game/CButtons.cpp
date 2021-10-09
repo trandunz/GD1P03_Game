@@ -180,6 +180,7 @@ void CButtons::SetLabel(std::string _newLabel)
 
 	// Set Origin
 	m_tLabel.setOrigin(sf::Vector2f(m_tLabel.getGlobalBounds().width / 2, m_tLabel.getGlobalBounds().height / 2));
+	Sprite.setOrigin(sf::Vector2f(Sprite.getGlobalBounds().width / 2, Sprite.getGlobalBounds().height / 2));
 }
 
 void CButtons::SetLabel(std::string _newLabel, float _fontSize)

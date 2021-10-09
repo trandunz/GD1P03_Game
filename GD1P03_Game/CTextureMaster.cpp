@@ -11,6 +11,7 @@ CTextureMaster::CTextureMaster()
 	m_MousePosTex->loadFromFile("Images/MousePos.png"); // Mouse Pos Indicator
 	m_Sky = new sf::Texture();
 	m_Sky->loadFromFile("Images/TerrariaBG.jpg"); // Sky Blue
+	m_Sky->setRepeated(true);
 	m_Sky->setSmooth(true);
 	m_ItemSpacer = new sf::Texture();
 	m_ItemSpacer->loadFromFile("Images/ItemSpacer.png");
@@ -163,11 +164,11 @@ CTextureMaster::CTextureMaster()
 	m_TerrariaHellBG->loadFromFile("Images/TerrariaBGHell.png");
 
 	m_CactusHead = new sf::Texture();
-	m_CactusHead->loadFromFile("Images/CactusHeadItem.png");
+	m_CactusHead->loadFromFile("Images/Armour/CactusHeadItem.png");
 	m_CactusChestPlate = new sf::Texture();
-	m_CactusChestPlate->loadFromFile("Images/CactusChestPlateItem.png");
+	m_CactusChestPlate->loadFromFile("Images/Armour/CactusChestPlateItem.png");
 	m_CactusLegs = new sf::Texture();
-	m_CactusLegs->loadFromFile("Images/CactusLegsItem.png");
+	m_CactusLegs->loadFromFile("Images/Armour/CactusLegsItem.png");
 
 	m_EquipmentSpacerHelmet = new sf::Texture();
 	m_EquipmentSpacerHelmet->loadFromFile("Images/EquipmentSpacerHelmet.png");
@@ -177,11 +178,11 @@ CTextureMaster::CTextureMaster()
 	m_EquipmentSpacerLeggings->loadFromFile("Images/EquipmentSpacerLeggings.png");
 
 	m_IronHead = new sf::Texture();
-	m_IronHead->loadFromFile("Images/IronHeadItem.png");
+	m_IronHead->loadFromFile("Images/Armour/IronHeadItem.png");
 	m_IronChestPlate = new sf::Texture();
-	m_IronChestPlate->loadFromFile("Images/IronChestPlateItem.png");
+	m_IronChestPlate->loadFromFile("Images/Armour/IronChestPlateItem.png");
 	m_IronLegs = new sf::Texture();
-	m_IronLegs->loadFromFile("Images/IronLegsItem.png");
+	m_IronLegs->loadFromFile("Images/Armour/IronLegsItem.png");
 
 	// Set Smooth
 	m_Dirt->setSmooth(true);

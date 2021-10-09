@@ -141,6 +141,16 @@ public:
 		SLIME,
 	};
 
+	enum class ARMOURTYPE
+	{
+		CACTUS,
+		IRON,
+		GOLD,
+		DIAMOND,
+		PURPLE,
+		GOLDEN,
+	};
+
 	CBlock();
 	CBlock(sf::Texture* _texture, BLOCKTYPE _type = BLOCKTYPE::BLOCK);
 	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, bool _bWallpaper, BLOCKTYPE _type = BLOCKTYPE::BLOCK);
@@ -198,14 +208,12 @@ public:
 	PROJECTILETYPE m_ProjectileType = PROJECTILETYPE::ARROW;
 	POTIONTYPE m_PotionType = POTIONTYPE::HPSMALL;
 	SWORDTYPE m_SwordType = SWORDTYPE::WOOD;
+	ARMOURTYPE m_ArmourType = ARMOURTYPE::CACTUS;
 
 	int m_ArmourValue = 0;
 	sf::Texture m_ArmourHeadLeft;
-	sf::Texture m_ArmourHeadRight;
 	sf::Texture m_ArmourChestLeft;
-	sf::Texture m_ArmourChestRight;
 	sf::Texture m_ArmourLegsLeft;
-	sf::Texture m_ArmourLegsRight;
 
 protected:
 	sf::RenderWindow* m_RenderWindow;

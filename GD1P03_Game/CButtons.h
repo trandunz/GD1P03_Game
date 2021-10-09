@@ -82,6 +82,9 @@ public:
 	int GetHeight();
 	int GetWidth();
 
+	inline void SetSpritePos(sf::Vector2f _pos) { Sprite.setPosition(_pos); };
+	inline void SetSpritePos(float _x, float _y) { Sprite.setPosition(_x, _y); };
+
 private:
 	sf::RenderWindow* m_RenderWindow;
 

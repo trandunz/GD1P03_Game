@@ -31,25 +31,6 @@ CBlock::CBlock(sf::Texture* _texture, BLOCKTYPE _type)
 	m_Shape.setScale(0.2f, 0.2f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 
-	if (_type == CBlock::BLOCKTYPE::HELMET)
-	{
-		m_ArmourHeadLeft.loadFromFile("Images/CactusHeadLeft.png");
-		m_ArmourHeadRight.loadFromFile("Images/CactusHead.png");
-		m_ArmourValue = 4;
-	}
-	else if (_type == CBlock::BLOCKTYPE::CHESTPLATE)
-	{
-		m_ArmourChestLeft.loadFromFile("Images/CactusChestPlateLeft.png");
-		m_ArmourChestRight.loadFromFile("Images/CactusChestPlate.png");
-		m_ArmourValue = 6;
-	}
-	else if (_type == CBlock::BLOCKTYPE::LEGGINGS)
-	{
-		m_ArmourLegsLeft.loadFromFile("Images/CactusLegsLeft.png");
-		m_ArmourLegsRight.loadFromFile("Images/CactusLegs.png");
-		m_ArmourValue = 2;
-	}
-
 	Start();
 }
 

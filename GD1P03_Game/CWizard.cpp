@@ -5,6 +5,7 @@ CWizard::CWizard(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaste
 	m_RenderWindow = _renderWindow;
 	m_AudioManager = &_audioManager;
 	m_Texture = new sf::Texture();
+	m_Texture->loadFromFile("Images/PlayerLeft.png");
 
 	srand(time(NULL));
 
@@ -21,6 +22,7 @@ CWizard::~CWizard()
 	m_TextureMaster = nullptr;
 
 	delete m_Texture;
+	m_Texture = nullptr;
 }
 
 void CWizard::Update()
@@ -153,6 +155,9 @@ void CWizard::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	{
 		m_FixtureDef.isSensor = true;
 	}
+
+	m_b2pShape.SetAsBox(100/m_Scale, 200 / m_Scale);
+
 	m_FixtureDef.density = 2.0f;
 	m_FixtureDef.shape = &m_b2pShape;
 	m_FixtureDef.friction = 1.0f;

@@ -8,6 +8,7 @@
 #include "Spawner.h"
 #include "CInputField.h"
 #include "CButtons.h"
+#include "CArmour.h"
 
 class CDebugWindow
 {

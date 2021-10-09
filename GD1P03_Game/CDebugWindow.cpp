@@ -1044,7 +1044,7 @@ void CDebugWindow::CreateItemListButtons()
 		}
 		case 70:
 		{
-			CBlock* block = new CBlock(m_TextureMaster->m_CactusHead, CBlock::BLOCKTYPE::HELMET);
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::CACTUS);
 			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
 			m_ItemPreviews.insert_or_assign(i, *block);
 			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
@@ -1055,7 +1055,7 @@ void CDebugWindow::CreateItemListButtons()
 		}
 		case 71:
 		{
-			CBlock* block = new CBlock(m_TextureMaster->m_CactusChestPlate, CBlock::BLOCKTYPE::CHESTPLATE);
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::CACTUS);
 			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
 			m_ItemPreviews.insert_or_assign(i, *block);
 			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
@@ -1066,7 +1066,172 @@ void CDebugWindow::CreateItemListButtons()
 		}
 		case 72:
 		{
-			CBlock* block = new CBlock(m_TextureMaster->m_CactusLegs, CBlock::BLOCKTYPE::LEGGINGS);
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::CACTUS);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 73:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::IRON);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 74:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::IRON);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 75:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::IRON);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 76:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::GOLD);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 77:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::GOLD);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 78:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::GOLD);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 79:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::DIAMOND);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 80:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::DIAMOND);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 81:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::DIAMOND);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 82:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::PURPLE);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 83:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::PURPLE);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 84:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::PURPLE);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 85:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::GOLDEN);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 86:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::GOLDEN);
+			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			m_ItemPreviews.insert_or_assign(i, *block);
+			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
+			m_ItemPreviews[i].GetShape().setOrigin(m_ItemPreviews[i].GetShape().getGlobalBounds().width / 2, m_ItemPreviews[i].GetShape().getGlobalBounds().height / 2);
+			m_ItemPreviews[i].GetShape().setPosition(m_ItemListButtons[i].GetPosition());
+			block = nullptr;
+			break;
+		}
+		case 87:
+		{
+			CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::GOLDEN);
 			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
 			m_ItemPreviews.insert_or_assign(i, *block);
 			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
@@ -1877,22 +2042,127 @@ void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 			}
 			case 70:
 			{
-				CBlock* block = new CBlock(m_TextureMaster->m_CactusHead, CBlock::BLOCKTYPE::HELMET);
-				m_Player->AddItemToInventory(block, true);
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::CACTUS);
+				m_Player->AddItemToInventory(block, false);
 				block = nullptr;
 				break;
 			}
 			case 71:
 			{
-				CBlock* block = new CBlock(m_TextureMaster->m_CactusChestPlate, CBlock::BLOCKTYPE::CHESTPLATE);
-				m_Player->AddItemToInventory(block, true);
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::CACTUS);
+				m_Player->AddItemToInventory(block, false);
 				block = nullptr;
 				break;
 			}
 			case 72:
 			{
-				CBlock* block = new CBlock(m_TextureMaster->m_CactusLegs, CBlock::BLOCKTYPE::LEGGINGS);
-				m_Player->AddItemToInventory(block, true);
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::CACTUS);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 73:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::IRON);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 74:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::IRON);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 75:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::IRON);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 76:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::GOLD);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 77:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::GOLD);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 78:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::GOLD);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 79:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::DIAMOND);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 80:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::DIAMOND);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 81:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::DIAMOND);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 82:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::PURPLE);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 83:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::PURPLE);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 84:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::PURPLE);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 85:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::HELMET, CBlock::ARMOURTYPE::GOLDEN);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 86:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::CHESTPLATE, CBlock::ARMOURTYPE::GOLDEN);
+				m_Player->AddItemToInventory(block, false);
+				block = nullptr;
+				break;
+			}
+			case 87:
+			{
+				CArmour* block = new CArmour(CBlock::BLOCKTYPE::LEGGINGS, CBlock::ARMOURTYPE::GOLDEN);
+				m_Player->AddItemToInventory(block, false);
 				block = nullptr;
 				break;
 			}

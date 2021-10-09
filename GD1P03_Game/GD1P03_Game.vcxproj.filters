@@ -117,6 +117,12 @@
     <ClCompile Include="CWizard.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="CMainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CArmour.cpp">
+      <Filter>Source Files\Items / Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h">
@@ -188,7 +194,13 @@
     <ClInclude Include="CPickaxe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CMainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="CWizard.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="CArmour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

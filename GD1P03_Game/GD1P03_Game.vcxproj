@@ -148,11 +148,13 @@
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="CArmour.cpp" />
     <ClCompile Include="CButtons.cpp" />
     <ClCompile Include="CDebugWindow.cpp" />
     <ClCompile Include="CFurnace.cpp" />
     <ClCompile Include="Chest.cpp" />
     <ClCompile Include="CInputField.cpp" />
+    <ClCompile Include="CMainMenu.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />
     <ClCompile Include="CPickaxe.cpp" />
     <ClCompile Include="CPotion.cpp" />
@@ -175,11 +177,13 @@
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Bow.h" />
+    <ClInclude Include="CArmour.h" />
     <ClInclude Include="CButtons.h" />
     <ClInclude Include="CDebugWindow.h" />
     <ClInclude Include="CFurnace.h" />
     <ClInclude Include="Chest.h" />
     <ClInclude Include="CInputField.h" />
+    <ClInclude Include="CMainMenu.h" />
     <ClInclude Include="CParticleSystem.h" />
     <ClInclude Include="CPickaxe.h" />
     <ClInclude Include="CPotion.h" />
