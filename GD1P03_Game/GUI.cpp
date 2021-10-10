@@ -1679,7 +1679,6 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 							else if (sit->first == 59 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
 							{
 							}
-						
 						}
 						else
 						{

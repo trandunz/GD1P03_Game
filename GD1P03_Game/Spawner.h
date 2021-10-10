@@ -73,5 +73,7 @@ private:
 	CParticleSystem* m_DeathParticles;
 
 	int m_iBossCount = 0;
+
+	sf::Clock m_DropTimer;
 };
 #endif

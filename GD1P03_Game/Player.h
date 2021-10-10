@@ -165,7 +165,6 @@ private:
 
 	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60], int workbenchtypes[60]);
 
-
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;

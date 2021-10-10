@@ -306,7 +306,7 @@ void Spawner::Update()
 					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
 					Mag1 = sqrt((x * x) + (y * y));
 
-					if (Mag1 < 1920 * 1.5)
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
 					{
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
@@ -323,6 +323,8 @@ void Spawner::Update()
 						temp = nullptr;
 						
 						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
 					}
 				}
 
@@ -339,7 +341,7 @@ void Spawner::Update()
 					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
 					Mag1 = sqrt((x * x) + (y * y));
 
-					if (Mag1 < 1920 * 1.5)
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
 					{
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
@@ -355,6 +357,8 @@ void Spawner::Update()
 						temp = nullptr;
 
 						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
 					}
 				}
 
@@ -371,7 +375,7 @@ void Spawner::Update()
 					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
 					Mag1 = sqrt((x * x) + (y * y));
 
-					if (Mag1 < 1920 * 1.5)
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
 					{
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
@@ -388,6 +392,8 @@ void Spawner::Update()
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
 					}
 				}
 
@@ -404,7 +410,7 @@ void Spawner::Update()
 					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
 					Mag1 = sqrt((x * x) + (y * y));
 
-					if (Mag1 < 1920 * 1.5)
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
 					{
 						// Add 2 Diamond To Inventory As Reward
 						for (int i = 0; i < 2; i++)
@@ -419,6 +425,8 @@ void Spawner::Update()
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
 					}
 				}
 
@@ -435,7 +443,7 @@ void Spawner::Update()
 					y = sit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
 					Mag1 = sqrt((x * x) + (y * y));
 
-					if (Mag1 < 1920 * 1.5)
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
 					{
 						// Add 2 RedSlime To Inventory As Reward
 						for (int i = 0; i < 2; i++)
@@ -450,6 +458,8 @@ void Spawner::Update()
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
 						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
 					}
 				}
 

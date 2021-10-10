@@ -762,26 +762,18 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			// PORTAL KEY GREEN
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYBLUE)
 			{
-				*m_bChangeScenes = true;
-				*m_SceneValue = _ICE_;
 			}
 			// PORTAL KEY RED
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)
 			{
-				*m_bChangeScenes = true;
-				*m_SceneValue = _SAND_;
 			}
 			// PORTAL KEY YELLOW
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYRED)
 			{
-				*m_bChangeScenes = true;
-				*m_SceneValue = _HELL_;
 			}
 			// PORTAL KEY PLAINS
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYPLAINS)
 			{
-				*m_bChangeScenes = true;
-				*m_SceneValue = _PLAINS_;
 			}
 			// Place Block
 			else
@@ -792,26 +784,30 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 		// PORTAL KEY GREEN
 		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYBLUE)
 		{
-		*m_bChangeScenes = true;
-		*m_SceneValue = _ICE_;
+			*m_bChangeScenes = true;
+			*m_SceneValue = _ICE_;
+			RemoveItemFromInventory(m_CurrentItemIndex);
 		}
 		// PORTAL KEY RED
 		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYYELLOW)
 		{
-		*m_bChangeScenes = true;
-		*m_SceneValue = _SAND_;
+			*m_bChangeScenes = true;
+			*m_SceneValue = _SAND_;
+			RemoveItemFromInventory(m_CurrentItemIndex);
 		}
 		// PORTAL KEY YELLOW
 		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYRED)
 		{
-		*m_bChangeScenes = true;
-		*m_SceneValue = _HELL_;
+			*m_bChangeScenes = true;
+			*m_SceneValue = _HELL_;
+			RemoveItemFromInventory(m_CurrentItemIndex);
 		}
 		// PORTAL KEY PLAINS
 		else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::PORTALKEYPLAINS)
 		{
-		*m_bChangeScenes = true;
-		*m_SceneValue = _PLAINS_;
+			*m_bChangeScenes = true;
+			*m_SceneValue = _PLAINS_;
+			RemoveItemFromInventory(m_CurrentItemIndex);
 		}
 	}
 	else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && Mag < m_InteractionRange * 100 && m_bCanPlace)
