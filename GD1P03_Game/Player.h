@@ -151,6 +151,7 @@ private:
 	void PlaceFurnace(std::list<CFurnace>& m_Chests, sf::Sprite& _mousePositionSprite);
 	void PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
 	void PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePositionSprite);
+	void PlaceAnvil(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite);
 
 	void CalculateAndAddPicktypes(int _array[60], int _iterator);
 	void CalculateAndAddBowtypes(int _array[60], int _iterator);
@@ -159,8 +160,9 @@ private:
 	void CalculateAndAddHelmetTypes(int _array[60], int _iterator);
 	void CalculateAndAddChestPlateTypes(int _array[60], int _iterator);
 	void CalculateAndAddLeggingsTypes(int _array[60], int _iterator);
+	void CalculateAndAddWorkBenchTypes(int _array[60], int _iterator);
 
-	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60]);
+	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60], int workbenchtypes[60]);
 
 
 	// Essentials

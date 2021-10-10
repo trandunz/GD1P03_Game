@@ -91,6 +91,7 @@ public:
 	bool m_bCanSmelt = false;
 
 	bool m_bCanWorkBench = false;
+	bool m_bCanAnvil = false;
 private:
 
 	sf::Font m_Font;

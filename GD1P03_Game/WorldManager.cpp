@@ -201,7 +201,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Workbench
-    for (CWorkBench& workbench : *m_WorkBenches)
+    for (CBlock& workbench : *m_WorkBenches)
     {
         Mag1 = 400;
 
@@ -211,7 +211,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
         }
 
         // SETTING CAN WORKBENCH
-        if (Mag1 < 300)
+        if (Mag1 < 300 && workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::WORKBENCH)
         {
             if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
             {
@@ -220,7 +220,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
 
             m_GUI->m_bCanWorkBench = true;
         }
-        else
+        else if (workbench.m_WorkBenchType != CBlock::WORKBENCHTYPE::ANVIL)
         {
             if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
             {
@@ -230,9 +230,46 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
             m_GUI->m_bCanWorkBench = false;
         }
 
+        // SETTING CAN ANVIL
+        if (Mag1 < 300 && workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::ANVIL)
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanAnvil = true;
+        }
+        else if (workbench.m_WorkBenchType != CBlock::WORKBENCHTYPE::WORKBENCH)
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanAnvil = false;
+        }
     }
 
-    if (m_WorkBenches->size() <= 0)
+    int workbenchcount = 0;
+    int anvilcount = 0;
+    for (CWorkBench& workbench : *m_WorkBenches)
+    {
+        if (workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::WORKBENCH)
+        {
+            workbenchcount++;
+        }
+        else if (workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::ANVIL)
+        {
+            anvilcount++;
+        }
+    }
+
+    if (anvilcount <= 0)
+    {
+        m_GUI->m_bCanAnvil = false;
+    }
+    if (workbenchcount <= 0)
     {
         m_GUI->m_bCanWorkBench = false;
     }

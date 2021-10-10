@@ -1,31 +1,55 @@
 #include "CWorkBench.h"
 
-CWorkBench::CWorkBench()
+CWorkBench::CWorkBench(CBlock::WORKBENCHTYPE _wordBenchType)
 {
 	m_Scale = 50.0f;
 	m_Body = nullptr;
-	CBlock::m_Type = BLOCKTYPE::WORKBENCH;
-	m_Type = BLOCKTYPE::WORKBENCH;
+	m_WorkBenchType = _wordBenchType;
 
 	m_BlockStrength = 5;
 	m_Texture = new sf::Texture();
-	m_Texture->loadFromFile("Images/WorkBench.png");
+
+	switch (m_WorkBenchType)
+	{
+	case CBlock::WORKBENCHTYPE::WORKBENCH:
+		m_Type = BLOCKTYPE::WORKBENCH;
+		m_Texture->loadFromFile("Images/WorkBench.png");
+		break;
+	case CBlock::WORKBENCHTYPE::ANVIL:
+		m_Type = BLOCKTYPE::ANVIL;
+		m_Texture->loadFromFile("Images/Anvil.png");
+		break;
+	default:
+		break;
+	}
 	m_Shape.setTexture(*m_Texture, true);
 	m_Shape.setScale(0.3f, 0.3f);
 	m_Shape.setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 + m_Shape.getGlobalBounds().height / 3);
 }
 
-CWorkBench::CWorkBench(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY)
+CWorkBench::CWorkBench(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY, CBlock::WORKBENCHTYPE _wordBenchType)
 {
 	m_RenderWindow = _renderWindow;
 	m_Scale = _scale;
 	m_World = &_world;
-	m_Type = BLOCKTYPE::WORKBENCH;
+	m_WorkBenchType = _wordBenchType;
 
 	m_BlockStrength = 5;
 	m_Texture = nullptr;
 	m_Texture = new sf::Texture();
-	m_Texture->loadFromFile("Images/WorkBench.png");
+	switch (m_WorkBenchType)
+	{
+	case CBlock::WORKBENCHTYPE::WORKBENCH:
+		m_Type = BLOCKTYPE::WORKBENCH;
+		m_Texture->loadFromFile("Images/WorkBench.png");
+		break;
+	case CBlock::WORKBENCHTYPE::ANVIL:
+		m_Type = BLOCKTYPE::ANVIL;
+		m_Texture->loadFromFile("Images/Anvil.png");
+		break;
+	default:
+		break;
+	}
 	m_Shape.setTexture(*m_Texture, true);
 
 

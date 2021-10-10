@@ -724,10 +724,15 @@ void CPlayer::Interact(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Che
 			{
 				PlaceFurnace(m_Furnaces, _mousePositionSprite);
 			}
-			//Furnace
+			//WORKBENCH
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::WORKBENCH)
 			{
 				PlaceWorkBench(m_WorkBenches, _mousePositionSprite);
+			}
+			//ANVIL
+			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::ANVIL)
+			{
+				PlaceAnvil(m_WorkBenches, _mousePositionSprite);
 			}
 			// SWORDS
 			else if (m_InventoryMap[m_CurrentItemIndex].m_Type == CBlock::BLOCKTYPE::SWORD)
@@ -1226,7 +1231,7 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 	std::map<int, CBlock>::iterator it;
 	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
 	{
-		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType && it->second.m_PotionType == _block->m_PotionType && it->second.m_SwordType == _block->m_SwordType)
+		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType && it->second.m_PotionType == _block->m_PotionType && it->second.m_SwordType == _block->m_SwordType && it->second.m_WorkBenchType == _block->m_WorkBenchType)
 		{
 			// increase number of that type
 			m_InventoryStackValues[it->first]++;
@@ -1526,8 +1531,14 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 						}
 						else if (it->m_Type == CBlock::BLOCKTYPE::WORKBENCH)
 						{
-							m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
-							AddItemToInventory(m_Block);
+							m_WorkBench = new CWorkBench(CBlock::WORKBENCHTYPE::WORKBENCH);
+							AddItemToInventory(m_WorkBench, false);
+							it = m_Chunk.erase(it);
+						}
+						else if (it->m_Type == CBlock::BLOCKTYPE::ANVIL)
+						{
+							m_WorkBench = new CWorkBench(CBlock::WORKBENCHTYPE::ANVIL);
+							AddItemToInventory(m_WorkBench, false);
 							it = m_Chunk.erase(it);
 						}
 						else
@@ -1538,6 +1549,7 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 						}
 						m_Block = nullptr;
 						m_Door = nullptr;
+						m_WorkBench = nullptr;
 					}
 					
 
@@ -1549,7 +1561,6 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 			}
 		}
 	}
-	
 }
 
 void CPlayer::PlaceBlock(std::list<CBlock>& m_Chunk, sf::Sprite& _mousePositionSprite)
@@ -1664,7 +1675,7 @@ void CPlayer::PlaceWorkBench(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _
 	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
 	{
 		// Chest
-		m_WorkBench = new CWorkBench(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y);
+		m_WorkBench = new CWorkBench(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, CBlock::WORKBENCHTYPE::WORKBENCH);
 		m_WorkBench->SetSizeAndPos(_mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, 100, 100);
 		m_WorkBench->m_ArrayIndex = (m_Shape.getPosition().x);
 		m_WorkBenches.push_back(*m_WorkBench);
@@ -1695,6 +1706,33 @@ void CPlayer::PlaceTourch(std::list<CBlock>& m_Tourches, sf::Sprite& _mousePosit
 		m_Block->m_ArrayIndex = (m_Shape.getPosition().x);
 		m_Tourches.push_back(*m_Block);
 		m_Block = nullptr;
+
+		// Decrement Stack Counter / Remove Item From Inventory
+		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
+		{
+			RemoveItemFromInventory(m_CurrentItemIndex);
+		}
+		else
+		{
+			m_InventoryStackValues[m_CurrentItemIndex]--;
+		}
+
+		// Audio
+		m_AudioManager->PlayBlockPlace();
+		m_MineTimer->restart();
+	}
+}
+
+void CPlayer::PlaceAnvil(std::list<CWorkBench>& m_WorkBenches, sf::Sprite& _mousePositionSprite)
+{
+	if (m_MineTimer->getElapsedTime() >= sf::Time(sf::seconds(0.2f)))
+	{
+		// Chest
+		m_WorkBench = new CWorkBench(m_RenderWindow, *m_World, m_Scale, _mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, CBlock::WORKBENCHTYPE::ANVIL);
+		m_WorkBench->SetSizeAndPos(_mousePositionSprite.getPosition().x, _mousePositionSprite.getPosition().y, 100, 100);
+		m_WorkBench->m_ArrayIndex = (m_Shape.getPosition().x);
+		m_WorkBenches.push_back(*m_WorkBench);
+		m_WorkBench = nullptr;
 
 		// Decrement Stack Counter / Remove Item From Inventory
 		if (m_InventoryStackValues[m_CurrentItemIndex] <= 1)
@@ -2112,7 +2150,30 @@ void CPlayer::CalculateAndAddLeggingsTypes(int _array[60], int _iterator)
 	}
 }
 
-void CPlayer::GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60])
+void CPlayer::CalculateAndAddWorkBenchTypes(int _array[60], int _iterator)
+{
+	switch (_array[_iterator])
+	{
+	case 0:
+	{
+		CWorkBench* workbench = new CWorkBench(CBlock::WORKBENCHTYPE::WORKBENCH);
+		AddItemToInventory(workbench, _iterator, false);
+		workbench = nullptr;
+		break;
+	}
+	case 1:
+	{
+		CWorkBench* workbench = new CWorkBench(CBlock::WORKBENCHTYPE::ANVIL);
+		AddItemToInventory(workbench, _iterator, false);
+		workbench = nullptr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CPlayer::GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60], int workbenchtypes[60])
 {
 	// Main Types
 	std::ifstream xoutputs("Output/output_inventory_types.txt");
@@ -2198,6 +2259,17 @@ void CPlayer::GrabAllSavedValues(int types[60], int stackvalues[60], int bowtype
 		for (int i = 0; i < 60; i++)
 		{
 			xoutputs >> armourtypes[i];
+		}
+		xoutputs.close();
+	}
+
+	// WorkBenchTypes
+	xoutputs.open("Output/output_inventory_workbenchtypes.txt");
+	if (xoutputs.is_open())
+	{
+		for (int i = 0; i < 60; i++)
+		{
+			xoutputs >> workbenchtypes[i];
 		}
 		xoutputs.close();
 	}
@@ -2393,8 +2465,9 @@ void CPlayer::InputInventoryToFile()
 	int projtypes[60] = {};
 	int potiontypes[60] = {};
 	int armourtypes[60] = {};
+	int workbenchtypes[60] = {};
 
-	GrabAllSavedValues(types, stackvalues, bowtypes, swordtypes, picktypes, projtypes, potiontypes, armourtypes);
+	GrabAllSavedValues(types, stackvalues, bowtypes, swordtypes, picktypes, projtypes, potiontypes, armourtypes, workbenchtypes);
 
 	for (int i = 0; i < 60; i++)
 	{
@@ -2643,9 +2716,7 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_WorkBench, CBlock::BLOCKTYPE::WORKBENCH);
-					AddItemToInventory(m_Block, i, true);
-					m_Block = nullptr;
+					CalculateAndAddWorkBenchTypes(workbenchtypes, i);
 				}
 
 				break;
@@ -2676,9 +2747,9 @@ void CPlayer::InputInventoryToFile()
 			{
 				for (int J = 0; J < stackvalues[i]; J++)
 				{
-					m_Block = new CBlock(m_TextureMaster->m_Anvil, CBlock::BLOCKTYPE::ANVIL);
-					AddItemToInventory(m_Block, i, true);
-					m_Block = nullptr;
+					CWorkBench* workbench = new CWorkBench(CBlock::WORKBENCHTYPE::ANVIL);
+					AddItemToInventory(workbench, i, false);
+					workbench = nullptr;
 				}
 
 				break;

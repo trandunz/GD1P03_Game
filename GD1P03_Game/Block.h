@@ -151,6 +151,12 @@ public:
 		GOLDEN,
 	};
 
+	enum class WORKBENCHTYPE
+	{
+		WORKBENCH,
+		ANVIL,
+	};
+
 	CBlock();
 	CBlock(sf::Texture* _texture, BLOCKTYPE _type = BLOCKTYPE::BLOCK);
 	CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Texture* _texture, const float& _scale, float _posX, float _posY, bool _bWallpaper, BLOCKTYPE _type = BLOCKTYPE::BLOCK);
@@ -209,6 +215,7 @@ public:
 	POTIONTYPE m_PotionType = POTIONTYPE::HPSMALL;
 	SWORDTYPE m_SwordType = SWORDTYPE::WOOD;
 	ARMOURTYPE m_ArmourType = ARMOURTYPE::CACTUS;
+	WORKBENCHTYPE m_WorkBenchType = WORKBENCHTYPE::WORKBENCH;
 
 	int m_ArmourValue = 0;
 	sf::Texture m_ArmourHeadLeft;

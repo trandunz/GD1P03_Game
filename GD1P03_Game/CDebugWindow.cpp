@@ -560,7 +560,7 @@ void CDebugWindow::CreateItemListButtons()
 		}
 		case 23:
 		{
-			CWorkBench* block = new CWorkBench();
+			CWorkBench* block = new CWorkBench(CBlock::WORKBENCHTYPE::WORKBENCH);
 			block->GetShape().setPosition(m_ItemListButtons[i].GetPosition());
 			m_ItemPreviews.insert_or_assign(i, *block);
 			m_ItemPreviews[i].GetShape().setScale(0.2f, 0.2f);
@@ -1717,7 +1717,7 @@ void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 			}
 			case 23:
 			{
-				CWorkBench* block = new CWorkBench();
+				CWorkBench* block = new CWorkBench(CBlock::WORKBENCHTYPE::WORKBENCH);
 				m_Player->AddItemToInventory(block, false);
 				block = nullptr;
 				break;
