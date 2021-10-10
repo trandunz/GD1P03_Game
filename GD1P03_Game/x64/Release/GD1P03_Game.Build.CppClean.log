@@ -1,5 +1,4 @@
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\vc142.pdb
-c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\main.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\gui.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\enemy.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\door.obj
@@ -16,6 +15,7 @@ c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\r
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cfurnace.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cdebugwindow.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\cbuttons.obj
+c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\carmour.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\bow.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\block.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\audiomanager.obj
@@ -25,6 +25,7 @@ c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\r
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\slime.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\player.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\pickaxe.obj
+c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\main.obj
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\x64\release\gd1p03_game.exe
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\gd1p03_game.ipdb
 c:\users\trand\documents\github\gd1p03_game (sfml)\gd1p03_game\gd1p03_game\x64\release\gd1p03_game.iobj

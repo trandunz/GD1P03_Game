@@ -89,5 +89,10 @@ public:
 	sf::Texture* m_EquipmentSpacerChestPlate;
 	sf::Texture* m_EquipmentSpacerLeggings;
 
+	sf::Texture* m_EquipmentSpacerTourch;
+	sf::Texture* m_EquipmentSpacerArrow;
+	sf::Texture* m_EquipmentSpacerBullet;
+
+
 };
 #endif

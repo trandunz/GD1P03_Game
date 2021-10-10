@@ -324,6 +324,14 @@ void CPlayer::Render(sf::Shader* _defaultShader)
 	// Player Sprite
 	m_RenderWindow->draw(m_Shape, _defaultShader);
 
+	if (m_InventoryMap[57].m_Type == CBlock::BLOCKTYPE::TOURCH)
+	{
+		m_LightIntensity = 3.0f;
+	}
+	else
+	{
+		m_LightIntensity = 1.0f;
+	}
 	if (m_InventoryMap[50].m_ArmourValue > 0)
 	{
 		m_RenderWindow->draw(m_HelmetShape);

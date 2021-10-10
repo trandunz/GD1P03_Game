@@ -298,6 +298,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
         // Player Light
         m_Shader->setUniform("hasTexture", true);
         m_Shader->setUniform("lightPos", m_Player->GetShape().getPosition());
+        m_Shader->setUniform("lightIntensity", m_Player->m_LightIntensity);
     }
     else
     {

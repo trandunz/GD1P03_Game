@@ -1525,6 +1525,58 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 							else if (sit->first == 52 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::LEGGINGS)
 							{
 							}
+							if (sit->first == 57 && sit->first != cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::TOURCH)
+							{
+
+								_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
+								_player->m_InventoryMap[sit->first].m_PositionInInventory = j;
+								std::swap(_player->m_InventoryStackValues[sit->first], vit->second);
+								std::swap(_player->m_InventoryMap[sit->first], cit->second);
+
+								// Moved Item Into Currently Selected Slot?
+								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
+								{
+									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetPickaxe() != nullptr)
+										{
+											delete _player->GetPickaxe();
+											_player->SetPickaxe(nullptr);
+										}
+
+										std::cout << "Pickaxe Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+									else if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::BOW && iit->second.m_bIsItemAndSelected == false)
+									{
+										if (_player->GetBow() != nullptr)
+										{
+											delete _player->GetBow();
+											_player->SetBow(nullptr);
+										}
+
+										std::cout << "Bow Selected!" << std::endl;
+										iit->second.m_bIsItemAndSelected = true;
+										iit->second.m_bIsMovingItemInInv = false;
+										break;
+									}
+								}
+
+								// Debug
+								std::cout << "Mouse Released On Selected Item!" << std::endl;
+
+								// Saves My Sanity
+								for (int i = 0; i < _player->m_InventoryMap.size(); i++)
+								{
+									_player->m_InventoryMap[i].m_bIsMovingItemInInv = false;
+								}
+								break;
+							}
+							else if (sit->first == 57 && sit->first == cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::TOURCH)
+							{
+							}
 							if (sit->first == 58 && sit->first != cit->first && _player->m_InventoryMap[cit->first].m_Type == CBlock::BLOCKTYPE::PROJECTILE)
 							{
 								_player->m_InventoryMap[j].m_PositionInInventory = sit->first;
@@ -6252,6 +6304,18 @@ void GUI::UtilityUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View&
 		{
 			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacerLeggings, true);
 		}
+		else if (i == 57)
+		{
+			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacerTourch, true);
+		}
+		else if (i == 58)
+		{
+			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacerArrow, true);
+		}
+		else if (i == 59)
+		{
+			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacerBullet, true);
+		}
 		else
 		{
 			m_InventorySlotMap[i].setTexture(*_textureMaster->m_EquipmentSpacer, true);
@@ -6288,6 +6352,18 @@ void GUI::InitUtilityUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CText
 		else if (i == 52)
 		{
 			test.setTexture(*_textureMaster->m_EquipmentSpacerLeggings, true);
+		}
+		else if (i == 58)
+		{
+			test.setTexture(*_textureMaster->m_EquipmentSpacerTourch, true);
+		}
+		else if (i == 59)
+		{
+			test.setTexture(*_textureMaster->m_EquipmentSpacerArrow, true);
+		}
+		else if (i == 60)
+		{
+			test.setTexture(*_textureMaster->m_EquipmentSpacerBullet, true);
 		}
 		else
 		{

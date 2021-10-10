@@ -3,6 +3,7 @@ varying in vec4 vert_pos;
 uniform sampler2D texture;
 uniform bool hasTexture;
 uniform vec2 lightPos;
+uniform float lightIntensity;
 
 void main()
 {
@@ -14,10 +15,10 @@ void main()
 	
 	//Calculate the vector from light to pixel (Make circular)
 	vec2 lightToFrag = lightPos - vert_pos.xy;
-	lightToFrag.y = lightToFrag.y / 1.7;
+	lightToFrag.y = lightToFrag.y / (1.7);
 
 	//Length of the vector (distance)
-	float vecLength = clamp(length(lightToFrag) * 10, 0, 1);
+	float vecLength = clamp(length(lightToFrag) * 10 / lightIntensity, 0, 1);
 
     // lookup the pixel in the texture
     vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);

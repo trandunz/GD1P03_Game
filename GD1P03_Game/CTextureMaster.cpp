@@ -177,6 +177,13 @@ CTextureMaster::CTextureMaster()
 	m_EquipmentSpacerLeggings = new sf::Texture();
 	m_EquipmentSpacerLeggings->loadFromFile("Images/EquipmentSpacerLeggings.png");
 
+	m_EquipmentSpacerTourch = new sf::Texture();
+	m_EquipmentSpacerTourch->loadFromFile("Images/EquipmentSpacerTourch.png");
+	m_EquipmentSpacerArrow = new sf::Texture();
+	m_EquipmentSpacerArrow->loadFromFile("Images/EquipmentSpacerArrow.png");
+	m_EquipmentSpacerBullet = new sf::Texture();
+	m_EquipmentSpacerBullet->loadFromFile("Images/EquipmentSpacerBullet.png");
+
 	m_IronHead = new sf::Texture();
 	m_IronHead->loadFromFile("Images/Armour/IronHeadItem.png");
 	m_IronChestPlate = new sf::Texture();
@@ -291,7 +298,13 @@ CTextureMaster::~CTextureMaster()
 	delete m_IronHead;
 	delete m_IronChestPlate;
 	delete m_IronLegs;
+	delete m_EquipmentSpacerTourch;
+	delete m_EquipmentSpacerArrow;
+	delete m_EquipmentSpacerBullet;
 
+	m_EquipmentSpacerTourch = nullptr;
+	m_EquipmentSpacerArrow = nullptr;
+	m_EquipmentSpacerBullet = nullptr;
 	m_IronHead = nullptr;
 	m_IronChestPlate = nullptr;
 	m_IronLegs = nullptr;
