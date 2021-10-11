@@ -135,6 +135,8 @@ public:
 	sf::Sprite m_LegsShape;
 
 	float m_LightIntensity = 1.0f;
+
+
 private:
 
 	void Attack(CBlock* _item);

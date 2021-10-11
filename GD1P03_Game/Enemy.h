@@ -17,6 +17,7 @@ public:
 		ZOMBIE,
 		SLIME,
 		NPC,
+		SNOWMAN,
 	};
 
 	CEnemy();
@@ -69,6 +70,9 @@ protected:
 	sf::Texture* m_Texture;
 
 	sf::Clock m_DamageTimer;
+
+	float m_Damage = 12.25f;
+	float m_AttackRange = 140;
 };
 #endif
 

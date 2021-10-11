@@ -3,6 +3,7 @@
 #define _TEXTUREMASTER_H__
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 class CTextureMaster
 {
 public:

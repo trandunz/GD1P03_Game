@@ -62,6 +62,8 @@ CBlock::CBlock(sf::RenderWindow* _renderWindow, b2World& _world, const sf::Textu
 
 CBlock::~CBlock()
 {
+	//std::cout << "Block Destoryed" << std::endl;
+
 	DestroyBody();
 
 	m_Texture = nullptr;
@@ -228,16 +230,6 @@ void CBlock::Render(sf::Shader* _shader)
 	m_RenderWindow->draw(m_Shape, _shader);
 }
 
-void CBlock::SetPosition(float _x, float _y)
-{
-	m_Shape.setPosition(_x, _y);
-}
-
-sf::Vector2f CBlock::GetPosition()
-{
-	return m_Shape.getPosition();
-}
-
 void CBlock::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y)
 {
 	m_Size.x = _x;
@@ -245,16 +237,6 @@ void CBlock::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, flo
 
 	DestroyBody();
 	CreateBody(_currentPosX, _currentPosY, b2_staticBody, true);
-}
-
-sf::Vector2f CBlock::GetSize()
-{
-	return m_Size;
-}
-
-sf::Sprite& CBlock::GetShape()
-{
-	return m_Shape;
 }
 
 void CBlock::DestroyBody()

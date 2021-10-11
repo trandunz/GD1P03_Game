@@ -99,6 +99,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAsManaged>false</CompileAsManaged>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,6 +137,8 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAsManaged>false</CompileAsManaged>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,6 +154,7 @@
     <ClCompile Include="Bow.cpp" />
     <ClCompile Include="CArmour.cpp" />
     <ClCompile Include="CButtons.cpp" />
+    <ClCompile Include="CCraftbook.cpp" />
     <ClCompile Include="CDebugWindow.cpp" />
     <ClCompile Include="CFurnace.cpp" />
     <ClCompile Include="Chest.cpp" />
@@ -159,6 +164,7 @@
     <ClCompile Include="CPickaxe.cpp" />
     <ClCompile Include="CPotion.cpp" />
     <ClCompile Include="CProjectile.cpp" />
+    <ClCompile Include="CSnowman.cpp" />
     <ClCompile Include="CTextureMaster.cpp" />
     <ClCompile Include="CWizard.cpp" />
     <ClCompile Include="CWorkBench.cpp" />
@@ -179,6 +185,7 @@
     <ClInclude Include="Bow.h" />
     <ClInclude Include="CArmour.h" />
     <ClInclude Include="CButtons.h" />
+    <ClInclude Include="CCraftbook.h" />
     <ClInclude Include="CDebugWindow.h" />
     <ClInclude Include="CFurnace.h" />
     <ClInclude Include="Chest.h" />
@@ -188,6 +195,7 @@
     <ClInclude Include="CPickaxe.h" />
     <ClInclude Include="CPotion.h" />
     <ClInclude Include="CProjectile.h" />
+    <ClInclude Include="CSnowman.h" />
     <ClInclude Include="CTextureMaster.h" />
     <ClInclude Include="CWizard.h" />
     <ClInclude Include="CWorkBench.h" />

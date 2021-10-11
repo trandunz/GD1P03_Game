@@ -96,13 +96,16 @@ public:
 
 	void ParralaxBackground();
 
+	void CreateSlimeSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+	void CreateSnowmanSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+
 	// Variables
 	std::list<CBlock>* m_Chunk;
-	std::list<CChest>* m_Chests;
-	std::list<CFurnace>* m_Furnaces;
-	std::list<CWorkBench>* m_WorkBenches;
-	std::list<CDoor>* m_Doors;
-	std::list<CBlock>* m_Tourches;
+	std::list<CChest> m_Chests;
+	std::list<CFurnace> m_Furnaces;
+	std::list<CWorkBench> m_WorkBenches;
+	std::list<CDoor> m_Doors;
+	std::list<CBlock> m_Tourches;
 	std::list<sf::RectangleShape> m_SkyChunk = {};
 
 	int m_GenerateOffsetX = 296;
@@ -130,8 +133,6 @@ private:
 	CBlock* m_Block;
 	CChest* m_Chest;
 	CPotion* m_Potion;
-
-	CParticleSystem* m_WeatherEffects;
 
 	// Threads
 	sf::Mutex m_GlobalMutex;

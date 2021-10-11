@@ -2,6 +2,7 @@
 
 CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader, sf::Shader* _surfaceShader, sf::Shader* _tourchShader)
 {
+    std::cout << "WORLD CREATED" << std::endl;
     m_RenderWindow = _renderWindow;
     m_Player = _player;
     m_World = &_world;
@@ -12,13 +13,8 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     m_Block = nullptr;
     m_Chest = nullptr;
     m_Potion = nullptr;
-    m_WeatherEffects = nullptr;
-    m_Chunk = new std::list<CBlock>{};
-    m_Chests = new std::list<CChest>{};
-    m_Furnaces = new std::list<CFurnace>{};
-    m_WorkBenches = new std::list<CWorkBench>{};
-    m_Doors = new std::list<CDoor>{};
-    m_Tourches = new std::list<CBlock>{};
+    m_Chunk = nullptr;
+    m_Chunk = new std::list<CBlock>();
 
     // Set World Seed (Change Time To A Value For Custom)
     _gui->m_CurrentSeed = _CURRENT_TIME_;
@@ -30,34 +26,45 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
 
 CWorldManager::~CWorldManager()
 {
-    m_Chunk->clear();
-    m_SkyChunk.clear();
-    m_Chests->clear();
-    m_Doors->clear();
-    m_Furnaces->clear();
-    m_WorkBenches->clear();
-    m_Tourches->clear();
-
-    if (m_WeatherEffects != nullptr)
+    std::cout << "WORLD DESTROYED" << std::endl;
+    for (std::list<CBlock>::iterator it = m_Chunk->begin(); it != m_Chunk->end(); it++)
     {
-        delete m_WeatherEffects;
+        it = m_Chunk->erase(it);
     }
-
+    m_Chunk->clear();
+    for (std::list<sf::RectangleShape>::iterator it = m_SkyChunk.begin(); it != m_SkyChunk.end(); it++)
+    {
+        it = m_SkyChunk.erase(it);
+    }
+    m_SkyChunk.clear();
+    for (std::list<CChest>::iterator it = m_Chests.begin(); it != m_Chests.end(); it++)
+    {
+        it = m_Chests.erase(it);
+    }
+    m_Chests.clear();
+    for (std::list<CDoor>::iterator it = m_Doors.begin(); it != m_Doors.end(); it++)
+    {
+        it = m_Doors.erase(it);
+    }
+    m_Doors.clear();
+    for (std::list<CFurnace>::iterator it = m_Furnaces.begin(); it != m_Furnaces.end(); it++)
+    {
+        it = m_Furnaces.erase(it);
+    }
+    m_Furnaces.clear();
+    for (std::list<CWorkBench>::iterator it = m_WorkBenches.begin(); it != m_WorkBenches.end(); it++)
+    {
+        it = m_WorkBenches.erase(it);
+    }
+    m_WorkBenches.clear();
+    for (std::list<CBlock>::iterator it = m_Tourches.begin(); it != m_Tourches.end(); it++)
+    {
+        it = m_Tourches.erase(it);
+    }
+    m_Tourches.clear();
+    
     delete m_Chunk;
-    delete m_Chests;
-    delete m_Doors;
-    delete m_Furnaces;
-    delete m_WorkBenches;
-    delete m_Tourches;
-
     m_Chunk = nullptr;
-    m_Chests = nullptr;
-    m_Doors = nullptr;
-    m_Furnaces = nullptr;
-    m_WorkBenches = nullptr;
-    m_Tourches = nullptr;
-
-    m_WeatherEffects = nullptr;
     m_TourchShader = nullptr;
     m_SurfaceShader = nullptr;
     m_Shader = nullptr;
@@ -82,7 +89,6 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
         break;
     case CWorldManager::WORLDTYPE::SAND:
     {
-        m_WeatherEffects = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
         CreateSandBackgrounds(_textureMaster);
         CreateSandNoiseWorld(_textureMaster, _audioManager, _spawners);
         /*Spawner* wizardspawn = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -400 * 100 + 10, -400 * 100, m_Player, CEnemy::ENEMYTYPE::NPC, m_Shader, m_TourchShader, false);
@@ -94,7 +100,6 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
     }
 
     case CWorldManager::WORLDTYPE::ICE:
-        m_WeatherEffects = new CParticleSystem(200, sf::seconds(0.4f), sf::Color(70, 65, 60, 255));
         CreateIceBackgrounds(_textureMaster);
         CreateIceNoiseWorld(_textureMaster, _audioManager, _spawners);
         break;
@@ -151,7 +156,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Door
-    for (CDoor& door : *m_Doors)
+    for (CDoor& door : m_Doors)
     {
         if (door.GetShape().getGlobalBounds().contains(_mousePos))
         {
@@ -160,7 +165,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Chest
-    for (CChest& chest : *m_Chests)
+    for (CChest& chest : m_Chests)
     {
         if (chest.GetShape().getGlobalBounds().contains(_mousePos))
         {
@@ -169,7 +174,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Furnace
-    for (CFurnace& furnace : *m_Furnaces)
+    for (CFurnace& furnace : m_Furnaces)
     {
         Mag1 = 400;
 
@@ -201,7 +206,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     }
 
     // Mouse Pos To Workbench
-    for (CBlock& workbench : *m_WorkBenches)
+    for (CBlock& workbench : m_WorkBenches)
     {
         Mag1 = 400;
 
@@ -253,7 +258,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
 
     int workbenchcount = 0;
     int anvilcount = 0;
-    for (CWorkBench& workbench : *m_WorkBenches)
+    for (CWorkBench& workbench : m_WorkBenches)
     {
         if (workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::WORKBENCH)
         {
@@ -273,7 +278,7 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     {
         m_GUI->m_bCanWorkBench = false;
     }
-    if (m_Furnaces->size() <= 0)
+    if (m_Furnaces.size() <= 0)
     {
         m_GUI->m_bCanSmelt = false;
     }
@@ -386,7 +391,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     }
 
     // Doors, Chests, Funaces
-    for (CDoor& door : *m_Doors)
+    for (CDoor& door : m_Doors)
     {
         x = door.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         y = door.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
@@ -397,7 +402,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
             door.Render(_defaultShader);
         }
     }
-    for (CChest& chest : *m_Chests)
+    for (CChest& chest : m_Chests)
     {
         x = chest.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         y = chest.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
@@ -408,7 +413,7 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
             chest.Render(_defaultShader);
         }
     }
-    for (CFurnace& furnace : *m_Furnaces)
+    for (CFurnace& furnace : m_Furnaces)
     {
         x = furnace.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
         y = furnace.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
@@ -419,11 +424,11 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
             furnace.Render(_defaultShader);
         }
     }
-    for (CWorkBench& workbench : *m_WorkBenches)
+    for (CWorkBench& workbench : m_WorkBenches)
     {
         workbench.Render(_defaultShader);
     }
-    for (CBlock& tourch : *m_Tourches)
+    for (CBlock& tourch : m_Tourches)
     {
         tourch.Render(_defaultShader);
     }
@@ -849,7 +854,7 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
                             m_Block = nullptr;
                         }
 
-                        m_Chests->push_back(*m_Chest);
+                        m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
@@ -1183,7 +1188,7 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                             m_Block = nullptr;
                         }
 
-                        m_Chests->push_back(*m_Chest);
+                        m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
@@ -1233,7 +1238,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
             if (sineValue <= 15 && x % 15 == 0 && y % 15 == 0)
             {
                 // Spawners
-                Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
                 m_SlimeSpawner->ToggleSpawning();
                 m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
                 _spawners.push_back(*m_SlimeSpawner);
@@ -1558,7 +1563,7 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
                             m_Block = nullptr;
                         }
 
-                        m_Chests->push_back(*m_Chest);
+                        m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
@@ -1841,7 +1846,7 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
                             m_Block = nullptr;
                         }
 
-                        m_Chests->push_back(*m_Chest);
+                        m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
@@ -1980,7 +1985,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             m_Block = nullptr;
                         }
 
-                        m_Chests->push_back(*m_Chest);
+                        m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
                 }
@@ -2084,7 +2089,7 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
                             m_Block = nullptr;
                         }
 
-                        m_Chests->push_back(*m_Chest);
+                        m_Chests.push_back(*m_Chest);
                         m_Chest = nullptr;
                     }
 
@@ -2106,7 +2111,7 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
     float x = 0;
     float y = 0;
 
-    for (std::list<CFurnace>::iterator fit = m_Furnaces->begin(); fit != m_Furnaces->end(); fit++)
+    for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
     {
         x = _it->GetShape().getPosition().x - fit->GetShape().getPosition().x;
         x *= x;
@@ -2121,14 +2126,14 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
             {
                 m_TourchShader->setUniform("hasTexture", true);
                 m_TourchShader->setUniform("lightPos", fit->GetShape().getPosition());
-                fit = m_Furnaces->end();
+                fit = m_Furnaces.end();
                 return true;
                 break;
             }
         }
     }
 
-    for (std::list<CBlock>::iterator touit = m_Tourches->begin(); touit != m_Tourches->end(); touit++)
+    for (std::list<CBlock>::iterator touit = m_Tourches.begin(); touit != m_Tourches.end(); touit++)
     {
         x = _it->GetShape().getPosition().x - touit->GetShape().getPosition().x;
         x *= x;
@@ -2143,7 +2148,7 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
             {
                 m_TourchShader->setUniform("hasTexture", true);
                 m_TourchShader->setUniform("lightPos", touit->GetShape().getPosition());
-                touit = m_Tourches->end();
+                touit = m_Tourches.end();
                 return true;
                 break;
             }
@@ -2159,7 +2164,7 @@ bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
     float x = 0;
     float y = 0;
 
-    for (std::list<CFurnace>::iterator fit = m_Furnaces->begin(); fit != m_Furnaces->end(); fit++)
+    for (std::list<CFurnace>::iterator fit = m_Furnaces.begin(); fit != m_Furnaces.end(); fit++)
     {
         x = _shape.getPosition().x - fit->GetShape().getPosition().x;
         x *= x;
@@ -2179,7 +2184,7 @@ bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
             }
         }
     }
-    for (std::list<CBlock>::iterator touit = m_Tourches->begin(); touit != m_Tourches->end(); touit++)
+    for (std::list<CBlock>::iterator touit = m_Tourches.begin(); touit != m_Tourches.end(); touit++)
     {
         x = _shape.getPosition().x - touit->GetShape().getPosition().x;
         x *= x;
@@ -2563,13 +2568,26 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                         m_Bow = nullptr;
                     }
 
-                    m_Chests->push_back(*m_Chest);
+                    m_Chests.push_back(*m_Chest);
                     m_Chest = nullptr;
                 }
 
                 if (y == 22 && (x * 100) % 1700 == 0)
                 {
-                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                    Spawner* m_SlimeSpawner;
+                    switch (m_WorldType)
+                    {
+                    case CWorldManager::WORLDTYPE::PLAINS:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                        break;
+                    case CWorldManager::WORLDTYPE::ICE:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+                        break;
+                    default:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                        break;
+                    }
+                   
                     m_SlimeSpawner->ToggleSpawning();
                     m_SlimeSpawner->SetSpawnCount(2);
                     _spawners.push_front(*m_SlimeSpawner);
@@ -2682,13 +2700,25 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                         m_Bow = nullptr;
                     }
 
-                    m_Chests->push_back(*m_Chest);
+                    m_Chests.push_back(*m_Chest);
                     m_Chest = nullptr;
                 }
 
                 if (y == 48 && (x * 100) % 1700 == 0)
                 {
-                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                    Spawner* m_SlimeSpawner;
+                    switch (m_WorldType)
+                    {
+                    case CWorldManager::WORLDTYPE::PLAINS:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                        break;
+                    case CWorldManager::WORLDTYPE::ICE:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+                        break;
+                    default:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                        break;
+                    }
                     m_SlimeSpawner->ToggleSpawning();
                     m_SlimeSpawner->SetSpawnCount(2);
                     _spawners.push_front(*m_SlimeSpawner);
@@ -2723,7 +2753,19 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
             {
                 if (x == -m_GenerateOffsetX - 26 && y == 72)
                 {
-                    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, true);
+                    Spawner* m_SlimeSpawner;
+                    switch (m_WorldType)
+                    {
+                    case CWorldManager::WORLDTYPE::PLAINS:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                        break;
+                    case CWorldManager::WORLDTYPE::ICE:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+                        break;
+                    default:
+                        m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, x * 100 + 10, y * 100, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+                        break;
+                    }
                     m_SlimeSpawner->ToggleSpawning();
                     m_SlimeSpawner->SetSpawnCount(1);
                     m_SlimeSpawner->m_bCanSpawnBoss = true;
@@ -2743,55 +2785,28 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
                 m_Block->m_ArrayIndex = x + y;
                 m_Block = nullptr;
             }
-            
-
         }
     }   
 }
 
 void CWorldManager::CreateSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
-    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
-    m_SlimeSpawner->ToggleSpawning();
-    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-    _spawners.push_back(*m_SlimeSpawner);
-    m_SlimeSpawner = nullptr;
-
-    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
-    m_SlimeSpawner->ToggleSpawning();
-    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-    _spawners.push_back(*m_SlimeSpawner);
-    m_SlimeSpawner = nullptr;
-
-    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
-    m_SlimeSpawner->ToggleSpawning();
-    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-    _spawners.push_back(*m_SlimeSpawner);
-    m_SlimeSpawner = nullptr;
-
-    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
-    m_SlimeSpawner->ToggleSpawning();
-    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-    _spawners.push_back(*m_SlimeSpawner);
-    m_SlimeSpawner = nullptr;
-
-    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
-    m_SlimeSpawner->ToggleSpawning();
-    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-    _spawners.push_back(*m_SlimeSpawner);
-    m_SlimeSpawner = nullptr;
-
-    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
-    m_SlimeSpawner->ToggleSpawning();
-    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-    _spawners.push_back(*m_SlimeSpawner);
-    m_SlimeSpawner = nullptr;
-
-    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
-    m_SlimeSpawner->ToggleSpawning();
-    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
-    _spawners.push_back(*m_SlimeSpawner);
-    m_SlimeSpawner = nullptr;
+    switch (m_WorldType)
+    {
+    case CWorldManager::WORLDTYPE::PLAINS:
+        CreateSlimeSurfaceSpawners(_textureMaster, _audioManager, _spawners);
+        break;
+    case CWorldManager::WORLDTYPE::SAND:
+        break;
+    case CWorldManager::WORLDTYPE::ICE:
+        CreateSnowmanSurfaceSpawners(_textureMaster, _audioManager, _spawners);
+        break;
+    case CWorldManager::WORLDTYPE::HELL:
+        break;
+    default:
+        break;
+    }
+    
 }
 
 void CWorldManager::CreateSandBackgrounds(CTextureMaster* _textureMaster)
@@ -2957,4 +2972,94 @@ void CWorldManager::ParralaxBackground()
     }*/
 
     m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
+}
+
+void CWorldManager::CreateSlimeSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
+{
+    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -8000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -16000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -24000, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+}
+
+void CWorldManager::CreateSnowmanSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
+{
+    Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 8000, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 16000, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 24000, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -8000, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -16000, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
+
+    m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -24000, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);
+    m_SlimeSpawner->ToggleSpawning();
+    m_SlimeSpawner->SetSpawnCount(1 + rand() % 3);
+    _spawners.push_back(*m_SlimeSpawner);
+    m_SlimeSpawner = nullptr;
 }

@@ -2,6 +2,7 @@
 
 CAudioManager::CAudioManager()
 {
+	std::cout << "AUDIOMANAGER" << std::endl;
 	srand(time(NULL));
 
 	m_MineBuffer1.loadFromFile("Sounds/GroundMine.wav");
@@ -128,9 +129,9 @@ void CAudioManager::PlayMusic()
 {
 	if (m_Music.getStatus() != m_Music.Playing)
 	{
-		m_MusicSand.stop();
-		m_MusicIce.stop();
-		m_MusicHell.stop();
+		m_MusicSand.pause();
+		m_MusicIce.pause();
+		m_MusicHell.pause();
 		m_Music.openFromFile("Music/TerrariaDay.wav");
 		m_Music.setLoop(true);
 		m_Music.play();
@@ -162,9 +163,9 @@ void CAudioManager::PlayMusicSand()
 {
 	if (m_MusicSand.getStatus() != m_MusicSand.Playing)
 	{
-		m_Music.stop();
-		m_MusicIce.stop();
-		m_MusicHell.stop();
+		m_Music.pause();
+		m_MusicIce.pause();
+		m_MusicHell.pause();
 		m_MusicSand.openFromFile("Music/TerrariaDaySand.wav");
 		m_MusicSand.setLoop(true);
 		m_MusicSand.play();
@@ -196,9 +197,9 @@ void CAudioManager::PlayMusicIce()
 {
 	if (m_MusicIce.getStatus() != m_MusicIce.Playing)
 	{
-		m_Music.stop();
-		m_MusicHell.stop();
-		m_MusicSand.stop();
+		m_Music.pause();
+		m_MusicHell.pause();
+		m_MusicSand.pause();
 		m_MusicIce.openFromFile("Music/TerrariaDayIce.wav");
 		m_MusicIce.setLoop(true);
 		m_MusicIce.play();
@@ -230,9 +231,9 @@ void CAudioManager::PlayMusicHell()
 {
 	if (m_MusicHell.getStatus() != m_MusicHell.Playing)
 	{
-		m_Music.stop();
-		m_MusicSand.stop();
-		m_MusicIce.stop();
+		m_Music.pause();
+		m_MusicSand.pause();
+		m_MusicIce.pause();
 		m_MusicHell.openFromFile("Music/TerrariaDayHell.wav");
 		m_MusicHell.setLoop(true);
 		m_MusicHell.play();
@@ -264,9 +265,9 @@ void CAudioManager::PlayUnderGroundMusic()
 {
 	if (m_UnderGroundMusic.getStatus() != m_UnderGroundMusic.Playing)
 	{
-		m_UnderGroundMusicSand.stop();
-		m_UnderGroundMusicIce.stop();
-		m_UnderGroundMusicHell.stop();
+		m_UnderGroundMusicSand.pause();
+		m_UnderGroundMusicIce.pause();
+		m_UnderGroundMusicHell.pause();
 		m_UnderGroundMusic.openFromFile("Music/TerrariaUnderGround.wav");
 		m_UnderGroundMusic.setLoop(true);
 		m_UnderGroundMusic.play();
@@ -298,9 +299,9 @@ void CAudioManager::PlayUnderGroundMusicSand()
 {
 	if (m_UnderGroundMusicSand.getStatus() != m_UnderGroundMusicSand.Playing)
 	{
-		m_UnderGroundMusic.stop();
-		m_UnderGroundMusicIce.stop();
-		m_UnderGroundMusicHell.stop();
+		m_UnderGroundMusic.pause();
+		m_UnderGroundMusicIce.pause();
+		m_UnderGroundMusicHell.pause();
 		m_UnderGroundMusicSand.openFromFile("Music/TerrariaUnderGroundSand.wav");
 		m_UnderGroundMusicSand.setLoop(true);
 		m_UnderGroundMusicSand.play();
@@ -332,9 +333,9 @@ void CAudioManager::PlayUnderGroundMusicIce()
 {
 	if (m_UnderGroundMusicIce.getStatus() != m_UnderGroundMusicIce.Playing)
 	{
-		m_UnderGroundMusicSand.stop();
-		m_UnderGroundMusic.stop();
-		m_UnderGroundMusicHell.stop();
+		m_UnderGroundMusicSand.pause();
+		m_UnderGroundMusic.pause();
+		m_UnderGroundMusicHell.pause();
 		m_UnderGroundMusicIce.openFromFile("Music/TerrariaUnderGroundIce.wav");
 		m_UnderGroundMusicIce.setLoop(true);
 		m_UnderGroundMusicIce.play();
@@ -366,9 +367,9 @@ void CAudioManager::PlayUnderGroundMusicHell()
 {
 	if (m_UnderGroundMusicHell.getStatus() != m_UnderGroundMusicHell.Playing)
 	{
-		m_UnderGroundMusicSand.stop();
-		m_UnderGroundMusic.stop();
-		m_UnderGroundMusicIce.stop();
+		m_UnderGroundMusicSand.pause();
+		m_UnderGroundMusic.pause();
+		m_UnderGroundMusicIce.pause();
 		m_UnderGroundMusicHell.openFromFile("Music/TerrariaUnderGroundHell.wav");
 		m_UnderGroundMusicHell.setLoop(true);
 		m_UnderGroundMusicHell.play();

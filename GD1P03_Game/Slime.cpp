@@ -184,23 +184,22 @@ void Slime::Update()
 
 		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
 		{
-
 			if (a->GetBody()->GetFixtureList()->IsSensor() || b->GetBody()->GetFixtureList()->IsSensor())
 			{
-				int* damage = nullptr;
 				if (a->GetBody()->GetFixtureList()->IsSensor() && a->GetBody()->GetUserData().pointer)
 				{
-					int* damage = (int*) a->GetBody()->GetUserData().pointer;
+					int* damage = (int*)a->GetBody()->GetUserData().pointer;
 					TakeDamage(*damage, true);
 					std::cout << "Damage: " << *damage << std::endl;
+					damage = nullptr;
 				}
 				else if (b->GetBody()->GetUserData().pointer)
 				{
 					int* damage = (int*)b->GetBody()->GetUserData().pointer;
 					TakeDamage(*damage, true);
 					std::cout << "Damage: " << *damage << std::endl;
+					damage = nullptr;
 				}
-				damage = nullptr;
 			}
 		}
 

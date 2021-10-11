@@ -2,6 +2,8 @@
 
 CTextureMaster::CTextureMaster()
 {
+	std::cout << "TEXTURE MASTER" << std::endl;
+
 	//Textures
 	m_Dirt = new sf::Texture();
 	m_Dirt->loadFromFile("Images/Dirt.png"); // Dirt

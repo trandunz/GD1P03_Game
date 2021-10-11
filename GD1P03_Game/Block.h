@@ -121,6 +121,8 @@ public:
 		GOLDBULLET,
 		PURPLEBULLET,
 		GOLDENBULLET,
+
+		SNOWBALL,
 	};
 
 	enum class POTIONTYPE
@@ -166,25 +168,19 @@ public:
 	virtual void Update();
 	virtual void Render(sf::Shader* _shader = NULL);
 
-	void SetPosition(float _x, float _y);
-	sf::Vector2f GetPosition();
+	inline void SetPosition(float _x, float _y) { m_Shape.setPosition(_x, _y); }
+	inline sf::Vector2f GetPosition() { return m_Shape.getPosition(); };
 
 	virtual void SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y);
-	sf::Vector2f GetSize();
+	inline sf::Vector2f GetSize() { return m_Size; };
 
-	sf::Sprite& GetShape();
-	inline b2Body* GetBody() 
-	{
-		return m_Body;
-	}
+	inline sf::Sprite& GetShape() { return m_Shape; };
+	inline b2Body* GetBody() { return m_Body; };
 
 	virtual void DestroyBody();
 	virtual void CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor = false);
 
-	float GetHeight(float x) 
-	{
-		return 0;
-	}
+	inline float GetHeight(float x) { return 0;}
 
 	b2Body* m_Body;
 	b2BodyDef* m_BodyDef;

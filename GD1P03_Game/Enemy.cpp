@@ -13,6 +13,8 @@ CEnemy::CEnemy()
 
 CEnemy::~CEnemy()
 {
+	std::cout << "Enemy Destoryed" << std::endl;
+
 	DestroyBody();
 
 	m_Texture = nullptr;
@@ -152,6 +154,7 @@ void CEnemy::DestroyBody()
 	if (m_World != nullptr && m_Body != nullptr)
 	{
 		m_World->DestroyBody(m_Body);
+
 		m_Body = nullptr;
 	}
 }

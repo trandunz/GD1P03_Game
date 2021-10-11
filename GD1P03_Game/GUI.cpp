@@ -3,6 +3,7 @@
 
 GUI::GUI()
 {
+	std::cout << "UI Created" << std::endl;
 	m_Font = sf::Font();
 	m_Font.loadFromFile("Fonts/ANDYB.TTF");
 	m_TempBlock = nullptr;
@@ -13,6 +14,7 @@ GUI::GUI()
 
 GUI::~GUI()
 {
+	std::cout << "UI Destroyed" << std::endl;
 	m_InventoryItemStackCounters.clear();
 	m_InventorySlotMap.clear();
 	m_CraftingSlots.clear();
@@ -1901,7 +1903,7 @@ void GUI::HoldItemInInventory(CPlayer* _player, std::list<CChest>& _chests)
 	}
 }
 
-void GUI::DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event)
+void GUI::DeleteCurrentlyHeldItem(CPlayer* _player, sf::Event& _event)
 {
 	for (int i = 0; i < _player->m_InventoryMap.size(); i++)
 	{
@@ -6542,6 +6544,15 @@ void GUI::InitStatusEffectUI(CPlayer* _player)
 	m_StatusText.setOutlineColor(sf::Color::Black);
 	m_StatusText.setOrigin(m_StatusText.getGlobalBounds().width / 2, m_StatusText.getGlobalBounds().height / 2);
 	m_StatusText.setCharacterSize(20);
+}
+
+void GUI::CraftbookList(sf::View& _uiView, sf::View& _worldView)
+{
+}
+
+void GUI::InitCraftbookList(sf::View& _uiView, sf::View& _worldView)
+{
+
 }
 
 bool GUI::bPlayerIsMovingAnItem(CPlayer* _player)

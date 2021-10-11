@@ -58,7 +58,7 @@ public:
 	void LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player);
 	void ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<CChest>& _chests);
 	void HoldItemInInventory(CPlayer* _player, std::list<CChest>& _chests);
-	void DropCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
+	void DeleteCurrentlyHeldItem(CPlayer* _player, sf::Event& _event);
 	bool MousePointerOverSlot();
 
 	bool bPlayerIsMovingAnItem(CPlayer* _player);
@@ -71,6 +71,9 @@ public:
 
 	void StatusEffectUI(sf::RenderWindow* _renderWindow, CPlayer* _player);
 	void InitStatusEffectUI(CPlayer* _player);
+
+	void CraftbookList(sf::View& _uiView, sf::View& _worldView);
+	void InitCraftbookList(sf::View& _uiView, sf::View& _worldView);
 
 	//Sprites
 	sf::Sprite m_MousePos;
@@ -93,6 +96,8 @@ public:
 	bool m_bCanWorkBench = false;
 	bool m_bCanAnvil = false;
 private:
+
+	bool m_bCraftbookOpen = false;
 
 	sf::Font m_Font;
 
@@ -128,10 +133,6 @@ private:
 	sf::Clock m_FirstEmpyChestSlotTimer;
 
 	CBlock* m_TempBlock;
-
-
-
-
 };
 #endif
 

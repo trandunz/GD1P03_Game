@@ -12,7 +12,7 @@ class CProjectile : public CBlock
 {
 public:
 	CProjectile(CBlock::PROJECTILETYPE _projtype = CBlock::PROJECTILETYPE::ARROW);
-	CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, CBlock::PROJECTILETYPE _projtype = CBlock::PROJECTILETYPE::ARROW, Bow* _activeBow = nullptr);
+	CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, CBlock::PROJECTILETYPE _projtype = CBlock::PROJECTILETYPE::ARROW, Bow* _activeBow = nullptr, bool _friendly = true);
 	~CProjectile();
 
 	void Update();
@@ -24,9 +24,10 @@ public:
 	bool m_bMARKASDESTROY = false;
 
 	float m_Weight = 0.8f;
-private:
 
+private:
 	int m_Damage = 25.0f;
+	bool m_Friendly = true;
 
 	bool m_Bullet = false;
 

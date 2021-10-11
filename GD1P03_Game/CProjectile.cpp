@@ -9,6 +9,7 @@ CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 	m_Texture = new sf::Texture();
 	m_Type = CBlock::BLOCKTYPE::PROJECTILE;
 	m_ProjectileType = _projtype;
+	m_Friendly = true;
 
 	// Type Specific Data
 	switch (m_ProjectileType)
@@ -23,7 +24,7 @@ CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 		break;
 	case CBlock::PROJECTILETYPE::POISONARROW:
 		m_Texture->loadFromFile("Images/PoisonArrow.png");
-		70.0f;
+		m_Damage = 70.0f;
 		break;
 	case CBlock::PROJECTILETYPE::CURSEDARROW:
 		m_Texture->loadFromFile("Images/CursedArrow.png");
@@ -60,14 +61,16 @@ CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 	m_Shape.setTexture(*m_Texture, true);
 	m_Shape.setScale(0.3f, 0.3f);
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	
 }
 
-CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, CBlock::PROJECTILETYPE _projtype, Bow* _activeBow)
+CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, CBlock::PROJECTILETYPE _projtype, Bow* _activeBow, bool _friendly)
 {
 	m_World = &_world;
 	m_Texture = new sf::Texture();
 	m_ProjectileType = _projtype;
 	m_Type = CBlock::BLOCKTYPE::PROJECTILE;
+	m_Friendly = _friendly;
 
 	// Type Specific Data
 	switch (m_ProjectileType)
@@ -109,6 +112,11 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 		m_Damage = 175.0f;
 		m_Bullet = true;
 		break;
+	case CBlock::PROJECTILETYPE::SNOWBALL:
+		m_Texture->loadFromFile("Images/Snowball.png");
+		m_Damage = 25.0f;
+		m_Bullet = true;
+		break;
 	default:
 		m_Texture->loadFromFile("Images/Arrow.png");
 		m_Damage = 25.0f;
@@ -128,12 +136,21 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 		float dy = _mousPos.y - m_Shape.getPosition().y;
 		m_Body->SetLinearVelocity(b2Vec2(dx / 25 / m_Weight * _activeBow->m_BowPower, dy / 25 / m_Weight * _activeBow->m_BowPower));
 	}
-	else
+	else if (m_Bullet)
 	{
 		float dx = _mousPos.x - m_Shape.getPosition().x;
 		float dy = _mousPos.y - m_Shape.getPosition().y;
 
 		m_Body->SetLinearVelocity(b2Vec2(dx, dy));
+
+		std::cout << dx << " (:) " << dy << std::endl;
+	}
+	else
+	{
+		float dx = _mousPos.x - m_Shape.getPosition().x;
+		float dy = _mousPos.y - m_Shape.getPosition().y;
+
+		m_Body->SetLinearVelocity(b2Vec2(dx / 50, dy / 50));
 		
 		std::cout << dx << " (:) " << dy << std::endl;
 	}
@@ -142,6 +159,7 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 CProjectile::~CProjectile()
 {
 	DestroyBody();
+
 	delete m_Texture;
 
 	m_Texture = nullptr;
@@ -159,19 +177,19 @@ void CProjectile::Update()
 
 		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
 		{
-			if (a->GetBody() != m_Body && a->GetBody()->GetFixtureList()->IsSensor())
-			{
-
-			}
-			else if (b->GetBody() != m_Body && b->GetBody()->GetFixtureList()->IsSensor())
-			{
-
-			}
-			else if (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0004 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0004) // _ENEMY_FILTER_
+			if (m_Friendly && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0004 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0004)) // _ENEMY_FILTER_
 			{
 				m_bMARKASDESTROY = true;
 			}
-			else if (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006) // _WORLD_FILTER_
+			else if (m_Friendly && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006 || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == 0x0006)) // _WORLD_FILTER_
+			{
+				m_bMARKASDESTROY = true;
+			}
+			else if (!m_Friendly && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _WORLD_FILTER_ || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _WORLD_FILTER_)) // _WORLD_FILTER_
+			{
+				m_bMARKASDESTROY = true;
+			}
+			else if (!m_Friendly && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_ || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_)) // _ENEMY_FILTER_
 			{
 				m_bMARKASDESTROY = true;
 			}
@@ -234,10 +252,21 @@ void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _s
 	}
 	m_FixtureDef->density = 1.0f;
 	m_FixtureDef->shape = m_b2pShape;
-	m_FixtureDef->filter.categoryBits = _PLAYER_FILTER_;
-	m_FixtureDef->filter.maskBits = _ENEMY_FILTER_;
-	m_FixtureDef->filter.maskBits = _WORLD_FILTER_;
-	m_FixtureDef->filter.groupIndex = _ENEMY_GROUPINDEX_;
+	if (m_Friendly)
+	{
+		m_FixtureDef->filter.categoryBits = _PLAYER_FILTER_;
+		m_FixtureDef->filter.maskBits = _ENEMY_FILTER_;
+		m_FixtureDef->filter.maskBits = _WORLD_FILTER_;
+		m_FixtureDef->filter.groupIndex = _ENEMY_GROUPINDEX_;
+	}
+	else if (!m_Friendly)
+	{
+		m_FixtureDef->filter.categoryBits = _PROJECTILE_FILTER_;
+		m_FixtureDef->filter.maskBits = _PLAYER_FILTER_;
+		m_FixtureDef->filter.maskBits = _WORLD_FILTER_;
+		m_FixtureDef->filter.groupIndex = _PLAYER_GROUPINDEX_;
+	}
+
 	m_Body->CreateFixture(m_FixtureDef);
 
 	// Sprite

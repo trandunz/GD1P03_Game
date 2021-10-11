@@ -123,6 +123,12 @@
     <ClCompile Include="CArmour.cpp">
       <Filter>Source Files\Items / Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="CSnowman.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="CCraftbook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h">
@@ -202,6 +208,12 @@
     </ClInclude>
     <ClInclude Include="CArmour.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCraftbook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSnowman.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

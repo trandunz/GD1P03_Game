@@ -1,11 +1,10 @@
+#pragma once
+
 // Scene Values
 #define _PLAINS_ 0
 #define _ICE 1
 #define _SAND_ 2 
 #define _HELL_ 3
-
-// Non-Local Includes
-#include <iostream>
 
 // Local Includes
 #include "CDebugWindow.h"
@@ -14,7 +13,7 @@
 enum class GAMESTATE
 {
 	MENU,
-	GAME,
+	GAME
 };
 
 // Forward Declaration
@@ -22,17 +21,17 @@ void Start();
 void Update();
 void Render();
 
-static void InitWorldView();
-static void InitUI();
+void InitWorldView();
+void InitUI();
 
-static void CenterViewsToSprite(sf::Sprite _object);
+void CenterViewsToSprite(sf::Sprite _object);
 
 bool PickupItemOnGround();
 
-static void InitShaders();
+void InitShaders();
 
-static void InitGameOver();
-static void GameOverScreen();
+void InitGameOver();
+void GameOverScreen();
 
 void ChangeScene(bool* _changeScene, int* _sceneValue);
 void SceneMusic();
@@ -141,12 +140,42 @@ int main()
 		icon.loadFromFile("Images/Chest.png");
 		m_RenderWindow->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 	}
-	
+
+	m_AudioManager = nullptr;
+
 	//
+
+	if (m_bChangeScenes != nullptr)
+	{
+		delete m_bChangeScenes;
+		m_bChangeScenes = nullptr;
+	}
+
+	if (m_SceneValue != nullptr)
+	{
+		delete m_SceneValue;
+		m_SceneValue = nullptr;
+	}
+	m_SceneValue = nullptr;
+	m_DebugWindow = nullptr;
+	m_bChangeScenes = nullptr;
+	m_SceneValue = new int(_PLAINS_);
+	m_bChangeScenes = new bool(false);
+
+	// Textures
+	if (m_TextureMaster == nullptr)
+	{
+		m_TextureMaster = new CTextureMaster();
+	}
+
 	Start();
 	Update();
 	//
 
+	for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
+	{
+		it = m_Spawners.erase(it);
+	}
 	m_Spawners.clear();
 
 	delete m_DebugWindow;
@@ -163,6 +192,7 @@ int main()
 	delete m_SurfaceShader;
 	delete m_TourchShader;
 	delete m_MainMenu;
+
 	m_MainMenu = nullptr;
 	m_CoreShader = nullptr;
 	m_ShaderMiniMap = nullptr;
@@ -196,6 +226,12 @@ int main()
 /// </summary>
 void Start()
 {
+	if (m_AudioManager != nullptr)
+	{
+		delete m_AudioManager;
+		m_AudioManager = nullptr;
+	}
+	m_AudioManager = new CAudioManager();
 	GameStateSpecificStart(m_GameState);
 }
 
@@ -339,6 +375,11 @@ void InitShaders()
 	{
 		m_CoreShader = new sf::Shader();
 	}
+	else
+	{
+		delete m_CoreShader;
+		m_TourchShader = nullptr;
+	}
 	if (!m_CoreShader->loadFromFile("Shaders/vertex_shader.vert", "Shaders/fragment_shader.frag"))
 	{
 		std::cout << "Core Shader Failed To Load!" << std::endl;
@@ -346,6 +387,11 @@ void InitShaders()
 	if (m_SurfaceShader == nullptr)
 	{
 		m_SurfaceShader = new sf::Shader();
+	}
+	else
+	{
+		delete m_SurfaceShader;
+		m_TourchShader = nullptr;
 	}
 	if (!m_SurfaceShader->loadFromFile("Shaders/vertex_shader_surface.vert", "Shaders/fragment_shader_surface.frag"))
 	{
@@ -362,6 +408,11 @@ void InitShaders()
 	if (m_TourchShader == nullptr)
 	{
 		m_TourchShader = new sf::Shader();
+	}
+	else
+	{
+		delete m_TourchShader;
+		m_TourchShader = nullptr;
 	}
 	if (!m_TourchShader->loadFromFile("Shaders/vertex_shader_Tourch.vert", "Shaders/fragment_shader_Tourch.frag"))
 	{
@@ -411,28 +462,42 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 {
 	if (*_changeScene == true)
 	{
+		std::cout << "Change Scene!" << std::endl;
+
 		*_changeScene = false;
-		delete m_WorldManager;
-		m_WorldManager = nullptr;
+
+		if (m_WorldManager != nullptr)
+		{
+			delete m_WorldManager;
+			m_WorldManager = nullptr;
+		}
+
+		for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
+		{
+			it = m_Spawners.erase(it);
+		}
 		m_Spawners.clear();
 
-		m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader); // add enum
-		
-		if (*_sceneValue == 0)
+		if (m_WorldManager == nullptr)
 		{
-			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::PLAINS);
-		}
-		else if (*_sceneValue == 1)
-		{
-			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::ICE);
-		}
-		else if (*_sceneValue == 2)
-		{
-			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::SAND);
-		}
-		else if (*_sceneValue == 3)
-		{
-			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::HELL);
+			m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader);
+
+			if (*_sceneValue == 0)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::PLAINS);
+			}
+			else if (*_sceneValue == 1)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::ICE);
+			}
+			else if (*_sceneValue == 2)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::SAND);
+			}
+			else if (*_sceneValue == 3)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::HELL);
+			}
 		}
 		
 		if (m_Player != nullptr)
@@ -444,6 +509,8 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 			m_WorldManager->InitShaders(m_CoreShader, m_SurfaceShader, m_TourchShader);
 		}
 	}
+	_changeScene = nullptr;
+	_sceneValue = nullptr;
 }
 
 void SceneMusic()
@@ -475,75 +542,125 @@ void SceneMusic()
 
 void GameStateSpecificStart(GAMESTATE _state) 
 {
+	for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
+	{
+		it = m_Spawners.erase(it);
+	}
+	m_Spawners.clear();
 
 	switch (_state)
 	{
 	case GAMESTATE::MENU:
 	{
+		if (m_WorldManager != nullptr)
+		{
+			delete m_WorldManager;
+			m_WorldManager = nullptr;
+		}
+
 		if (m_MainMenu != nullptr)
 		{
 			delete m_MainMenu;
 			m_MainMenu = nullptr;
 		}
 
-		if (m_AudioManager != nullptr)
+		if (m_Player != nullptr)
 		{
-			delete m_AudioManager;
-			m_AudioManager = nullptr;
+			delete m_Player;
+			m_Player = nullptr;
 		}
 
-		if (m_bChangeScenes != nullptr)
+		if (m_GUI != nullptr)
 		{
-			delete m_bChangeScenes;
-			m_bChangeScenes = nullptr;
+			delete m_GUI;
+			m_GUI = nullptr;
 		}
 
-		if (m_SceneValue != nullptr)
+		if (m_DebugWindow != nullptr)
 		{
-			delete m_SceneValue;
-			m_SceneValue = nullptr;
+			delete m_DebugWindow;
+			m_DebugWindow = nullptr;
 		}
 
-		// Init Change Scene Variables
-		m_bChangeScenes = new bool;
-		m_SceneValue = new int;
-		*m_bChangeScenes = false;
+		if (m_CoreShader != nullptr)
+		{
+			delete m_CoreShader;
+			m_CoreShader = nullptr;
+		}
 
-		// Music
-		m_AudioManager = new CAudioManager();
+		if (m_SurfaceShader != nullptr)
+		{
+			delete m_SurfaceShader;
+			m_SurfaceShader = nullptr;
+		}
+
+		if (m_TourchShader != nullptr)
+		{
+			delete m_TourchShader;
+			m_TourchShader = nullptr;
+		}
 
 		m_MainMenu = new CMainMenu(m_RenderWindow, m_Font);
-
-		SceneMusic();
 
 		break;
 	}
 	case GAMESTATE::GAME:
 	{
-		InitShaders();
-		InitGameOver();
+		if (m_WorldManager != nullptr)
+		{
+			delete m_WorldManager;
+			m_WorldManager = nullptr;
+		}
 
-		// Textures
-		m_TextureMaster = new CTextureMaster();
+		if (m_MainMenu != nullptr)
+		{
+			delete m_MainMenu;
+			m_MainMenu = nullptr;
+		}
+
+		if (m_Player != nullptr)
+		{
+			delete m_Player;
+			m_Player = nullptr;
+		}
+
+		if (m_GUI != nullptr)
+		{
+			delete m_GUI;
+			m_GUI = nullptr;
+		}
+
+		if (m_CoreShader != nullptr)
+		{
+			delete m_CoreShader;
+			m_CoreShader = nullptr;
+		}
+
+		if (m_SurfaceShader != nullptr)
+		{
+			delete m_SurfaceShader;
+			m_SurfaceShader = nullptr;
+		}
+
+		if (m_TourchShader != nullptr)
+		{
+			delete m_TourchShader;
+			m_TourchShader = nullptr;
+		}
+
+		InitShaders();
+		InitGameOver();	
 
 		// Main RenderWindow Event
 		m_Event = sf::Event();
 
-		// UI
 		m_GUI = new GUI();
 
-		// Player
 		m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
 		m_Player->Start();
 
-		// Map
-		m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader, m_TourchShader);
-		m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners);
-
-		// Init UI
-		InitUI();
-
 		// Init World
+		InitUI();
 		InitWorldView();
 
 		// Center All Views To Player
@@ -559,10 +676,35 @@ void GameStateSpecificStart(GAMESTATE _state)
 		m_bClose = false;
 
 		// Debug
-		m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue);
-		m_DebugWindow->Start();
+		if (m_DebugWindow == nullptr)
+		{
+			m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue);
+			m_DebugWindow->Start();
+		}
 
 		m_GUI->InitArmourOnPlayer(m_Player);
+
+		if (m_WorldManager == nullptr)
+		{
+			m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader);
+
+			if (*m_SceneValue == 0)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::PLAINS);
+			}
+			else if (*m_SceneValue == 1)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::ICE);
+			}
+			else if (*m_SceneValue == 2)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::SAND);
+			}
+			else if (*m_SceneValue == 3)
+			{
+				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::HELL);
+			}
+		}
 
 		break;
 	}
@@ -570,7 +712,6 @@ void GameStateSpecificStart(GAMESTATE _state)
 		break;
 	}
 }
-
 void GameStateSpecificUpdate(GAMESTATE _state)
 {
 	switch (_state)
@@ -595,8 +736,9 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 				if (m_MainMenu->m_Play->bIsinBounds(m_MousePos))
 				{
 					m_GameState = GAMESTATE::GAME;
-					GameStateSpecificStart(GAMESTATE::GAME);
 					CreateRenderWindow(sf::Style::Default);
+					Start();
+					return;
 				}
 				else if (m_MainMenu->m_Options->bIsinBounds(m_MousePos))
 				{
@@ -612,7 +754,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 		}
 
 		m_MainMenu->Update(m_Event);
-		
+
 		// Variable Scene Music
 		SceneMusic();
 
@@ -654,7 +796,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 				{
 					if (!m_Player->m_bInventoryOpen)
 					{
-						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
+						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
 					}
 				}
 				break;
@@ -683,17 +825,27 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 			// General Key Pressed
 			if (m_Event.type == sf::Event::KeyPressed)
 			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+				{
+					m_GameState = GAMESTATE::MENU;
+					CreateRenderWindow(sf::Style::Close + sf::Style::Titlebar);
+					Start();
+					return;
+				}
+
 				if (m_Player != nullptr)
 				{
 					m_Player->Movement(m_Event);
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
 					{
-						m_Player->ToggleInventoryUI(*m_WorldManager->m_Chests);
+						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
 					}
 
 					break;
 				}
+
+				
 			}
 
 			// Mouse Wheel Scroll
@@ -702,15 +854,6 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 				if (m_Player != nullptr)
 				{
 					m_GUI->HotBarScrolling(m_Event, m_Player);
-				}
-			}
-
-			// Right On Press Mouse; m_Player == nullptr ? NA
-			if (m_Player != nullptr)
-			{
-				if (m_Player->bInventoryOpen() && sf::Mouse::isButtonPressed(sf::Mouse::Right) && m_Event.type == sf::Event::MouseButtonPressed)
-				{
-					m_GUI->DropCurrentlyHeldItem(m_Player, m_Event);
 				}
 			}
 
@@ -732,7 +875,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 					}
 				}
 
-				m_GUI->ClickedItemInInventory(m_Event, m_Player, *m_WorldManager->m_Chests);
+				m_GUI->ClickedItemInInventory(m_Event, m_Player, m_WorldManager->m_Chests);
 			}
 			// Mouse Released ? GUI->LetGoOfInventoryItem
 			else if (m_Player != nullptr && m_Event.type == sf::Event::MouseButtonReleased)
@@ -786,7 +929,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 				}
 
 				// Player Update And Movement
-				m_Player->Interact(*m_WorldManager->m_Furnaces, *m_WorldManager->m_Chests, *m_WorldManager->m_Doors, *m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, *m_WorldManager->m_WorkBenches, *m_WorldManager->m_Tourches);
+				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, *m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, m_WorldManager->m_WorkBenches, m_WorldManager->m_Tourches);
 				m_Player->Update(MousePos);
 				m_Player->Movement();
 
@@ -802,7 +945,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 
 						m_Chest->m_Inventory = m_Player->m_InventoryMap;
 						m_Chest->m_InventoryStackValues = m_Player->m_InventoryStackValues;
-						m_WorldManager->m_Chests->push_back(*m_Chest);
+						m_WorldManager->m_Chests.push_back(*m_Chest);
 						m_Chest = nullptr;
 					}
 
@@ -860,12 +1003,6 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 				// World Step
 				m_World.Step(1 / 60.0f, 30.0f, 30.0f);
 			}
-
-
-			m_MainMenu->Update(m_Event);
-
-			// Portal To Next Scene?
-			ChangeScene(m_bChangeScenes, m_SceneValue);
 		}
 
 		break;
@@ -878,8 +1015,10 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 	// Main Render
 	//
 	Render();
-}
 
+	// Portal To Next Scene?
+	ChangeScene(m_bChangeScenes, m_SceneValue);
+}
 void GameStateSpecificRender(GAMESTATE _state)
 {
 	switch (_state)
@@ -891,8 +1030,12 @@ void GameStateSpecificRender(GAMESTATE _state)
 	}
 	case GAMESTATE::GAME:
 	{
-		// Debug Window
-		m_DebugWindow->Render();
+		if (m_DebugWindow != nullptr)
+		{
+			// Debug Window
+			m_DebugWindow->Render();
+		}
+		
 
 		// Mag Variables For Culling
 		float Mag1 = 0;
@@ -925,6 +1068,18 @@ void GameStateSpecificRender(GAMESTATE _state)
 						spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
 					}
 				}
+
+				for (CSnowman& snowman : spawner.m_Snowmans)
+				{
+					x = snowman.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = snowman.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.8)
+					{
+						spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(snowman.GetShape()));
+					}
+				}
 			}
 		}
 
@@ -941,12 +1096,12 @@ void GameStateSpecificRender(GAMESTATE _state)
 			m_GUI->HealthUI(m_RenderWindow, m_Player, m_TextureMaster);
 			m_GUI->MiniMapUI(m_RenderWindow, *m_WorldManager->m_Chunk, m_WorldManager->m_SkyChunk, m_Player, m_SurfaceShader);
 			m_GUI->CraftingUI(m_RenderWindow, m_Player, m_TextureMaster, m_UIView);
-			m_GUI->UtilityUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
-			m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
-			m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, *m_WorldManager->m_Chests);
+			m_GUI->UtilityUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
+			m_GUI->InventoryUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
+			m_GUI->ChestUI(m_RenderWindow, m_Player, m_UIView, m_WorldView, m_Event, m_TextureMaster, m_WorldManager->m_Chests);
 			m_GUI->StatusEffectUI(m_RenderWindow, m_Player);
 			m_GUI->FPSUI(m_RenderWindow, m_Fps);
-			m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, *m_WorldManager->m_Chests);
+			m_GUI->Render(m_RenderWindow, m_Player, m_WorldView, m_UIView, m_WorldManager->m_Chests);
 		}
 
 		// "You Died"

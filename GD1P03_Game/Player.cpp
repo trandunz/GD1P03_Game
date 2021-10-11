@@ -48,9 +48,22 @@ CPlayer::CPlayer(sf::RenderWindow* _renderWindow, b2World& _world, const float& 
 
 CPlayer::~CPlayer()
 {
-	m_InventoryMap.clear();
-	m_InventoryStackValues.clear();
+	for (std::list<CProjectile>::iterator it = m_Projectiles.begin(); it != m_Projectiles.end(); it++)
+	{
+		it = m_Projectiles.erase(it);
+	}
 	m_Projectiles.clear();
+	for (std::map<int, CBlock>::iterator it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
+	{
+		it = m_InventoryMap.erase(it);
+	}
+	m_InventoryMap.clear();
+	for (std::map<int, int>::iterator it = m_InventoryStackValues.begin(); it != m_InventoryStackValues.end(); it++)
+	{
+		it = m_InventoryStackValues.erase(it);
+	}
+	m_InventoryStackValues.clear();
+	
 
 	DestroyBody();
 	if (m_Pickaxe != nullptr)
@@ -1115,7 +1128,6 @@ void CPlayer::TakeDamage(float _damage)
 {
 	if (m_DamageTimer->getElapsedTime().asSeconds() >= 0.3f)
 	{
-
 		std::cout << "Player Took Damage!" << std::endl;
 		std::cout << "Armour : " << m_Armour << std::endl;
 		m_Health -= (_damage / (1 + m_Armour / 6));
@@ -2311,9 +2323,9 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_FixtureDef.friction = 0.5f;
 	m_FixtureDef.restitution = 0.01f;
 	m_FixtureDef.filter.categoryBits = _PLAYER_FILTER_;
-	m_FixtureDef.filter.groupIndex = -_PLAYER_GROUPINDEX_;
-	m_FixtureDef.filter.maskBits = _ENEMY_FILTER_;
 	m_FixtureDef.filter.maskBits = _WORLD_FILTER_;
+	m_FixtureDef.filter.groupIndex = _PLAYER_GROUPINDEX_;
+	
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	// Set SFML Shape Transform To Box 2D Body Transform
@@ -2327,6 +2339,7 @@ void CPlayer::DestroyBody()
 	if (m_World != nullptr && m_Body != nullptr)
 	{
 		m_World->DestroyBody(m_Body);
+
 		m_Body = nullptr;
 	}
 }

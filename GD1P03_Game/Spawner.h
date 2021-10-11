@@ -9,6 +9,7 @@
 #include "Slime.h"
 #include "Zombie.h"
 #include "CWizard.h"
+#include "CSnowman.h"
 
 class Spawner
 {
@@ -32,6 +33,7 @@ public:
 	~Spawner();
 
 	std::list<Slime> m_Slimes;
+	std::list<CSnowman> m_Snowmans;
 	std::list<Zombie> m_Zombies;
 	std::list<CWizard> m_Wizards;
 
@@ -63,10 +65,11 @@ private:
 
 	float m_Scale = 50.0f;
 
-	sf::Clock* m_SpawnTimer;
+	sf::Clock m_SpawnTimer;
 
 	Slime* m_Slimeptr;
 	Zombie* m_Zombieptr;
+	CSnowman* m_Snowmanptr;
 
 	sf::Clock m_DeathParticleTimer;
 

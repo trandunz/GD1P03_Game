@@ -13,6 +13,7 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 	m_Shader = _shader;
 	m_AudioManager = _audioManager;
 	m_TourchShader = _tourchShader;
+	m_Snowmanptr = nullptr;
 
 	switch (_type)
 	{
@@ -23,6 +24,11 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 	case CEnemy::ENEMYTYPE::SLIME:
 	{
 		m_DeathParticles = new CParticleSystem(600, sf::seconds(0.6f), sf::Color(0, 99, 28, 225));
+		break;
+	}
+	case CEnemy::ENEMYTYPE::SNOWMAN:
+	{
+		m_DeathParticles = new CParticleSystem(600, sf::seconds(0.6f), sf::Color(240, 240, 240, 225));
 		break;
 	}
 	default:
@@ -44,8 +50,6 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 
 void Spawner::Start()
 {
-	m_SpawnTimer = new sf::Clock();
-
 	m_DeathParticles->Start();
 }
 
@@ -65,7 +69,7 @@ void Spawner::Update()
 	{
 		if (m_bSpawn && m_Slimes.size() < m_SpawnCount && m_Player != nullptr)
 		{
-			if (m_SpawnTimer->getElapsedTime().asSeconds() >= m_SpawnFrequency)
+			if (m_SpawnTimer.getElapsedTime().asSeconds() >= m_SpawnFrequency)
 			{
 				if (m_bCanSpawnBoss)
 				{
@@ -78,6 +82,7 @@ void Spawner::Update()
 
 				std::cout << "slime spawned" << std::endl;
 				m_Slimes.push_front(*m_Slimeptr);
+				m_Slimeptr = nullptr;
 				m_Slimes.front().SetPlayer(m_Player);
 				m_Slimes.front().Start();
 
@@ -126,7 +131,78 @@ void Spawner::Update()
 
 				m_Slimeptr = nullptr;
 				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-				m_SpawnTimer->restart();
+				m_SpawnTimer.restart();
+			}
+		}
+		break;
+	}
+	case CEnemy::ENEMYTYPE::SNOWMAN:
+	{
+		if (m_bSpawn && m_Snowmans.size() < m_SpawnCount && m_Player != nullptr)
+		{
+			if (m_SpawnTimer.getElapsedTime().asSeconds() >= m_SpawnFrequency)
+			{
+				if (m_bCanSpawnBoss)
+				{
+					m_Snowmanptr = new CSnowman(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager, true);
+				}
+				else
+				{
+					m_Snowmanptr = new CSnowman(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager);
+				}
+
+				std::cout << "Snowman spawned" << std::endl;
+				m_Snowmans.push_front(*m_Snowmanptr);
+				m_Snowmanptr = nullptr;
+				m_Snowmans.front().SetPlayer(m_Player);
+				m_Snowmans.front().Start();
+
+				if (m_Snowmans.front().m_bIsBoss)
+				{
+					x = m_Snowmans.front().GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = m_Snowmans.front().GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag = sqrt((x * x) + (y * y));
+
+					m_iBossCount++;
+
+					if (m_Player == nullptr)
+					{
+						if (m_Shape.getPosition().y < 5000 || m_iBossCount > 1)
+						{
+							m_Snowmans.pop_front();
+							m_iBossCount--;
+						}
+						else
+						{
+							if (Mag < 1920 * 4.8)
+							{
+								std::cout << "Boss Snowman Spawned!" << "(" << m_Snowmans.size() << ")" << std::endl;
+								m_AudioManager->PlayKingSlimeSpawn();
+							}
+						}
+					}
+					else
+					{
+						if (m_Shape.getPosition().y < 5000 || m_iBossCount > 1 || m_Player->GetShape().getPosition().y < 5500)
+						{
+							m_Snowmans.pop_front();
+							m_iBossCount--;
+						}
+						else
+						{
+							if (Mag < 1920 * 4.8)
+							{
+								std::cout << "Boss Snowman Spawned!" << "(" << m_Snowmans.size() << ")" << std::endl;
+								m_AudioManager->PlayKingSlimeSpawn();
+							}
+						}
+					}
+
+				}
+
+				m_Snowmanptr = nullptr;
+				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+				m_SpawnTimer.restart();
 			}
 		}
 		break;
@@ -134,26 +210,6 @@ void Spawner::Update()
 
 	case CEnemy::ENEMYTYPE::NPC:
 	{
-		if (m_bSpawn && m_Wizards.size() < m_SpawnCount && m_Player != nullptr)
-		{
-			if (m_SpawnTimer->getElapsedTime().asSeconds() >= m_SpawnFrequency)
-			{
-				CWizard* tempwizard = new CWizard(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager);
-
-				std::cout << "slime spawned" << std::endl;
-				m_Wizards.push_front(*tempwizard);
-				m_Wizards.front().SetPlayer(m_Player);
-				m_Wizards.front().Start();
-
-				//x = m_Wizards.front().GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
-				//y = m_Wizards.front().GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
-				//Mag = sqrt((x * x) + (y * y));
-
-				tempwizard = nullptr;
-				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
-				m_SpawnTimer->restart();
-			}
-		}
 		break;
 	}
 
@@ -193,6 +249,36 @@ void Spawner::Update()
 		// Update
 		slime.Update();
 		
+	}
+
+	for (CSnowman& snowman : m_Snowmans)
+	{
+		x = snowman.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+		y = snowman.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+		Mag = sqrt((x * x) + (y * y));
+
+		// Slime Dies
+		if (snowman.GetHealth() <= 0.0f && m_Player != nullptr)
+		{
+			snowman.m_MARKASDESTORY = true;
+
+			snowman.LoosePlayer();
+
+			//m_bClose = true;
+		}
+		// Slime Spawns When Player Dead
+		else if (!snowman.bHasPlayer() && m_Player != nullptr)
+		{
+			snowman.SetPlayer(m_Player);
+		}
+		else if (Mag > 6000)
+		{
+			snowman.m_MARKASDESTORY = true;
+			snowman.LoosePlayer();
+		}
+
+		// Update
+		snowman.Update();
 	}
 
 	sf::Time elapsedTime = m_DeathParticleTimer.getElapsedTime();
@@ -545,9 +631,64 @@ void Spawner::Update()
 			}
 			m_DeathParticleTimer.restart();
 			m_DeathParticles->SetEmitter(sit->GetShape().getPosition());
-			m_SpawnTimer->restart();
+			m_SpawnTimer.restart();
 
 			sit = m_Slimes.erase(sit);
+		}
+	}
+
+	std::list<CSnowman>::iterator snit;
+	for (snit = m_Snowmans.begin(); snit != m_Snowmans.end(); snit++)
+	{
+		if (snit->m_MARKASDESTORY)
+		{
+			// Distance Based Sound
+			float Mag1 = sqrt(((snit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x) * (snit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x)) + ((snit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y) * (snit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y)));
+			if (Mag1 <= 1920 * 1.8f && Mag1 <= 520 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(30);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 720 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(25);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 920 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(20);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1120 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(15);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1320 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(10);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1520 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(5);
+			}
+			else if (Mag1 <= 1920 * 1.8f && Mag1 <= 1720 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(3);
+			}
+			else if (Mag1 <= 1920 * 1.8f)
+			{
+				m_AudioManager->PlaySlimeDeath(1);
+			}
+
+			// Delete
+			snit->m_MARKASDESTORY = false;
+
+			float x = 0;
+			float y = 0;
+
+			m_DeathParticles->SetColor(sf::Color(240, 240, 240, 225));
+			m_DeathParticleTimer.restart();
+			m_DeathParticles->SetEmitter(sit->GetShape().getPosition());
+			m_SpawnTimer.restart();
+
+			snit = m_Snowmans.erase(snit);
 		}
 	}
 }
@@ -574,6 +715,21 @@ void Spawner::Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
 			else
 			{
 				slime.Render(m_Shader);
+			}
+		}
+		break;
+	}
+	case CEnemy::ENEMYTYPE::SNOWMAN:
+	{
+		for (CSnowman& snowman : m_Snowmans)
+		{
+			if (_isInRangeOfLightSource)
+			{
+				snowman.Render(_tourchshader);
+			}
+			else
+			{
+				snowman.Render(m_Shader);
 			}
 		}
 		break;
@@ -610,6 +766,11 @@ void Spawner::LoosePlayer()
 	{
 		slime.SetPlayer(nullptr);
 	}
+
+	for (CSnowman& snowman : m_Snowmans)
+	{
+		snowman.SetPlayer(nullptr);
+	}
 }
 
 void Spawner::SetPlayer(CPlayer* _player)
@@ -619,6 +780,11 @@ void Spawner::SetPlayer(CPlayer* _player)
 	for (Slime& slime : m_Slimes)
 	{
 		slime.SetPlayer(m_Player);
+	}
+
+	for (CSnowman& snowman : m_Snowmans)
+	{
+		snowman.SetPlayer(m_Player);
 	}
 }
 
@@ -646,16 +812,34 @@ void Spawner::KillAllChilderan()
 
 Spawner::~Spawner()
 {
+	std::cout << "Spawner destoryed" << std::endl;
+
+	for (std::list<Zombie>::iterator it = m_Zombies.begin(); it != m_Zombies.end(); it++)
+	{
+		it = m_Zombies.erase(it);
+	}
 	m_Zombies.clear();
+	for (std::list<Slime>::iterator it = m_Slimes.begin(); it != m_Slimes.end(); it++)
+	{
+		it = m_Slimes.erase(it);
+	}
 	m_Slimes.clear();
+	for (std::list<CWizard>::iterator it = m_Wizards.begin(); it != m_Wizards.end(); it++)
+	{
+		it = m_Wizards.erase(it);
+	}
 	m_Wizards.clear();
+	for (std::list<CSnowman>::iterator it = m_Snowmans.begin(); it != m_Snowmans.end(); it++)
+	{
+		it = m_Snowmans.erase(it);
+	}
+	m_Snowmans.clear();
 
 	delete m_DeathParticles;
 	m_DeathParticles = nullptr;
-	delete m_SpawnTimer;
-	m_SpawnTimer = nullptr;
 	m_AudioManager = nullptr;
 	delete m_Texture;
+	m_Snowmanptr = nullptr;
 	m_TourchShader = nullptr;
 	m_Shader = nullptr;
 	m_Texture = nullptr;

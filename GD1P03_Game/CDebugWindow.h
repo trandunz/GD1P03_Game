@@ -53,10 +53,10 @@ private:
 
 	sf::Vector2f m_MousePos;
 
-	sf::RenderWindow* m_RenderWindow = nullptr;
-	CWorldManager* m_WorldManager = nullptr;
+	sf::RenderWindow* m_RenderWindow;
+	CWorldManager* m_WorldManager;
 	CPlayer* m_Player = nullptr;
-	CTextureMaster* m_TextureMaster = nullptr;
+	CTextureMaster* m_TextureMaster;
 
 	std::map<int, CButtons> m_ItemListButtons;
 	std::map<int, CBlock> m_ItemPreviews;
