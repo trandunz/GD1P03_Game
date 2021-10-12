@@ -2,6 +2,7 @@
 #ifndef _GUI_H__
 #define _GUI_H__
 
+// Non-Local Includes
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <list>
@@ -11,6 +12,7 @@
 #include <fstream>
 #include <cstddef>        // std::size_t
 
+// Local Includes
 #include "Player.h"
 #include "CPotion.h"
 #include "CTextureMaster.h"
@@ -21,10 +23,6 @@ public:
 
 	GUI();
 	~GUI();
-
-	void SetPlayer(CPlayer* _player);
-	
-	CPlayer* GetPlayer();
 
 	void SetFont(sf::Font& _font);
 
@@ -50,7 +48,6 @@ public:
 
 	std::string ToString(int32 integer);
 
-	// Texture Master
 	void InitMousePosSprite(CTextureMaster* _textureMaster);
 
 	void HotBarScrolling(sf::Event& _event, CPlayer* _player);
@@ -66,7 +63,6 @@ public:
 	int bGetPositionOfMovingItem(CPlayer* _player);
 
 	int FindFirstEmptyInventorySlot(CPlayer* _player);
-	int FindLastEmptyInventorySlot(CPlayer* _player);
 	int FindFirstEmptyChestSlot(std::list<CChest>& _chests);
 
 	void StatusEffectUI(sf::RenderWindow* _renderWindow, CPlayer* _player);

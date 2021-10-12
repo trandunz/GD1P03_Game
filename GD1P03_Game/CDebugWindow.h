@@ -2,6 +2,7 @@
 #ifndef _DEBUGWINDOW_H__
 #define _DEBUGWINDOW_H__
 
+// Local Includes
 #include "GUI.h"
 #include "WorldManager.h"
 #include "AudioManager.h"
@@ -13,7 +14,7 @@
 class CDebugWindow
 {
 public:
-	CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners, bool* _bChangeScenes, int* _sceneValue);
+	CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners, bool* _bChangeScenes, int* _sceneValue, int& _numberOfLeakes);
 	~CDebugWindow();
 
 	void Start();
@@ -25,6 +26,9 @@ public:
 	void SetPlayer(CPlayer* _player);
 	void SetSpawners(std::list<Spawner>* _spawners);
 
+	bool m_InFocus = true;
+
+private:
 	void CreateItemListButtons();
 	void CreateEnemyControlButtons();
 	void CreateWorldControlButtons();
@@ -44,9 +48,6 @@ public:
 	void AddItemToInventory(int _itemIndexValue);
 	void ClearPlayerInventory(bool _giveStarterItems = false);
 
-	bool m_InFocus = true;
-
-private:
 	std::list<Spawner>* m_Spawners;
 
 	sf::Event m_Event;
@@ -80,6 +81,8 @@ private:
 
 	bool* m_bChangeScenes;
 	int* m_SceneValue;
+
+	int* m_NumberOFLeakes;
 };
 #endif
 

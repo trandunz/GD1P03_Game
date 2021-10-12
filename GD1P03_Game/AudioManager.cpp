@@ -1,61 +1,37 @@
 #include "AudioManager.h"
 
+/// <summary>
+/// CAudioManager Constructor
+/// </summary>
 CAudioManager::CAudioManager()
 {
 	std::cout << "AUDIOMANAGER" << std::endl;
 	srand(time(NULL));
 
-	m_MineBuffer1.loadFromFile("Sounds/GroundMine.wav");
-	m_MineBuffer2.loadFromFile("Sounds/GroundMine2.wav");
-	m_MineBuffer3.loadFromFile("Sounds/GroundMine3.wav");
-	m_MineBuffer4.loadFromFile("Sounds/GroundMine4.wav");
+	LoadMineBuffers();
 
-	m_PlayerHurt1.loadFromFile("Sounds/PlayerHit1.wav");
-	m_PlayerHurt2.loadFromFile("Sounds/PlayerHit2.wav");
-	m_PlayerHurt3.loadFromFile("Sounds/PlayerHit3.wav");
+	LoadPlayerHurtBuffers();
 
-	m_SlimeHurt1.loadFromFile("Sounds/SlimeHit.wav");
-	m_SlimeHurt2.loadFromFile("Sounds/SlimeHit2.wav");
+	LoadSlimeHurtBuffers();
 
-	m_DeathBuffer.loadFromFile("Sounds/Death.wav");
-	m_SlimeDeathBuffer.loadFromFile("Sounds/SlimeDeath.wav");
+	LoadDeathBuffers();
 
 	m_BowBuffer.loadFromFile("Sounds/Bow.wav");
 
 	m_PickupSoundBuffer.loadFromFile("Sounds/PickupItem.wav");
 
 	m_KingSlimeSpawnBuffer.loadFromFile("Sounds/SlimeKingSpawn.wav");
+
 	m_PotionDrinkBuffer.loadFromFile("Sounds/PotionDrink.wav");
 
 	m_GunShotBuffer.loadFromFile("Sounds/GunShot.wav");
 
-	MineSoundBuffers[0] = m_MineBuffer1;
-	MineSoundBuffers[1] = m_MineBuffer2;
-	MineSoundBuffers[2] = m_MineBuffer3;
-	MineSoundBuffers[3] = m_MineBuffer4;
-
-	PlayerHurtBuffers[0] = m_PlayerHurt1;
-	PlayerHurtBuffers[1] = m_PlayerHurt2;
-	PlayerHurtBuffers[2] = m_PlayerHurt3;
-
-	SlimeHurtBuffers[0] = m_SlimeHurt1;
-	SlimeHurtBuffers[1] = m_SlimeHurt2;
+	InitBufferArrays();
 }
 
-CAudioManager::~CAudioManager()
-{
-}
-
-void CAudioManager::Start()
-{
-	
-	
-}
-
-void CAudioManager::Update()
-{
-}
-
+/// <summary>
+/// Players the player running sound
+/// </summary>
 void CAudioManager::PlayRunning()
 {
 	if (m_ActiveSound.getStatus() == sf::Sound::Status::Stopped)
@@ -72,9 +48,11 @@ void CAudioManager::PlayRunning()
 		m_ActiveSound.setVolume(25.0f);
 		m_ActiveSound.play();
 	}
-	
 }
 
+/// <summary>
+/// Plays Block Placing Sound
+/// </summary>
 void CAudioManager::PlayBlockPlace()
 {
 	m_Buffer.loadFromFile("Sounds/PlaceBlock.wav");
@@ -83,6 +61,9 @@ void CAudioManager::PlayBlockPlace()
 	m_ActiveSound.play();
 }
 
+/// <summary>
+/// Plays Ground Mine Sound
+/// </summary>
 void CAudioManager::PlayGroundMine()
 {
 	m_ActiveSound.setBuffer(MineSoundBuffers[1 + rand() % 2]);
@@ -90,6 +71,9 @@ void CAudioManager::PlayGroundMine()
 	m_ActiveSound.play();
 }
 
+/// <summary>
+/// Plays Player Damage Sound
+/// </summary>
 void CAudioManager::PlayPlayerDamage()
 {
 	m_PlayerDamageSound.setBuffer(PlayerHurtBuffers[rand() % 3]);
@@ -97,6 +81,10 @@ void CAudioManager::PlayPlayerDamage()
 	m_PlayerDamageSound.play();
 }
 
+/// <summary>
+/// Plays Slime Damage Sound
+/// </summary>
+/// <param name="_volume"></param>
 void CAudioManager::PlaySlimeDamage(int _volume)
 {
 	m_SlimeDamageSound.setBuffer(SlimeHurtBuffers[1]);
@@ -104,6 +92,10 @@ void CAudioManager::PlaySlimeDamage(int _volume)
 	m_SlimeDamageSound.play();
 }
 
+/// <summary>
+/// Plays Slime Death Sound
+/// </summary>
+/// <param name="_volume"></param>
 void CAudioManager::PlaySlimeDeath(int _volume)
 {
 	m_SlimeDeathSound.setBuffer(m_SlimeDeathBuffer);
@@ -111,6 +103,9 @@ void CAudioManager::PlaySlimeDeath(int _volume)
 	m_SlimeDeathSound.play();
 }
 
+/// <summary>
+/// Plays Player Death Sound
+/// </summary>
 void CAudioManager::PlayPlayerDeath()
 {
 	m_PlayerDeathSound.setBuffer(m_DeathBuffer);
@@ -118,6 +113,9 @@ void CAudioManager::PlayPlayerDeath()
 	m_PlayerDeathSound.play();
 }
 
+/// <summary>
+/// Plays Pickup Item Sound
+/// </summary>
 void CAudioManager::PlayPickupSound()
 {
 	m_PickupSound.setBuffer(m_PickupSoundBuffer);
@@ -125,6 +123,9 @@ void CAudioManager::PlayPickupSound()
 	m_PickupSound.play();
 }
 
+/// <summary>
+/// Plays Plains Music
+/// </summary>
 void CAudioManager::PlayMusic()
 {
 	if (m_Music.getStatus() != m_Music.Playing)
@@ -159,6 +160,9 @@ void CAudioManager::PlayMusic()
 	}
 }
 
+/// <summary>
+/// Plays Sand Music
+/// </summary>
 void CAudioManager::PlayMusicSand()
 {
 	if (m_MusicSand.getStatus() != m_MusicSand.Playing)
@@ -193,6 +197,9 @@ void CAudioManager::PlayMusicSand()
 	}
 }
 
+/// <summary>
+/// Plays Ice Music
+/// </summary>
 void CAudioManager::PlayMusicIce()
 {
 	if (m_MusicIce.getStatus() != m_MusicIce.Playing)
@@ -227,6 +234,9 @@ void CAudioManager::PlayMusicIce()
 	}
 }
 
+/// <summary>
+/// Plays Hell Music
+/// </summary>
 void CAudioManager::PlayMusicHell()
 {
 	if (m_MusicHell.getStatus() != m_MusicHell.Playing)
@@ -261,6 +271,9 @@ void CAudioManager::PlayMusicHell()
 	}
 }
 
+/// <summary>
+/// Plays Plains Underground Music
+/// </summary>
 void CAudioManager::PlayUnderGroundMusic()
 {
 	if (m_UnderGroundMusic.getStatus() != m_UnderGroundMusic.Playing)
@@ -295,6 +308,9 @@ void CAudioManager::PlayUnderGroundMusic()
 	}
 }
 
+/// <summary>
+/// Play Sand Undergroung Music
+/// </summary>
 void CAudioManager::PlayUnderGroundMusicSand()
 {
 	if (m_UnderGroundMusicSand.getStatus() != m_UnderGroundMusicSand.Playing)
@@ -329,6 +345,9 @@ void CAudioManager::PlayUnderGroundMusicSand()
 	}
 }
 
+/// <summary>
+/// Play Ice Underground Music
+/// </summary>
 void CAudioManager::PlayUnderGroundMusicIce()
 {
 	if (m_UnderGroundMusicIce.getStatus() != m_UnderGroundMusicIce.Playing)
@@ -363,6 +382,9 @@ void CAudioManager::PlayUnderGroundMusicIce()
 	}
 }
 
+/// <summary>
+/// Play Hell Underground Music
+/// </summary>
 void CAudioManager::PlayUnderGroundMusicHell()
 {
 	if (m_UnderGroundMusicHell.getStatus() != m_UnderGroundMusicHell.Playing)
@@ -397,6 +419,9 @@ void CAudioManager::PlayUnderGroundMusicHell()
 	}
 }
 
+/// <summary>
+/// Play Bow Shot Sound
+/// </summary>
 void CAudioManager::PlayBowShot()
 {
 	m_BowShotSound.setBuffer(m_BowBuffer);
@@ -404,6 +429,9 @@ void CAudioManager::PlayBowShot()
 	m_BowShotSound.play();
 }
 
+/// <summary>
+/// Play King slime spawn sound
+/// </summary>
 void CAudioManager::PlayKingSlimeSpawn()
 {
 	m_KingSlimeSpawnSound.setBuffer(m_KingSlimeSpawnBuffer);
@@ -412,10 +440,9 @@ void CAudioManager::PlayKingSlimeSpawn()
 	m_KingSlimeSpawnSound.play();
 }
 
-void CAudioManager::CheckBackgroundMusic(sf::Vector2f _positionPlayer)
-{
-}
-
+/// <summary>
+/// Play Potion Drink Sound
+/// </summary>
 void CAudioManager::PlayPotionDrink()
 {
 	m_PotionDrinkSound.setBuffer(m_PotionDrinkBuffer);
@@ -423,9 +450,65 @@ void CAudioManager::PlayPotionDrink()
 	m_PotionDrinkSound.play();
 }
 
+// Play Gunshot Sound
 void CAudioManager::PlayGunShot()
 {
 	m_GunShotSound.setBuffer(m_GunShotBuffer);
 	m_GunShotSound.setVolume(30.0f);
 	m_GunShotSound.play();
+}
+
+// Play Mine buffers
+void CAudioManager::LoadMineBuffers()
+{
+	m_MineBuffer1.loadFromFile("Sounds/GroundMine.wav");
+	m_MineBuffer2.loadFromFile("Sounds/GroundMine2.wav");
+	m_MineBuffer3.loadFromFile("Sounds/GroundMine3.wav");
+	m_MineBuffer4.loadFromFile("Sounds/GroundMine4.wav");
+}
+
+/// <summary>
+/// Loads player hurt buffers
+/// </summary>
+void CAudioManager::LoadPlayerHurtBuffers()
+{
+	m_PlayerHurt1.loadFromFile("Sounds/PlayerHit1.wav");
+	m_PlayerHurt2.loadFromFile("Sounds/PlayerHit2.wav");
+	m_PlayerHurt3.loadFromFile("Sounds/PlayerHit3.wav");
+}
+
+/// <summary>
+/// Loads Slime hurt buffers
+/// </summary>
+void CAudioManager::LoadSlimeHurtBuffers()
+{
+	m_SlimeHurt1.loadFromFile("Sounds/SlimeHit.wav");
+	m_SlimeHurt2.loadFromFile("Sounds/SlimeHit2.wav");
+}
+
+/// <summary>
+/// Load death buffers
+/// </summary>
+void CAudioManager::LoadDeathBuffers()
+{
+	m_DeathBuffer.loadFromFile("Sounds/Death.wav");
+	m_SlimeDeathBuffer.loadFromFile("Sounds/SlimeDeath.wav");
+}
+
+/// <summary>
+/// Initializes all buffer arrays with appropriate buffers
+/// </summary>
+void CAudioManager::InitBufferArrays()
+{
+	MineSoundBuffers[0] = m_MineBuffer1;
+	MineSoundBuffers[1] = m_MineBuffer2;
+	MineSoundBuffers[2] = m_MineBuffer3;
+	MineSoundBuffers[3] = m_MineBuffer4;
+
+	PlayerHurtBuffers[0] = m_PlayerHurt1;
+	PlayerHurtBuffers[1] = m_PlayerHurt2;
+	PlayerHurtBuffers[2] = m_PlayerHurt3;
+
+	SlimeHurtBuffers[0] = m_SlimeHurt1;
+	SlimeHurtBuffers[1] = m_SlimeHurt2;
 }

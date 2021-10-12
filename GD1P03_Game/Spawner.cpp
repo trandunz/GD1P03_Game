@@ -1,5 +1,20 @@
 #include "Spawner.h"
 
+/// <summary>
+/// Spawner Constructor
+/// </summary>
+/// <param name="_audioManager"></param>
+/// <param name="_renderWindow"></param>
+/// <param name="_world"></param>
+/// <param name="_textureMaster"></param>
+/// <param name="_scale"></param>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
+/// <param name="_player"></param>
+/// <param name="_type"></param>
+/// <param name="_shader"></param>
+/// <param name="_tourchShader"></param>
+/// <param name="_sprite"></param>
 Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer* _player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, bool _sprite)
 {
 	m_World = &_world;
@@ -7,7 +22,6 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 	m_TextureMaster = _textureMaster;
 	m_Player = _player;
 	m_Slimeptr = nullptr;
-	m_Zombieptr = nullptr;
 	m_Scale = _scale;
 	m_Type = _type;
 	m_Shader = _shader;
@@ -15,7 +29,174 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 	m_TourchShader = _tourchShader;
 	m_Snowmanptr = nullptr;
 
-	switch (_type)
+	AssignAppropiateParticleSystem();
+
+	if (_sprite)
+	{
+		m_Texture = new sf::Texture();
+		m_Texture->loadFromFile("Images/SlimeSpawner.png");
+		m_Shape.setTexture(*m_Texture, true);
+	}
+	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	m_Shape.setPosition(_posX, _posY);
+
+	Start();
+}
+
+/// <summary>
+/// Spawner Start
+/// </summary>
+void Spawner::Start()
+{
+	m_DeathParticles->Start();
+}
+
+/// <summary>
+/// Spawner Update
+/// </summary>
+void Spawner::Update()
+{
+	TypeSpecificUpdate();
+
+	UpdateSlimes();
+
+	UpdateSnowmen();
+
+	sf::Time elapsedTime = m_DeathParticleTimer.getElapsedTime();
+	m_DeathParticles->Update(elapsedTime);
+
+	CheckForDestroyedSlimes();
+
+	CheckForDestroyedSnowmen();
+}
+
+/// <summary>
+/// Spawner Render
+/// </summary>
+/// <param name="_tourchshader"></param>
+/// <param name="_isInRangeOfLightSource"></param>
+void Spawner::Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
+{
+	// Sprite
+	m_RenderWindow->draw(m_Shape);
+
+	TypeSpecificRender(_tourchshader, _isInRangeOfLightSource);
+
+	m_RenderWindow->draw(*m_DeathParticles);
+}
+
+/// <summary>
+/// Sets all enemy's m_Player pointers to nullptr
+/// </summary>
+void Spawner::LoosePlayer()
+{
+	m_Player = nullptr;
+
+	// Enemies Loose The Player Pointer
+	for (Slime& slime : m_Slimes)
+	{
+		slime.SetPlayer(nullptr);
+	}
+
+	for (CSnowman& snowman : m_Snowmans)
+	{
+		snowman.SetPlayer(nullptr);
+	}
+}
+
+/// <summary>
+/// Sets all enemy's m_Player pointers to _player
+/// </summary>
+/// <param name="_player"></param>
+void Spawner::SetPlayer(CPlayer* _player)
+{
+	m_Player = _player;
+
+	for (Slime& slime : m_Slimes)
+	{
+		slime.SetPlayer(m_Player);
+	}
+
+	for (CSnowman& snowman : m_Snowmans)
+	{
+		snowman.SetPlayer(m_Player);
+	}
+}
+
+/// <summary>
+/// Sets the maximum number of enemies a given spawner can have spawned at one time
+/// </summary>
+/// <param name="_amount"></param>
+void Spawner::SetSpawnCount(int _amount)
+{
+	m_SpawnCount = _amount;
+}
+
+/// <summary>
+/// returns an int refering to m_SpawnCount
+/// </summary>
+/// <returns></returns>
+int Spawner::GetSpawnCount()
+{
+	return m_SpawnCount;
+}
+
+/// <summary>
+/// Toggles spawning on and off
+/// </summary>
+void Spawner::ToggleSpawning()
+{
+	m_bSpawn = !m_bSpawn;
+}
+
+/// <summary>
+/// Clears all enemy lists
+/// </summary>
+void Spawner::KillAllChilderan()
+{
+	m_Slimes.clear();
+	m_Snowmans.clear();
+}
+
+/// <summary>
+/// Spawner Destructor
+/// </summary>
+Spawner::~Spawner()
+{
+	std::cout << "Spawner destoryed" << std::endl;
+
+	for (std::list<Slime>::iterator it = m_Slimes.begin(); it != m_Slimes.end(); it++)
+	{
+		it = m_Slimes.erase(it);
+	}
+	m_Slimes.clear();
+	for (std::list<CSnowman>::iterator it = m_Snowmans.begin(); it != m_Snowmans.end(); it++)
+	{
+		it = m_Snowmans.erase(it);
+	}
+	m_Snowmans.clear();
+
+	delete m_DeathParticles;
+	m_DeathParticles = nullptr;
+	m_AudioManager = nullptr;
+	delete m_Texture;
+	m_Snowmanptr = nullptr;
+	m_TourchShader = nullptr;
+	m_Shader = nullptr;
+	m_Texture = nullptr;
+	m_Player = nullptr;
+	m_World = nullptr;
+	m_RenderWindow = nullptr;
+	m_TextureMaster = nullptr;
+	m_Slimeptr = nullptr;
+}
+
+/// <summary>
+/// Creates and assignes the appropiate colour to particle system
+/// </summary>
+void Spawner::AssignAppropiateParticleSystem()
+{
+	switch (m_Type)
 	{
 	case CEnemy::ENEMYTYPE::DEFAULT:
 		break;
@@ -35,25 +216,12 @@ Spawner::Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, 
 		m_DeathParticles = new CParticleSystem(600, sf::seconds(0.6f), sf::Color(79, 0, 24, 225));
 		break;
 	}
-
-	if (_sprite)
-	{
-		m_Texture = new sf::Texture();
-		m_Texture->loadFromFile("Images/SlimeSpawner.png");
-		m_Shape.setTexture(*m_Texture, true);
-	}
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
-	m_Shape.setPosition(_posX, _posY);
-
-	Start();
 }
 
-void Spawner::Start()
-{
-	m_DeathParticles->Start();
-}
-
-void Spawner::Update()
+/// <summary>
+/// Type Specific Update
+/// </summary>
+void Spawner::TypeSpecificUpdate()
 {
 	int x = 0;
 	int y = 0;
@@ -207,18 +375,25 @@ void Spawner::Update()
 		}
 		break;
 	}
-
 	case CEnemy::ENEMYTYPE::NPC:
 	{
 		break;
 	}
-
 	default:
 	{
 		break;
 	}
-
 	}
+}
+
+/// <summary>
+/// Updates all Slimes
+/// </summary>
+void Spawner::UpdateSlimes()
+{
+	int x = 0;
+	int y = 0;
+	int Mag = 0;
 
 	for (Slime& slime : m_Slimes)
 	{
@@ -248,8 +423,17 @@ void Spawner::Update()
 
 		// Update
 		slime.Update();
-		
 	}
+}
+
+/// <summary>
+/// Updates all Snowmen
+/// </summary>
+void Spawner::UpdateSnowmen()
+{
+	int x = 0;
+	int y = 0;
+	int Mag = 0;
 
 	for (CSnowman& snowman : m_Snowmans)
 	{
@@ -280,10 +464,13 @@ void Spawner::Update()
 		// Update
 		snowman.Update();
 	}
+}
 
-	sf::Time elapsedTime = m_DeathParticleTimer.getElapsedTime();
-	m_DeathParticles->Update(elapsedTime);
-
+/// <summary>
+/// Check if any slimes have m_MARKASDESTORY, if true : erase slime
+/// </summary>
+void Spawner::CheckForDestroyedSlimes()
+{
 	std::list<Slime>::iterator sit;
 	for (sit = m_Slimes.begin(); sit != m_Slimes.end(); sit++)
 	{
@@ -407,7 +594,7 @@ void Spawner::Update()
 						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
 						m_Player->AddItemToInventory(temp, false);
 						temp = nullptr;
-						
+
 						m_SpawnFrequency = 120.0f;
 
 						m_DropTimer.restart();
@@ -470,7 +657,7 @@ void Spawner::Update()
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 
-							
+
 						}
 
 						// Drop Yellow PortalKey
@@ -636,7 +823,13 @@ void Spawner::Update()
 			sit = m_Slimes.erase(sit);
 		}
 	}
+}
 
+/// <summary>
+/// Check if any Slimen have m_MARKASDESTORY, if true : erase Slimen
+/// </summary>
+void Spawner::CheckForDestroyedSnowmen()
+{
 	std::list<CSnowman>::iterator snit;
 	for (snit = m_Snowmans.begin(); snit != m_Snowmans.end(); snit++)
 	{
@@ -685,7 +878,7 @@ void Spawner::Update()
 
 			m_DeathParticles->SetColor(sf::Color(240, 240, 240, 225));
 			m_DeathParticleTimer.restart();
-			m_DeathParticles->SetEmitter(sit->GetShape().getPosition());
+			m_DeathParticles->SetEmitter(snit->GetShape().getPosition());
 			m_SpawnTimer.restart();
 
 			snit = m_Snowmans.erase(snit);
@@ -693,11 +886,13 @@ void Spawner::Update()
 	}
 }
 
-void Spawner::Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
+/// <summary>
+/// Type Specific Render
+/// </summary>
+/// <param name="_tourchshader"></param>
+/// <param name="_isInRangeOfLightSource"></param>
+void Spawner::TypeSpecificRender(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
 {
-	// Sprite
-	m_RenderWindow->draw(m_Shape);
-
 	switch (m_Type)
 	{
 	case CEnemy::ENEMYTYPE::DEFAULT:
@@ -736,117 +931,9 @@ void Spawner::Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource)
 	}
 	case CEnemy::ENEMYTYPE::NPC:
 	{
-		for (CWizard& wizard : m_Wizards)
-		{
-			if (_isInRangeOfLightSource)
-			{
-				wizard.Render(_tourchshader);
-			}
-			else
-			{
-				wizard.Render(m_Shader);
-			}
-		}
 		break;
 	}
 	default:
 		break;
 	}
-
-	m_RenderWindow->draw(*m_DeathParticles);
-	
-}
-
-void Spawner::LoosePlayer()
-{
-	m_Player = nullptr;
-
-	// Enemies Loose The Player Pointer
-	for (Slime& slime : m_Slimes)
-	{
-		slime.SetPlayer(nullptr);
-	}
-
-	for (CSnowman& snowman : m_Snowmans)
-	{
-		snowman.SetPlayer(nullptr);
-	}
-}
-
-void Spawner::SetPlayer(CPlayer* _player)
-{
-	m_Player = _player;
-
-	for (Slime& slime : m_Slimes)
-	{
-		slime.SetPlayer(m_Player);
-	}
-
-	for (CSnowman& snowman : m_Snowmans)
-	{
-		snowman.SetPlayer(m_Player);
-	}
-}
-
-void Spawner::SetSpawnCount(int _amount)
-{
-	m_SpawnCount = _amount;
-}
-
-int Spawner::GetSpawnCount()
-{
-	return m_SpawnCount;
-}
-
-void Spawner::ToggleSpawning()
-{
-	m_bSpawn = !m_bSpawn;
-}
-
-void Spawner::KillAllChilderan()
-{
-	m_Slimes.clear();
-	m_Zombies.clear();
-	m_Wizards.clear();
-}
-
-Spawner::~Spawner()
-{
-	std::cout << "Spawner destoryed" << std::endl;
-
-	for (std::list<Zombie>::iterator it = m_Zombies.begin(); it != m_Zombies.end(); it++)
-	{
-		it = m_Zombies.erase(it);
-	}
-	m_Zombies.clear();
-	for (std::list<Slime>::iterator it = m_Slimes.begin(); it != m_Slimes.end(); it++)
-	{
-		it = m_Slimes.erase(it);
-	}
-	m_Slimes.clear();
-	for (std::list<CWizard>::iterator it = m_Wizards.begin(); it != m_Wizards.end(); it++)
-	{
-		it = m_Wizards.erase(it);
-	}
-	m_Wizards.clear();
-	for (std::list<CSnowman>::iterator it = m_Snowmans.begin(); it != m_Snowmans.end(); it++)
-	{
-		it = m_Snowmans.erase(it);
-	}
-	m_Snowmans.clear();
-
-	delete m_DeathParticles;
-	m_DeathParticles = nullptr;
-	m_AudioManager = nullptr;
-	delete m_Texture;
-	m_Snowmanptr = nullptr;
-	m_TourchShader = nullptr;
-	m_Shader = nullptr;
-	m_Texture = nullptr;
-	m_Player = nullptr;
-	m_World = nullptr;
-	m_RenderWindow = nullptr;
-	m_TextureMaster = nullptr;
-	m_Slimeptr = nullptr;
-	m_Zombieptr = nullptr;
 }

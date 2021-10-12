@@ -2,12 +2,13 @@
 #ifndef _PARTICLESYSTEM_H__
 #define _PARTICLESYSTEM_H__
 
+// Non-Local Includes
 #include <SFML/Graphics.hpp>
 
 class CParticleSystem : public sf::Drawable, public sf::Transformable
 {
 public:
-	CParticleSystem(int _count, sf::Time _lifeTime, sf::Color _color) : 
+	inline CParticleSystem(int _count, sf::Time _lifeTime, sf::Color _color) : 
 		m_Particles(_count), 
 		m_Vertices(sf::Points, _count), 
 		m_LifeTime(_lifeTime),
@@ -27,6 +28,9 @@ public:
 	void SetColor(sf::Color _color);
 
 private:
+	/// <summary>
+	/// Individual Particles
+	/// </summary>
 	struct Particle
 	{
 		sf::Vector2f m_Velocity;
@@ -34,9 +38,10 @@ private:
 	};
 
 	virtual void draw(sf::RenderTarget& _target, sf::RenderStates _states) const;
-	void ResetParticle(std::size_t _index);
-	void KillParticle(std::size_t _index);
 
+	void ResetParticle(std::size_t _index);
+
+	void KillParticle(std::size_t _index);
 
 	std::vector<Particle> m_Particles;
 	sf::VertexArray m_Vertices;

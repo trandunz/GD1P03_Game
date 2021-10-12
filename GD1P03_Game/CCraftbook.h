@@ -1,5 +1,10 @@
 #pragma once
+#ifndef _CRAFTBOOK_H__
+#define _CRAFTBOOK_H__
+
+// Non-Local Includes
 #include <SFML/Graphics.hpp>
+
 class CCraftbook : public sf::Drawable, public sf::Transformable
 {
 public:
@@ -14,4 +19,5 @@ private:
 
 	sf::RectangleShape m_CraftbookBG;
 };
+#endif
 

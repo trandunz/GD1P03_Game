@@ -1,4 +1,7 @@
 #pragma once
+#ifndef _ARMOUR_H__
+#define _ARMOUR_H__
+
 #include "Block.h"
 class CArmour :  public CBlock
 {
@@ -13,4 +16,5 @@ private:
 	void CheckChestPlateTypeAndAssignTexture(CBlock::ARMOURTYPE _armourType);
 	void CheckLeggingTypeAndAssignTexture(CBlock::ARMOURTYPE _armourType);
 };
+#endif
 

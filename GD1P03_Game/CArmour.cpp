@@ -1,5 +1,10 @@
 #include "CArmour.h"
 
+/// <summary>
+/// CArmour Contructor
+/// </summary>
+/// <param name="_itemType"></param>
+/// <param name="_armourtype"></param>
 CArmour::CArmour(CBlock::BLOCKTYPE _itemType, CBlock::ARMOURTYPE _armourtype)
 {
 	m_Scale = 50.0f;
@@ -17,6 +22,9 @@ CArmour::CArmour(CBlock::BLOCKTYPE _itemType, CBlock::ARMOURTYPE _armourtype)
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 }
 
+/// <summary>
+/// CArmour Destructor
+/// </summary>
 CArmour::~CArmour()
 {
 	delete m_Texture;
@@ -25,6 +33,11 @@ CArmour::~CArmour()
 	m_World = nullptr;
 }
 
+/// <summary>
+/// Loads the appropriate armour textures based on the type
+/// </summary>
+/// <param name="_itemType"></param>
+/// <param name="_armourType"></param>
 void CArmour::LoadTextureBasedOnItemType(CBlock::BLOCKTYPE _itemType, CBlock::ARMOURTYPE _armourType)
 {
 	if (_itemType == CBlock::BLOCKTYPE::HELMET)
@@ -41,6 +54,10 @@ void CArmour::LoadTextureBasedOnItemType(CBlock::BLOCKTYPE _itemType, CBlock::AR
 	}
 }
 
+/// <summary>
+/// Checks the type and assigns the texture appropriatly
+/// </summary>
+/// <param name="_armourType"></param>
 void CArmour::CheckHelmetTypeAndAssignTexture(CBlock::ARMOURTYPE _armourType)
 {
 	switch (_armourType)
@@ -80,6 +97,10 @@ void CArmour::CheckHelmetTypeAndAssignTexture(CBlock::ARMOURTYPE _armourType)
 	}
 }
 
+/// <summary>
+/// Checks the type and assigns the texture appropriatly
+/// </summary>
+/// <param name="_armourType"></param>
 void CArmour::CheckChestPlateTypeAndAssignTexture(CBlock::ARMOURTYPE _armourType)
 {
 	switch (_armourType)
@@ -119,6 +140,10 @@ void CArmour::CheckChestPlateTypeAndAssignTexture(CBlock::ARMOURTYPE _armourType
 	}
 }
 
+/// <summary>
+/// Checks the type and assigns the texture appropriatly
+/// </summary>
+/// <param name="_armourType"></param>
 void CArmour::CheckLeggingTypeAndAssignTexture(CBlock::ARMOURTYPE _armourType)
 {
 	switch (_armourType)

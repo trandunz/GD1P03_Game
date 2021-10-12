@@ -2,20 +2,16 @@
 #ifndef _AUDIOMANAGER_H__
 #define _AUDIOMANAGER_H__
 
+// Non-Local Includes
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
 
-
  class CAudioManager
 {
 public:
 	CAudioManager();
-	~CAudioManager();
-
-	static void Start();
-	static void Update();
 
 	void PlayRunning();
 	void PlayBlockPlace();
@@ -41,8 +37,6 @@ public:
 
 	void PlayKingSlimeSpawn();
 
-	void CheckBackgroundMusic(sf::Vector2f _positionPlayer);
-
 	void PlayPotionDrink();
 
 	void PlayGunShot();
@@ -50,7 +44,12 @@ public:
 	int m_MusicLevel = 1;
 
 private:
+	void LoadMineBuffers();
+	void LoadPlayerHurtBuffers();
+	void LoadSlimeHurtBuffers();
+	void LoadDeathBuffers();
 
+	void InitBufferArrays();
 
 	sf::SoundBuffer m_Buffer;
 	sf::Sound m_ActiveSound;

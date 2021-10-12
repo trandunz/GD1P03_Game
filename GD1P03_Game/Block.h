@@ -219,6 +219,9 @@ public:
 	sf::Texture m_ArmourLegsLeft;
 
 protected:
+	void CalculateBlockStrength();
+	virtual void SetSFShapeToBody();
+
 	sf::RenderWindow* m_RenderWindow;
 
 	b2World* m_World;

@@ -1,14 +1,23 @@
 #include "CSnowman.h"
 
+/// <summary>
+/// CSnowman Constructor.
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_world"></param>
+/// <param name="_textureMaster"></param>
+/// <param name="_scale"></param>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_boss"></param>
 CSnowman::CSnowman(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager, bool _boss)
 {
 	m_RenderWindow = _renderWindow;
 	m_AudioManager = &_audioManager;
 	m_Texture = new sf::Texture();
 	m_bIsBoss = _boss;
-
 	m_World = &_world;
-	srand(time(NULL));
 
 	if (!_boss)
 	{
@@ -16,6 +25,7 @@ CSnowman::CSnowman(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMas
 	}
 	else
 	{
+		srand(time(NULL));
 		if (rand() % 5 == 1)
 		{
 			m_SnowmanType = SNOWMANTYPE::BOSSGREEN;
@@ -82,6 +92,9 @@ CSnowman::CSnowman(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMas
 	CSnowman::CreateBody(_posX, _posY, b2_dynamicBody);
 }
 
+/// <summary>
+/// CSnowman Destructor
+/// </summary>
 CSnowman::~CSnowman()
 {
 	for (std::list<CProjectile>::iterator it = m_Projectiles.begin(); it != m_Projectiles.end(); it++)
@@ -96,6 +109,9 @@ CSnowman::~CSnowman()
 	m_Player = nullptr;
 }
 
+/// <summary>
+/// CSnowman Start
+/// </summary>
 void CSnowman::Start()
 {
 	SimpleMove();
@@ -104,6 +120,9 @@ void CSnowman::Start()
 	m_Damage *= 3;
 }
 
+/// <summary>
+/// CSnowman Update
+/// </summary>
 void CSnowman::Update()
 {
 	Movement();
@@ -114,63 +133,15 @@ void CSnowman::Update()
 	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 
-	b2Contact* contact;
-	for (contact = m_World->GetContactList(); contact; contact = contact->GetNext())
-	{
-		b2Fixture* a = contact->GetFixtureA();
-		b2Fixture* b = contact->GetFixtureB();
-		b2WorldManifold worldManifold;
-		contact->GetWorldManifold(&worldManifold);
+	WorldContacts();
 
-		b2Vec2 vel1 = m_Body->GetLinearVelocityFromWorldPoint(m_Body->GetPosition());
-		b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
-		b2Vec2 impactVelocity = vel1 - vel2;
-		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
-
-		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
-		{
-
-			if (a->GetBody()->GetFixtureList()->IsSensor() || b->GetBody()->GetFixtureList()->IsSensor())
-			{
-				if (a->GetBody()->GetFixtureList()->IsSensor() && a->GetBody()->GetUserData().pointer)
-				{
-					int* damage = (int*)a->GetBody()->GetUserData().pointer;
-					TakeDamage(*damage, true);
-					std::cout << "Damage: " << *damage << std::endl;
-					damage = nullptr;
-				}
-				else if (b->GetBody()->GetUserData().pointer)
-				{
-					int* damage = (int*)b->GetBody()->GetUserData().pointer;
-					TakeDamage(*damage, true);
-					std::cout << "Damage: " << *damage << std::endl;
-					damage = nullptr;
-				}
-			}
-		}
-
-		a = nullptr;
-		b = nullptr;
-	}
-	contact = nullptr;
-
-	for (CProjectile& projectile : m_Projectiles)
-	{
-		projectile.Update();
-	}
-
-	// Delete All Collided Projectiles
-	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
-	while (pit != m_Projectiles.end())
-	{
-		if (pit->m_bMARKASDESTROY)
-		{
-			pit = m_Projectiles.erase(pit);
-		}
-		pit++;
-	}
+	HandleProjectiles();
 }
 
+/// <summary>
+/// CSnowman Render
+/// </summary>
+/// <param name="_shader"></param>
 void CSnowman::Render(sf::Shader* _shader)
 {
 	if (m_Shape.getPosition().y < 1100)
@@ -182,26 +153,30 @@ void CSnowman::Render(sf::Shader* _shader)
 		m_RenderWindow->draw(m_Shape, _shader);
 	}
 
-	sf::Shader* nullshader = NULL;
-
-	// Draw All Projectiles
-	for (CProjectile& projectile : m_Projectiles)
-	{
-		m_RenderWindow->draw(projectile.GetShape(), nullshader);
-	}
-	nullshader = nullptr;
+	DrawProjectiles();
 }
 
+/// <summary>
+/// Set the pointer m_Player to _player.
+/// </summary>
+/// <param name="_player"></param>
 void CSnowman::SetPlayer(CPlayer* _player)
 {
 	m_Player = _player;
 }
 
+/// <summary>
+/// Set the pointer m_Player to nullptr
+/// </summary>
 void CSnowman::LoosePlayer()
 {
 	m_Player = nullptr;
 }
 
+/// <summary>
+/// Returns a bool depending on m_Player = nullptr
+/// </summary>
+/// <returns></returns>
 bool CSnowman::bHasPlayer()
 {
 	if (m_Player == nullptr)
@@ -214,13 +189,19 @@ bool CSnowman::bHasPlayer()
 	}
 }
 
+/// <summary>
+/// Creates the box2d body
+/// </summary>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
+/// <param name="_type"></param>
+/// <param name="_sensor"></param>
 void CSnowman::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {
-	//ground physics
+	// Body Def
 	m_BodyDef.type = _type;
 	m_BodyDef.fixedRotation = true;
 	m_BodyDef.linearDamping = 0.6f;
-
 	if (m_bIsBoss)
 	{
 		m_BodyDef.gravityScale = 3.0f;
@@ -234,6 +215,7 @@ void CSnowman::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sens
 	m_BodyDef.bullet = false;
 	m_Body = m_World->CreateBody(&m_BodyDef);
 
+	// b2Shape
 	if (m_bIsBoss)
 	{
 		m_b2pShape.SetAsBox((300 / 2) / m_Scale, (600 / 2) / m_Scale);
@@ -243,6 +225,7 @@ void CSnowman::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sens
 		m_b2pShape.SetAsBox((100 / 2) / m_Scale, (200 / 2) / m_Scale);
 	}
 
+	// Fixture Def
 	if (_sensor)
 	{
 		m_FixtureDef.isSensor = true;
@@ -256,11 +239,12 @@ void CSnowman::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sens
 	m_FixtureDef.filter.groupIndex = -_PLAYER_GROUPINDEX_;
 	m_Body->CreateFixture(&m_FixtureDef);
 
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
-	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
-	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+	SetSFShapeToBody();
 }
 
+/// <summary>
+/// CSnowman Movement
+/// </summary>
 void CSnowman::Movement()
 {
 	b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
@@ -285,187 +269,19 @@ void CSnowman::Movement()
 		// Move Left
 		if (velocity.x < 1.0f && velocity.x > -1.0f && DirectionToPlayer < 0)
 		{
-			// Face Left
-			m_Shape.setScale(1, 1);
-
-			switch (m_SnowmanType)
-			{
-			case CSnowman::SNOWMANTYPE::GREEN:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % -300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
-				}
-
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BLUE:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 200, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 400), true);
-				}
-
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::RED:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
-				}
-
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::YELLOW:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
-				}
-
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSGREEN:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-3000 - rand() % 4400, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSBLUE:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-3000 - rand() % 4400, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSRED:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-3000 - rand() % 4000, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3000), true);
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSYELLOW:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(-2000 - rand() % 4400, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
-				break;
-			}
-			default:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(-1000 - rand() % 300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
-				}
-				break;
-			}
-			}
+			Moveleft(DistanceToPlayer);
 		}
 		// Move Right
 		else if (velocity.x < 1.0f && velocity.x > -1.0f && DirectionToPlayer > 0)
 		{
-			// Face Right
-			m_Shape.setScale(-1, 1);
-
-			switch (m_SnowmanType)
-			{
-			case CSnowman::SNOWMANTYPE::GREEN:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -200 - rand() % 300), true);
-				}
-
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BLUE:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 200, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 400), true);
-				}
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::RED:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
-				}
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::YELLOW:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
-				}
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSGREEN:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4400, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSBLUE:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4400, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSRED:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4000, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3000), true);
-				break;
-			}
-			case CSnowman::SNOWMANTYPE::BOSSYELLOW:
-			{
-				// Move Left
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4800, 0.0f), true);
-				m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3800), true);
-				break;
-			}
-			default:
-			{
-				if (DistanceToPlayer < m_DetectionRange)
-				{
-					// Move Left
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
-					m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
-				}
-				break;
-			}
-			}
+			MoveRight(DistanceToPlayer);
 		}
 	}
 }
 
+/// <summary>
+/// CSnowman Simple Movement
+/// </summary>
 void CSnowman::SimpleMove()
 {
 	b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
@@ -487,7 +303,6 @@ void CSnowman::SimpleMove()
 	// Move Left
 	if (velocity.x < 1.0f && velocity.x > -1.0f)
 	{
-
 		// Face Left
 		m_Shape.setScale(1, 1);
 
@@ -507,6 +322,9 @@ void CSnowman::SimpleMove()
 	}
 }
 
+/// <summary>
+/// CSnowman Attack (Snowball and Melee)
+/// </summary>
 void CSnowman::Attack()
 {
 	float DistanceToPlayer = 0;
@@ -514,34 +332,270 @@ void CSnowman::Attack()
 
 	if (bHasPlayer() && m_AttackTimer.getElapsedTime().asSeconds() >= m_AttackSpeed)
 	{
-		DistanceToPlayer = sqrt(((m_Player->GetShape().getPosition().x - m_Shape.getPosition().x) * (m_Player->GetShape().getPosition().x - m_Shape.getPosition().x)) + ((m_Player->GetShape().getPosition().y - m_Shape.getPosition().y) * (m_Player->GetShape().getPosition().y - m_Shape.getPosition().y)));
+		DistanceToPlayer = CalculateMag(m_Player->GetShape().getPosition().x, m_Shape.getPosition().x, m_Player->GetShape().getPosition().y, m_Shape.getPosition().y);
 		DirectionToPlayer = m_Player->GetShape().getPosition().x - m_Shape.getPosition().x;
 		float UnitDirecton = DirectionToPlayer / sqrt(((DirectionToPlayer) * (DirectionToPlayer)));
 
 		// Melee
 		if (DistanceToPlayer <= 130)
 		{
-			m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, 0), true);
-			m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
-
-			m_Player->TakeDamage(m_Damage);
-			m_AttackTimer.restart();
+			Melee(UnitDirecton);
 		}
 		// Snowball
 		else if (m_Player != nullptr)
 		{
-			if (m_SnowballTimer.getElapsedTime().asSeconds() >= 2.0f)
-			{
-				std::cout << "Snowman Fired Snowball!" << std::endl;
-
-				// throw snowball
-				CProjectile* m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x + 20 * UnitDirecton, m_Shape.getPosition().y - 50, m_RenderWindow->getView().getCenter(), CBlock::PROJECTILETYPE::SNOWBALL, nullptr, false);
-				m_Projectiles.push_back(*m_Projectile);
-				m_Projectile = nullptr;
-
-				m_SnowballTimer.restart();
-			}
-			
+			FireSnowBall(UnitDirecton);
 		}
+	}
+}
+
+/// <summary>
+/// Handles All the snowmens projectiles (Snowballs) and deletes any whomb are marked.
+/// </summary>
+void CSnowman::HandleProjectiles()
+{
+	for (CProjectile& projectile : m_Projectiles)
+	{
+		projectile.Update();
+	}
+
+	DeleteAllProjectiles();
+}
+
+/// <summary>
+/// Draw All Snowmens Projectiles (Snowballs)
+/// </summary>
+/// <param name="nullshader"></param>
+void CSnowman::DrawProjectiles(sf::Shader* nullshader)
+{
+	// Draw All Projectiles
+	for (CProjectile& projectile : m_Projectiles)
+	{
+		m_RenderWindow->draw(projectile.GetShape(), nullshader);
+	}
+}
+
+/// <summary>
+/// Deletes all snowballs
+/// Sceptical if these functions even work with lists?
+/// </summary>
+void CSnowman::DeleteAllProjectiles()
+{
+	// Delete All Collided Projectiles
+	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
+	while (pit != m_Projectiles.end())
+	{
+		if (pit->m_bMARKASDESTROY)
+		{
+			pit = m_Projectiles.erase(pit);
+		}
+		pit++;
+	}
+}
+
+/// <summary>
+/// Move Left
+/// </summary>
+/// <param name="DistanceToPlayer"></param>
+void CSnowman::Moveleft(int DistanceToPlayer)
+{
+	// Face Left
+	m_Shape.setScale(1, 1);
+
+	switch (m_SnowmanType)
+	{
+	case CSnowman::SNOWMANTYPE::GREEN:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % -300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+		}
+
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BLUE:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 200, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 400), true);
+		}
+
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::RED:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+		}
+
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::YELLOW:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(-100 - rand() % 300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+		}
+
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSGREEN:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(-3000 - rand() % 4400, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSBLUE:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(-3000 - rand() % 4400, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSRED:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(-3000 - rand() % 4000, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3000), true);
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSYELLOW:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(-2000 - rand() % 4400, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
+		break;
+	}
+	default:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(-1000 - rand() % 300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+		}
+		break;
+	}
+	}
+}
+
+/// <summary>
+/// Move Right
+/// </summary>
+/// <param name="DistanceToPlayer"></param>
+void CSnowman::MoveRight(int DistanceToPlayer)
+{
+	// Face Right
+	m_Shape.setScale(-1, 1);
+
+	switch (m_SnowmanType)
+	{
+	case CSnowman::SNOWMANTYPE::GREEN:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -200 - rand() % 300), true);
+		}
+
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BLUE:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 200, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 400), true);
+		}
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::RED:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+		}
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::YELLOW:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+		}
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSGREEN:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4400, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSBLUE:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4400, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3400), true);
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSRED:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4000, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3000), true);
+		break;
+	}
+	case CSnowman::SNOWMANTYPE::BOSSYELLOW:
+	{
+		// Move Left
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(3000 + rand() % 4800, 0.0f), true);
+		m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -1000 - rand() % 3800), true);
+		break;
+	}
+	default:
+	{
+		if (DistanceToPlayer < m_DetectionRange)
+		{
+			// Move Left
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(100 + rand() % 300, 0.0f), true);
+			m_Body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -100 - rand() % 300), true);
+		}
+		break;
+	}
+	}
+}
+
+/// <summary>
+/// Fires A Snowball at the Centre of the render window (Players Position)
+/// </summary>
+void CSnowman::FireSnowBall(float UnitDirection)
+{
+	if (m_SnowballTimer.getElapsedTime().asSeconds() >= 2.0f)
+	{
+		std::cout << "Snowman Fired Snowball!" << std::endl;
+
+		// throw snowball
+		CProjectile* m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x + 20 * UnitDirection, m_Shape.getPosition().y - 50, m_RenderWindow->getView().getCenter(), CBlock::PROJECTILETYPE::SNOWBALL, nullptr, false);
+		m_Projectiles.push_back(*m_Projectile);
+		m_Projectile = nullptr;
+
+		m_SnowballTimer.restart();
 	}
 }

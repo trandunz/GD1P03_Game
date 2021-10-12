@@ -15,8 +15,6 @@ public:
 	CChest(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY);
 	virtual ~CChest();
 
-	void Update();
-
 	int GetInventorySize();
 
 	void AddItemToInventory(CBlock* _block, bool _canStack = true);

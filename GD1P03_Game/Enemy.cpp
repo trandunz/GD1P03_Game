@@ -1,5 +1,8 @@
 #include "Enemy.h"
 
+/// <summary>
+/// CEnemy Default Constructor
+/// </summary>
 CEnemy::CEnemy()
 {
 	m_Texture = nullptr;
@@ -11,6 +14,9 @@ CEnemy::CEnemy()
 	m_Player = nullptr;
 }
 
+/// <summary>
+/// CEnemy Destructor
+/// </summary>
 CEnemy::~CEnemy()
 {
 	std::cout << "Enemy Destoryed" << std::endl;
@@ -26,10 +32,9 @@ CEnemy::~CEnemy()
 	m_Player = nullptr;
 }
 
-void CEnemy::Start()
-{
-}
-
+/// <summary>
+/// CEnemy Update
+/// </summary>
 void CEnemy::Update()
 {
 	// Set SFML Shape Transform To Box 2D Body Transform
@@ -37,43 +42,59 @@ void CEnemy::Update()
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 }
 
+/// <summary>
+/// CEnemy Render
+/// </summary>
+/// <param name="_shader"></param>
 void CEnemy::Render(sf::Shader* _shader)
 {
 	m_RenderWindow->draw(m_Shape, _shader);
 }
 
+/// <summary>
+/// Sets m_Health = _value
+/// </summary>
+/// <param name="_value"></param>
 void CEnemy::SetHealth(int _value)
 {
 	m_Health = _value;
 }
 
+/// <summary>
+/// Returns m_Health (int)
+/// </summary>
+/// <returns></returns>
 int CEnemy::GetHealth()
 {
 	return m_Health;
 }
 
+/// <summary>
+/// Sets the player pointer to _player
+/// </summary>
+/// <param name="_player"></param>
 void CEnemy::SetPlayer(CPlayer* _player)
 {
 	if (m_Player != nullptr)
 	{
 		m_Player = _player;
 	}
-
 }
 
+/// <summary>
+/// Returns a copy of the enemies Shape
+/// </summary>
+/// <returns></returns>
 sf::Sprite CEnemy::GetShape()
 {
 	return m_Shape;
 }
 
-void CEnemy::Movement()    
-{
-}
-
-void CEnemy::Attack()
-{
-}
-
+/// <summary>
+/// Makes use of the m_Damage timer to regulate taking damage
+/// </summary>
+/// <param name="_damage"></param>
+/// <param name="_projectile"></param>
 void CEnemy::TakeDamage(float _damage, bool _projectile)
 {
 	if (m_DamageTimer.getElapsedTime().asSeconds() >= 0.5f)
@@ -126,6 +147,13 @@ void CEnemy::TakeDamage(float _damage, bool _projectile)
 	}
 }
 
+/// <summary>
+/// Creates the b2Body (Generic Size is 100x100)
+/// </summary>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
+/// <param name="_type"></param>
+/// <param name="_sensor"></param>
 void CEnemy::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {
 	//ground physics
@@ -149,6 +177,9 @@ void CEnemy::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 }
 
+/// <summary>
+/// Destroys the enemies box2d Body
+/// </summary>
 void CEnemy::DestroyBody()
 {
 	if (m_World != nullptr && m_Body != nullptr)
@@ -157,4 +188,90 @@ void CEnemy::DestroyBody()
 
 		m_Body = nullptr;
 	}
+}
+
+/// <summary>
+/// Sets the position of the sfml shape to the box2d Body and orients its rotation.
+/// This function will also set the origin of the enemies shape to the middle.
+/// </summary>
+void CEnemy::SetSFShapeToBody()
+{
+	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
+	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
+	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+}
+
+/// <summary>
+/// Returns the Magnitude betweem two vectors x and y (float)
+/// </summary>
+/// <param name="_x1"></param>
+/// <param name="_x2"></param>
+/// <param name="_y1"></param>
+/// <param name="_y2"></param>
+/// <returns></returns>
+float CEnemy::CalculateMag(float _x1, float _x2, float _y1, float _y2)
+{
+	return sqrt(((_x1 - _x2) * (_x1 - _x2)) + ((_y1 - _y2) * (_y1 - _y2)));
+}
+
+/// <summary>
+/// Generic Melee Attack (Snowman Uses It As their main attack is snowball)
+/// </summary>
+/// <param name="DirectionToPlayer"></param>
+void CEnemy::Melee(int DirectionToPlayer)
+{
+	m_Body->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * -5, 0), true);
+	if (m_Player != nullptr)
+	{
+		m_Player->GetBody()->ApplyLinearImpulseToCenter(b2Vec2(DirectionToPlayer * 1 / 2, 0), true);
+
+		m_Player->TakeDamage(m_Damage);
+	}
+	m_AttackTimer.restart();
+}
+
+/// <summary>
+/// Handles All World Contacts For The Enemy (Arrows e.t.c)
+/// </summary>
+void CEnemy::WorldContacts()
+{
+	b2Contact* contact;
+	for (contact = m_World->GetContactList(); contact; contact = contact->GetNext())
+	{
+		b2Fixture* a = contact->GetFixtureA();
+		b2Fixture* b = contact->GetFixtureB();
+		b2WorldManifold worldManifold;
+		contact->GetWorldManifold(&worldManifold);
+
+		b2Vec2 vel1 = m_Body->GetLinearVelocityFromWorldPoint(m_Body->GetPosition());
+		b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint(worldManifold.points[0]);
+		b2Vec2 impactVelocity = vel1 - vel2;
+		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
+
+		if (a->GetBody() == m_Body || b->GetBody() == m_Body)
+		{
+
+			if (a->GetBody()->GetFixtureList()->IsSensor() || b->GetBody()->GetFixtureList()->IsSensor())
+			{
+				if (a->GetBody()->GetFixtureList()->IsSensor() && a->GetBody()->GetUserData().pointer)
+				{
+					int* damage = (int*)a->GetBody()->GetUserData().pointer;
+					TakeDamage(*damage, true);
+					std::cout << "Damage: " << *damage << std::endl;
+					damage = nullptr;
+				}
+				else if (b->GetBody()->GetUserData().pointer)
+				{
+					int* damage = (int*)b->GetBody()->GetUserData().pointer;
+					TakeDamage(*damage, true);
+					std::cout << "Damage: " << *damage << std::endl;
+					damage = nullptr;
+				}
+			}
+		}
+
+		a = nullptr;
+		b = nullptr;
+	}
+	contact = nullptr;
 }

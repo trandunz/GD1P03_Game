@@ -2,6 +2,7 @@
 #ifndef _PLAYER_H__
 #define _PLAYER_H__
 
+// #Defines
 #define _PLAYER_FILTER_ 0x0002
 #define _ENEMY_FILTER_ 0x0004
 #define _WORLD_FILTER_ 0x0006
@@ -17,8 +18,11 @@
 #define _SAND_ 2 
 #define _HELL_ 3
 
+// Non-Local Includes
 #include <vector>
 #include <fstream>
+
+// Local Includes
 #include "CPickaxe.h"
 #include "Chest.h"
 #include "Door.h"
@@ -167,6 +171,61 @@ private:
 
 	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60], int workbenchtypes[60]);
 
+	void CheckForHoldableItem();
+	void UpdateProjectiles();
+	void CheckForDestroyedProjectiles();
+	void HPRegen();
+
+	void SetArmourPosititions();
+
+	void PlayerCollisionContacts();
+
+	void CheckForBasicPickaxe();
+
+	void CleanupLists();
+
+	void DeleteAndReleaseAllPointers();
+
+	void LoadPlayerTextures();
+	void InitShape();
+
+	void InitMapIcon();
+
+	void RenderHoldables();
+	void DrawProjectiles(sf::Shader* _defaultShader = NULL);
+	void DrawArmour(sf::Shader* _defaultShader = NULL);
+
+	void SADInput(int& _x, int& _y);
+
+	void AnimationAndAudio(const b2Vec2 _worldPosition);
+
+	float CalculateMag(float _x1, float _x2, float _y1, float _y2);
+
+	void PickaxeInteraction(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
+
+	void PotionInteraction();
+
+	void EmptySpaceInteraction(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
+
+	void PortalKeyInteraction(int _sceneValue);
+
+	void OpenChest(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
+	void OpenFurnace(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
+	void OpenWorkBench(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
+
+	void GunAttackSpeedCheck(CBlock* _item);
+
+	void BowAndGunAttack(CBlock* _item);
+	void FireBullet(int _positionInInventory);
+	void FireArrow(int _positionInInventory);
+
+	void SetShapePositionToBody();
+
+	void DoorOpeningAndClosing(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Chests, std::list<CDoor>& m_Doors, std::list<CBlock>& m_Chunk, sf::Event& _event, sf::Sprite& _mousePositionSprite, std::list<CWorkBench>& m_WorkBenches, std::list<CBlock>& m_Tourches);
+
+	void InsertNewItemToInventory(CBlock* _block, int _position, bool _canStack);
+	void InsertNewItemToInventory(CBlock* _block, bool _canStack);
+
 	// Essentials
 	sf::RenderWindow* m_RenderWindow;
 	b2World* m_World;
@@ -213,7 +272,7 @@ private:
 	CWorkBench* m_WorkBench;
 	CPickaxe* m_Pickaxe;
 	Bow* m_Bow;
-	CParticleSystem* m_TestParticles;
+	CParticleSystem* m_MineParticles;
 	CProjectile* m_Projectile;
 	CPotion* m_Potion;
 

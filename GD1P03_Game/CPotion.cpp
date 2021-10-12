@@ -1,5 +1,9 @@
 #include "CPotion.h"
 
+/// <summary>
+/// CPotion Constructor
+/// </summary>
+/// <param name="_potionType"></param>
 CPotion::CPotion(CBlock::POTIONTYPE _potionType)
 {
 	m_Scale = 50.0f;
@@ -28,6 +32,9 @@ CPotion::CPotion(CBlock::POTIONTYPE _potionType)
 	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
 }
 
+/// <summary>
+/// CPotion Destructor
+/// </summary>
 CPotion::~CPotion()
 {
 	delete m_Texture;

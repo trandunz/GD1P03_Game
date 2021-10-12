@@ -1,6 +1,8 @@
 #include "GUI.h"
 
-
+/// <summary>
+/// GUI Consrtuctor
+/// </summary>
 GUI::GUI()
 {
 	std::cout << "UI Created" << std::endl;
@@ -12,6 +14,9 @@ GUI::GUI()
 	m_FirstEmpySlotTimer = new sf::Clock();
 }
 
+/// <summary>
+/// GUI Destructor
+/// </summary>
 GUI::~GUI()
 {
 	std::cout << "UI Destroyed" << std::endl;
@@ -31,6 +36,11 @@ GUI::~GUI()
 	m_FirstEmpySlotTimer = nullptr;
 }
 
+/// <summary>
+/// Updates the FPS UI
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_fps"></param>
 void GUI::FPSUI(sf::RenderWindow* _renderWindow, float _fps)
 {
 	m_Fps = ToString(_fps);
@@ -40,6 +50,10 @@ void GUI::FPSUI(sf::RenderWindow* _renderWindow, float _fps)
 	_renderWindow->draw(m_FpsText);
 }
 
+/// <summary>
+/// Initializes the FPS UI
+/// </summary>
+/// <param name="_fps"></param>
 void GUI::InitFpsUI(float _fps)
 {
 
@@ -55,6 +69,12 @@ void GUI::InitFpsUI(float _fps)
 	m_FpsText.setCharacterSize(22);
 }
 
+/// <summary>
+/// Update Health UI
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
+/// <param name="_textureMaster"></param>
 void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster)
 {
 	std::string string = "Life: " + ToString(_player->GetCurrentHP()) + " / " + ToString(_player->GetMaxHP());
@@ -138,6 +158,11 @@ void GUI::HealthUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMa
 	_renderWindow->draw(heart5);
 }
 
+/// <summary>
+/// Initialize Health UI
+/// </summary>
+/// <param name="_player"></param>
+/// <returns></returns>
 sf::Text GUI::InitHealthUI(CPlayer* _player)
 {
 	// Heart Containers
@@ -172,6 +197,15 @@ sf::Text GUI::InitHealthUI(CPlayer* _player)
 	return m_HealthText;
 }
 
+/// <summary>
+/// Update Map UI
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_chunk"></param>
+/// <param name="_skyChunk"></param>
+/// <param name="_player"></param>
+/// <param name="_shader"></param>
+/// <param name="_shaderUI"></param>
 void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, std::list<sf::RectangleShape>& _skyChunk, CPlayer* _player, sf::Shader* _shader, sf::Shader* _shaderUI)
 {
 
@@ -253,6 +287,11 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	_renderWindow->draw(m_MiniMapShape, _shaderUI);
 }
 
+/// <summary>
+/// Initialize Map UI
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_textureMaster"></param>
 void GUI::InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
 	m_miniMap = new sf::RenderTexture();
@@ -293,6 +332,16 @@ void GUI::InitMiniMap(sf::RenderWindow* _renderWindow, CTextureMaster* _textureM
 	m_DrawTimer.restart();
 }
 
+/// <summary>
+/// Update Inventory UI
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
+/// <param name="_uiView"></param>
+/// <param name="_worldView"></param>
+/// <param name="_event"></param>
+/// <param name="_textureMaster"></param>
+/// <param name="_chests"></param>
 void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests)
 {
 	_renderWindow->setView(_uiView);
@@ -473,6 +522,12 @@ void GUI::InventoryUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::Vie
 
 }
 
+/// <summary>
+/// Initialize Inventory UI
+/// </summary>
+/// <param name="_player"></param>
+/// <param name="_renderWindow"></param>
+/// <param name="_textureMaster"></param>
 void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
 	// Row 1
@@ -609,12 +664,21 @@ void GUI::InitInventoryUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTe
 	m_MousePointer.setOrigin(m_MousePointer.getGlobalBounds().width / 2, m_MousePointer.getGlobalBounds().height / 2);
 }
 
+/// <summary>
+/// Initialise Mouse Position Sprite
+/// </summary>
+/// <param name="_textureMaster"></param>
 void GUI::InitMousePosSprite(CTextureMaster* _textureMaster)
 {
 	m_MousePos.setTexture(*_textureMaster->m_MousePosTex, true);
 	m_MousePos.setOrigin(m_MousePos.getGlobalBounds().width / 2, m_MousePos.getGlobalBounds().height / 2);
 }
 
+/// <summary>
+/// Hotbar Scrolling Update (Mouse Wheel)
+/// </summary>
+/// <param name="_event"></param>
+/// <param name="_player"></param>
 void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 {
 	// Canvas Zooming
@@ -1107,6 +1171,10 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 	}
 }
 
+/// <summary>
+/// Initialize Hotbar Scrolling
+/// </summary>
+/// <param name="_player"></param>
 void GUI::InitHotBarScrolling(CPlayer* _player)
 {
 	// Items
@@ -1339,6 +1407,14 @@ void GUI::InitHotBarScrolling(CPlayer* _player)
 	}
 }
 
+/// <summary>
+/// Handles letting go of an item after moving it around in the inventory
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_uiView"></param>
+/// <param name="_worldView"></param>
+/// <param name="_event"></param>
+/// <param name="_player"></param>
 void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CPlayer* _player)
 {
 	// Set View As Function Called Is In Polled Update
@@ -1773,6 +1849,12 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 	// Set View As Function Is Called In Polled Update
 }
 
+/// <summary>
+/// Handles Clicking an item in the inventory
+/// </summary>
+/// <param name="_event"></param>
+/// <param name="_player"></param>
+/// <param name="_chests"></param>
 void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<CChest>& _chests)
 {
 	if (_player != nullptr)
@@ -1886,6 +1968,11 @@ void GUI::ClickedItemInInventory(sf::Event& _event, CPlayer* _player, std::list<
 	
 }
 
+/// <summary>
+/// Handles holding an item in the inventory (Moving it around)
+/// </summary>
+/// <param name="_player"></param>
+/// <param name="_chests"></param>
 void GUI::HoldItemInInventory(CPlayer* _player, std::list<CChest>& _chests)
 {
 	for (int i = 0; i < m_InventorySlotMap.size(); i++)
@@ -1903,6 +1990,11 @@ void GUI::HoldItemInInventory(CPlayer* _player, std::list<CChest>& _chests)
 	}
 }
 
+/// <summary>
+/// Deletes object from inventory at the mouse pointer
+/// </summary>
+/// <param name="_player"></param>
+/// <param name="_event"></param>
 void GUI::DeleteCurrentlyHeldItem(CPlayer* _player, sf::Event& _event)
 {
 	for (int i = 0; i < _player->m_InventoryMap.size(); i++)
@@ -1926,6 +2018,10 @@ void GUI::DeleteCurrentlyHeldItem(CPlayer* _player, sf::Event& _event)
 	}
 }
 
+/// <summary>
+/// Returns a bool corresponding to weather or not the mouse is over an item inside the inventory
+/// </summary>
+/// <returns></returns>
 bool GUI::MousePointerOverSlot()
 {
 	for (int i = 0; i < m_InventorySlotMap.size(); i++)
@@ -1938,6 +2034,13 @@ bool GUI::MousePointerOverSlot()
 	return false;
 }
 
+/// <summary>
+/// Crafting UI Update
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
+/// <param name="_textureMaster"></param>
+/// <param name="_uiView"></param>
 void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTextureMaster* _textureMaster, sf::View& _uiView)
 {
 	if (m_FirstEmpySlotTimer->getElapsedTime().asSeconds() >= 0.01f)
@@ -5429,6 +5532,10 @@ void GUI::CraftingUI(sf::RenderWindow* _renderWindow, CPlayer* _player, CTexture
 	}
 }
 
+/// <summary>
+/// Initialize Crafting UI
+/// </summary>
+/// <param name="_textureMaster"></param>
 void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 {
 	sf::Color color = sf::Color();
@@ -5812,6 +5919,11 @@ void GUI::InitCraftingUI(CTextureMaster* _textureMaster)
 	Recipe53 = nullptr;
 }
 
+/// <summary>
+/// Returns a bool refering to weather or not the crafting space at _position is empty
+/// </summary>
+/// <param name="_position"></param>
+/// <returns></returns>
 bool GUI::bIsCraftingSpaceEmpty(int _position)
 {
 	for (CBlock& item : m_CraftList)
@@ -5825,6 +5937,16 @@ bool GUI::bIsCraftingSpaceEmpty(int _position)
 	return true;
 }
 
+/// <summary>
+/// Chest UI Update
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
+/// <param name="_uiView"></param>
+/// <param name="_worldView"></param>
+/// <param name="_event"></param>
+/// <param name="_textureMaster"></param>
+/// <param name="_chests"></param>
 void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests)
 {
 	_renderWindow->setView(_uiView);
@@ -6006,6 +6128,11 @@ void GUI::ChestUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _
 
 }
 
+/// <summary>
+/// Initialize Chest UI
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_textureMaster"></param>
 void GUI::InitChestUI(sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
 	sf::Color color = sf::Color();
@@ -6182,6 +6309,15 @@ void GUI::InitChestUI(sf::RenderWindow* _renderWindow, CTextureMaster* _textureM
 	std::cout << "Size of slots: " << m_CraftingSlots.size() << std::endl;
 }
 
+/// <summary>
+/// General UI Render
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
+/// <param name="_worldView"></param>
+/// <param name="_uiView"></param>
+/// <param name="_chests"></param>
+/// <param name="_defaultShader"></param>
 void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _worldView, sf::View& _uiView, std::list<CChest>& _chests, sf::Shader* _defaultShader)
 {
 	if (_player->bInventoryOpen())
@@ -6258,6 +6394,16 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _w
 	}
 }
 
+/// <summary>
+/// Utility UI Update
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
+/// <param name="_uiView"></param>
+/// <param name="_worldView"></param>
+/// <param name="_event"></param>
+/// <param name="_textureMaster"></param>
+/// <param name="_chests"></param>
 void GUI::UtilityUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _uiView, sf::View& _worldView, sf::Event& _event, CTextureMaster* _textureMaster, std::list<CChest>& _chests)
 {
 	_renderWindow->setView(_uiView);
@@ -6335,6 +6481,12 @@ void GUI::UtilityUI(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View&
 	}
 }
 
+/// <summary>
+/// Initialize Utility UI
+/// </summary>
+/// <param name="_player"></param>
+/// <param name="_renderWindow"></param>
+/// <param name="_textureMaster"></param>
 void GUI::InitUtilityUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CTextureMaster* _textureMaster)
 {
 	// Row 1
@@ -6399,6 +6551,10 @@ void GUI::InitUtilityUI(CPlayer* _player, sf::RenderWindow* _renderWindow, CText
 	}
 }
 
+/// <summary>
+/// Initializes the armour values onto the player
+/// </summary>
+/// <param name="_player"></param>
 void GUI::InitArmourOnPlayer(CPlayer* _player)
 {
 	_player->SetArmour(_player->GetArmour() + _player->m_InventoryMap[50].m_ArmourValue);
@@ -6414,6 +6570,11 @@ void GUI::InitArmourOnPlayer(CPlayer* _player)
 	_player->m_LegsShape.setTexture(_player->m_InventoryMap[52].m_ArmourLegsLeft, true);
 }
 
+/// <summary>
+/// Converts int32 into a string
+/// </summary>
+/// <param name="integer"></param>
+/// <returns></returns>
 std::string GUI::ToString(int32 integer)
 {
 	char numstr[10]; // enough to hold all numbers up to 32-bits
@@ -6421,21 +6582,20 @@ std::string GUI::ToString(int32 integer)
 	return numstr;
 }
 
-void GUI::SetPlayer(CPlayer* _player)
-{
-	//m_Player = _player;
-}
-
-CPlayer* GUI::GetPlayer()
-{
-	return nullptr;
-}
-
+/// <summary>
+/// Sets m_Font to _font
+/// </summary>
+/// <param name="_font"></param>
 void GUI::SetFont(sf::Font& _font)
 {
 	m_Font = _font;
 }
 
+/// <summary>
+/// Returns an int corresponding to the first empty inventory slot position
+/// </summary>
+/// <param name="_player"></param>
+/// <returns></returns>
 int GUI::FindFirstEmptyInventorySlot(CPlayer* _player)
 {
 	int i = 0;
@@ -6467,20 +6627,11 @@ int GUI::FindFirstEmptyInventorySlot(CPlayer* _player)
 	return i;
 }
 
-int GUI::FindLastEmptyInventorySlot(CPlayer* _player)
-{
-	int i = 0;
-	for (i = m_InventorySlotMap.size(); i > 0; i--)
-	{
-		if (_player->m_InventoryStackValues[i] == 0)
-		{
-			return i - 1;
-			break;
-		}
-	}
-	
-}
-
+/// <summary>
+/// Returns an int corresponding to the first empty chest inventory slot position
+/// </summary>
+/// <param name="_chests"></param>
+/// <returns></returns>
 int GUI::FindFirstEmptyChestSlot(std::list<CChest>& _chests)
 {
 	int i = 0;
@@ -6516,6 +6667,11 @@ int GUI::FindFirstEmptyChestSlot(std::list<CChest>& _chests)
 	return i;
 }
 
+/// <summary>
+/// Statas Effect UI (Potions) Update
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
 void GUI::StatusEffectUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
 {
 	if (10 - _player->m_HPPotionTimer.getElapsedTime().asSeconds() > 0)
@@ -6532,6 +6688,10 @@ void GUI::StatusEffectUI(sf::RenderWindow* _renderWindow, CPlayer* _player)
 	_renderWindow->draw(m_StatusText);
 }
 
+/// <summary>
+/// Initialize Status effect UI
+/// </summary>
+/// <param name="_player"></param>
 void GUI::InitStatusEffectUI(CPlayer* _player)
 {
 	// Health Text
@@ -6546,15 +6706,30 @@ void GUI::InitStatusEffectUI(CPlayer* _player)
 	m_StatusText.setCharacterSize(20);
 }
 
+/// <summary>
+/// Craft Book List Update
+/// </summary>
+/// <param name="_uiView"></param>
+/// <param name="_worldView"></param>
 void GUI::CraftbookList(sf::View& _uiView, sf::View& _worldView)
 {
 }
 
+/// <summary>
+/// Initialize the Craftbook list UI
+/// </summary>
+/// <param name="_uiView"></param>
+/// <param name="_worldView"></param>
 void GUI::InitCraftbookList(sf::View& _uiView, sf::View& _worldView)
 {
 
 }
 
+/// <summary>
+/// Returns a bool corresponding to weather or not the player is moving an item around the inventory
+/// </summary>
+/// <param name="_player"></param>
+/// <returns></returns>
 bool GUI::bPlayerIsMovingAnItem(CPlayer* _player)
 {
 	int i = 0;
@@ -6568,6 +6743,13 @@ bool GUI::bPlayerIsMovingAnItem(CPlayer* _player)
 	return false;
 }
 
+/// <summary>
+/// Returns a bool corresponding to weather or not the player is moving an item 
+/// around the inventory, at the specified inventory position
+/// </summary>
+/// <param name="_player"></param>
+/// <param name="_iterator"></param>
+/// <returns></returns>
 bool GUI::bPlayerIsMovingAnItem(CPlayer* _player, int _iterator)
 {
 	if (_player->m_InventoryMap[_iterator].m_bIsMovingItemInInv)
@@ -6581,6 +6763,11 @@ bool GUI::bPlayerIsMovingAnItem(CPlayer* _player, int _iterator)
 	
 }
 
+/// <summary>
+/// Returns an integer corresponding to the item's position in the inventory before bieng held
+/// </summary>
+/// <param name="_player"></param>
+/// <returns></returns>
 int GUI::bGetPositionOfMovingItem(CPlayer* _player)
 {
 	if (bPlayerIsMovingAnItem(_player))

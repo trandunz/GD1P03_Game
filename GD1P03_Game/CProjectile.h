@@ -2,9 +2,12 @@
 #ifndef _PROJECTILE_H__
 #define _PROJECTILE_H__
 
+// Non-Local Includes
 #include <SFML/Graphics.hpp>
 #include <box2d/box2d.h>
 #include <iostream>
+
+// Local Includes
 #include "Block.h"
 #include "Bow.h"
 

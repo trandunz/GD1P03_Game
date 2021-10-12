@@ -1,21 +1,41 @@
 #include "CCraftbook.h"
 
+/// <summary>
+/// CCraftbook Contructor
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_font"></param>
 CCraftbook::CCraftbook(sf::RenderWindow* _renderWindow, sf::Font& _font)
 {
 }
 
+/// <summary>
+/// CCraftbook Destructor
+/// </summary>
 CCraftbook::~CCraftbook()
 {
 }
 
+/// <summary>
+/// CCraftbook Update
+/// </summary>
+/// <param name="_event"></param>
 void CCraftbook::Update(sf::Event& _event)
 {
 }
 
+/// <summary>
+/// CCraftbook Start
+/// </summary>
 void CCraftbook::Start()
 {
 }
 
+/// <summary>
+/// Inherited draw function (Note: call renderwindow->draw(*CCraftbook);)
+/// </summary>
+/// <param name="_target"></param>
+/// <param name="_states"></param>
 void CCraftbook::draw(sf::RenderTarget& _target, sf::RenderStates _states) const
 {
     // apply the transform

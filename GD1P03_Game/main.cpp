@@ -42,6 +42,22 @@ void GameStateSpecificRender(GAMESTATE _state);
 
 void CreateRenderWindow(sf::Uint32 _style);
 
+void CreateTextureMaster();
+
+void CleanupGamePointers();
+
+void CreateWorldManagerBasedOnScene(int* _sceneValue);
+
+bool MainMenuPolledUpdate(sf::Vector2f m_MousePos);
+bool GameLoopPolledUpdate(sf::Vector2f m_MousePos);
+
+void CleanupAllLists();
+void DeleteAllPointers();
+void ReleaseAllPointers();
+
+void InitWindowIcon();
+void LoadFont();
+
 // GameState
 GAMESTATE m_GameState = GAMESTATE::MENU;
 
@@ -55,7 +71,7 @@ sf::Font m_Font;
 sf::Event m_Event;
 
 // World
-CWorldManager* m_WorldManager;
+CWorldManager* m_WorldManager = nullptr;
 
 // b2World
 b2Vec2 m_Gravity(0.0f, 20.0f);
@@ -66,23 +82,23 @@ sf::View m_WorldView;
 sf::View m_UIView;
 
 // Pointers
-sf::RenderWindow* m_RenderWindow;
-CMainMenu* m_MainMenu;
-GUI* m_GUI;
-CTextureMaster* m_TextureMaster;
-CAudioManager* m_AudioManager;
-Bow* m_Bow;
-CPotion* m_Potion;
-Spawner* m_SlimeSpawner;
-CPickaxe* m_Pickaxe;
-CBlock* m_Block;
-CChest* m_Chest;
-CDoor* m_Door;
-bool* m_bChangeScenes;
-int* m_SceneValue;
+sf::RenderWindow* m_RenderWindow = nullptr;
+CMainMenu* m_MainMenu = nullptr;
+GUI* m_GUI = nullptr;
+CTextureMaster* m_TextureMaster = nullptr;
+CAudioManager* m_AudioManager = nullptr;
+Bow* m_Bow = nullptr;
+CPotion* m_Potion = nullptr;
+Spawner* m_SlimeSpawner = nullptr;
+CPickaxe* m_Pickaxe = nullptr;
+CBlock* m_Block = nullptr;
+CChest* m_Chest = nullptr;
+CDoor* m_Door = nullptr;
+bool* m_bChangeScenes = nullptr;
+int* m_SceneValue = nullptr;
 
 // Player
-CPlayer* m_Player;
+CPlayer* m_Player = nullptr;
 
 // Close App?
 bool m_bClose = false;
@@ -95,10 +111,10 @@ sf::Clock m_InventoryClickTimer;
 std::list<Spawner> m_Spawners;
 
 // Shaders
-sf::Shader* m_CoreShader;
-sf::Shader* m_SurfaceShader;
-sf::Shader* m_ShaderMiniMap;
-sf::Shader* m_TourchShader;
+sf::Shader* m_CoreShader = nullptr;
+sf::Shader* m_SurfaceShader = nullptr;
+sf::Shader* m_ShaderMiniMap = nullptr;
+sf::Shader* m_TourchShader = nullptr;
 
 // Gameover screen variables
 float m_PlayerRespawnTime = 5;
@@ -117,8 +133,11 @@ sf::Time m_PreviousTime;
 sf::Time m_CurrentTime;
 sf::Time m_TimeDelta;
 
+// Debug Godamb Leak
+int NumberOfLeakes = -1;
+
 /// <summary>
-/// 
+/// Main Implementation function (returns NULL)
 /// </summary>
 /// <returns></returns>
 int main()
@@ -126,94 +145,20 @@ int main()
 	// Render Window Creation
 	if (m_RenderWindow == nullptr)
 	{
-		// Render Window Settings
-		sf::ContextSettings m_Settings;
-		m_Settings.antialiasingLevel = 2;
-
 		CreateRenderWindow(sf::Style::Titlebar + sf::Style::Close);
 
-		// Font
-		m_Font.loadFromFile("Fonts/ANDYB.TTF");
+		LoadFont();
 
-		// Window Icon
-		sf::Image icon;
-		icon.loadFromFile("Images/Chest.png");
-		m_RenderWindow->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+		InitWindowIcon();
 	}
-
-	m_AudioManager = nullptr;
 
 	//
-
-	if (m_bChangeScenes != nullptr)
-	{
-		delete m_bChangeScenes;
-		m_bChangeScenes = nullptr;
-	}
-
-	if (m_SceneValue != nullptr)
-	{
-		delete m_SceneValue;
-		m_SceneValue = nullptr;
-	}
-	m_SceneValue = nullptr;
-	m_DebugWindow = nullptr;
-	m_bChangeScenes = nullptr;
-	m_SceneValue = new int(_PLAINS_);
-	m_bChangeScenes = new bool(false);
-
-	// Textures
-	if (m_TextureMaster == nullptr)
-	{
-		m_TextureMaster = new CTextureMaster();
-	}
-
 	Start();
 	Update();
 	//
 
-	for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
-	{
-		it = m_Spawners.erase(it);
-	}
-	m_Spawners.clear();
-
-	delete m_DebugWindow;
-	delete m_TextureMaster;
-	delete m_GUI;
-	delete m_Player;
-	delete m_RenderWindow;
-	delete m_WorldManager;
-	delete m_AudioManager;
-	delete m_bChangeScenes;
-	delete m_SceneValue;
-	delete m_CoreShader;
-	delete m_ShaderMiniMap;
-	delete m_SurfaceShader;
-	delete m_TourchShader;
-	delete m_MainMenu;
-
-	m_MainMenu = nullptr;
-	m_CoreShader = nullptr;
-	m_ShaderMiniMap = nullptr;
-	m_SurfaceShader = nullptr;
-	m_TourchShader = nullptr;
-	m_SceneValue = nullptr;
-	m_bChangeScenes = nullptr;
-	m_Potion = nullptr;
-	m_Chest = nullptr;
-	m_AudioManager = nullptr;
-	m_SlimeSpawner = nullptr;
-	m_TextureMaster = nullptr;
-	m_Pickaxe = nullptr;
-	m_Door = nullptr;
-	m_WorldManager = nullptr;
-	m_GUI = nullptr;
-	m_Player = nullptr;
-	m_RenderWindow = nullptr;
-	m_Block = nullptr;
-	m_Bow = nullptr;
-	m_DebugWindow = nullptr;
+	CleanupAllLists();
+	ReleaseAllPointers();
 
 	//
 	std::cout << "Return Main" << std::endl;
@@ -222,21 +167,23 @@ int main()
 }
 
 /// <summary>
-/// 
+/// Main Start Implementation 
+/// Note: Should only be called once
 /// </summary>
 void Start()
 {
-	if (m_AudioManager != nullptr)
-	{
-		delete m_AudioManager;
-		m_AudioManager = nullptr;
-	}
+	m_SceneValue = new int(_PLAINS_);
+	m_bChangeScenes = new bool(false);
+
+	CreateTextureMaster();
+
 	m_AudioManager = new CAudioManager();
+
 	GameStateSpecificStart(m_GameState);
 }
 
 /// <summary>
-/// 
+/// Main Update Implementation
 /// </summary>
 void Update()
 {
@@ -248,7 +195,7 @@ void Update()
 	
 
 /// <summary>
-/// 
+/// Main Render Implementation
 /// </summary>
 void Render()
 {
@@ -262,7 +209,7 @@ void Render()
 }
 
 /// <summary>
-/// 
+/// Initializes the world view and makes it the same size and the render window
 /// </summary>
 void InitWorldView()
 {
@@ -272,12 +219,11 @@ void InitWorldView()
 }
 
 /// <summary>
-/// 
+/// Initalizes all UI elements
 /// </summary>
 void InitUI()
 {
 	// GUI
-	m_GUI->SetPlayer(m_Player);
 	m_GUI->InitMousePosSprite(m_TextureMaster);
 	m_GUI->InitMiniMap(m_RenderWindow, m_TextureMaster);
 	m_GUI->InitHealthUI(m_Player);
@@ -294,7 +240,7 @@ void InitUI()
 }
 
 /// <summary>
-/// 
+/// Center's all view to renderwindow centr (player position)
 /// </summary>
 /// <param name="_object"></param>
 void CenterViewsToSprite(sf::Sprite _object)
@@ -330,6 +276,11 @@ void CenterViewsToSprite(sf::Sprite _object)
 	m_RenderWindow->setView(m_WorldView);
 }
 
+/// <summary>
+/// Picks up an item off the ground
+/// Note : BROKEN / NOT IMPLEMENTED
+/// </summary>
+/// <returns></returns>
 bool PickupItemOnGround()
 {
 	//b2Contact* contact;
@@ -369,58 +320,75 @@ bool PickupItemOnGround()
 	//return false;
 }
 
+/// <summary>
+/// Initalizes and creates all shaders
+/// </summary>
 void InitShaders()
 {
 	if (m_CoreShader == nullptr)
 	{
 		m_CoreShader = new sf::Shader();
+
+		if (!m_CoreShader->loadFromFile("Shaders/vertex_shader.vert", "Shaders/fragment_shader.frag"))
+		{
+			std::cout << "Core Shader Failed To Load!" << std::endl;
+		}
 	}
 	else
 	{
 		delete m_CoreShader;
 		m_TourchShader = nullptr;
 	}
-	if (!m_CoreShader->loadFromFile("Shaders/vertex_shader.vert", "Shaders/fragment_shader.frag"))
-	{
-		std::cout << "Core Shader Failed To Load!" << std::endl;
-	}
+
 	if (m_SurfaceShader == nullptr)
 	{
 		m_SurfaceShader = new sf::Shader();
+
+		if (!m_SurfaceShader->loadFromFile("Shaders/vertex_shader_surface.vert", "Shaders/fragment_shader_surface.frag"))
+		{
+			std::cout << "Surface Shader Failed To Load!" << std::endl;
+		}
 	}
 	else
 	{
 		delete m_SurfaceShader;
 		m_TourchShader = nullptr;
 	}
-	if (!m_SurfaceShader->loadFromFile("Shaders/vertex_shader_surface.vert", "Shaders/fragment_shader_surface.frag"))
-	{
-		std::cout << "Surface Shader Failed To Load!" << std::endl;
-	}
+
 	if (m_ShaderMiniMap == nullptr)
 	{
 		m_ShaderMiniMap = new sf::Shader();
+
+		if (!m_ShaderMiniMap->loadFromFile("Shaders/vertex_shader_UI.vert", "Shaders/fragment_shader_UI.frag"))
+		{
+			std::cout << "Black Shader Failed To Load!" << std::endl;
+		}
 	}
-	if (!m_ShaderMiniMap->loadFromFile("Shaders/vertex_shader_UI.vert", "Shaders/fragment_shader_UI.frag"))
+	else
 	{
-		std::cout << "Black Shader Failed To Load!" << std::endl;
+		delete m_ShaderMiniMap;
+		m_ShaderMiniMap = nullptr;
 	}
+
 	if (m_TourchShader == nullptr)
 	{
 		m_TourchShader = new sf::Shader();
+
+		if (!m_TourchShader->loadFromFile("Shaders/vertex_shader_Tourch.vert", "Shaders/fragment_shader_Tourch.frag"))
+		{
+			std::cout << "Tourch Shader Failed To Load!" << std::endl;
+		}
 	}
 	else
 	{
 		delete m_TourchShader;
 		m_TourchShader = nullptr;
 	}
-	if (!m_TourchShader->loadFromFile("Shaders/vertex_shader_Tourch.vert", "Shaders/fragment_shader_Tourch.frag"))
-	{
-		std::cout << "Tourch Shader Failed To Load!" << std::endl;
-	}
-	
 }
 
+/// <summary>
+/// Runs checks and updates the black gameover screen accordingly
+/// </summary>
 void GameOverScreen()
 {
 	float elapsedtime = m_FadeTimer.getElapsedTime().asSeconds() / m_PlayerRespawnTime;
@@ -444,6 +412,9 @@ void GameOverScreen()
 	}
 }
 
+/// <summary>
+/// Initlializes the game over screen and text
+/// </summary>
 void InitGameOver()
 {
 	m_FadeScreen.setSize(sf::Vector2f(30000, 30000));
@@ -458,6 +429,11 @@ void InitGameOver()
 	m_GameOverText.setOutlineColor(sf::Color::Transparent);
 }
 
+/// <summary>
+/// Handles Scene Changing
+/// </summary>
+/// <param name="_changeScene"></param>
+/// <param name="_sceneValue"></param>
 void ChangeScene(bool* _changeScene, int* _sceneValue)
 {
 	if (*_changeScene == true)
@@ -478,27 +454,7 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 		}
 		m_Spawners.clear();
 
-		if (m_WorldManager == nullptr)
-		{
-			m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader);
-
-			if (*_sceneValue == 0)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::PLAINS);
-			}
-			else if (*_sceneValue == 1)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::ICE);
-			}
-			else if (*_sceneValue == 2)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::SAND);
-			}
-			else if (*_sceneValue == 3)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::HELL);
-			}
-		}
+		CreateWorldManagerBasedOnScene(_sceneValue);
 		
 		if (m_Player != nullptr)
 		{
@@ -513,6 +469,9 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 	_sceneValue = nullptr;
 }
 
+/// <summary>
+/// Handles Scene Specific Music
+/// </summary>
 void SceneMusic()
 {
 	if (m_AudioManager != nullptr)
@@ -540,10 +499,15 @@ void SceneMusic()
 	}
 }
 
+/// <summary>
+/// Main Start Implementation based on m_GameState
+/// </summary>
+/// <param name="_state"></param>
 void GameStateSpecificStart(GAMESTATE _state) 
 {
 	for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
 	{
+		it->KillAllChilderan();
 		it = m_Spawners.erase(it);
 	}
 	m_Spawners.clear();
@@ -552,101 +516,13 @@ void GameStateSpecificStart(GAMESTATE _state)
 	{
 	case GAMESTATE::MENU:
 	{
-		if (m_WorldManager != nullptr)
-		{
-			delete m_WorldManager;
-			m_WorldManager = nullptr;
-		}
-
-		if (m_MainMenu != nullptr)
-		{
-			delete m_MainMenu;
-			m_MainMenu = nullptr;
-		}
-
-		if (m_Player != nullptr)
-		{
-			delete m_Player;
-			m_Player = nullptr;
-		}
-
-		if (m_GUI != nullptr)
-		{
-			delete m_GUI;
-			m_GUI = nullptr;
-		}
-
-		if (m_DebugWindow != nullptr)
-		{
-			delete m_DebugWindow;
-			m_DebugWindow = nullptr;
-		}
-
-		if (m_CoreShader != nullptr)
-		{
-			delete m_CoreShader;
-			m_CoreShader = nullptr;
-		}
-
-		if (m_SurfaceShader != nullptr)
-		{
-			delete m_SurfaceShader;
-			m_SurfaceShader = nullptr;
-		}
-
-		if (m_TourchShader != nullptr)
-		{
-			delete m_TourchShader;
-			m_TourchShader = nullptr;
-		}
-
+		CleanupGamePointers();
 		m_MainMenu = new CMainMenu(m_RenderWindow, m_Font);
-
 		break;
 	}
 	case GAMESTATE::GAME:
 	{
-		if (m_WorldManager != nullptr)
-		{
-			delete m_WorldManager;
-			m_WorldManager = nullptr;
-		}
-
-		if (m_MainMenu != nullptr)
-		{
-			delete m_MainMenu;
-			m_MainMenu = nullptr;
-		}
-
-		if (m_Player != nullptr)
-		{
-			delete m_Player;
-			m_Player = nullptr;
-		}
-
-		if (m_GUI != nullptr)
-		{
-			delete m_GUI;
-			m_GUI = nullptr;
-		}
-
-		if (m_CoreShader != nullptr)
-		{
-			delete m_CoreShader;
-			m_CoreShader = nullptr;
-		}
-
-		if (m_SurfaceShader != nullptr)
-		{
-			delete m_SurfaceShader;
-			m_SurfaceShader = nullptr;
-		}
-
-		if (m_TourchShader != nullptr)
-		{
-			delete m_TourchShader;
-			m_TourchShader = nullptr;
-		}
+		CleanupGamePointers();
 
 		InitShaders();
 		InitGameOver();	
@@ -669,42 +545,16 @@ void GameStateSpecificStart(GAMESTATE _state)
 		// Already Has A Pickaxe Somehow?
 		m_GUI->InitHotBarScrolling(m_Player);
 
-		// Init Nullptr
-		m_Door = nullptr;
-		m_Pickaxe = nullptr;
-		m_Block = nullptr;
-		m_bClose = false;
+		CreateWorldManagerBasedOnScene(m_SceneValue);
 
 		// Debug
 		if (m_DebugWindow == nullptr)
 		{
-			m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue);
+			m_DebugWindow = new CDebugWindow(m_TextureMaster, m_WorldManager, m_Player, m_Spawners, m_bChangeScenes, m_SceneValue, NumberOfLeakes);
 			m_DebugWindow->Start();
 		}
 
 		m_GUI->InitArmourOnPlayer(m_Player);
-
-		if (m_WorldManager == nullptr)
-		{
-			m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader);
-
-			if (*m_SceneValue == 0)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::PLAINS);
-			}
-			else if (*m_SceneValue == 1)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::ICE);
-			}
-			else if (*m_SceneValue == 2)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::SAND);
-			}
-			else if (*m_SceneValue == 3)
-			{
-				m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::HELL);
-			}
-		}
 
 		break;
 	}
@@ -712,6 +562,11 @@ void GameStateSpecificStart(GAMESTATE _state)
 		break;
 	}
 }
+
+/// <summary>
+/// Main Update Implementation based on m_GameState
+/// </summary>
+/// <param name="_state"></param>
 void GameStateSpecificUpdate(GAMESTATE _state)
 {
 	switch (_state)
@@ -720,43 +575,13 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 	{
 		sf::Vector2f m_MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
 
-		// Polled Update
-		while (m_RenderWindow->pollEvent(m_Event))
+		if (MainMenuPolledUpdate(m_MousePos))
 		{
-			// Exit
-			if (m_Event.type == sf::Event::Closed)
-			{
-				m_RenderWindow->close();
-				break;
-			}
+			m_MainMenu->Update(m_Event);
 
-			// General On Press Mouse
-			if (m_Event.type == sf::Event::MouseButtonPressed)
-			{
-				if (m_MainMenu->m_Play->bIsinBounds(m_MousePos))
-				{
-					m_GameState = GAMESTATE::GAME;
-					CreateRenderWindow(sf::Style::Default);
-					Start();
-					return;
-				}
-				else if (m_MainMenu->m_Options->bIsinBounds(m_MousePos))
-				{
-
-				}
-				else if (m_MainMenu->m_Exit->bIsinBounds(m_MousePos))
-				{
-					m_RenderWindow->close();
-				}
-
-				break;
-			}
+			// Variable Scene Music
+			SceneMusic();
 		}
-
-		m_MainMenu->Update(m_Event);
-
-		// Variable Scene Music
-		SceneMusic();
 
 		break;
 	}
@@ -779,110 +604,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 		//
 		// Polled Update
 		//
-		while (m_RenderWindow->pollEvent(m_Event))
-		{
-			// Regained Focus
-			if (m_Event.type == sf::Event::GainedFocus)
-			{
-				m_DebugInFocus = false;
-				break;
-			}
-
-			// Click Out Of Window
-			if (m_Event.type == sf::Event::LostFocus)
-			{
-				m_DebugInFocus = true;
-				if (m_Player != nullptr)
-				{
-					if (!m_Player->m_bInventoryOpen)
-					{
-						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
-					}
-				}
-				break;
-			}
-
-			// Exit
-			if (m_Event.type == sf::Event::Closed)
-			{
-				if (m_Player != nullptr)
-				{
-					m_Player->OutPutInventoryToFile();
-				}
-
-				m_DebugWindow->Close();
-				m_RenderWindow->close();
-				m_bClose = true;
-				break;
-			}
-
-			// Resize
-			if (m_Event.type == sf::Event::Resized)
-			{
-				break;
-			}
-
-			// General Key Pressed
-			if (m_Event.type == sf::Event::KeyPressed)
-			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-				{
-					m_GameState = GAMESTATE::MENU;
-					CreateRenderWindow(sf::Style::Close + sf::Style::Titlebar);
-					Start();
-					return;
-				}
-
-				if (m_Player != nullptr)
-				{
-					m_Player->Movement(m_Event);
-
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
-					{
-						m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
-					}
-
-					break;
-				}
-
-				
-			}
-
-			// Mouse Wheel Scroll
-			if (m_Event.type == sf::Event::MouseWheelScrolled)
-			{
-				if (m_Player != nullptr)
-				{
-					m_GUI->HotBarScrolling(m_Event, m_Player);
-				}
-			}
-
-			// General On Press Mouse
-			if (m_Event.type == sf::Event::MouseButtonPressed)
-			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-				{
-					if (m_GUI != nullptr && m_Spawners.size() > 0)
-					{
-						for (std::list<Spawner>::iterator spit = m_Spawners.begin(); spit != m_Spawners.end(); spit++)
-						{
-							if (spit->m_Shape.getGlobalBounds().contains(MousePos))
-							{
-								spit->ToggleSpawning();
-								break;
-							}
-						}
-					}
-				}
-
-				m_GUI->ClickedItemInInventory(m_Event, m_Player, m_WorldManager->m_Chests);
-			}
-			// Mouse Released ? GUI->LetGoOfInventoryItem
-			else if (m_Player != nullptr && m_Event.type == sf::Event::MouseButtonReleased)
-			{
-				m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
-			}
-		}
+		GameLoopPolledUpdate(MousePos);
 
 		//
 		// UnPolled Update
@@ -957,8 +679,14 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 					delete m_Player;
 					m_Player = nullptr;
 
-					m_WorldManager->InitPointer(m_Player);
-					m_DebugWindow->SetPlayer(m_Player);
+					if (m_WorldManager != nullptr)
+					{
+						m_WorldManager->InitPointer(m_Player);
+					}
+					if (m_DebugWindow != nullptr)
+					{
+						m_DebugWindow->SetPlayer(m_Player);
+					}
 					for (Spawner& spawner : m_Spawners)
 					{
 						spawner.LoosePlayer();
@@ -982,8 +710,14 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 					m_Player = new CPlayer(m_RenderWindow, m_World, Utils::m_Scale, m_AudioManager, m_TextureMaster, m_bChangeScenes, m_SceneValue);
 					m_Player->Start();
 
-					m_WorldManager->InitPointer(m_Player);
-					m_DebugWindow->SetPlayer(m_Player);
+					if (m_WorldManager != nullptr)
+					{
+						m_WorldManager->InitPointer(m_Player);
+					}
+					if (m_DebugWindow != nullptr)
+					{
+						m_DebugWindow->SetPlayer(m_Player);
+					}
 
 					// Already Has A Pickaxe Selected
 					m_GUI->InitHotBarScrolling(m_Player);
@@ -1019,6 +753,11 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 	// Portal To Next Scene?
 	ChangeScene(m_bChangeScenes, m_SceneValue);
 }
+
+/// <summary>
+/// Main Render Implementation based on m_GameState
+/// </summary>
+/// <param name="_state"></param>
 void GameStateSpecificRender(GAMESTATE _state)
 {
 	switch (_state)
@@ -1117,6 +856,10 @@ void GameStateSpecificRender(GAMESTATE _state)
 	}
 }
 
+/// <summary>
+/// Creates or recreates the renderwindow with the specified sf::UInt32 _style
+/// </summary>
+/// <param name="_style"></param>
 void CreateRenderWindow(sf::Uint32 _style)
 {
 	// Recreate RenderWindow With Resize Available
@@ -1134,5 +877,348 @@ void CreateRenderWindow(sf::Uint32 _style)
 	m_RenderWindow->setKeyRepeatEnabled(false);
 }
 
+/// <summary>
+/// Creates the texturemaster (holds most textures)
+/// </summary>
+void CreateTextureMaster()
+{
+	// Textures
+	if (m_TextureMaster == nullptr)
+	{
+		m_TextureMaster = new CTextureMaster();
+	}
+}
 
+/// <summary>
+/// Deletes and cleanes up all expected pointers
+/// </summary>
+void CleanupGamePointers()
+{
+	if (m_WorldManager != nullptr)
+	{
+		delete m_WorldManager;
+		m_WorldManager = nullptr;
+	}
+
+	if (m_MainMenu != nullptr)
+	{
+		delete m_MainMenu;
+		m_MainMenu = nullptr;
+	}
+
+	if (m_Player != nullptr)
+	{
+		delete m_Player;
+		m_Player = nullptr;
+	}
+
+	if (m_GUI != nullptr)
+	{
+		delete m_GUI;
+		m_GUI = nullptr;
+	}
+
+	if (m_DebugWindow != nullptr)
+	{
+		delete m_DebugWindow;
+		m_DebugWindow = nullptr;
+	}
+
+	if (m_CoreShader != nullptr)
+	{
+		delete m_CoreShader;
+		m_CoreShader = nullptr;
+	}
+
+	if (m_SurfaceShader != nullptr)
+	{
+		delete m_SurfaceShader;
+		m_SurfaceShader = nullptr;
+	}
+
+	if (m_TourchShader != nullptr)
+	{
+		delete m_TourchShader;
+		m_TourchShader = nullptr;
+	}
+}
+
+/// <summary>
+/// Creates the world manager and runs worldmanager start based on the scene value
+/// </summary>
+/// <param name="_sceneValue"></param>
+void CreateWorldManagerBasedOnScene(int* _sceneValue)
+{
+	if (m_WorldManager != nullptr)
+	{
+		m_WorldManager->CleanupAllLists();
+		delete m_WorldManager;
+		m_WorldManager = nullptr;
+	}
+
+	if (m_WorldManager == nullptr)
+	{
+		NumberOfLeakes++;
+
+		m_WorldManager = new CWorldManager(m_RenderWindow, m_Player, m_World, m_GUI, m_CoreShader, m_SurfaceShader);
+
+		if (*_sceneValue == 0)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::PLAINS);
+		}
+		else if (*_sceneValue == 1)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::ICE);
+		}
+		else if (*_sceneValue == 2)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::SAND);
+		}
+		else if (*_sceneValue == 3)
+		{
+			m_WorldManager->Start(m_TextureMaster, m_AudioManager, m_Spawners, CWorldManager::WORLDTYPE::HELL);
+		}
+	}
+}
+
+/// <summary>
+/// Polled Update Implementation for main menu
+/// </summary>
+/// <param name="m_MousePos"></param>
+/// <returns></returns>
+bool MainMenuPolledUpdate(sf::Vector2f m_MousePos)
+{
+	// Polled Update
+	while (m_RenderWindow->pollEvent(m_Event))
+	{
+		// Exit
+		if (m_Event.type == sf::Event::Closed)
+		{
+			m_RenderWindow->close();
+			break;
+		}
+
+		// General On Press Mouse
+		if (m_Event.type == sf::Event::MouseButtonPressed)
+		{
+			if (m_MainMenu->m_Play->bIsinBounds(m_MousePos))
+			{
+				m_GameState = GAMESTATE::GAME;
+				CreateRenderWindow(sf::Style::Default);
+				GameStateSpecificStart(m_GameState);
+				return false;
+			}
+			else if (m_MainMenu->m_Options->bIsinBounds(m_MousePos))
+			{
+
+			}
+			else if (m_MainMenu->m_Exit->bIsinBounds(m_MousePos))
+			{
+				m_RenderWindow->close();
+			}
+
+			break;
+		}
+
+		return true;
+	}
+}
+
+/// <summary>
+/// Polled Update Implementation for Main Game Loop
+/// </summary>
+/// <param name="m_MousePos"></param>
+/// <returns></returns>
+bool GameLoopPolledUpdate(sf::Vector2f m_MousePos)
+{
+	while (m_RenderWindow->pollEvent(m_Event))
+	{
+		// Regained Focus
+		if (m_Event.type == sf::Event::GainedFocus)
+		{
+			m_DebugInFocus = false;
+			break;
+		}
+
+		// Click Out Of Window
+		if (m_Event.type == sf::Event::LostFocus)
+		{
+			m_DebugInFocus = true;
+			if (m_Player != nullptr)
+			{
+				if (!m_Player->m_bInventoryOpen)
+				{
+					m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
+				}
+			}
+			break;
+		}
+
+		// Exit
+		if (m_Event.type == sf::Event::Closed)
+		{
+			if (m_Player != nullptr)
+			{
+				m_Player->OutPutInventoryToFile();
+			}
+
+			m_DebugWindow->Close();
+			m_RenderWindow->close();
+			m_bClose = true;
+			break;
+		}
+
+		// Resize
+		if (m_Event.type == sf::Event::Resized)
+		{
+			break;
+		}
+
+		// General Key Pressed
+		if (m_Event.type == sf::Event::KeyPressed)
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			{
+				m_GameState = GAMESTATE::MENU;
+				CreateRenderWindow(sf::Style::Close + sf::Style::Titlebar);
+				GameStateSpecificStart(m_GameState);
+				return false;
+			}
+
+			if (m_Player != nullptr)
+			{
+				m_Player->Movement(m_Event);
+
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !m_GUI->bPlayerIsMovingAnItem(m_Player))
+				{
+					m_Player->ToggleInventoryUI(m_WorldManager->m_Chests);
+				}
+
+				break;
+			}
+
+
+		}
+
+		// Mouse Wheel Scroll
+		if (m_Event.type == sf::Event::MouseWheelScrolled)
+		{
+			if (m_Player != nullptr)
+			{
+				m_GUI->HotBarScrolling(m_Event, m_Player);
+			}
+		}
+
+		// General On Press Mouse
+		if (m_Event.type == sf::Event::MouseButtonPressed)
+		{
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+			{
+				if (m_GUI != nullptr && m_Spawners.size() > 0)
+				{
+					for (std::list<Spawner>::iterator spit = m_Spawners.begin(); spit != m_Spawners.end(); spit++)
+					{
+						if (spit->m_Shape.getGlobalBounds().contains(MousePos))
+						{
+							spit->ToggleSpawning();
+							break;
+						}
+					}
+				}
+			}
+
+			m_GUI->ClickedItemInInventory(m_Event, m_Player, m_WorldManager->m_Chests);
+		}
+		// Mouse Released ? GUI->LetGoOfInventoryItem
+		else if (m_Player != nullptr && m_Event.type == sf::Event::MouseButtonReleased)
+		{
+			m_GUI->LetGoOfItemInInventory(m_RenderWindow, m_UIView, m_WorldView, m_Event, m_Player);
+		}
+	}
+
+	return true;
+}
+
+/// <summary>
+/// Cleans up all lists defined in main.cpp
+/// </summary>
+void CleanupAllLists()
+{
+	for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
+	{
+		it = m_Spawners.erase(it);
+	}
+	m_Spawners.clear();
+}
+
+/// <summary>
+/// Deletes all expected pointers
+/// </summary>
+void DeleteAllPointers()
+{
+	delete m_DebugWindow;
+	delete m_TextureMaster;
+	delete m_GUI;
+	delete m_Player;
+	delete m_RenderWindow;
+	delete m_WorldManager;
+	delete m_AudioManager;
+	delete m_bChangeScenes;
+	delete m_SceneValue;
+	delete m_CoreShader;
+	delete m_ShaderMiniMap;
+	delete m_SurfaceShader;
+	delete m_TourchShader;
+	delete m_MainMenu;
+}
+
+/// <summary>
+/// Deletes and sets all expected pointers to nullptr
+/// </summary>
+void ReleaseAllPointers()
+{
+	DeleteAllPointers();
+
+	m_MainMenu = nullptr;
+	m_CoreShader = nullptr;
+	m_ShaderMiniMap = nullptr;
+	m_SurfaceShader = nullptr;
+	m_TourchShader = nullptr;
+	m_SceneValue = nullptr;
+	m_bChangeScenes = nullptr;
+	m_Potion = nullptr;
+	m_Chest = nullptr;
+	m_AudioManager = nullptr;
+	m_SlimeSpawner = nullptr;
+	m_TextureMaster = nullptr;
+	m_Pickaxe = nullptr;
+	m_Door = nullptr;
+	m_WorldManager = nullptr;
+	m_GUI = nullptr;
+	m_Player = nullptr;
+	m_RenderWindow = nullptr;
+	m_Block = nullptr;
+	m_Bow = nullptr;
+	m_DebugWindow = nullptr;
+}
+
+/// <summary>
+/// Initalises the Renderwindow icon
+/// </summary>
+void InitWindowIcon()
+{
+	// Window Icon
+	sf::Image icon;
+	icon.loadFromFile("Images/Chest.png");
+	m_RenderWindow->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+}
+
+/// <summary>
+/// Loads in the font "ANDYB"
+/// </summary>
+void LoadFont()
+{
+	// Font
+	m_Font.loadFromFile("Fonts/ANDYB.TTF");
+}
 

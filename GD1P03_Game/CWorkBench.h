@@ -9,9 +9,6 @@ public:
 	CWorkBench(CBlock::WORKBENCHTYPE _wordBenchType);
 	CWorkBench(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY, CBlock::WORKBENCHTYPE _wordBenchType);
 	virtual ~CWorkBench();
-
-	void Update();
-
 };
 #endif
 

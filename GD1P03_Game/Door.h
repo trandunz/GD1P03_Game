@@ -4,8 +4,6 @@
 
 #include "Block.h"
 
-
-
 class CDoor : public CBlock
 {
 public:
@@ -15,9 +13,6 @@ public:
 
 	void OCDoor(sf::Vector2f _playerPosition);
 	virtual void SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y);
-
-	void Update();
-	
 
 	bool m_bOpen = false;
 private:

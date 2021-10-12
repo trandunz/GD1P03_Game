@@ -166,7 +166,6 @@
     <ClCompile Include="CProjectile.cpp" />
     <ClCompile Include="CSnowman.cpp" />
     <ClCompile Include="CTextureMaster.cpp" />
-    <ClCompile Include="CWizard.cpp" />
     <ClCompile Include="CWorkBench.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -176,7 +175,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="Spawner.cpp" />
-    <ClCompile Include="Zombie.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -197,7 +195,6 @@
     <ClInclude Include="CProjectile.h" />
     <ClInclude Include="CSnowman.h" />
     <ClInclude Include="CTextureMaster.h" />
-    <ClInclude Include="CWizard.h" />
     <ClInclude Include="CWorkBench.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="Enemy.h" />
@@ -206,7 +203,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Slime.h" />
     <ClInclude Include="Spawner.h" />
-    <ClInclude Include="Zombie.h" />
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>
   <ItemGroup>

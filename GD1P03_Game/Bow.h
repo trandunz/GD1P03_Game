@@ -5,7 +5,6 @@
 #include "Block.h"
 class Bow : public CBlock
 {
-
 public:
 
 	Bow(BOWTYPE _bowType);
@@ -20,6 +19,10 @@ public:
 	sf::Sprite* m_Sprite;
 	int m_BowPower = 1.0f;
 private:
+	void LoadTextureBasedOnType();
+	void LoadTexturesAndBPBasedOnType();
+	void InitSpriteTexture();
+
 	sf::Texture m_LeftTex;
 	sf::Texture m_RightTex;
 };

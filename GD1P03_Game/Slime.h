@@ -41,11 +41,19 @@ public:
 
 	bool m_bIsBoss = false;
 private:
-	
+	void RandomizeSlimeType(bool _boss);
+	void SetAppropriateSlimeTexture();
+	void Setb2pShapeSizeAppropriatly();
+
+	void MoveLeft(float DistanceToPlayer);
+	void MoveRight(float DistanceToPlayer);
+
+	void SimpleMoveLeft();
+	void SimpleMoveRight();
+
+	void AttackBasedOnAppropriateType(int DirectionToPlayer, float DistanceToPlayer);
 
 	sf::Clock m_AttackTimer;
-
-	CPlayer* m_Player;
 
 	bool m_bCanFallDamage = true;
 };

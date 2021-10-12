@@ -76,13 +76,6 @@ CButtons::~CButtons()
 }
 
 /// <summary>
-/// Start Function For Buttons (Intended To Be Called Before Update).
-/// </summary>
-void CButtons::Start()
-{
-}
-
-/// <summary>
 /// Update Definition For Buttons.
 /// </summary>
 void CButtons::Update()

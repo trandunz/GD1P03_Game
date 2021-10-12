@@ -1,5 +1,15 @@
 #include "WorldManager.h"
 
+/// <summary>
+/// CWorldManager Constructor
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_player"></param>
+/// <param name="_world"></param>
+/// <param name="_gui"></param>
+/// <param name="_shader"></param>
+/// <param name="_surfaceShader"></param>
+/// <param name="_tourchShader"></param>
 CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, b2World& _world, GUI* _gui, sf::Shader* _shader, sf::Shader* _surfaceShader, sf::Shader* _tourchShader)
 {
     std::cout << "WORLD CREATED" << std::endl;
@@ -24,57 +34,23 @@ CWorldManager::CWorldManager(sf::RenderWindow* _renderWindow, CPlayer* _player, 
     std::cout << _gui->m_CurrentSeed << std::endl;
 }
 
+/// <summary>
+/// CWorldManager Destructor
+/// </summary>
 CWorldManager::~CWorldManager()
 {
-    std::cout << "WORLD DESTROYED" << std::endl;
-    for (std::list<CBlock>::iterator it = m_Chunk->begin(); it != m_Chunk->end(); it++)
-    {
-        it = m_Chunk->erase(it);
-    }
-    m_Chunk->clear();
-    for (std::list<sf::RectangleShape>::iterator it = m_SkyChunk.begin(); it != m_SkyChunk.end(); it++)
-    {
-        it = m_SkyChunk.erase(it);
-    }
-    m_SkyChunk.clear();
-    for (std::list<CChest>::iterator it = m_Chests.begin(); it != m_Chests.end(); it++)
-    {
-        it = m_Chests.erase(it);
-    }
-    m_Chests.clear();
-    for (std::list<CDoor>::iterator it = m_Doors.begin(); it != m_Doors.end(); it++)
-    {
-        it = m_Doors.erase(it);
-    }
-    m_Doors.clear();
-    for (std::list<CFurnace>::iterator it = m_Furnaces.begin(); it != m_Furnaces.end(); it++)
-    {
-        it = m_Furnaces.erase(it);
-    }
-    m_Furnaces.clear();
-    for (std::list<CWorkBench>::iterator it = m_WorkBenches.begin(); it != m_WorkBenches.end(); it++)
-    {
-        it = m_WorkBenches.erase(it);
-    }
-    m_WorkBenches.clear();
-    for (std::list<CBlock>::iterator it = m_Tourches.begin(); it != m_Tourches.end(); it++)
-    {
-        it = m_Tourches.erase(it);
-    }
-    m_Tourches.clear();
+    CleanupAllLists();
     
-    delete m_Chunk;
-    m_Chunk = nullptr;
-    m_TourchShader = nullptr;
-    m_SurfaceShader = nullptr;
-    m_Shader = nullptr;
-    m_Block = nullptr;
-    m_GUI = nullptr;
-    m_Player = nullptr;
-    m_RenderWindow = nullptr;
-    m_World = nullptr;
+    ReleaseAllPointers();
 }
 
+/// <summary>
+/// CWorldManager Start
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
+/// <param name="_worldtype"></param>
 void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners, WORLDTYPE _worldtype)
 {
     m_WorldType = _worldtype;
@@ -91,11 +67,6 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
     {
         CreateSandBackgrounds(_textureMaster);
         CreateSandNoiseWorld(_textureMaster, _audioManager, _spawners);
-        /*Spawner* wizardspawn = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, -400 * 100 + 10, -400 * 100, m_Player, CEnemy::ENEMYTYPE::NPC, m_Shader, m_TourchShader, false);
-        wizardspawn->ToggleSpawning();
-        wizardspawn->SetSpawnCount(1);
-        _spawners.push_back(*wizardspawn);
-        wizardspawn = nullptr;*/
         break;
     }
 
@@ -122,6 +93,11 @@ void CWorldManager::Start(CTextureMaster* _textureMaster, CAudioManager* _audioM
     CreateSurfaceSpawners(_textureMaster, _audioManager, _spawners);
 }
 
+/// <summary>
+/// CWorldManager Update
+/// </summary>
+/// <param name="_mousePos"></param>
+/// <param name="_textureMaster"></param>
 void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaster)
 {
     // Set Mouse / Block Indicator To Rounded Sky Position
@@ -130,160 +106,24 @@ void CWorldManager::Update(sf::Vector2f _mousePos, CTextureMaster* _textureMaste
     // Parralax Background
     ParralaxBackground();
 
-    // Update All Blocks In Range Of Player && Set Mouse Pos To Blocks
-    float Mag1 = 0;
-    float x = 0;
-    float y = 0;
-    for (CBlock& block : *m_Chunk)
-    {
-        x = block.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
-        x *= x;
-        y = block.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
-        y *= y;
-        Mag1 = sqrt(x + y);
+    UpdateGUIMousePosToBlocks(_mousePos);
+    UpdateGUIMousePosToDoor(_mousePos);
+    UpdateGUIMousePosToChest(_mousePos);
 
-        if (Mag1 < 1920 * 1.f)
-        {
-            if (block.GetShape().getGlobalBounds().contains(_mousePos))
-            {
-                m_GUI->m_MousePos.setPosition(block.GetPosition());
-            }
-        }
-        else
-        {
-            continue;
-        }
-    }
+    UpdateFurnaceCanSmeltAndMousePos(_mousePos);
+    UpdateWorkBenchCanCraftAndMousePos(_mousePos);
 
-    // Mouse Pos To Door
-    for (CDoor& door : m_Doors)
-    {
-        if (door.GetShape().getGlobalBounds().contains(_mousePos))
-        {
-            m_GUI->m_MousePos.setPosition(door.GetShape().getPosition());
-        }
-    }
-
-    // Mouse Pos To Chest
-    for (CChest& chest : m_Chests)
-    {
-        if (chest.GetShape().getGlobalBounds().contains(_mousePos))
-        {
-            m_GUI->m_MousePos.setPosition(chest.GetShape().getPosition());
-        }
-    }
-
-    // Mouse Pos To Furnace
-    for (CFurnace& furnace : m_Furnaces)
-    {
-        Mag1 = 400;
-
-        if (m_Player != nullptr)
-        {
-            Mag1 = sqrt(((m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y)));
-        }
-        
-        // SETTING CAN WORKBENCH
-        if (Mag1 < 300)
-        {
-            if (furnace.GetShape().getGlobalBounds().contains(_mousePos))
-            {
-                m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
-            }
-
-            m_GUI->m_bCanSmelt = true;
-        }
-        else
-        {
-            if (furnace.GetShape().getGlobalBounds().contains(_mousePos))
-            {
-                m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
-            }
-
-            m_GUI->m_bCanSmelt = false;
-        }
-        
-    }
-
-    // Mouse Pos To Workbench
-    for (CBlock& workbench : m_WorkBenches)
-    {
-        Mag1 = 400;
-
-        if (m_Player != nullptr)
-        {
-            Mag1 = sqrt(((m_Player->GetShape().getPosition().x - workbench.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - workbench.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - workbench.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - workbench.GetShape().getPosition().y)));
-        }
-
-        // SETTING CAN WORKBENCH
-        if (Mag1 < 300 && workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::WORKBENCH)
-        {
-            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
-            {
-                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
-            }
-
-            m_GUI->m_bCanWorkBench = true;
-        }
-        else if (workbench.m_WorkBenchType != CBlock::WORKBENCHTYPE::ANVIL)
-        {
-            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
-            {
-                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
-            }
-
-            m_GUI->m_bCanWorkBench = false;
-        }
-
-        // SETTING CAN ANVIL
-        if (Mag1 < 300 && workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::ANVIL)
-        {
-            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
-            {
-                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
-            }
-
-            m_GUI->m_bCanAnvil = true;
-        }
-        else if (workbench.m_WorkBenchType != CBlock::WORKBENCHTYPE::WORKBENCH)
-        {
-            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
-            {
-                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
-            }
-
-            m_GUI->m_bCanAnvil = false;
-        }
-    }
-
-    int workbenchcount = 0;
-    int anvilcount = 0;
-    for (CWorkBench& workbench : m_WorkBenches)
-    {
-        if (workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::WORKBENCH)
-        {
-            workbenchcount++;
-        }
-        else if (workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::ANVIL)
-        {
-            anvilcount++;
-        }
-    }
-
-    if (anvilcount <= 0)
-    {
-        m_GUI->m_bCanAnvil = false;
-    }
-    if (workbenchcount <= 0)
-    {
-        m_GUI->m_bCanWorkBench = false;
-    }
+    CalculateWorkBenchTypes();
     if (m_Furnaces.size() <= 0)
     {
         m_GUI->m_bCanSmelt = false;
     }
 }
 
+/// <summary>
+/// CWorldManager Render
+/// </summary>
+/// <param name="_defaultShader"></param>
 void CWorldManager::Render(sf::Shader* _defaultShader)
 {
     //
@@ -294,146 +134,21 @@ void CWorldManager::Render(sf::Shader* _defaultShader)
     
     DrawBackGround();
 
-    // Surface Shader
-    m_SurfaceShader->setUniform("hasTexture", true);
-    m_SurfaceShader->setUniform("lightPos", sf::Vector2f(0, -500));
+    SetShaderUniforms();
 
-    if (m_Player != nullptr)
-    {
-        // Player Light
-        m_Shader->setUniform("hasTexture", true);
-        m_Shader->setUniform("lightPos", m_Player->GetShape().getPosition());
-        m_Shader->setUniform("lightIntensity", m_Player->m_LightIntensity);
-    }
-    else
-    {
-        // Fake Player Light
-        m_Shader->setUniform("hasTexture", true);
-        m_Shader->setUniform("lightPos", -1000);
-    }
+    DrawBlocksInRangeOfPlayer();
 
-    // Block Iterator
-    std::list<CBlock>::iterator it;
-    float Mag1 = 0;
-    float x = 0;
-    float y = 0;
-
-    // Draw Blocks In Range (With Shaders : Player, Tourch, Surface)
-    for (it = m_Chunk->begin(); it != m_Chunk->end(); it++)
-    {
-        x = it->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
-        y = it->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
-        Mag1 = sqrt((x * x) + (y * y));
-
-        if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y >= 1300)
-        {
-            if (bIsBlockInRangeOfLightSource(it))
-            {
-                m_RenderWindow->draw(it->GetShape(), m_TourchShader);
-            }
-            else
-            {
-                if (it->GetShape().getPosition().y > 1400)
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_Shader);
-                }
-                else
-                {
-                    if (Mag1 <= 200 && m_RenderWindow->getView().getCenter().y >= 1200)
-                    {
-                        m_RenderWindow->draw(it->GetShape(), m_Shader);
-                    }
-                    else
-                    {
-                        m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
-                    }
-                }
-            }
-        }
-        else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1400 && it->GetShape().getPosition().y >= 400)
-        {
-            if (m_RenderWindow->getView().getCenter().y >= 1200)
-            {
-                if (Mag1 <= 200)
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_Shader);
-                }
-                else if (Mag1 < 1920 * 1.8f)
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
-                }
-            }
-            else
-            {
-                if (bIsBlockInRangeOfLightSource(it) && it->GetShape().getPosition().y >= 1300 && Mag1 < 1920 * 1.8f)
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_TourchShader);
-                }
-                else if (Mag1 < 1920 * 1.8f)
-                {
-                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
-                }
-            }
-
-        }
-        else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y < 400 && it->GetShape().getPosition().y > -400)
-        {
-            m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
-        }
-        else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= -400)
-        {
-            m_RenderWindow->draw(it->GetShape(), _defaultShader);
-        }
-        else
-        {
-            continue;
-        }
-    }
-
-    // Doors, Chests, Funaces
-    for (CDoor& door : m_Doors)
-    {
-        x = door.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
-        y = door.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
-        Mag1 = sqrt((x * x) + (y * y));
-
-        if (Mag1 < 1920 * 1.8f)
-        {
-            door.Render(_defaultShader);
-        }
-    }
-    for (CChest& chest : m_Chests)
-    {
-        x = chest.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
-        y = chest.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
-        Mag1 = sqrt((x * x) + (y * y));
-
-        if (Mag1 < 1920 * 1.8f)
-        {
-            chest.Render(_defaultShader);
-        }
-    }
-    for (CFurnace& furnace : m_Furnaces)
-    {
-        x = furnace.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
-        y = furnace.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
-        Mag1 = sqrt((x * x) + (y * y));
-
-        if (Mag1 < 1920 * 1.8f)
-        {
-            furnace.Render(_defaultShader);
-        }
-    }
-    for (CWorkBench& workbench : m_WorkBenches)
-    {
-        workbench.Render(_defaultShader);
-    }
-    for (CBlock& tourch : m_Tourches)
-    {
-        tourch.Render(_defaultShader);
-    }
+    RenderTourches();
+    RenderWorkbenches();
+    RenderFurnaces();
+    RenderDoors();
+    RenderChests();
 }
 
+/// <summary>
+/// Creates one invisible block just under the mouse position that is rounded to the voxel grid
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::CreateSkyChunk(CTextureMaster* _textureMaster)
 {
     //
@@ -458,6 +173,10 @@ void CWorldManager::CreateSkyChunk(CTextureMaster* _textureMaster)
     m_SkyChunk.push_back(sky);
 }
 
+/// <summary>
+/// Creates the obsidian world boundary
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
 {
     m_GlobalMutex.lock();
@@ -506,6 +225,13 @@ void CWorldManager::CreateWorldBoundary(CTextureMaster* _textureMaster)
     m_GlobalMutex.unlock();
 }
 
+/// <summary>
+/// Creates the Plains Noise World
+/// Note : Includes Chests and cave spawners
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     m_GlobalMutex.lock();
@@ -890,6 +616,13 @@ void CWorldManager::CreateNoiseWorld(CTextureMaster* _textureMaster, CAudioManag
     m_GlobalMutex.unlock();
 }
 
+/// <summary>
+/// Creates the Sand Noise World
+/// Note : Includes Chests and cave spawners
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     m_GlobalMutex.lock();
@@ -1224,6 +957,13 @@ void CWorldManager::CreateSandNoiseWorld(CTextureMaster* _textureMaster, CAudioM
     m_GlobalMutex.unlock();
 }
 
+/// <summary>
+/// Creates the Ice Noise World
+/// Note : Includes Chests and cave spawners
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     m_GlobalMutex.lock();
@@ -1599,6 +1339,13 @@ void CWorldManager::CreateIceNoiseWorld(CTextureMaster* _textureMaster, CAudioMa
     m_GlobalMutex.unlock();
 }
 
+/// <summary>
+/// Creates The Hell Noise World
+/// Note : Includes Chests and cave spawners
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     m_GlobalMutex.lock();
@@ -1882,6 +1629,11 @@ void CWorldManager::CreateHellNoiseWorld(CTextureMaster* _textureMaster, CAudioM
     m_GlobalMutex.unlock();
 }
 
+/// <summary>
+/// Creates noise clouds by adjusting the noise input values to make them more "puffy"
+/// Note : Includes Chests
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
 {
     m_GlobalMutex.lock();
@@ -2105,6 +1857,11 @@ void CWorldManager::CreateClouds(CTextureMaster* _textureMaster)
     m_GlobalMutex.unlock();
 }
 
+/// <summary>
+/// Returns a bool corresponding to weather or not the passed in block is in range of a light source
+/// </summary>
+/// <param name="_it"></param>
+/// <returns></returns>
 bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it)
 {
     float Mag1 = 0;
@@ -2158,6 +1915,11 @@ bool CWorldManager::bIsBlockInRangeOfLightSource(std::list<CBlock>::iterator _it
     return false;
 }
 
+/// <summary>
+/// Returns a bool corresponding to weather or not the passed in sf::Shape is in range of a light source
+/// </summary>
+/// <param name="_shape"></param>
+/// <returns></returns>
 bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
 {
     float Mag1 = 0;
@@ -2208,6 +1970,10 @@ bool CWorldManager::bIsItemInRangeOfLightSource(sf::Sprite _shape)
     return false;
 }
 
+/// <summary>
+/// Initializes the m_Player pointer to _player and resets the background alphas to a surface state
+/// </summary>
+/// <param name="_player"></param>
 void CWorldManager::InitPointer(CPlayer* _player)
 {
     m_Player = _player;
@@ -2220,6 +1986,12 @@ void CWorldManager::InitPointer(CPlayer* _player)
     std::cout << "Player Initialized On World" << std::endl;
 }
 
+/// <summary>
+/// Initializes the pointers with their respected passed in shaders
+/// </summary>
+/// <param name="_shader"></param>
+/// <param name="_surfaceshader"></param>
+/// <param name="_tourchshader"></param>
 void CWorldManager::InitShaders(sf::Shader* _shader, sf::Shader* _surfaceshader, sf::Shader* _tourchshader)
 {
     m_Shader = _shader;
@@ -2227,6 +1999,12 @@ void CWorldManager::InitShaders(sf::Shader* _shader, sf::Shader* _surfaceshader,
     m_TourchShader = _tourchshader;
 }
 
+/// <summary>
+/// Outputs the world to 2 text files
+/// Note : DO NOT USE
+/// </summary>
+/// <param name="_xPositions"></param>
+/// <param name="_yPositions"></param>
 void CWorldManager::OutPutWorldToFiles(std::string _xPositions, std::string _yPositions)
 {
     // Ofstream
@@ -2251,6 +2029,10 @@ void CWorldManager::OutPutWorldToFiles(std::string _xPositions, std::string _yPo
     out_file.close();
 }
 
+/// <summary>
+/// Outputs the world to 2 text files
+/// Note : DO NOT USE
+/// </summary>
 void CWorldManager::OutPutWorldToFiles()
 {
     // OFstream
@@ -2279,6 +2061,9 @@ void CWorldManager::OutPutWorldToFiles()
     out_file.close();
 }
 
+/// <summary>
+/// Adjusts te world backgrounds alphas based on the renderwindow's view's centre's y position (player.y)
+/// </summary>
 void CWorldManager::WorldBackGroundColourGradient()
 {
     //
@@ -2365,6 +2150,11 @@ void CWorldManager::WorldBackGroundColourGradient()
     }
 }
 
+/// <summary>
+/// Attempts to input the world from the two saved files
+/// Note : DO NOT USE
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::InputWorldFromFiles(CTextureMaster* _textureMaster)
 {
     m_GlobalMutex.lock();
@@ -2424,6 +2214,10 @@ void CWorldManager::InputWorldFromFiles(CTextureMaster* _textureMaster)
     m_GlobalMutex.unlock();
 }
 
+/// <summary>
+/// Draws all world backgrounds
+/// </summary>
+/// <param name="_defaultShader"></param>
 void CWorldManager::DrawBackGround(sf::Shader* _defaultShader)
 {
     m_RenderWindow->draw(m_BGPlainsSurface, _defaultShader);
@@ -2431,6 +2225,11 @@ void CWorldManager::DrawBackGround(sf::Shader* _defaultShader)
     m_RenderWindow->draw(m_BGSandSurface, _defaultShader);
 }
 
+/// <summary>
+/// Returns a bool corresponding to weather or not the pased in sf::Sprite is inside of a block
+/// </summary>
+/// <param name="_shape"></param>
+/// <returns></returns>
 bool CWorldManager::IsObjectInBlock(sf::Sprite _shape)
 {
     for (CBlock& block : *m_Chunk)
@@ -2444,6 +2243,11 @@ bool CWorldManager::IsObjectInBlock(sf::Sprite _shape)
     return false;
 }
 
+/// <summary>
+/// Returns a bool corresponding to weather or not the pased in sf::Vector2f is inside of a block
+/// </summary>
+/// <param name="_pos"></param>
+/// <returns></returns>
 bool CWorldManager::PositionIsBlock(sf::Vector2f _pos)
 {
     for (CBlock& block : *m_Chunk)
@@ -2456,6 +2260,13 @@ bool CWorldManager::PositionIsBlock(sf::Vector2f _pos)
     return false;
 }
 
+/// <summary>
+/// Creates the dungeon (same for each level)
+/// Note : Creates spawners, boss spawner and chests
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     for (int y = 0; y < m_GenerateOffsetY; y ++)
@@ -2789,6 +2600,12 @@ void CWorldManager::CreateDungeon(CTextureMaster* _textureMaster, CAudioManager*
     }   
 }
 
+/// <summary>
+/// Creates invisible surface spawners for surface mob interaction
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     switch (m_WorldType)
@@ -2806,9 +2623,12 @@ void CWorldManager::CreateSurfaceSpawners(CTextureMaster* _textureMaster, CAudio
     default:
         break;
     }
-    
 }
 
+/// <summary>
+/// Creates and initialises the sand background
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::CreateSandBackgrounds(CTextureMaster* _textureMaster)
 {
     // World BackGround (Surface)
@@ -2834,6 +2654,10 @@ void CWorldManager::CreateSandBackgrounds(CTextureMaster* _textureMaster)
     m_BGPlainsUnderGr.setPosition(0, 0);
 }
 
+/// <summary>
+/// Creates and initialises the plains background
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::CreatePlainsBackgrounds(CTextureMaster* _textureMaster)
 {
     // World BackGround (Surface)
@@ -2854,6 +2678,10 @@ void CWorldManager::CreatePlainsBackgrounds(CTextureMaster* _textureMaster)
     m_BGPlainsUnderGr.setPosition(0, 0);
 }
 
+/// <summary>
+/// Creates and initialises the ice background
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::CreateIceBackgrounds(CTextureMaster* _textureMaster)
 {
     // World BackGround (Surface)
@@ -2879,6 +2707,10 @@ void CWorldManager::CreateIceBackgrounds(CTextureMaster* _textureMaster)
     m_BGPlainsUnderGr.setPosition(0, 0);
 }
 
+/// <summary>
+/// Creates and initialises the hell background
+/// </summary>
+/// <param name="_textureMaster"></param>
 void CWorldManager::CreateHellBackgrounds(CTextureMaster* _textureMaster)
 {
     // World BackGround (Surface)
@@ -2904,6 +2736,10 @@ void CWorldManager::CreateHellBackgrounds(CTextureMaster* _textureMaster)
     m_BGPlainsUnderGr.setPosition(0, 0);
 }
 
+/// <summary>
+/// Generates random noise that mimics perlin noise and adds the values to a large array
+/// Note: all perlin noise values range between the values of 0 and 1
+/// </summary>
 void CWorldManager::GenerateNoise()
 {
     for (int y = 0; y < _NOISEHEIGHT_; y++)
@@ -2915,6 +2751,12 @@ void CWorldManager::GenerateNoise()
     } 
 }
 
+/// <summary>
+/// Smooths out the noise to make it less spikey
+/// </summary>
+/// <param name="_x"></param>
+/// <param name="_y"></param>
+/// <returns></returns>
 double CWorldManager::SmoothNoise(double _x, double _y)
 {
     // Get Fractional Part Of X And Y
@@ -2940,6 +2782,14 @@ double CWorldManager::SmoothNoise(double _x, double _y)
     return value;
 }
 
+/// <summary>
+/// Creates random turbulence in the noise 
+/// Note: used for shaped caves e.t.c, turbulence strengths can be adjusted as neccessary
+/// </summary>
+/// <param name="_x"></param>
+/// <param name="_y"></param>
+/// <param name="_size"></param>
+/// <returns></returns>
 double CWorldManager::Turbulence(double _x, double _y, double _size)
 {
     double value = 0.0f;
@@ -2955,6 +2805,484 @@ double CWorldManager::Turbulence(double _x, double _y, double _size)
     return(128.0 * value / initialSize);
 }
 
+/// <summary>
+/// Cleanes up all lists
+/// </summary>
+void CWorldManager::CleanupAllLists()
+{
+    std::cout << "WORLD DESTROYED" << std::endl;
+    for (auto it = m_Chunk->begin(); it != m_Chunk->end(); it++)
+    {
+        it = m_Chunk->erase(it);
+    }
+    m_Chunk->clear();
+    for (std::list<sf::RectangleShape>::iterator it = m_SkyChunk.begin(); it != m_SkyChunk.end(); it++)
+    {
+        it = m_SkyChunk.erase(it);
+    }
+    m_SkyChunk.clear();
+    for (std::list<CChest>::iterator it = m_Chests.begin(); it != m_Chests.end(); it++)
+    {
+        it = m_Chests.erase(it);
+    }
+    m_Chests.clear();
+    for (std::list<CDoor>::iterator it = m_Doors.begin(); it != m_Doors.end(); it++)
+    {
+        it = m_Doors.erase(it);
+    }
+    m_Doors.clear();
+    for (std::list<CFurnace>::iterator it = m_Furnaces.begin(); it != m_Furnaces.end(); it++)
+    {
+        it = m_Furnaces.erase(it);
+    }
+    m_Furnaces.clear();
+    for (std::list<CWorkBench>::iterator it = m_WorkBenches.begin(); it != m_WorkBenches.end(); it++)
+    {
+        it = m_WorkBenches.erase(it);
+    }
+    m_WorkBenches.clear();
+    for (std::list<CBlock>::iterator it = m_Tourches.begin(); it != m_Tourches.end(); it++)
+    {
+        it = m_Tourches.erase(it);
+    }
+    m_Tourches.clear();
+}
+
+/// <summary>
+/// Deletes all reccomended pointers
+/// </summary>
+void CWorldManager::DeleteAllPointers()
+{
+    delete m_Chunk;
+}
+
+/// <summary>
+/// Deletes and sets all reccommended pointers to nullptr
+/// </summary>
+void CWorldManager::ReleaseAllPointers()
+{
+    DeleteAllPointers();
+    m_Chunk = nullptr;
+    m_TourchShader = nullptr;
+    m_SurfaceShader = nullptr;
+    m_Shader = nullptr;
+    m_Block = nullptr;
+    m_GUI = nullptr;
+    m_Player = nullptr;
+    m_RenderWindow = nullptr;
+    m_World = nullptr;
+}
+
+/// <summary>
+/// Checks if the sf::Vector2f _mousePos intersects a block and sets the mouse indicator accordingly
+/// </summary>
+/// <param name="_mousePos"></param>
+void CWorldManager::UpdateGUIMousePosToBlocks(sf::Vector2f _mousePos)
+{
+    // Update All Blocks In Range Of Player && Set Mouse Pos To Blocks
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
+    for (CBlock& block : *m_Chunk)
+    {
+        x = block.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        x *= x;
+        y = block.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        y *= y;
+        Mag1 = sqrt(x + y);
+
+        if (Mag1 < 1920 * 1.f)
+        {
+            if (block.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(block.GetPosition());
+            }
+        }
+        else
+        {
+            continue;
+        }
+    }
+}
+
+/// <summary>
+/// Checks if the sf::Vector2f _mousePos intersects a door and sets the mouse indicator accordingly
+/// </summary>
+/// <param name="_mousePos"></param>
+void CWorldManager::UpdateGUIMousePosToDoor(sf::Vector2f _mousePos)
+{
+    // Mouse Pos To Door
+    for (CDoor& door : m_Doors)
+    {
+        if (door.GetShape().getGlobalBounds().contains(_mousePos))
+        {
+            m_GUI->m_MousePos.setPosition(door.GetShape().getPosition());
+        }
+    }
+}
+
+/// <summary>
+/// Checks if the sf::Vector2f _mousePos intersects a chest and sets the mouse indicator accordingly
+/// </summary>
+/// <param name="_mousePos"></param>
+void CWorldManager::UpdateGUIMousePosToChest(sf::Vector2f _mousePos)
+{
+    // Mouse Pos To Chest
+    for (CChest& chest : m_Chests)
+    {
+        if (chest.GetShape().getGlobalBounds().contains(_mousePos))
+        {
+            m_GUI->m_MousePos.setPosition(chest.GetShape().getPosition());
+        }
+    }
+}
+
+/// <summary>
+/// Checks if the sf::Vector2f _mousePos intersects a furnace and sets the mouse indicator accordingly
+/// Note : SETS CAN SMELT
+/// </summary>
+/// <param name="_mousePos"></param>
+void CWorldManager::UpdateFurnaceCanSmeltAndMousePos(sf::Vector2f _mousePos)
+{
+    // Update All Blocks In Range Of Player && Set Mouse Pos To Blocks
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
+
+    // Mouse Pos To Furnace
+    for (CFurnace& furnace : m_Furnaces)
+    {
+        Mag1 = 400;
+
+        if (m_Player != nullptr)
+        {
+            Mag1 = sqrt(((m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - furnace.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - furnace.GetShape().getPosition().y)));
+        }
+
+        // SETTING CAN WORKBENCH
+        if (Mag1 < 300)
+        {
+            if (furnace.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanSmelt = true;
+        }
+        else
+        {
+            if (furnace.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(furnace.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanSmelt = false;
+        }
+
+    }
+}
+
+/// <summary>
+/// Checks if the sf::Vector2f _mousePos intersects a workbench and sets the mouse indicator accordingly
+/// Note : SETS CANWORKBENCH
+/// </summary>
+/// <param name="_mousePos"></param>
+void CWorldManager::UpdateWorkBenchCanCraftAndMousePos(sf::Vector2f _mousePos)
+{
+    // Update All Blocks In Range Of Player && Set Mouse Pos To Blocks
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
+
+    // Mouse Pos To Workbench
+    for (CBlock& workbench : m_WorkBenches)
+    {
+        Mag1 = 400;
+
+        if (m_Player != nullptr)
+        {
+            Mag1 = sqrt(((m_Player->GetShape().getPosition().x - workbench.GetShape().getPosition().x) * (m_Player->GetShape().getPosition().x - workbench.GetShape().getPosition().x)) + ((m_Player->GetShape().getPosition().y - workbench.GetShape().getPosition().y) * (m_Player->GetShape().getPosition().y - workbench.GetShape().getPosition().y)));
+        }
+
+        // SETTING CAN WORKBENCH
+        if (Mag1 < 300 && workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::WORKBENCH)
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanWorkBench = true;
+        }
+        else if (workbench.m_WorkBenchType != CBlock::WORKBENCHTYPE::ANVIL)
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanWorkBench = false;
+        }
+
+        // SETTING CAN ANVIL
+        if (Mag1 < 300 && workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::ANVIL)
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanAnvil = true;
+        }
+        else if (workbench.m_WorkBenchType != CBlock::WORKBENCHTYPE::WORKBENCH)
+        {
+            if (workbench.GetShape().getGlobalBounds().contains(_mousePos))
+            {
+                m_GUI->m_MousePos.setPosition(workbench.GetShape().getPosition());
+            }
+
+            m_GUI->m_bCanAnvil = false;
+        }
+    }
+}
+
+/// <summary>
+/// Initializes shader uniforms
+/// </summary>
+void CWorldManager::SetShaderUniforms()
+{
+    // Surface Shader
+    m_SurfaceShader->setUniform("hasTexture", true);
+    m_SurfaceShader->setUniform("lightPos", sf::Vector2f(0, -500));
+
+    if (m_Player != nullptr)
+    {
+        // Player Light
+        m_Shader->setUniform("hasTexture", true);
+        m_Shader->setUniform("lightPos", m_Player->GetShape().getPosition());
+        m_Shader->setUniform("lightIntensity", m_Player->m_LightIntensity);
+    }
+    else
+    {
+        // Fake Player Light
+        m_Shader->setUniform("hasTexture", true);
+        m_Shader->setUniform("lightPos", -1000);
+    }
+}
+
+/// <summary>
+/// Draws only the blocks on the screen (culling)
+/// </summary>
+/// <param name="_defaultShader"></param>
+void CWorldManager::DrawBlocksInRangeOfPlayer(sf::Shader* _defaultShader)
+{
+    // Block Iterator
+    std::list<CBlock>::iterator it;
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
+
+    // Draw Blocks In Range (With Shaders : Player, Tourch, Surface)
+    for (it = m_Chunk->begin(); it != m_Chunk->end(); it++)
+    {
+        x = it->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = it->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
+
+        if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y >= 1300)
+        {
+            if (bIsBlockInRangeOfLightSource(it))
+            {
+                m_RenderWindow->draw(it->GetShape(), m_TourchShader);
+            }
+            else
+            {
+                if (it->GetShape().getPosition().y > 1400)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_Shader);
+                }
+                else
+                {
+                    if (Mag1 <= 200 && m_RenderWindow->getView().getCenter().y >= 1200)
+                    {
+                        m_RenderWindow->draw(it->GetShape(), m_Shader);
+                    }
+                    else
+                    {
+                        m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                    }
+                }
+            }
+        }
+        else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= 1400 && it->GetShape().getPosition().y >= 400)
+        {
+            if (m_RenderWindow->getView().getCenter().y >= 1200)
+            {
+                if (Mag1 <= 200)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_Shader);
+                }
+                else if (Mag1 < 1920 * 1.8f)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                }
+            }
+            else
+            {
+                if (bIsBlockInRangeOfLightSource(it) && it->GetShape().getPosition().y >= 1300 && Mag1 < 1920 * 1.8f)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_TourchShader);
+                }
+                else if (Mag1 < 1920 * 1.8f)
+                {
+                    m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+                }
+            }
+
+        }
+        else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y < 400 && it->GetShape().getPosition().y > -400)
+        {
+            m_RenderWindow->draw(it->GetShape(), m_SurfaceShader);
+        }
+        else if (Mag1 < 1920 * 1.8f && it->GetShape().getPosition().y <= -400)
+        {
+            m_RenderWindow->draw(it->GetShape(), _defaultShader);
+        }
+        else
+        {
+            continue;
+        }
+    }
+}
+
+/// <summary>
+/// Renders Tourches
+/// </summary>
+/// <param name="_defaultShader"></param>
+void CWorldManager::RenderTourches(sf::Shader* _defaultShader)
+{
+    for (CBlock& tourch : m_Tourches)
+    {
+        tourch.Render(_defaultShader);
+    }
+}
+
+/// <summary>
+/// Renders Doors
+/// </summary>
+/// <param name="_defaultShader"></param>
+void CWorldManager::RenderDoors(sf::Shader* _defaultShader)
+{
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
+
+    // Doors, Chests, Funaces
+    for (CDoor& door : m_Doors)
+    {
+        x = door.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = door.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
+
+        if (Mag1 < 1920 * 1.8f)
+        {
+            door.Render(_defaultShader);
+        }
+    }
+}
+
+/// <summary>
+/// Renders Workbenches
+/// Note: Anvils are also rendered
+/// </summary>
+/// <param name="_defaultShader"></param>
+void CWorldManager::RenderWorkbenches(sf::Shader* _defaultShader)
+{
+    for (CWorkBench& workbench : m_WorkBenches)
+    {
+        workbench.Render(_defaultShader);
+    }
+}
+
+/// <summary>
+/// Renders all Furnaces
+/// </summary>
+/// <param name="_defaultShader"></param>
+void CWorldManager::RenderFurnaces(sf::Shader* _defaultShader)
+{
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
+
+    for (CFurnace& furnace : m_Furnaces)
+    {
+        x = furnace.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = furnace.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
+
+        if (Mag1 < 1920 * 1.8f)
+        {
+            furnace.Render(_defaultShader);
+        }
+    }
+}
+
+/// <summary>
+/// Renders all chests
+/// </summary>
+/// <param name="_defaultShader"></param>
+void CWorldManager::RenderChests(sf::Shader* _defaultShader)
+{
+    float Mag1 = 0;
+    float x = 0;
+    float y = 0;
+
+    for (CChest& chest : m_Chests)
+    {
+        x = chest.GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+        y = chest.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+        Mag1 = sqrt((x * x) + (y * y));
+
+        if (Mag1 < 1920 * 1.8f)
+        {
+            chest.Render(_defaultShader);
+        }
+    }
+}
+
+/// <summary>
+/// Checks global workbench type counts and sets m_bCananvil or m_bCanWorkbench accordingly
+/// </summary>
+void CWorldManager::CalculateWorkBenchTypes()
+{
+    int workbenchcount = 0;
+    int anvilcount = 0;
+    for (CWorkBench& workbench : m_WorkBenches)
+    {
+        if (workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::WORKBENCH)
+        {
+            workbenchcount++;
+        }
+        else if (workbench.m_WorkBenchType == CBlock::WORKBENCHTYPE::ANVIL)
+        {
+            anvilcount++;
+        }
+    }
+
+    if (anvilcount <= 0)
+    {
+        m_GUI->m_bCanAnvil = false;
+    }
+    if (workbenchcount <= 0)
+    {
+        m_GUI->m_bCanWorkBench = false;
+    }
+}
+
+/// <summary>
+/// Parralax Background
+/// Note : BROKEN
+/// </summary>
 void CWorldManager::ParralaxBackground()
 {
     /*if (m_ParralaxClock.getElapsedTime().asSeconds() >= 0.03f)
@@ -2974,6 +3302,12 @@ void CWorldManager::ParralaxBackground()
     m_BGPlainsSurface.setPosition(m_RenderWindow->getView().getCenter());
 }
 
+/// <summary>
+/// Creates all slime surface spawners
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateSlimeSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SLIME, m_Shader, m_TourchShader, false);
@@ -3019,6 +3353,12 @@ void CWorldManager::CreateSlimeSurfaceSpawners(CTextureMaster* _textureMaster, C
     m_SlimeSpawner = nullptr;
 }
 
+/// <summary>
+/// Creates all snowman surface spawners
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_audioManager"></param>
+/// <param name="_spawners"></param>
 void CWorldManager::CreateSnowmanSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners)
 {
     Spawner* m_SlimeSpawner = new Spawner(_audioManager, m_RenderWindow, *m_World, _textureMaster, Utils::m_Scale, 0, -2000, m_Player, CEnemy::ENEMYTYPE::SNOWMAN, m_Shader, m_TourchShader, false);

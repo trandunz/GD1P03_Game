@@ -1,5 +1,8 @@
 #include "CTextureMaster.h"
 
+/// <summary>
+/// CTextureMaster Contructor (Creates all textures)
+/// </summary>
 CTextureMaster::CTextureMaster()
 {
 	std::cout << "TEXTURE MASTER" << std::endl;
@@ -223,6 +226,9 @@ CTextureMaster::CTextureMaster()
 	m_WorkBench->setSmooth(true);
 }
 
+/// <summary>
+/// CTextureMaster Destructor (Destroys all textures)
+/// </summary>
 CTextureMaster::~CTextureMaster()
 {
 	delete m_WorkBench;

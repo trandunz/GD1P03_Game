@@ -1,5 +1,9 @@
 #include "CProjectile.h"
 
+/// <summary>
+/// CProjectile Contructor
+/// </summary>
+/// <param name="_projtype"></param>
 CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 {
 	m_Scale = 50.0f;
@@ -64,6 +68,16 @@ CProjectile::CProjectile(CBlock::PROJECTILETYPE _projtype)
 	
 }
 
+/// <summary>
+/// Cprojectile Contructor (Actual Projectile)
+/// </summary>
+/// <param name="_world"></param>
+/// <param name="_startPosX"></param>
+/// <param name="_startPosY"></param>
+/// <param name="_mousPos"></param>
+/// <param name="_projtype"></param>
+/// <param name="_activeBow"></param>
+/// <param name="_friendly"></param>
 CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf::Vector2f _mousPos, CBlock::PROJECTILETYPE _projtype, Bow* _activeBow, bool _friendly)
 {
 	m_World = &_world;
@@ -156,6 +170,9 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 	}
 }
 
+/// <summary>
+/// CProjectile Destructor
+/// </summary>
 CProjectile::~CProjectile()
 {
 	DestroyBody();
@@ -166,6 +183,9 @@ CProjectile::~CProjectile()
 	m_World = nullptr;
 }
 
+/// <summary>
+/// CProjectile Update
+/// </summary>
 void CProjectile::Update()
 {
 	// Contacts
@@ -212,10 +232,20 @@ void CProjectile::Update()
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 }
 
+/// <summary>
+/// CProjectile Render
+/// </summary>
 void CProjectile::Render()
 {
 }
 
+/// <summary>
+/// Creates the box2d body for the projectile standard size is : (5/5)
+/// </summary>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
+/// <param name="_type"></param>
+/// <param name="_sensor"></param>
 void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sensor)
 {
 	// Body
@@ -275,6 +305,9 @@ void CProjectile::CreateBody(float _posX, float _posY, b2BodyType _type, bool _s
 	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 }
 
+/// <summary>
+/// Destroy and cleanup the box2d body components
+/// </summary>
 void CProjectile::DestroyBody()
 {
 	if (m_World != nullptr && m_Body != nullptr)

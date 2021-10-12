@@ -1,6 +1,11 @@
 #pragma once
-#include "SFML/Graphics.hpp"
+#ifndef _MAINMENU_H__
+#define _MAINMENU_H__
 
+// Non-Local Includes
+#include <SFML/Graphics.hpp>
+
+// Local Includes
 #include "CButtons.h"
 
 class CMainMenu : public sf::Drawable, sf::Transformable
@@ -55,4 +60,5 @@ private:
 
 	sf::Vector2f m_MousePos;
 };
+#endif 
 

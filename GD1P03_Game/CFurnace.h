@@ -9,8 +9,6 @@ public:
 	CFurnace();
 	CFurnace(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY);
 	virtual ~CFurnace();
-
-	void Update();
 };
 #endif
 

@@ -1,5 +1,8 @@
 #include "Door.h"
 
+/// <summary>
+/// CDoor Contructor
+/// </summary>
 CDoor::CDoor()
 {
 	m_Scale = 50.0f;
@@ -16,6 +19,14 @@ CDoor::CDoor()
 	m_Shape.setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 + m_Shape.getGlobalBounds().height / 3);
 }
 
+/// <summary>
+/// CDoor Constructor (Block)
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_world"></param>
+/// <param name="_scale"></param>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
 CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;
@@ -36,6 +47,9 @@ CDoor::CDoor(sf::RenderWindow* _renderWindow, b2World& _world, const float& _sca
 	m_BlockStrength = 5;
 }
 
+/// <summary>
+/// CDoor Destructor
+/// </summary>
 CDoor::~CDoor()
 {
 	DestroyBody();
@@ -46,6 +60,10 @@ CDoor::~CDoor()
 	m_World = nullptr;
 }
 
+/// <summary>
+/// Handles Opening and closing the door along with the orientation of the sprite
+/// </summary>
+/// <param name="_playerPosition"></param>
 void CDoor::OCDoor(sf::Vector2f _playerPosition)
 {
 	m_bOpen = !m_bOpen;
@@ -85,6 +103,13 @@ void CDoor::OCDoor(sf::Vector2f _playerPosition)
 
 }
 
+/// <summary>
+/// Sets the doors box2d body size and position 
+/// </summary>
+/// <param name="_currentPosX"></param>
+/// <param name="_currentPosY"></param>
+/// <param name="_x"></param>
+/// <param name="_y"></param>
 void CDoor::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, float _y)
 {
 	m_Size.x = _x;
@@ -92,12 +117,5 @@ void CDoor::SetSizeAndPos(float _currentPosX, float _currentPosY, float _x, floa
 
 	DestroyBody();
 	CreateBody(_currentPosX, _currentPosY - m_Shape.getGlobalBounds().height / 4, b2_staticBody);
-
-	Render();
-}
-
-void CDoor::Update()
-{
-	CBlock::Update();
 }
 

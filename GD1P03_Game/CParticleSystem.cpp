@@ -1,5 +1,8 @@
 #include "CParticleSystem.h"
 
+/// <summary>
+/// CParticleSystem Start
+/// </summary>
 void CParticleSystem::Start()
 {
     for (std::size_t i = 0; i < m_Particles.size(); ++i)
@@ -10,6 +13,10 @@ void CParticleSystem::Start()
     }
 }
 
+/// <summary>
+/// CParticleSystem Update
+/// </summary>
+/// <param name="_elapsedTime"></param>
 void CParticleSystem::Update(sf::Time _elapsedTime)
 {
     for (std::size_t i = 0; i < m_Particles.size(); ++i)
@@ -38,6 +45,11 @@ void CParticleSystem::Update(sf::Time _elapsedTime)
     
 }
 
+/// <summary>
+/// Sets the emission position to _position
+/// This also restarts the Particles lifetimes e.t.c
+/// </summary>
+/// <param name="_position"></param>
 void CParticleSystem::SetEmitter(sf::Vector2f _position)
 {
 	m_Emitter = _position;
@@ -49,6 +61,10 @@ void CParticleSystem::SetEmitter(sf::Vector2f _position)
     }
 }
 
+/// <summary>
+/// Sets the colour of all particles to _color (sf::Color)
+/// </summary>
+/// <param name="_color"></param>
 void CParticleSystem::SetColor(sf::Color _color)
 {
     for (std::size_t i = 0; i < m_Particles.size(); ++i)
@@ -57,6 +73,11 @@ void CParticleSystem::SetColor(sf::Color _color)
     }
 }
 
+/// <summary>
+/// Inherited draw function to draw the particle list
+/// </summary>
+/// <param name="_target"></param>
+/// <param name="_states"></param>
 void CParticleSystem::draw(sf::RenderTarget& _target, sf::RenderStates _states) const
 {
     // apply the transform
@@ -69,6 +90,10 @@ void CParticleSystem::draw(sf::RenderTarget& _target, sf::RenderStates _states) 
     _target.draw(m_Vertices, _states);
 }
 
+/// <summary>
+/// Resets the lifetime and velocity of the particles
+/// </summary>
+/// <param name="_index"></param>
 void CParticleSystem::ResetParticle(std::size_t _index)
 {
     // give a random velocity and lifetime to the particle
@@ -81,6 +106,10 @@ void CParticleSystem::ResetParticle(std::size_t _index)
     m_bIsDead = false;
 }
 
+/// <summary>
+/// Kills a particle at the specified index (sets its alpha to 0)
+/// </summary>
+/// <param name="_index"></param>
 void CParticleSystem::KillParticle(std::size_t _index)
 {
     m_Vertices[_index].color.a = 0;

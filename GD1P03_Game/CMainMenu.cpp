@@ -1,5 +1,10 @@
 #include "CMainMenu.h"
 
+/// <summary>
+/// CMainMenu Constructor
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_font"></param>
 CMainMenu::CMainMenu(sf::RenderWindow* _renderWindow, sf::Font& _font)
 {
     m_RenderWindow = _renderWindow;
@@ -7,6 +12,9 @@ CMainMenu::CMainMenu(sf::RenderWindow* _renderWindow, sf::Font& _font)
     Start();
 }
 
+/// <summary>
+/// CMainMenu Destructor
+/// </summary>
 CMainMenu::~CMainMenu()
 {
     delete m_Play;
@@ -18,6 +26,9 @@ CMainMenu::~CMainMenu()
     m_RenderWindow = nullptr;
 }
 
+/// <summary>
+/// CMainMenu Start
+/// </summary>
 void CMainMenu::Start()
 {
     CreateBackGroundImage();
@@ -25,6 +36,10 @@ void CMainMenu::Start()
     CreateButtons();
 }
 
+/// <summary>
+/// CMainMenu Update
+/// </summary>
+/// <param name="_event"></param>
 void CMainMenu::Update(sf::Event& _event)
 {
     RainbowTitle();
@@ -32,6 +47,12 @@ void CMainMenu::Update(sf::Event& _event)
     ButtonUpdates();
 }
 
+/// <summary>
+/// Inherited draw Function 
+/// Note: Use m_Renderwindow->draw(CMainMenu);
+/// </summary>
+/// <param name="_target"></param>
+/// <param name="_states"></param>
 void CMainMenu::draw(sf::RenderTarget& _target, sf::RenderStates _states) const
 {
     // apply the transform
@@ -47,6 +68,13 @@ void CMainMenu::draw(sf::RenderTarget& _target, sf::RenderStates _states) const
     RenderButtons(_target, _states);
 }
 
+/// <summary>
+/// Loads An image from the given file path onto the passed in texture. that texture is then passed
+/// into _sprite
+/// </summary>
+/// <param name="_sprite"></param>
+/// <param name="_texture"></param>
+/// <param name="_filePath"></param>
 void CMainMenu::LoadImageOntoSprite(sf::Sprite& _sprite, sf::Texture& _texture, std::string _filePath)
 {
     _texture.loadFromFile(std::string("Images/") + _filePath);
@@ -55,6 +83,9 @@ void CMainMenu::LoadImageOntoSprite(sf::Sprite& _sprite, sf::Texture& _texture, 
     _sprite.setOrigin(_sprite.getGlobalBounds().width / 2, _sprite.getGlobalBounds().height / 2);
 }
 
+/// <summary>
+/// Creates the background image
+/// </summary>
 void CMainMenu::CreateBackGroundImage()
 {
     LoadImageOntoSprite(m_MainMenuImage, m_MainMenuTexture, "TerrariaBG.jpg");
@@ -63,6 +94,9 @@ void CMainMenu::CreateBackGroundImage()
     m_MainMenuImage.setTextureRect(sf::IntRect(0, 0, m_MainMenuImage.getTexture()->getSize().x * 1000, m_MainMenuImage.getTexture()->getSize().y));
 }
 
+/// <summary>
+/// Creates the title "Planetary"
+/// </summary>
 void CMainMenu::CreateTitle()
 {
     m_TitleString = "Planetary";
@@ -86,6 +120,9 @@ void CMainMenu::CreateTitle()
 
 }
 
+/// <summary>
+/// Updates the title with a rainbow effect
+/// </summary>
 void CMainMenu::RainbowTitle()
 {
     if (m_RainbowClock.getElapsedTime().asSeconds() >= 0.5f)
@@ -97,6 +134,9 @@ void CMainMenu::RainbowTitle()
     }
 }
 
+/// <summary>
+/// Main Menu Parralax Background effect
+/// </summary>
 void CMainMenu::ParralaxBackground()
 {
     if (m_ParralaxClock.getElapsedTime().asSeconds() >= 0.03f)
@@ -115,6 +155,9 @@ void CMainMenu::ParralaxBackground()
     
 }
 
+/// <summary>
+/// Creates all buttons
+/// </summary>
 void CMainMenu::CreateButtons()
 {
     m_Play = new CButtons(m_RenderWindow);
@@ -139,6 +182,9 @@ void CMainMenu::CreateButtons()
     m_Exit->m_tLabel.setOutlineThickness(3);
 }
 
+/// <summary>
+/// Updates all buttons
+/// </summary>
 void CMainMenu::ButtonUpdates()
 {
     m_Play->Update();
@@ -146,6 +192,11 @@ void CMainMenu::ButtonUpdates()
     m_Exit->Update();
 }
 
+/// <summary>
+/// Renders all buttons
+/// </summary>
+/// <param name="_target"></param>
+/// <param name="_states"></param>
 void CMainMenu::RenderButtons(sf::RenderTarget& _target, sf::RenderStates _states) const
 {
     _target.draw(m_Play->m_tLabel, _states);
@@ -157,6 +208,11 @@ void CMainMenu::RenderButtons(sf::RenderTarget& _target, sf::RenderStates _state
     _target.draw(m_Exit->Sprite, _states);
 }
 
+/// <summary>
+/// Initializes the button textures
+/// </summary>
+/// <param name="_texture1"></param>
+/// <param name="_texture2"></param>
 void CMainMenu::InitButtonTextures(std::string _texture1, std::string _texture2)
 {
     m_MainMenuButtonTexture_Hover.loadFromFile(_texture1);

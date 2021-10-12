@@ -1,5 +1,10 @@
 #include "CWorkBench.h"
 
+/// <summary>
+/// CWorkbench Contructor
+/// Note : Should be used to spawn Anvil
+/// </summary>
+/// <param name="_wordBenchType"></param>
 CWorkBench::CWorkBench(CBlock::WORKBENCHTYPE _wordBenchType)
 {
 	m_Scale = 50.0f;
@@ -27,6 +32,16 @@ CWorkBench::CWorkBench(CBlock::WORKBENCHTYPE _wordBenchType)
 	m_Shape.setOrigin(0.0f, m_Shape.getGlobalBounds().height / 2 + m_Shape.getGlobalBounds().height / 3);
 }
 
+/// <summary>
+/// CWorkbench Contructor
+/// Note : Should be used to spawn anvil
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_world"></param>
+/// <param name="_scale"></param>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
+/// <param name="_wordBenchType"></param>
 CWorkBench::CWorkBench(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY, CBlock::WORKBENCHTYPE _wordBenchType)
 {
 	m_RenderWindow = _renderWindow;
@@ -56,6 +71,9 @@ CWorkBench::CWorkBench(sf::RenderWindow* _renderWindow, b2World& _world, const f
 	CreateBody(_posX, _posY, b2_staticBody, true);
 }
 
+/// <summary>
+/// CWorkbench Destructor
+/// </summary>
 CWorkBench::~CWorkBench()
 {
 	DestroyBody();
@@ -64,9 +82,4 @@ CWorkBench::~CWorkBench()
 	m_Body = nullptr;
 	m_RenderWindow = nullptr;
 	m_World = nullptr;
-}
-
-void CWorkBench::Update()
-{
-	CBlock::Update();
 }

@@ -13,13 +13,17 @@ public:
 
 	void FlipSprite(sf::Vector2f _playerPosition, sf::Sprite& _sprite, sf::Texture* _playerLeft, sf::Texture* _playerRight);
 
-	void Update();
 	void Render();
 
 	float m_PickaxePower = 1.0f;
 
 	sf::Sprite* m_Sprite;
 private:
+	void LoadAppropriateItemTexture();
+	void LoadAppropriateWorldTextures();
+
+	void InitializeSpriteTextures();
+
 	sf::Texture m_LeftTex;
 	sf::Texture m_RightTex;
 

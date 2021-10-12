@@ -45,7 +45,6 @@ public:
 	CButtons(sf::RenderWindow* _renderWindow);
 	~CButtons();
 
-	void Start();
 	void Update();
 	void Render();
 

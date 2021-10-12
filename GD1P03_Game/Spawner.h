@@ -7,8 +7,6 @@
 #include <list>
 #include "CParticleSystem.h"
 #include "Slime.h"
-#include "Zombie.h"
-#include "CWizard.h"
 #include "CSnowman.h"
 
 class Spawner
@@ -34,8 +32,6 @@ public:
 
 	std::list<Slime> m_Slimes;
 	std::list<CSnowman> m_Snowmans;
-	std::list<Zombie> m_Zombies;
-	std::list<CWizard> m_Wizards;
 
 
 	sf::Sprite m_Shape;
@@ -43,6 +39,16 @@ public:
 
 	bool m_bCanSpawnBoss = false;
 private:
+	void AssignAppropiateParticleSystem();
+	void TypeSpecificUpdate();
+	void UpdateSlimes();
+	void UpdateSnowmen();
+
+	void CheckForDestroyedSlimes();
+	void CheckForDestroyedSnowmen();
+
+	void TypeSpecificRender(sf::Shader* _tourchshader, bool _isInRangeOfLightSource);
+
 	sf::Shader* m_Shader;
 	sf::Shader* m_TourchShader;
 
@@ -68,7 +74,6 @@ private:
 	sf::Clock m_SpawnTimer;
 
 	Slime* m_Slimeptr;
-	Zombie* m_Zombieptr;
 	CSnowman* m_Snowmanptr;
 
 	sf::Clock m_DeathParticleTimer;

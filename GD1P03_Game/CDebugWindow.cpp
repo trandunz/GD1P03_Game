@@ -1,6 +1,16 @@
 #include "CDebugWindow.h"
 
-CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners, bool* _bChangeScenes, int* _sceneValue)
+/// <summary>
+/// CDebugWindow Contructor
+/// </summary>
+/// <param name="_textureMaster"></param>
+/// <param name="_worldManager"></param>
+/// <param name="_player"></param>
+/// <param name="_spawners"></param>
+/// <param name="_bChangeScenes"></param>
+/// <param name="_sceneValue"></param>
+/// <param name="_numberOfLeakes"></param>
+CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _worldManager, CPlayer* _player, std::list<Spawner>& _spawners, bool* _bChangeScenes, int* _sceneValue, int& _numberOfLeakes)
 {
 	m_WorldManager = _worldManager;
 	m_Player = _player;
@@ -8,6 +18,7 @@ CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _world
 	m_Spawners = &_spawners;
 	m_bChangeScenes = _bChangeScenes;
 	m_SceneValue = _sceneValue;
+	m_NumberOFLeakes = &_numberOfLeakes;
 
 	// Texture
 	m_PlayerPreviewTexture.loadFromFile("Images/PlayerIconRight.png");
@@ -37,6 +48,9 @@ CDebugWindow::CDebugWindow(CTextureMaster* _textureMaster, CWorldManager* _world
 	m_RenderWindow = new sf::RenderWindow(sf::VideoMode(600, 600), "DEBUG CONTROLS", (sf::Style::Titlebar));
 }
 
+/// <summary>
+/// CDebugWindow Destructor
+/// </summary>
 CDebugWindow::~CDebugWindow()
 {
 	m_PlayerButtons.clear();
@@ -51,8 +65,12 @@ CDebugWindow::~CDebugWindow()
 	m_SceneValue = nullptr;
 	m_RenderWindow = nullptr;
 	m_Spawners = nullptr;
+	m_NumberOFLeakes = nullptr;
 }
 
+/// <summary>
+/// CDebugWindow Start
+/// </summary>
 void CDebugWindow::Start()
 {
 	CreateItemListButtons();
@@ -61,6 +79,9 @@ void CDebugWindow::Start()
 	CreateWorldControlButtons();
 }
 
+/// <summary>
+/// CDebugWindow Update
+/// </summary>
 void CDebugWindow::Update()
 {
 	m_MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
@@ -131,6 +152,13 @@ void CDebugWindow::Update()
 
 		for (int i = 0; i < m_WorldButtons.size(); i++)
 		{
+			if (i == 4)
+			{
+				std::string leakesString = "Number Of Leakes: ";
+				leakesString += std::to_string(*m_NumberOFLeakes);
+
+				m_WorldButtons[i].SetLabel(leakesString, 40.0f);
+			}
 			m_WorldButtons[i].Update();
 
 			if (m_Event.type == sf::Event::MouseButtonPressed && m_WorldButtons[i].bIsinBounds(m_MousePos))
@@ -161,6 +189,9 @@ void CDebugWindow::Update()
 	}
 }
 
+/// <summary>
+/// CDebugWindow Render
+/// </summary>
 void CDebugWindow::Render()
 {
 	// Clear Render Window
@@ -191,7 +222,15 @@ void CDebugWindow::Render()
 
 	for (int i = 0; i < m_WorldButtons.size(); i++)
 	{
-		m_RenderWindow->draw(m_WorldButtons[i].Sprite);
+		if (i == 4)
+		{
+			m_WorldButtons[i].RenderOnlyLabel();
+		}
+		else
+		{
+			m_RenderWindow->draw(m_WorldButtons[i].Sprite);
+
+		}
 	}
 
 	for (int i = 0; i < m_PlayerButtons.size(); i++)
@@ -211,16 +250,27 @@ void CDebugWindow::Render()
 	m_RenderWindow->display();
 }
 
+/// <summary>
+/// Sets m_Player to _player
+/// </summary>
+/// <param name="_player"></param>
 void CDebugWindow::SetPlayer(CPlayer* _player)
 {
 	m_Player = _player;
 }
 
+/// <summary>
+/// Sets m_Spawners = _spawners
+/// </summary>
+/// <param name="_spawners"></param>
 void CDebugWindow::SetSpawners(std::list<Spawner>* _spawners)
 {
 	m_Spawners = _spawners;
 }
 
+/// <summary>
+/// Creates item list buttons 
+/// </summary>
 void CDebugWindow::CreateItemListButtons()
 {
 	// Row 1 Buttons
@@ -1252,6 +1302,9 @@ void CDebugWindow::CreateItemListButtons()
 	}
 }
 
+/// <summary>
+/// Creates enemy control buttons
+/// </summary>
 void CDebugWindow::CreateEnemyControlButtons()
 {
 	// kill all slimes
@@ -1301,6 +1354,9 @@ void CDebugWindow::CreateEnemyControlButtons()
 	}
 }
 
+/// <summary>
+/// Creates world control buttons 
+/// </summary>
 void CDebugWindow::CreateWorldControlButtons()
 {
 	// Force Plains Biome
@@ -1391,8 +1447,26 @@ void CDebugWindow::CreateWorldControlButtons()
 		m_WorldButtons.insert_or_assign(3, *tempbutton);
 		tempbutton = nullptr;
 	}
+	// Number Of Leakes
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(40 + (13 * 30), (12 * 30) - 20);
+		tempbutton->m_tLabel.setFillColor(sf::Color::Red);
+
+		std::string leakesstring = "Number Of Leakes: ";
+		leakesstring += std::to_string(*m_NumberOFLeakes);
+
+		tempbutton->SetLabel(leakesstring, 40.0f);
+
+		m_WorldButtons.insert_or_assign(4, *tempbutton);
+		tempbutton = nullptr;
+	}
 }
 
+/// <summary>
+/// Created Player control buttons
+/// </summary>
 void CDebugWindow::CreatePlayerControlButtons()
 {
 	// Kill Player Button
@@ -1463,11 +1537,17 @@ void CDebugWindow::CreatePlayerControlButtons()
 	}
 }
 
+/// <summary>
+/// Close the debugwindow renderwindow
+/// </summary>
 void CDebugWindow::Close()
 {
 	m_RenderWindow->close();
 }
 
+/// <summary>
+/// Resets all button bools to false
+/// </summary>
 void CDebugWindow::ResetAllButtons()
 {
 	for (int i = 0; i < m_ItemListButtons.size(); i++)
@@ -1486,16 +1566,22 @@ void CDebugWindow::ResetAllButtons()
 	}
 }
 
+/// <summary>
+/// Kill all enemies
+/// </summary>
 void CDebugWindow::KillEnemies()
 {
 	std::list<Spawner>::iterator spawner = m_Spawners->begin();
 	for (spawner; spawner != m_Spawners->end(); spawner++)
 	{
 		spawner->m_Slimes.clear();
-		spawner->m_Zombies.clear();
 	}
 }
 
+/// <summary>
+/// Kill enemies of specified type
+/// </summary>
+/// <param name="_type"></param>
 void CDebugWindow::KillEnemies(CEnemy::ENEMYTYPE _type)
 {
 	if (_type == CEnemy::ENEMYTYPE::SLIME)
@@ -1508,6 +1594,9 @@ void CDebugWindow::KillEnemies(CEnemy::ENEMYTYPE _type)
 	}
 }
 
+/// <summary>
+/// Kill player
+/// </summary>
 void CDebugWindow::KillPlayer()
 {
 	if (m_Player != nullptr)
@@ -1516,6 +1605,9 @@ void CDebugWindow::KillPlayer()
 	}
 }
 
+/// <summary>
+/// Toggle Player godmode (Calls m_Player->ToggleGodMode)
+/// </summary>
 void CDebugWindow::ToggleGodMode()
 {
 	m_bGodMode = !m_bGodMode;
@@ -1526,11 +1618,18 @@ void CDebugWindow::ToggleGodMode()
 	}
 }
 
+/// <summary>
+/// Sets m_bGodMode to specified bool _value
+/// </summary>
+/// <param name="_value"></param>
 void CDebugWindow::SetGodMode(bool _value)
 {
 	m_bGodMode = _value;
 }
 
+/// <summary>
+/// Handles player godmode
+/// </summary>
 void CDebugWindow::GodMode()
 {
 	// God Mode
@@ -1545,6 +1644,10 @@ void CDebugWindow::GodMode()
 	}
 }
 
+/// <summary>
+/// Adds the item from item preview list at position _itemIndexValue to first free slot in player inventory
+/// </summary>
+/// <param name="_itemIndexValue"></param>
 void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 {
 	if (m_Player != nullptr && m_TextureMaster != nullptr)
@@ -2173,6 +2276,11 @@ void CDebugWindow::AddItemToInventory(int _itemIndexValue)
 	}
 }
 
+/// <summary>
+/// Clears the player inventory
+/// Note: setting _giveStarterItems to true will clear the players inventory but give them a pickaxe
+/// </summary>
+/// <param name="_giveStarterItems"></param>
 void CDebugWindow::ClearPlayerInventory(bool _giveStarterItems)
 {
 	if (m_Player != nullptr)

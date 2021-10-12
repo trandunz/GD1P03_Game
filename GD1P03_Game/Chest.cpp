@@ -1,5 +1,8 @@
 #include "Chest.h"
 
+/// <summary>
+/// Chest Constructor
+/// </summary>
 CChest::CChest()
 {
 	m_Scale = 50.0f;
@@ -16,6 +19,14 @@ CChest::CChest()
 	m_Block = nullptr;
 }
 
+/// <summary>
+/// Chest Contructor (Block)
+/// </summary>
+/// <param name="_renderWindow"></param>
+/// <param name="_world"></param>
+/// <param name="_scale"></param>
+/// <param name="_posX"></param>
+/// <param name="_posY"></param>
 CChest::CChest(sf::RenderWindow* _renderWindow, b2World& _world, const float& _scale, float _posX, float _posY)
 {
 	m_RenderWindow = _renderWindow;
@@ -34,6 +45,9 @@ CChest::CChest(sf::RenderWindow* _renderWindow, b2World& _world, const float& _s
 	m_Block = nullptr;
 }
 
+/// <summary>
+/// CBlock Destructor
+/// </summary>
 CChest::~CChest()
 {
 	m_Inventory.clear();
@@ -48,16 +62,20 @@ CChest::~CChest()
 	m_World = nullptr;
 }
 
-void CChest::Update()
-{
-	CBlock::Update();
-}
-
+/// <summary>
+/// Returns an int refering to the size of the chests inventory
+/// </summary>
+/// <returns></returns>
 int CChest::GetInventorySize()
 {
 	return m_InventorySize;
 }
 
+/// <summary>
+/// Adds an item to the chests inventory at the first free position
+/// </summary>
+/// <param name="_block"></param>
+/// <param name="_canStack"></param>
 void CChest::AddItemToInventory(CBlock* _block, bool _canStack)
 {
 	if (_canStack == true)
@@ -117,6 +135,12 @@ void CChest::AddItemToInventory(CBlock* _block, bool _canStack)
 	
 }
 
+/// <summary>
+/// Adds an item to the chests inventory at the specified position
+/// </summary>
+/// <param name="_block"></param>
+/// <param name="_position"></param>
+/// <param name="_canStack"></param>
 void CChest::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 {
 	if (_canStack == true)
@@ -150,6 +174,11 @@ void CChest::AddItemToInventory(CBlock* _block, int _position, bool _canStack)
 
 }
 
+/// <summary>
+/// Returns a bool refering to weather or not the passed in blocktype exists in the chests inventory
+/// </summary>
+/// <param name="_block"></param>
+/// <returns></returns>
 bool CChest::IsBlockInInventory(CBlock* _block)
 {
 	std::map<int, CBlock>::iterator it;
@@ -165,6 +194,10 @@ bool CChest::IsBlockInInventory(CBlock* _block)
 	return false;
 }
 
+/// <summary>
+/// Removes an item from the chests inventory at _position
+/// </summary>
+/// <param name="_position"></param>
 void CChest::RemoveItemFromInventory(int _position)
 {
 	std::map<int, CBlock>::iterator it = m_Inventory.begin();
