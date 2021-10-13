@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CWorldManager.h
+// Description : CWorldManager Header file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #pragma once
 #ifndef _WORLDMANAGER_H__
 #define _WORLDMANAGER_H__
@@ -158,7 +172,7 @@ private:
 	void ParralaxBackground();
 
 	void CreateSlimeSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
-	void CreateSnowmanSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners);
+	void CreateSnowmanSurfaceSpawners(CTextureMaster* _textureMaster, CAudioManager* _audioManager, std::list<Spawner>& _spawners, bool _isCactus = false);
 
 	void DeleteAllPointers();
 	void ReleaseAllPointers();

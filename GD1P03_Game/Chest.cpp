@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CChest.cpp
+// Description : CChest Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "Chest.h"
 
 /// <summary>
@@ -184,6 +198,10 @@ bool CChest::IsBlockInInventory(CBlock* _block)
 	std::map<int, CBlock>::iterator it;
 	for (it = m_Inventory.begin(); it != m_Inventory.end(); it++)
 	{
+		if (it == m_Inventory.end())
+		{
+			break;
+		}
 		if (it->second.m_Type == _block->m_Type)
 		{
 			// increase number of that type
@@ -204,6 +222,10 @@ void CChest::RemoveItemFromInventory(int _position)
 
 	while (it != m_Inventory.end())
 	{
+		if (it == m_Inventory.end())
+		{
+			break;
+		}
 		if (it->first == _position)
 		{
 
@@ -216,6 +238,9 @@ void CChest::RemoveItemFromInventory(int _position)
 			
 			return;
 		}
-		it++;
+		else
+		{
+			it++;
+		}
 	}
 }

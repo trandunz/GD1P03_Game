@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CArmour.cpp
+// Description : CArmour Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "CArmour.h"
 
 /// <summary>

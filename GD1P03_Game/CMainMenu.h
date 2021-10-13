@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CMainMenu.h
+// Description : CMainMenu Header file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #pragma once
 #ifndef _MAINMENU_H__
 #define _MAINMENU_H__

@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CSnowman.cpp
+// Description : CSnowman Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "CSnowman.h"
 
 /// <summary>
@@ -11,13 +25,14 @@
 /// <param name="_posY"></param>
 /// <param name="_audioManager"></param>
 /// <param name="_boss"></param>
-CSnowman::CSnowman(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager, bool _boss)
+CSnowman::CSnowman(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CAudioManager& _audioManager, bool _boss, bool _bIsCactus)
 {
 	m_RenderWindow = _renderWindow;
 	m_AudioManager = &_audioManager;
 	m_Texture = new sf::Texture();
 	m_bIsBoss = _boss;
 	m_World = &_world;
+	m_bIsCactus = _bIsCactus;
 
 	if (!_boss)
 	{
@@ -53,35 +68,75 @@ CSnowman::CSnowman(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMas
 	{
 	case CSnowman::SNOWMANTYPE::BOSSGREEN:
 	{
-		m_Texture->loadFromFile("Images/BossSnowManGreen.png");
+		if (m_bIsCactus)
+		{
+			m_Texture->loadFromFile("Images/BossCactusGreen.png");
+		}
+		else
+		{
+			m_Texture->loadFromFile("Images/BossSnowManGreen.png");
+		}
+		
 		m_bIsBoss = true;
 		m_Health = 3000;
 		break;
 	}
 	case CSnowman::SNOWMANTYPE::BOSSBLUE:
 	{
-		m_Texture->loadFromFile("Images/BossSnowManBlue.png");
+		if (m_bIsCactus)
+		{
+			m_Texture->loadFromFile("Images/BossCactusBlue.png");
+		}
+		else
+		{
+			m_Texture->loadFromFile("Images/BossSnowManBlue.png");
+		}
+		
 		m_bIsBoss = true;
 		m_Health = 2800;
 		break;
 	}
 	case CSnowman::SNOWMANTYPE::BOSSRED:
 	{
-		m_Texture->loadFromFile("Images/BossSnowManRed.png");
+		if (m_bIsCactus)
+		{
+			m_Texture->loadFromFile("Images/BossCactusRed.png");
+		}
+		else
+		{
+			m_Texture->loadFromFile("Images/BossSnowManRed.png");
+		}
+		
 		m_bIsBoss = true;
 		m_Health = 3800;
 		break;
 	}
 	case CSnowman::SNOWMANTYPE::BOSSYELLOW:
 	{
-		m_Texture->loadFromFile("Images/BossSnowManYellow.png");
+		if (m_bIsCactus)
+		{
+			m_Texture->loadFromFile("Images/BossCactusYellow.png");
+		}
+		else
+		{
+			m_Texture->loadFromFile("Images/BossSnowManYellow.png");
+		}
+		
 		m_bIsBoss = true;
 		m_Health = 3400;
 		break;
 	}
 	default:
 	{
-		m_Texture->loadFromFile("Images/Snowman.png");
+		if (m_bIsCactus)
+		{
+			m_Texture->loadFromFile("Images/CactusMob.png");
+		}
+		else
+		{
+			m_Texture->loadFromFile("Images/Snowman.png");
+		}
+		
 		m_Health = 150;
 		break;
 	}
@@ -97,15 +152,15 @@ CSnowman::CSnowman(sf::RenderWindow* _renderWindow, b2World& _world, CTextureMas
 /// </summary>
 CSnowman::~CSnowman()
 {
-	for (std::list<CProjectile>::iterator it = m_Projectiles.begin(); it != m_Projectiles.end(); it++)
-	{
-		it = m_Projectiles.erase(it);
-	}
 	m_Projectiles.clear();
 
 	m_TextureMaster = nullptr;
 
-	delete m_Texture;
+	if (m_Texture != nullptr)
+	{
+		delete m_Texture;
+		m_Texture = nullptr;
+	}
 	m_Player = nullptr;
 }
 
@@ -117,25 +172,46 @@ void CSnowman::Start()
 	SimpleMove();
 
 	// 3rd Level = Triple The Damage As First Level
-	m_Damage *= 3;
+	if (m_bIsCactus)
+	{
+		if (m_bIsBoss)
+		{
+			m_AttackSpeed = 0.7f;
+		}
+		else
+		{
+			m_AttackSpeed = 2.0f;
+		}
+		m_Damage *= 2;
+		
+	}
+	else
+	{
+		m_Damage *= 3;
+	}
+
 }
 
 /// <summary>
 /// CSnowman Update
 /// </summary>
-void CSnowman::Update()
+void CSnowman::Update(bool& m_PlayerHitByProjectile)
 {
-	Movement();
-	Attack();
+	if (m_bIsCactus)
+	{
+		Attack();
+	}
+	else
+	{
+		Movement();
+		Attack();
+	}
 
-	// Set SFML Shape Transform To Box 2D Body Transform
-	m_Shape.setOrigin(m_Shape.getGlobalBounds().width / 2, m_Shape.getGlobalBounds().height / 2);
-	m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, m_Body->GetPosition().y * m_Scale);
-	m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
+	SetSFShapeToBody();
 
 	WorldContacts();
 
-	HandleProjectiles();
+	HandleProjectiles(m_PlayerHitByProjectile);
 }
 
 /// <summary>
@@ -144,7 +220,7 @@ void CSnowman::Update()
 /// <param name="_shader"></param>
 void CSnowman::Render(sf::Shader* _shader)
 {
-	if (m_Shape.getPosition().y < 1100)
+	if (m_Shape.getPosition().y < 1200)
 	{
 		m_RenderWindow->draw(m_Shape);
 	}
@@ -236,7 +312,7 @@ void CSnowman::CreateBody(float _posX, float _posY, b2BodyType _type, bool _sens
 	m_FixtureDef.restitution = 0.1f;
 	m_FixtureDef.filter.categoryBits = _ENEMY_FILTER_;
 	m_FixtureDef.filter.maskBits = _WORLD_FILTER_;
-	m_FixtureDef.filter.groupIndex = -_PLAYER_GROUPINDEX_;
+	m_FixtureDef.filter.groupIndex = -_ENEMY_GROUPINDEX_;
 	m_Body->CreateFixture(&m_FixtureDef);
 
 	SetSFShapeToBody();
@@ -342,9 +418,19 @@ void CSnowman::Attack()
 			Melee(UnitDirecton);
 		}
 		// Snowball
-		else if (m_Player != nullptr)
+		else if (m_Player != nullptr && DistanceToPlayer <= 2200)
 		{
-			FireSnowBall(UnitDirecton);
+			if (m_bIsCactus && !m_bIsBoss)
+			{
+				if (DistanceToPlayer <= 1000)
+				{
+					FireSnowBall(UnitDirecton);
+				}
+			}
+			else
+			{
+				FireSnowBall(UnitDirecton);
+			}
 		}
 	}
 }
@@ -352,11 +438,11 @@ void CSnowman::Attack()
 /// <summary>
 /// Handles All the snowmens projectiles (Snowballs) and deletes any whomb are marked.
 /// </summary>
-void CSnowman::HandleProjectiles()
+void CSnowman::HandleProjectiles(bool& m_PlayerHitByProjectile)
 {
 	for (CProjectile& projectile : m_Projectiles)
 	{
-		projectile.Update();
+		projectile.Update(m_PlayerHitByProjectile);
 	}
 
 	DeleteAllProjectiles();
@@ -385,11 +471,24 @@ void CSnowman::DeleteAllProjectiles()
 	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
 	while (pit != m_Projectiles.end())
 	{
+		if (pit == m_Projectiles.end())
+		{
+			break;
+		}
 		if (pit->m_bMARKASDESTROY)
 		{
+			pit->DestroyBody();
 			pit = m_Projectiles.erase(pit);
+			if (m_Projectiles.size() <= 0)
+			{
+				return;
+			}
 		}
-		pit++;
+		else
+		{
+			pit++;
+		}
+		
 	}
 }
 
@@ -591,8 +690,17 @@ void CSnowman::FireSnowBall(float UnitDirection)
 	{
 		std::cout << "Snowman Fired Snowball!" << std::endl;
 
+		CProjectile* m_Projectile;
 		// throw snowball
-		CProjectile* m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x + 20 * UnitDirection, m_Shape.getPosition().y - 50, m_RenderWindow->getView().getCenter(), CBlock::PROJECTILETYPE::SNOWBALL, nullptr, false);
+		if (m_bIsCactus)
+		{
+			m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x + 20 * UnitDirection, m_Shape.getPosition().y - 50, m_RenderWindow->getView().getCenter(), CBlock::PROJECTILETYPE::TUMBLEWEED, nullptr, false);
+		}
+		else
+		{
+			m_Projectile = new CProjectile(*m_World, m_Shape.getPosition().x + 20 * UnitDirection, m_Shape.getPosition().y - 50, m_RenderWindow->getView().getCenter(), CBlock::PROJECTILETYPE::SNOWBALL, nullptr, false);
+		}
+		
 		m_Projectiles.push_back(*m_Projectile);
 		m_Projectile = nullptr;
 

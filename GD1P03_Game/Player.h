@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CPlayer.h
+// Description : CPlayer Header file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #pragma once
 #ifndef _PLAYER_H__
 #define _PLAYER_H__
@@ -13,6 +27,7 @@
 #define _ENEMY_GROUPINDEX_ 3
 #define _WORLD_GROUPINDEX_ 4
 
+// Scene Values
 #define _PLAINS_ 0
 #define _ICE_ 1
 #define _SAND_ 2 
@@ -43,7 +58,7 @@ public:
 	~CPlayer();
 
 	void Start();
-	void Update(sf::Vector2f _mousePos);
+	void Update(sf::Vector2f _mousePos, bool& _playerHitByProjectile);
 	void Render(sf::Shader* _defaultShader = NULL);
 
 	void Movement();
@@ -172,7 +187,7 @@ private:
 	void GrabAllSavedValues(int types[60], int stackvalues[60], int bowtypes[60], int swordtypes[60], int picktypes[60], int projtypes[60], int potiontypes[60], int armourtypes[60], int workbenchtypes[60]);
 
 	void CheckForHoldableItem();
-	void UpdateProjectiles();
+	void UpdateProjectiles(bool m_PlayerHitByProjectile = false);
 	void CheckForDestroyedProjectiles();
 	void HPRegen();
 

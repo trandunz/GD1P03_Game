@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : Main.cpp
+// Description : Main Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #pragma once
 
 // Scene Values
@@ -135,6 +149,8 @@ sf::Time m_TimeDelta;
 
 // Debug Godamb Leak
 int NumberOfLeakes = -1;
+
+bool m_PlayerHitByProjectile = false;
 
 /// <summary>
 /// Main Implementation function (returns NULL)
@@ -317,7 +333,7 @@ bool PickupItemOnGround()
 	//}
 	//contact = nullptr;
 
-	//return false;
+	return false;
 }
 
 /// <summary>
@@ -448,10 +464,6 @@ void ChangeScene(bool* _changeScene, int* _sceneValue)
 			m_WorldManager = nullptr;
 		}
 
-		for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
-		{
-			it = m_Spawners.erase(it);
-		}
 		m_Spawners.clear();
 
 		CreateWorldManagerBasedOnScene(_sceneValue);
@@ -505,11 +517,6 @@ void SceneMusic()
 /// <param name="_state"></param>
 void GameStateSpecificStart(GAMESTATE _state) 
 {
-	for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
-	{
-		it->KillAllChilderan();
-		it = m_Spawners.erase(it);
-	}
 	m_Spawners.clear();
 
 	switch (_state)
@@ -614,7 +621,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 			// Spawner Updates
 			for (Spawner& spawner : m_Spawners)
 			{
-				spawner.Update();
+				spawner.Update(m_PlayerHitByProjectile);
 			}
 
 			// Variable Scene Music
@@ -652,7 +659,7 @@ void GameStateSpecificUpdate(GAMESTATE _state)
 
 				// Player Update And Movement
 				m_Player->Interact(m_WorldManager->m_Furnaces, m_WorldManager->m_Chests, m_WorldManager->m_Doors, *m_WorldManager->m_Chunk, m_Event, m_GUI->m_MousePos, m_WorldManager->m_WorkBenches, m_WorldManager->m_Tourches);
-				m_Player->Update(MousePos);
+				m_Player->Update(MousePos, m_PlayerHitByProjectile);
 				m_Player->Movement();
 
 				// Player Dies
@@ -802,10 +809,7 @@ void GameStateSpecificRender(GAMESTATE _state)
 					y = slime.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
 					Mag1 = sqrt((x * x) + (y * y));
 
-					if (Mag1 < 1920 * 1.8)
-					{
-						spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
-					}
+					spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(slime.GetShape()));
 				}
 
 				for (CSnowman& snowman : spawner.m_Snowmans)
@@ -814,10 +818,7 @@ void GameStateSpecificRender(GAMESTATE _state)
 					y = snowman.GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
 					Mag1 = sqrt((x * x) + (y * y));
 
-					if (Mag1 < 1920 * 1.8)
-					{
-						spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(snowman.GetShape()));
-					}
+					spawner.Render(m_TourchShader, m_WorldManager->bIsItemInRangeOfLightSource(snowman.GetShape()));
 				}
 			}
 		}
@@ -1077,7 +1078,7 @@ bool GameLoopPolledUpdate(sf::Vector2f m_MousePos)
 		// General Key Pressed
 		if (m_Event.type == sf::Event::KeyPressed)
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
 			{
 				m_GameState = GAMESTATE::MENU;
 				CreateRenderWindow(sf::Style::Close + sf::Style::Titlebar);
@@ -1118,6 +1119,10 @@ bool GameLoopPolledUpdate(sf::Vector2f m_MousePos)
 				{
 					for (std::list<Spawner>::iterator spit = m_Spawners.begin(); spit != m_Spawners.end(); spit++)
 					{
+						if (spit == m_Spawners.end())
+						{
+							break;
+						}
 						if (spit->m_Shape.getGlobalBounds().contains(MousePos))
 						{
 							spit->ToggleSpawning();
@@ -1144,10 +1149,6 @@ bool GameLoopPolledUpdate(sf::Vector2f m_MousePos)
 /// </summary>
 void CleanupAllLists()
 {
-	for (std::list<Spawner>::iterator it = m_Spawners.begin(); it != m_Spawners.end(); it++)
-	{
-		it = m_Spawners.erase(it);
-	}
 	m_Spawners.clear();
 }
 

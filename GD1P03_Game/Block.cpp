@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CBlock.cpp
+// Description : CBlock Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "Block.h"
 
 /// <summary>
@@ -361,4 +375,9 @@ void CBlock::SetSFShapeToBody()
 		m_Shape.setPosition(m_Body->GetPosition().x * m_Scale, (m_Body->GetPosition().y * m_Scale));
 		m_Shape.setRotation(m_Body->GetAngle() * 180 / b2_pi);
 	}
+}
+
+void CBlock::DeleteThis()
+{
+	delete this;
 }

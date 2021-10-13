@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CDebugWindow.cpp
+// Description : CDebugWindow Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "CDebugWindow.h"
 
 /// <summary>
@@ -77,6 +91,9 @@ void CDebugWindow::Start()
 	CreateEnemyControlButtons();
 	CreatePlayerControlButtons();
 	CreateWorldControlButtons();
+
+	m_MousePositionPointerTexture.loadFromFile("Images/Cursor.png");
+	m_MousePositionPointer.setTexture(m_MousePositionPointerTexture, true);
 }
 
 /// <summary>
@@ -85,6 +102,7 @@ void CDebugWindow::Start()
 void CDebugWindow::Update()
 {
 	m_MousePos = m_RenderWindow->mapPixelToCoords((sf::Mouse::getPosition(*m_RenderWindow)));
+	m_MousePositionPointer.setPosition(static_cast<sf::Vector2f>(m_MousePos)); // Set position
 
 	// bGodMode ? SetHP (Every Frame)
 	GodMode();
@@ -114,6 +132,14 @@ void CDebugWindow::Update()
 				if (i == 1)
 				{
 					KillEnemies();
+				}
+				if (i == 2)
+				{
+					KillEnemies(CEnemy::ENEMYTYPE::CACTUS);
+				}
+				if (i == 3)
+				{
+					KillEnemies(CEnemy::ENEMYTYPE::SNOWMAN);
 				}
 				break;
 			}
@@ -245,6 +271,8 @@ void CDebugWindow::Render()
 		}
 		
 	}
+
+	m_RenderWindow->draw(m_MousePositionPointer);
 
 	// Display
 	m_RenderWindow->display();
@@ -1329,6 +1357,52 @@ void CDebugWindow::CreateEnemyControlButtons()
 		m_EnemyButtons.insert_or_assign(0, *tempbutton);
 		tempbutton = nullptr;
 	}
+
+	// kill all Cactus
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (15 * 30), (1 * 30) - 20);
+		tempbutton->SetLabel("Kill All Cactus");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/KillAllCactusButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/KillAllCactusButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/KillAllCactusButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_EnemyButtons.insert_or_assign(2, *tempbutton);
+		tempbutton = nullptr;
+	}
+
+	// kill all Snowmen
+	if (true)
+	{
+		CButtons* tempbutton = new CButtons(m_RenderWindow);
+		tempbutton->SetPosition(20 + (16 * 30), (1 * 30) - 20);
+		tempbutton->SetLabel("Kill All Snowmen");
+
+		sf::Texture Hover;
+		Hover.loadFromFile("Images/KillAllSnowmenButton-Hover.png");
+		tempbutton->SetHoverTex(Hover);
+
+		sf::Texture Pressed;
+		Pressed.loadFromFile("Images/KillAllSnowmenButton.png");
+		tempbutton->SetClickTex(Pressed);
+
+		sf::Texture Idle;
+		Idle.loadFromFile("Images/KillAllSnowmenButton.png");
+		tempbutton->SetIdleTex(Idle);
+
+		m_EnemyButtons.insert_or_assign(3, *tempbutton);
+		tempbutton = nullptr;
+	}
 	
 	// kill all Enemies
 	if (true)
@@ -1575,6 +1649,7 @@ void CDebugWindow::KillEnemies()
 	for (spawner; spawner != m_Spawners->end(); spawner++)
 	{
 		spawner->m_Slimes.clear();
+		spawner->m_Snowmans.clear();
 	}
 }
 
@@ -1590,6 +1665,42 @@ void CDebugWindow::KillEnemies(CEnemy::ENEMYTYPE _type)
 		for (spawner; spawner != m_Spawners->end(); spawner++)
 		{
 			spawner->m_Slimes.clear();
+		}
+	}
+	else if (_type == CEnemy::ENEMYTYPE::SNOWMAN)
+	{
+		std::list<Spawner>::iterator spawner = m_Spawners->begin();
+		for (spawner; spawner != m_Spawners->end(); spawner++)
+		{
+			for (std::list<CSnowman>::iterator snowman = spawner->m_Snowmans.begin(); snowman != spawner->m_Snowmans.end(); snowman++)
+			{
+				if (!snowman->m_bIsCactus)
+				{
+					snowman = spawner->m_Snowmans.erase(snowman);
+					if (spawner->m_Snowmans.size() <= 0)
+					{
+						return;
+					}
+				}
+			}
+		}
+	}
+	else if (_type == CEnemy::ENEMYTYPE::CACTUS)
+	{
+		std::list<Spawner>::iterator spawner = m_Spawners->begin();
+		for (spawner; spawner != m_Spawners->end(); spawner++)
+		{
+			for (std::list<CSnowman>::iterator snowman = spawner->m_Snowmans.begin(); snowman != spawner->m_Snowmans.end(); snowman++)
+			{
+				if (snowman->m_bIsCactus)
+				{
+					snowman = spawner->m_Snowmans.erase(snowman);
+					if (spawner->m_Snowmans.size() <= 0)
+					{
+						return;
+					}
+				}
+			}
 		}
 	}
 }

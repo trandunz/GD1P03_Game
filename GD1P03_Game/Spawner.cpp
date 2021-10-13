@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : Spawner.cpp
+// Description : Spawner Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "Spawner.h"
 
 /// <summary>
@@ -54,13 +68,13 @@ void Spawner::Start()
 /// <summary>
 /// Spawner Update
 /// </summary>
-void Spawner::Update()
+void Spawner::Update(bool& m_PlayerHitByProjectile)
 {
 	TypeSpecificUpdate();
 
 	UpdateSlimes();
 
-	UpdateSnowmen();
+	UpdateSnowmen(m_PlayerHitByProjectile);
 
 	sf::Time elapsedTime = m_DeathParticleTimer.getElapsedTime();
 	m_DeathParticles->Update(elapsedTime);
@@ -165,15 +179,7 @@ Spawner::~Spawner()
 {
 	std::cout << "Spawner destoryed" << std::endl;
 
-	for (std::list<Slime>::iterator it = m_Slimes.begin(); it != m_Slimes.end(); it++)
-	{
-		it = m_Slimes.erase(it);
-	}
 	m_Slimes.clear();
-	for (std::list<CSnowman>::iterator it = m_Snowmans.begin(); it != m_Snowmans.end(); it++)
-	{
-		it = m_Snowmans.erase(it);
-	}
 	m_Snowmans.clear();
 
 	delete m_DeathParticles;
@@ -208,6 +214,11 @@ void Spawner::AssignAppropiateParticleSystem()
 		break;
 	}
 	case CEnemy::ENEMYTYPE::SNOWMAN:
+	{
+		m_DeathParticles = new CParticleSystem(600, sf::seconds(0.6f), sf::Color(240, 240, 240, 225));
+		break;
+	}
+	case CEnemy::ENEMYTYPE::CACTUS:
 	{
 		m_DeathParticles = new CParticleSystem(600, sf::seconds(0.6f), sf::Color(240, 240, 240, 225));
 		break;
@@ -303,6 +314,7 @@ void Spawner::TypeSpecificUpdate()
 			}
 		}
 		break;
+
 	}
 	case CEnemy::ENEMYTYPE::SNOWMAN:
 	{
@@ -317,6 +329,77 @@ void Spawner::TypeSpecificUpdate()
 				else
 				{
 					m_Snowmanptr = new CSnowman(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager);
+				}
+
+				std::cout << "Snowman spawned" << std::endl;
+				m_Snowmans.push_front(*m_Snowmanptr);
+				m_Snowmanptr = nullptr;
+				m_Snowmans.front().SetPlayer(m_Player);
+				m_Snowmans.front().Start();
+
+				if (m_Snowmans.front().m_bIsBoss)
+				{
+					x = m_Snowmans.front().GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = m_Snowmans.front().GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag = sqrt((x * x) + (y * y));
+
+					m_iBossCount++;
+
+					if (m_Player == nullptr)
+					{
+						if (m_Shape.getPosition().y < 5000 || m_iBossCount > 1)
+						{
+							m_Snowmans.pop_front();
+							m_iBossCount--;
+						}
+						else
+						{
+							if (Mag < 1920 * 4.8)
+							{
+								std::cout << "Boss Snowman Spawned!" << "(" << m_Snowmans.size() << ")" << std::endl;
+								m_AudioManager->PlayKingSlimeSpawn();
+							}
+						}
+					}
+					else
+					{
+						if (m_Shape.getPosition().y < 5000 || m_iBossCount > 1 || m_Player->GetShape().getPosition().y < 5500)
+						{
+							m_Snowmans.pop_front();
+							m_iBossCount--;
+						}
+						else
+						{
+							if (Mag < 1920 * 4.8)
+							{
+								std::cout << "Boss Snowman Spawned!" << "(" << m_Snowmans.size() << ")" << std::endl;
+								m_AudioManager->PlayKingSlimeSpawn();
+							}
+						}
+					}
+
+				}
+
+				m_Snowmanptr = nullptr;
+				//std::cout << "Slime Spawned!" << "(" << m_Slimes.size() << ")" << std::endl;
+				m_SpawnTimer.restart();
+			}
+		}
+		break;
+	}
+	case CEnemy::ENEMYTYPE::CACTUS:
+	{
+		if (m_bSpawn && m_Snowmans.size() < m_SpawnCount && m_Player != nullptr)
+		{
+			if (m_SpawnTimer.getElapsedTime().asSeconds() >= m_SpawnFrequency)
+			{
+				if (m_bCanSpawnBoss)
+				{
+					m_Snowmanptr = new CSnowman(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager, true, true);
+				}
+				else
+				{
+					m_Snowmanptr = new CSnowman(m_RenderWindow, *m_World, m_TextureMaster, m_Scale, m_Shape.getPosition().x, m_Shape.getPosition().y, *m_AudioManager, false, true);
 				}
 
 				std::cout << "Snowman spawned" << std::endl;
@@ -429,7 +512,7 @@ void Spawner::UpdateSlimes()
 /// <summary>
 /// Updates all Snowmen
 /// </summary>
-void Spawner::UpdateSnowmen()
+void Spawner::UpdateSnowmen(bool& m_PlayerHitByProjectile)
 {
 	int x = 0;
 	int y = 0;
@@ -462,7 +545,7 @@ void Spawner::UpdateSnowmen()
 		}
 
 		// Update
-		snowman.Update();
+		snowman.Update(m_PlayerHitByProjectile);
 	}
 }
 
@@ -474,6 +557,10 @@ void Spawner::CheckForDestroyedSlimes()
 	std::list<Slime>::iterator sit;
 	for (sit = m_Slimes.begin(); sit != m_Slimes.end(); sit++)
 	{
+		if (sit == m_Slimes.end())
+		{
+			return;
+		}
 		if (sit->m_MARKASDESTORY)
 		{
 			// Distance Based Sound
@@ -572,7 +659,7 @@ void Spawner::CheckForDestroyedSlimes()
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 140, 0, 225));
 
-				m_iBossCount--;
+				m_iBossCount = 0;
 				if (m_Player != nullptr)
 				{
 					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
@@ -582,9 +669,9 @@ void Spawner::CheckForDestroyedSlimes()
 					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
 					{
 						// Add 2 RedSlime To Inventory As Reward
-						for (int i = 0; i < 2; i++)
+						for (int i = 0; i < 4; i++)
 						{
-							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
 							m_Player->AddItemToInventory(temp, true);
 							temp = nullptr;
 
@@ -607,7 +694,7 @@ void Spawner::CheckForDestroyedSlimes()
 			{
 				m_DeathParticles->SetColor(sf::Color(48, 0, 148, 225));
 
-				m_iBossCount--;
+				m_iBossCount = 0;
 				if (m_Player != nullptr)
 				{
 					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
@@ -641,7 +728,7 @@ void Spawner::CheckForDestroyedSlimes()
 			{
 				m_DeathParticles->SetColor(sf::Color(148, 0, 0, 225));
 
-				m_iBossCount--;
+				m_iBossCount = 0;
 				if (m_Player != nullptr)
 				{
 					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
@@ -676,7 +763,7 @@ void Spawner::CheckForDestroyedSlimes()
 			{
 				m_DeathParticles->SetColor(sf::Color(0, 70, 148, 225));
 
-				m_iBossCount--;
+				m_iBossCount = 0;
 				if (m_Player != nullptr)
 				{
 					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
@@ -709,7 +796,7 @@ void Spawner::CheckForDestroyedSlimes()
 			{
 				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
 
-				m_iBossCount--;
+				m_iBossCount = 0;
 				if (m_Player != nullptr)
 				{
 					x = sit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
@@ -816,11 +903,16 @@ void Spawner::CheckForDestroyedSlimes()
 				break;
 			}
 			}
+
 			m_DeathParticleTimer.restart();
 			m_DeathParticles->SetEmitter(sit->GetShape().getPosition());
 			m_SpawnTimer.restart();
 
 			sit = m_Slimes.erase(sit);
+			if (m_Slimes.size() <= 0)
+			{
+				return;
+			}
 		}
 	}
 }
@@ -833,6 +925,10 @@ void Spawner::CheckForDestroyedSnowmen()
 	std::list<CSnowman>::iterator snit;
 	for (snit = m_Snowmans.begin(); snit != m_Snowmans.end(); snit++)
 	{
+		if (snit == m_Snowmans.end())
+		{
+			break;
+		}
 		if (snit->m_MARKASDESTORY)
 		{
 			// Distance Based Sound
@@ -876,12 +972,186 @@ void Spawner::CheckForDestroyedSnowmen()
 			float x = 0;
 			float y = 0;
 
+			switch (snit->m_SnowmanType)
+			{
+			case CSnowman::SNOWMANTYPE::BOSSBLUE:
+			{
+				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = snit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = snit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 4; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+
+						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyBlue, CBlock::BLOCKTYPE::PORTALKEYBLUE);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
+
+						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
+					}
+
+				}
+
+				break;
+			}
+			case CSnowman::SNOWMANTYPE::BOSSGREEN:
+			{
+				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = snit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = snit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 4; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+
+						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyPlains, CBlock::BLOCKTYPE::PORTALKEYPLAINS);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
+
+						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
+					}
+
+				}
+
+				break;
+			}
+			case CSnowman::SNOWMANTYPE::BOSSRED:
+			{
+				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = snit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = snit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 4; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_DiamondIngot, CBlock::BLOCKTYPE::DIAMOND);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+
+						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyRed, CBlock::BLOCKTYPE::PORTALKEYRED);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
+
+						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
+					}
+
+				}
+
+				break;
+			}
+			case CSnowman::SNOWMANTYPE::BOSSYELLOW:
+			{
+				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = snit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = snit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5 && m_DropTimer.getElapsedTime().asSeconds() >= 1.0f)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 4; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_GoldenIngot, CBlock::BLOCKTYPE::GOLDENINGOT);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+
+						}
+
+						// Drop Yellow PortalKey
+						CBlock* temp = new CBlock(m_TextureMaster->m_PortalKeyYellow, CBlock::BLOCKTYPE::PORTALKEYYELLOW);
+						m_Player->AddItemToInventory(temp, false);
+						temp = nullptr;
+
+						m_SpawnFrequency = 120.0f;
+
+						m_DropTimer.restart();
+					}
+
+				}
+
+				break;
+			}
+			default:
+			{
+				m_DeathParticles->SetColor(sf::Color(0, 148, 0, 225));
+
+				if (m_Player != nullptr)
+				{
+					x = snit->GetShape().getPosition().x - m_RenderWindow->getView().getCenter().x;
+					y = snit->GetShape().getPosition().y - m_RenderWindow->getView().getCenter().y;
+					Mag1 = sqrt((x * x) + (y * y));
+
+					if (Mag1 < 1920 * 1.5)
+					{
+						// Add 2 RedSlime To Inventory As Reward
+						for (int i = 0; i < 2; i++)
+						{
+							CBlock* temp = new CBlock(m_TextureMaster->m_RedSlime, CBlock::BLOCKTYPE::REDSLIME);
+							m_Player->AddItemToInventory(temp, true);
+							temp = nullptr;
+						}
+					}
+
+				}
+
+				break;
+			}
+			}
+
 			m_DeathParticles->SetColor(sf::Color(240, 240, 240, 225));
 			m_DeathParticleTimer.restart();
 			m_DeathParticles->SetEmitter(snit->GetShape().getPosition());
 			m_SpawnTimer.restart();
 
 			snit = m_Snowmans.erase(snit);
+
+			if (m_Snowmans.size() <= 0)
+			{
+				return;
+			}
 		}
 	}
 }
@@ -915,6 +1185,21 @@ void Spawner::TypeSpecificRender(sf::Shader* _tourchshader, bool _isInRangeOfLig
 		break;
 	}
 	case CEnemy::ENEMYTYPE::SNOWMAN:
+	{
+		for (CSnowman& snowman : m_Snowmans)
+		{
+			if (_isInRangeOfLightSource)
+			{
+				snowman.Render(_tourchshader);
+			}
+			else
+			{
+				snowman.Render(m_Shader);
+			}
+		}
+		break;
+	}
+	case CEnemy::ENEMYTYPE::CACTUS:
 	{
 		for (CSnowman& snowman : m_Snowmans)
 		{

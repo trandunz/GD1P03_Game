@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CBlock.h
+// Description : CBlock Header file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #pragma once
 #ifndef _BLOCK_H__
 #define _BLOCK_H__
@@ -123,6 +137,7 @@ public:
 		GOLDENBULLET,
 
 		SNOWBALL,
+		TUMBLEWEED,
 	};
 
 	enum class POTIONTYPE
@@ -217,6 +232,10 @@ public:
 	sf::Texture m_ArmourHeadLeft;
 	sf::Texture m_ArmourChestLeft;
 	sf::Texture m_ArmourLegsLeft;
+
+	bool m_bMARKASDESTROY = false;
+
+	void DeleteThis();
 
 protected:
 	void CalculateBlockStrength();

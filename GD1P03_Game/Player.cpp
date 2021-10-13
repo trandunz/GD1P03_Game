@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CPlayer.cpp
+// Description : CPlayer Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "Player.h"
 
 /// <summary>
@@ -69,8 +83,16 @@ void CPlayer::Start()
 /// CPlayer Update
 /// </summary>
 /// <param name="_mousePos"></param>
-void CPlayer::Update(sf::Vector2f _mousePos)
+void CPlayer::Update(sf::Vector2f _mousePos, bool& _playerHitByProjectile)
 {
+	if (_playerHitByProjectile)
+	{
+		_playerHitByProjectile = false;
+		TakeDamage(25.0f);
+	}
+
+	PlayerCollisionContacts();
+
 	// Player Is Red From Damage ? Reset Colour
 	if (m_DamageIndicatorTimer->getElapsedTime().asSeconds() >= 0.2f && m_Shape.getColor() == sf::Color(100, 0, 0, 255))
 	{
@@ -102,8 +124,6 @@ void CPlayer::Update(sf::Vector2f _mousePos)
 	}
 
 	CheckForHoldableItem();
-	
-	PlayerCollisionContacts();
 
 	// Player Has Bow Out ? Attack()
 	if (m_Bow != nullptr)
@@ -556,6 +576,10 @@ bool CPlayer::bMouseOverIventoryItem(std::map<int, CBlock>& m_Inventory, sf::Spr
 {
 	for (std::map<int, CBlock>::iterator iit = m_Inventory.begin(); iit != m_Inventory.end(); iit++)
 	{
+		if (iit == m_Inventory.end())
+		{
+			break;
+		}
 		if (iit->second.GetShape().getGlobalBounds().intersects(_mousePositionSprite.getGlobalBounds()))
 		{
 			return true;
@@ -574,6 +598,10 @@ bool CPlayer::IsBlockInInventory(CBlock* _block)
 	std::map<int, CBlock>::iterator it;
 	for (it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
 	{
+		if (it == m_InventoryMap.end())
+		{
+			break;
+		}
 		if (it->second.m_Type == _block->m_Type && it->second.m_PickType == _block->m_PickType && it->second.m_ProjectileType == _block->m_ProjectileType && it->second.m_PotionType == _block->m_PotionType && it->second.m_SwordType == _block->m_SwordType && it->second.m_WorkBenchType == _block->m_WorkBenchType)
 		{
 			// increase number of that type
@@ -709,6 +737,10 @@ void CPlayer::RemoveItemFromInventory(int _position)
 
 	while (it != m_InventoryMap.end())
 	{
+		if (it == m_InventoryMap.end())
+		{
+			break;
+		}
 		if (it->first == _position)
 		{
 			if (it->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
@@ -740,7 +772,11 @@ void CPlayer::RemoveItemFromInventory(int _position)
 
 			return;
 		}
-		it++;
+		else
+		{
+			it++;
+		}
+
 	}
 }
 
@@ -774,6 +810,10 @@ bool CPlayer::SelectedItemIsEmpty()
 
 	while (it != m_InventoryMap.end())
 	{
+		if (it == m_InventoryMap.end())
+		{
+			break;
+		}
 		if (m_CurrentItemIndex == it->second.m_PositionInInventory)
 		{
 			//std::cout << " I Have A Block!" << std::endl;
@@ -798,6 +838,10 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 	typename std::list<T>::iterator it;
 	for (it = m_Chunk.begin(); it != m_Chunk.end(); it++)
 	{
+		if (it == m_Chunk.end())
+		{
+			break;
+		}
 		if (it->GetShape().getPosition() == _mousePositionSprite.getPosition() && _mousePositionSprite.getGlobalBounds().contains(m_MousePos))
 		{
 			if (!bMouseNotOver(m_Chunk, _mousePositionSprite))
@@ -857,6 +901,11 @@ void CPlayer::Mine(std::list<T>& m_Chunk, sf::Sprite& _mousePositionSprite)
 						m_Block = nullptr;
 						m_Door = nullptr;
 						m_WorkBench = nullptr;
+
+						if (m_Chunk.size() <= 0)
+						{
+							return;
+						}
 					}
 					
 
@@ -1679,6 +1728,10 @@ void CPlayer::CheckForHoldableItem()
 	std::map<int, CBlock>::iterator cit;
 	for (cit = m_InventoryMap.begin(); cit != m_InventoryMap.end(); cit++)
 	{
+		if (cit == m_InventoryMap.end())
+		{
+			break;
+		}
 		if (cit->second.m_bIsItemAndSelected == true)
 		{
 			if (m_Pickaxe == nullptr && cit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE)
@@ -1714,12 +1767,12 @@ void CPlayer::CheckForHoldableItem()
 /// <summary>
 /// Updates all the players projectiles (arrows, bullets e.t.c)
 /// </summary>
-void CPlayer::UpdateProjectiles()
+void CPlayer::UpdateProjectiles(bool m_PlayerHitByProjectile)
 {
 	// Update All Projectiles
 	for (CProjectile& projectile : m_Projectiles)
 	{
-		projectile.Update();
+		projectile.Update(m_PlayerHitByProjectile);
 	}
 }
 
@@ -1732,11 +1785,24 @@ void CPlayer::CheckForDestroyedProjectiles()
 	std::list<CProjectile>::iterator pit = m_Projectiles.begin();
 	while (pit != m_Projectiles.end())
 	{
+		if (pit == m_Projectiles.end())
+		{
+			break;
+		}
 		if (pit->m_bMARKASDESTROY)
 		{
+			pit->DestroyBody();
 			pit = m_Projectiles.erase(pit);
+			if (m_Projectiles.size() <= 0)
+			{
+				return;
+			}
 		}
-		pit++;
+		else
+		{
+			pit++;
+		}
+
 	}
 }
 
@@ -1797,34 +1863,38 @@ void CPlayer::PlayerCollisionContacts()
 		// Cast sf::Vector2f to b2Vec2 For Sprite Position
 		b2Vec2 worldposition = { m_Shape.getPosition().x, m_Shape.getPosition().y };
 
-		if ((a->GetBody() == m_Body || b->GetBody() == m_Body) && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_ || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_))
+		if ((a->GetBody() == m_Body || b->GetBody() == m_Body))
 		{
-			// Velocity.y > 0 ? bCanJump = true
-			if ((vel1.y <= 0.5f && vel1.y >= -0.5f))
-			{
-				m_bCanJump = true;
-			}
 
-			// Fall Damage
-			if (impactVelocity.y <= 82.8f && impactVelocity.y >= 62.0f && m_bCanFallDamage)
+			if ((b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_ || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_))
 			{
-				//std::cout << impactVelocity.y << std::endl;
-				TakeDamage(impactVelocity.y / 2);
-			}
-			else if (impactVelocity.y > 82.8f && m_bCanFallDamage)
-			{
-				//std::cout << impactVelocity.y << std::endl;
-				TakeDamage(impactVelocity.y * 2);
-			}
+				// Velocity.y > 0 ? bCanJump = true
+				if ((vel1.y <= 0.5f && vel1.y >= -0.5f))
+				{
+					m_bCanJump = true;
+				}
 
-			// Velocity.y > 0 ? bCanJump = true
-			if ((vel1.y > 2.0f || vel1.y <= -2.0f))
-			{
-				m_bCanFallDamage = true;
-			}
-			else
-			{
-				m_bCanFallDamage = false;
+				// Fall Damage
+				if (impactVelocity.y <= 82.8f && impactVelocity.y >= 62.0f && m_bCanFallDamage)
+				{
+					//std::cout << impactVelocity.y << std::endl;
+					TakeDamage(impactVelocity.y / 2);
+				}
+				else if (impactVelocity.y > 82.8f && m_bCanFallDamage)
+				{
+					//std::cout << impactVelocity.y << std::endl;
+					TakeDamage(impactVelocity.y * 2);
+				}
+
+				// Velocity.y > 0 ? bCanJump = true
+				if ((vel1.y > 2.0f || vel1.y <= -2.0f))
+				{
+					m_bCanFallDamage = true;
+				}
+				else
+				{
+					m_bCanFallDamage = false;
+				}
 			}
 		}
 		// Velocity.y == 0 ? bCanJump = false
@@ -1866,20 +1936,8 @@ void CPlayer::CheckForBasicPickaxe()
 /// </summary>
 void CPlayer::CleanupLists()
 {
-	for (std::list<CProjectile>::iterator it = m_Projectiles.begin(); it != m_Projectiles.end(); it++)
-	{
-		it = m_Projectiles.erase(it);
-	}
 	m_Projectiles.clear();
-	for (std::map<int, CBlock>::iterator it = m_InventoryMap.begin(); it != m_InventoryMap.end(); it++)
-	{
-		it = m_InventoryMap.erase(it);
-	}
 	m_InventoryMap.clear();
-	for (std::map<int, int>::iterator it = m_InventoryStackValues.begin(); it != m_InventoryStackValues.end(); it++)
-	{
-		it = m_InventoryStackValues.erase(it);
-	}
 	m_InventoryStackValues.clear();
 }
 
@@ -2509,6 +2567,10 @@ void CPlayer::OpenChest(std::list<CFurnace>& m_Furnaces, std::list<CChest>& m_Ch
 	float MagToPlayer = 1000;
 	while (chit != m_Chests.end())
 	{
+		if (chit == m_Chests.end())
+		{
+			break;
+		}
 		MagToPlayer = sqrt(((chit->GetShape().getPosition().x - m_Shape.getPosition().x) * (chit->GetShape().getPosition().x - m_Shape.getPosition().x)) + ((chit->GetShape().getPosition().y - m_Shape.getPosition().y) * (chit->GetShape().getPosition().y - m_Shape.getPosition().y)));
 		if (MagToPlayer < 200)
 		{
@@ -2913,6 +2975,7 @@ void CPlayer::CreateBody(float _posX, float _posY, b2BodyType _type, bool _senso
 	m_FixtureDef.friction = 0.5f;
 	m_FixtureDef.restitution = 0.01f;
 	m_FixtureDef.filter.categoryBits = _PLAYER_FILTER_;
+	m_FixtureDef.filter.maskBits = _PROJECTILE_FILTER_;
 	m_FixtureDef.filter.maskBits = _WORLD_FILTER_;
 	m_FixtureDef.filter.groupIndex = _PLAYER_GROUPINDEX_;
 	m_Body->CreateFixture(&m_FixtureDef);

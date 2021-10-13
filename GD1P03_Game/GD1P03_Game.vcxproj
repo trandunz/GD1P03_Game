@@ -161,7 +161,6 @@
     <ClCompile Include="CInputField.cpp" />
     <ClCompile Include="CMainMenu.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />
-    <ClCompile Include="CPickaxe.cpp" />
     <ClCompile Include="CPotion.cpp" />
     <ClCompile Include="CProjectile.cpp" />
     <ClCompile Include="CSnowman.cpp" />

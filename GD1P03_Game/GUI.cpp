@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : GUI.cpp
+// Description : GUI Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "GUI.h"
 
 /// <summary>
@@ -254,6 +268,10 @@ void GUI::MiniMapUI(sf::RenderWindow* _renderWindow, std::list<CBlock>& _chunk, 
 	// Blocks
 	for (it = _chunk.begin(); it != _chunk.end(); it++)
 	{
+		if (it == _chunk.end())
+		{
+			break;
+		}
 		x = it->GetShape().getPosition().x - m_miniMap->getView().getCenter().x;
 		y = it->GetShape().getPosition().y - m_miniMap->getView().getCenter().y;
 		Mag1 = sqrt((x * x) + (y * y));
@@ -704,6 +722,10 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
+				if (iit == _player->m_InventoryMap.end())
+				{
+					break;
+				}
 				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CPickaxe::PICKAXETYPE::BASIC)
 				{
 					std::cout << "Pickaxe Selected!" << "( gui)" << std::endl;
@@ -946,6 +968,10 @@ void GUI::HotBarScrolling(sf::Event& _event, CPlayer* _player)
 			// Items
 			for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 			{
+				if (iit == _player->m_InventoryMap.end())
+				{
+					break;
+				}
 				if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CPickaxe::PICKAXETYPE::BASIC)
 				{
 					std::cout << "Pickaxe Selected!" << "( gui)" << std::endl;
@@ -1183,6 +1209,10 @@ void GUI::InitHotBarScrolling(CPlayer* _player)
 		// Items
 		for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); iit++)
 		{
+			if (iit == _player->m_InventoryMap.end())
+			{
+				break;
+			}
 			if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && !_player->bInventoryOpen() && iit->second.m_PickType == CPickaxe::PICKAXETYPE::BASIC)
 			{
 				std::cout << "Pickaxe Selected!" << "( gui)" << std::endl;
@@ -1428,6 +1458,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 			{
 				for (std::map<int, sf::Sprite>::iterator sit = m_InventorySlotMap.begin(); sit != m_InventorySlotMap.end(); ++sit)
 				{
+					if (sit == m_InventorySlotMap.end())
+					{
+						break;
+					}
 					if (sit->second.getGlobalBounds().contains(m_MousePointer.getPosition()) && _event.type == sf::Event::MouseButtonReleased)
 					{
 						_player->m_InventoryMap[sit->first];
@@ -1447,6 +1481,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 								// Moved Item Into Currently Selected Slot?
 								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 								{
+									if (iit == _player->m_InventoryMap.end())
+									{
+										break;
+									}
 									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 									{
 										if (_player->GetPickaxe() != nullptr)
@@ -1501,6 +1539,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 								// Moved Item Into Currently Selected Slot?
 								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 								{
+									if (iit == _player->m_InventoryMap.end())
+									{
+										break;
+									}
 									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 									{
 										if (_player->GetPickaxe() != nullptr)
@@ -1557,6 +1599,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 							// Moved Item Into Currently Selected Slot?
 							for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 							{
+								if (iit == _player->m_InventoryMap.end())
+								{
+									break;
+								}
 								if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 								{
 									if (_player->GetPickaxe() != nullptr)
@@ -1614,6 +1660,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 								// Moved Item Into Currently Selected Slot?
 								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 								{
+									if (iit == _player->m_InventoryMap.end())
+									{
+										break;
+									}
 									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 									{
 										if (_player->GetPickaxe() != nullptr)
@@ -1665,6 +1715,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 								// Moved Item Into Currently Selected Slot?
 								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 								{
+									if (iit == _player->m_InventoryMap.end())
+									{
+										break;
+									}
 									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 									{
 										if (_player->GetPickaxe() != nullptr)
@@ -1716,6 +1770,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 								// Moved Item Into Currently Selected Slot?
 								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 								{
+									if (iit == _player->m_InventoryMap.end())
+									{
+										break;
+									}
 									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 									{
 										if (_player->GetPickaxe() != nullptr)
@@ -1775,6 +1833,10 @@ void GUI::LetGoOfItemInInventory(sf::RenderWindow* _renderWindow, sf::View& _uiV
 								// Moved Item Into Currently Selected Slot?
 								for (std::map<int, CBlock>::iterator iit = _player->m_InventoryMap.begin(); iit != _player->m_InventoryMap.end(); ++iit)
 								{
+									if (iit == _player->m_InventoryMap.end())
+									{
+										break;
+									}
 									if (_player->m_CurrentItemIndex == iit->first && iit->second.m_Type == CBlock::BLOCKTYPE::PICKAXE && iit->second.m_bIsItemAndSelected == false)
 									{
 										if (_player->GetPickaxe() != nullptr)
@@ -6388,7 +6450,14 @@ void GUI::Render(sf::RenderWindow* _renderWindow, CPlayer* _player, sf::View& _w
 	{
 		_renderWindow->setView(_worldView);
 
-		_renderWindow->draw(m_MousePos, _defaultShader);
+		if (_player->GetBow() != nullptr)
+		{
+			_renderWindow->draw(m_MousePointer, _defaultShader);
+		}
+		else
+		{
+			_renderWindow->draw(m_MousePos, _defaultShader);
+		}
 
 		_renderWindow->setView(_uiView);
 	}

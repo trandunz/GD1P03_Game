@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CProjectile.cpp
+// Description : CProjectile Implementation file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #include "CProjectile.h"
 
 /// <summary>
@@ -131,6 +145,11 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 		m_Damage = 25.0f;
 		m_Bullet = true;
 		break;
+	case CBlock::PROJECTILETYPE::TUMBLEWEED:
+		m_Texture->loadFromFile("Images/TumbleWeed.png");
+		m_Damage = 15.0f;
+		m_Bullet = true;
+		break;
 	default:
 		m_Texture->loadFromFile("Images/Arrow.png");
 		m_Damage = 25.0f;
@@ -155,7 +174,14 @@ CProjectile::CProjectile(b2World& _world, float _startPosX, float _startPosY, sf
 		float dx = _mousPos.x - m_Shape.getPosition().x;
 		float dy = _mousPos.y - m_Shape.getPosition().y;
 
-		m_Body->SetLinearVelocity(b2Vec2(dx, dy));
+		if (m_Friendly)
+		{
+			m_Body->SetLinearVelocity(b2Vec2(dx, dy));
+		}
+		else
+		{
+			m_Body->SetLinearVelocity(b2Vec2(dx / 50, dy / 50));
+		}
 
 		std::cout << dx << " (:) " << dy << std::endl;
 	}
@@ -186,7 +212,7 @@ CProjectile::~CProjectile()
 /// <summary>
 /// CProjectile Update
 /// </summary>
-void CProjectile::Update()
+void CProjectile::Update(bool& _hitPlayer)
 {
 	// Contacts
 	b2Contact* contact;
@@ -212,6 +238,7 @@ void CProjectile::Update()
 			else if (!m_Friendly && (b->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_ || a->GetBody()->GetFixtureList()->GetFilterData().categoryBits == _PLAYER_FILTER_)) // _ENEMY_FILTER_
 			{
 				m_bMARKASDESTROY = true;
+				_hitPlayer = true;
 			}
 		}
 

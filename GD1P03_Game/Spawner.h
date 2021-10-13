@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : Spawner.h
+// Description : Spawner Header file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #pragma once
 #ifndef  _SPAWNER_H__
 #define _SPAWNER_H__
@@ -15,7 +29,7 @@ public:
 	Spawner(CAudioManager* _audioManager, sf::RenderWindow* _renderWindow, b2World& _world, CTextureMaster* _textureMaster, const float& _scale, float _posX, float _posY, CPlayer*_player, CEnemy::ENEMYTYPE _type, sf::Shader* _shader, sf::Shader* _tourchShader, bool _sprite = true);
 	
 	void Start();
-	void Update();
+	void Update(bool& m_PlayerHitByProjectile);
 	void Render(sf::Shader* _tourchshader, bool _isInRangeOfLightSource);
 
 	void LoosePlayer();
@@ -33,7 +47,6 @@ public:
 	std::list<Slime> m_Slimes;
 	std::list<CSnowman> m_Snowmans;
 
-
 	sf::Sprite m_Shape;
 
 
@@ -42,10 +55,12 @@ private:
 	void AssignAppropiateParticleSystem();
 	void TypeSpecificUpdate();
 	void UpdateSlimes();
-	void UpdateSnowmen();
+	void UpdateSnowmen(bool& m_PlayerHitByProjectile);
+	void UpdateCactus(bool& m_PlayerHitByProjectile);
 
 	void CheckForDestroyedSlimes();
 	void CheckForDestroyedSnowmen();
+	void CheckForDestroyedCactus();
 
 	void TypeSpecificRender(sf::Shader* _tourchshader, bool _isInRangeOfLightSource);
 

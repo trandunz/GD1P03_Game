@@ -1,3 +1,18 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CCraftbook.h
+// Description : CCraftbook Header file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
+
 #pragma once
 #ifndef _CRAFTBOOK_H__
 #define _CRAFTBOOK_H__

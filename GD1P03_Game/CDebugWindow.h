@@ -1,3 +1,17 @@
+//
+// Bachelor of Software Engineering
+// Media Design School
+// Auckland
+// New Zealand
+//
+// (c) Media Design School
+//
+// File Name : CDebugWindow.h
+// Description : CDebugWindow Header file.
+// Author : William Inman
+// Mail : william.inman@mds.ac.nz
+//
+
 #pragma once
 #ifndef _DEBUGWINDOW_H__
 #define _DEBUGWINDOW_H__
@@ -83,6 +97,9 @@ private:
 	int* m_SceneValue;
 
 	int* m_NumberOFLeakes;
+
+	sf::Sprite m_MousePositionPointer;
+	sf::Texture m_MousePositionPointerTexture;
 };
 #endif
 
